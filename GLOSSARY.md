@@ -1,0 +1,8 @@
+# KGJ Academy glossary
+
+| Istilah | Arti operasional |
+| --- | --- |
+| Aturan Learning Path | Pemetaan satu learning path kepada kombinasi tepat divisi, jabatan, dan cabang. Ketiga atribut harus cocok. |
+| Path assignment | Bukti bahwa seorang karyawan menerima learning path. Assignment dapat dibuat manual atau dari aturan otomatis. |
+| Enrollment course | Hak akses seorang karyawan terhadap satu course. Saat path ditetapkan, setiap course terbit di dalam path dibuatkan enrollment secara idempoten tanpa menimpa progres atau status yang sudah ada. |
+

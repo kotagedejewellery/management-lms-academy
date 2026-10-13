@@ -1,0 +1,17 @@
+# Data Uji Lokal
+
+Gunakan satu perintah aman berikut untuk mengisi atau memperbarui data demo lokal:
+
+```powershell
+docker compose exec -T app php artisan db:seed --class=Database\Seeders\LocalTestingSeeder --force
+```
+
+Seeder ini hanya berjalan pada environment `local` atau `testing`. Semua data demo memakai `firstOrCreate`, `updateOrCreate`, atau `updateOrInsert`, sehingga dapat dijalankan berulang kali tanpa menghapus data lokal yang tidak terkait.
+
+Jangan gunakan `migrate:fresh`, `migrate:refresh`, `db:wipe`, atau penghapusan volume Docker untuk pembaruan data demo. Perintah tersebut memang menghapus database atau volume lokal.
+
+Volume PostgreSQL lokal bernama `kgj-lms-academy_postgres_data` dan dideklarasikan sebagai volume eksternal. Karena itu, `docker compose down -v` tidak akan menghapus data database ini; gunakan `docker compose down` biasa untuk menghentikan layanan. Jangan menjalankan `docker volume rm kgj-lms-academy_postgres_data` kecuali memang bermaksud menghapus seluruh database lokal.
+
+Test suite dipaksa memakai SQLite in-memory melalui `phpunit.xml`, sehingga `php artisan test` tidak boleh menulis ke PostgreSQL lokal.
+
+Data demo mencakup organisasi, role/permission, sembilan akun, lima course dengan status berbeda, modul/lesson/resource, learning path dan aturan otomatis, assignment/enrollment/progress, Pre-Test/Post-Test, notifikasi, audit activity, ekspor laporan, dan riwayat import.

@@ -1,0 +1,101 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Jobs\GenerateReportExport;
+use App\Models\Assessment;
+use App\Models\Course;
+use App\Models\CourseCategory;
+use App\Models\Division;
+use App\Models\Permission;
+use App\Models\ReportExport;
+use App\Models\Role;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Testing\AssertableInertia as Assert;
+use Tests\TestCase;
+
+class ReportTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_report_is_paginated_and_limited_to_authorized_users(): void
+    {
+        $admin = $this->reportAdmin();
+        $sales = Division::query()->create(['code' => 'SLS', 'name' => 'Sales', 'is_active' => true]);
+        $operations = Division::query()->create(['code' => 'OPS', 'name' => 'Operasional', 'is_active' => true]);
+        $employee = User::factory()->create(['name' => 'Ayu Wijaya', 'employee_id' => 'KGJ-001', 'division_id' => $sales->id]);
+        $otherEmployee = User::factory()->create(['name' => 'Bima Aditya', 'employee_id' => 'KGJ-002', 'division_id' => $operations->id]);
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-001', 'title' => 'Pengenalan KGJ', 'status' => 'published']);
+        $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
+        $otherEmployee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
+
+        $this->actingAs(User::factory()->create())->get(route('reports.index'))->assertForbidden();
+
+        $this->actingAs($admin)->get(route('reports.index', ['search' => 'Ayu', 'division_id' => $sales->id]))->assertOk()->assertInertia(fn (Assert $page) => $page
+            ->component('reports/Index')
+            ->has('enrollments.data', 1)
+            ->where('enrollments.data.0.user.name', 'Ayu Wijaya')
+            ->where('filters.search', 'Ayu')
+            ->where('filters.division_id', $sales->id));
+    }
+
+    public function test_authorized_user_can_queue_and_download_a_private_csv_export(): void
+    {
+        Queue::fake();
+        $admin = $this->reportAdmin();
+        $division = Division::query()->create(['code' => 'SLS', 'name' => 'Sales', 'is_active' => true]);
+        $employee = User::factory()->create(['employee_id' => 'KGJ-001', 'division_id' => $division->id]);
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-001', 'title' => 'Pengenalan KGJ', 'status' => 'published']);
+        $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
+
+        $this->actingAs($admin)->post(route('reports.exports.store'), ['status' => 'active', 'division_id' => $division->id])->assertRedirect(route('reports.index', ['search' => '', 'status' => 'active', 'division_id' => $division->id]));
+        $export = ReportExport::query()->firstOrFail();
+        $this->assertSame('queued', $export->status);
+        Queue::assertPushed(GenerateReportExport::class, fn (GenerateReportExport $job) => $job->reportExportId === $export->id);
+
+        Storage::fake('local');
+        (new GenerateReportExport($export->id))->handle();
+        $export->refresh();
+        $this->assertSame('ready', $export->status);
+        Storage::disk('local')->assertExists($export->path);
+        $this->assertStringContainsString('KGJ-001', Storage::disk('local')->get($export->path));
+        $this->actingAs($admin)->get(route('reports.exports.download', $export))->assertOk();
+    }
+
+    public function test_report_shows_pre_test_baseline_best_post_test_and_improvement_for_not_passed_enrollments(): void
+    {
+        $admin = $this->reportAdmin();
+        $employee = User::factory()->create(['name' => 'Ayu Wijaya', 'employee_id' => 'KGJ-003']);
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-003', 'title' => 'Evaluasi KGJ', 'status' => 'published']);
+        $enrollment = $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'not_passed']);
+        $preTest = Assessment::query()->create(['course_id' => $course->id, 'type' => 'pre_test', 'passing_grade' => 0, 'attempt_limit' => 3]);
+        $postTest = Assessment::query()->create(['course_id' => $course->id, 'type' => 'post_test', 'passing_grade' => 80, 'attempt_limit' => 3]);
+        $preTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 55, 'submitted_at' => now()]);
+        $postTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 80, 'passed' => true, 'submitted_at' => now()]);
+        $postTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 2, 'score' => 90, 'passed' => true, 'submitted_at' => now()]);
+
+        $this->actingAs($admin)->get(route('reports.index', ['status' => 'not_passed']))->assertOk()->assertInertia(fn (Assert $page) => $page
+            ->where('enrollments.data.0.status', 'not_passed')
+            ->where('enrollments.data.0.pre_test_score', 55)
+            ->where('enrollments.data.0.best_post_score', 90)
+            ->where('enrollments.data.0.improvement', 35)
+            ->where('enrollments.data.0.post_test_attempts', 2));
+    }
+
+    private function reportAdmin(): User
+    {
+        $permission = Permission::query()->create(['slug' => 'manage-enrollments', 'name' => 'Kelola assignment']);
+        $role = Role::query()->create(['slug' => 'lms-admin', 'name' => 'LMS Admin']);
+        $role->permissions()->attach($permission);
+        $user = User::factory()->create();
+        $user->roles()->attach($role);
+
+        return $user;
+    }
+}

@@ -1,0 +1,92 @@
+<?php
+
+use App\Http\Controllers\Admin\AnnouncementController;
+use App\Http\Controllers\Admin\AssessmentController;
+use App\Http\Controllers\Admin\AssigneeSearchController;
+use App\Http\Controllers\Admin\CourseCategoryController;
+use App\Http\Controllers\Admin\CourseContentController;
+use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Admin\EnrollmentController;
+use App\Http\Controllers\Admin\LearningPathAssignmentController;
+use App\Http\Controllers\Admin\LearningPathContentController;
+use App\Http\Controllers\Admin\LearningPathController;
+use App\Http\Controllers\Admin\OrganizationController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\UserImportController;
+use App\Http\Controllers\AssessmentAttemptController;
+use App\Http\Controllers\AuditLogController;
+use App\Http\Controllers\CourseLibraryController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LearningController;
+use App\Http\Controllers\LearningProgressController;
+use App\Http\Controllers\MyLearningPathController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\TeamProgressController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', fn () => auth()->check()
+    ? to_route('dashboard')
+    : to_route('login'))
+    ->name('home');
+
+Route::middleware(['auth', 'verified', 'active', 'audit'])->group(function () {
+    Route::get('dashboard', DashboardController::class)->name('dashboard');
+    Route::get('audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('notifications/{userNotification}/read', [NotificationController::class, 'read'])->name('notifications.read');
+    Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('team-progress', [TeamProgressController::class, 'index'])->name('team-progress.index');
+    Route::post('reports/exports', [ReportController::class, 'export'])->name('reports.exports.store');
+    Route::get('reports/exports/{reportExport}', [ReportController::class, 'download'])->name('reports.exports.download');
+    Route::get('my-learning', [LearningController::class, 'index'])->name('my-learning.index');
+    Route::get('my-learning-paths', [MyLearningPathController::class, 'index'])->name('my-learning-paths.index');
+    Route::get('course-library', [CourseLibraryController::class, 'index'])->name('course-library.index');
+    Route::get('my-progress', [LearningProgressController::class, 'index'])->name('my-progress.index');
+    Route::get('my-learning/{course}', [LearningController::class, 'show'])->name('my-learning.show');
+    Route::post('my-learning/{course}/lessons/{lesson}/complete', [LearningController::class, 'completeLesson'])->name('my-learning.lessons.complete');
+    Route::put('my-learning/{course}/assessments/{assessment}/draft', [AssessmentAttemptController::class, 'saveDraft'])->name('my-learning.assessments.draft');
+    Route::post('my-learning/{course}/assessments/{assessment}/submit', [AssessmentAttemptController::class, 'submit'])->name('my-learning.assessments.submit');
+    Route::get('my-learning/{course}/assessments/{assessment}', [AssessmentAttemptController::class, 'show'])->name('my-learning.assessments.show');
+    Route::get('my-learning/{course}/assessments/{assessment}/result', [AssessmentAttemptController::class, 'result'])->name('my-learning.assessments.result');
+    Route::get('course-categories', [CourseCategoryController::class, 'index'])->name('course-categories.index');
+    Route::post('course-categories', [CourseCategoryController::class, 'store'])->name('course-categories.store');
+    Route::put('course-categories/{courseCategory}', [CourseCategoryController::class, 'update'])->name('course-categories.update');
+    Route::get('courses/{course}/content', [CourseContentController::class, 'index'])->name('courses.content');
+    Route::get('courses/{course}/assessments', [AssessmentController::class, 'index'])->name('courses.assessments.index');
+    Route::post('courses/{course}/assessments', [AssessmentController::class, 'store'])->name('courses.assessments.store');
+    Route::patch('courses/{course}/assessments/{assessment}', [AssessmentController::class, 'update'])->name('courses.assessments.update');
+    Route::post('courses/{course}/assessments/{assessment}/questions', [AssessmentController::class, 'storeQuestion'])->name('courses.assessments.questions.store');
+    Route::delete('courses/{course}/assessments/{assessment}/questions/{question}', [AssessmentController::class, 'destroyQuestion'])->name('courses.assessments.questions.destroy');
+    Route::post('courses/{course}/modules', [CourseContentController::class, 'storeModule'])->name('courses.modules.store');
+    Route::put('courses/{course}/modules/{module}', [CourseContentController::class, 'updateModule'])->name('courses.modules.update');
+    Route::delete('courses/{course}/modules/{module}', [CourseContentController::class, 'destroyModule'])->name('courses.modules.destroy');
+    Route::post('courses/{course}/modules/{module}/lessons', [CourseContentController::class, 'storeLesson'])->name('courses.lessons.store');
+    Route::put('courses/{course}/modules/{module}/lessons/{lesson}', [CourseContentController::class, 'updateLesson'])->name('courses.lessons.update');
+    Route::delete('courses/{course}/modules/{module}/lessons/{lesson}', [CourseContentController::class, 'destroyLesson'])->name('courses.lessons.destroy');
+    Route::delete('courses/{course}/modules/{module}/lessons/{lesson}/resources/{resource}', [CourseContentController::class, 'destroyResource'])->name('courses.resources.destroy');
+    Route::get('courses/{course}/modules/{module}/lessons/{lesson}/resources/{resource}/preview', [CourseContentController::class, 'previewResource'])->name('courses.resources.preview');
+    Route::get('courses/{course}/modules/{module}/lessons/{lesson}/resources/{resource}', [CourseContentController::class, 'downloadResource'])->name('courses.resources.download');
+    Route::resource('courses', CourseController::class)->except('show', 'destroy');
+    Route::get('learning-paths/{learningPath}/content', [LearningPathContentController::class, 'index'])->name('learning-paths.content');
+    Route::post('learning-paths/{learningPath}/courses', [LearningPathContentController::class, 'store'])->name('learning-paths.courses.store');
+    Route::put('learning-paths/{learningPath}/courses/{pathCourse}', [LearningPathContentController::class, 'update'])->name('learning-paths.courses.update');
+    Route::delete('learning-paths/{learningPath}/courses/{pathCourse}', [LearningPathContentController::class, 'destroy'])->name('learning-paths.courses.destroy');
+    Route::resource('learning-paths', LearningPathController::class)->except('show', 'destroy');
+    Route::get('enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');
+    Route::get('assignees/search', AssigneeSearchController::class)->name('assignees.search');
+    Route::post('enrollments', [EnrollmentController::class, 'store'])->name('enrollments.store');
+    Route::get('learning-path-assignments', [LearningPathAssignmentController::class, 'index'])->name('learning-path-assignments.index');
+    Route::post('learning-path-assignments', [LearningPathAssignmentController::class, 'store'])->name('learning-path-assignments.store');
+    Route::post('learning-path-assignment-rules', [LearningPathAssignmentController::class, 'storeRule'])->name('learning-path-assignment-rules.store');
+    Route::get('announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+    Route::post('announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+    Route::get('organization/{type}', [OrganizationController::class, 'index'])->name('organization.index');
+    Route::post('organization/{type}', [OrganizationController::class, 'store'])->name('organization.store');
+    Route::put('organization/{type}/{record}', [OrganizationController::class, 'update'])->name('organization.update');
+    Route::resource('users', UserController::class)->except('show', 'destroy');
+    Route::get('user-imports', [UserImportController::class, 'index'])->name('user-imports.index');
+    Route::post('user-imports', [UserImportController::class, 'store'])->name('user-imports.store');
+});
+
+require __DIR__.'/settings.php';
