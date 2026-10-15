@@ -29,6 +29,10 @@ services:
       QUEUE_CONNECTION: database
       DB_QUEUE_RETRY_AFTER: 180
       FILESYSTEM_DISK: local
+    networks:
+      default:
+        aliases:
+          - kgj-lms-fpm
     depends_on:
       db:
         condition: service_healthy

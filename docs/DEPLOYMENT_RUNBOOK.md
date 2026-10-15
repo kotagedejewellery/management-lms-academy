@@ -17,7 +17,7 @@ cp .env.production.example .env.production
 nano .env.production
 ```
 
-Ganti `APP_URL` dan `TRAEFIK_HOST` dengan subdomain final, isi password PostgreSQL yang kuat, `IMPORT_INITIAL_PASSWORD`, dan token Fonnte bila digunakan. Pastikan network Traefik tersedia, lalu buat volume persistent satu kali. Perintah ini idempotent dan tidak menghapus data:
+Ganti `APP_URL` dan `TRAEFIK_HOST` dengan subdomain final, isi password PostgreSQL yang kuat, `IMPORT_INITIAL_PASSWORD`, dan token Fonnte bila digunakan. `APP_URL` wajib memakai `https://` (bukan `http://`) agar browser tidak memblokir asset Vite sebagai mixed content. Jangan set `ASSET_URL` ke URL HTTP. Pastikan network Traefik tersedia, lalu buat volume persistent satu kali. Perintah ini idempotent dan tidak menghapus data:
 
 ```sh
 docker network inspect proxy >/dev/null

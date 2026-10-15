@@ -1,7 +1,7 @@
 # Graph Report - KGJ-lms-academy  (2026-10-15)
 
 ## Corpus Check
-- 438 files · ~94,613 words
+- 438 files · ~94,615 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 27 file(s) not represented in the graph (top: (none) 18, .example 3, .conf 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7ef8acec`
+- Built from commit: `2846f6df`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

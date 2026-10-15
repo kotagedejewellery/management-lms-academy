@@ -1,17 +1,17 @@
 # Graph Report - KGJ-lms-academy  (2026-10-15)
 
 ## Corpus Check
-- 438 files · ~94,606 words
+- 438 files · ~94,613 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 27 file(s) not represented in the graph (top: (none) 18, .example 3, .conf 1)
 
 ## Summary
-- 2643 nodes · 5900 edges · 156 communities (109 shown, 47 thin omitted)
+- 2643 nodes · 5901 edges · 156 communities (109 shown, 47 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7c5ccd6f`
+- Built from commit: `7ef8acec`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -165,7 +165,7 @@
 
 ## God Nodes (most connected - your core abstractions)
 1. `User` - 202 edges
-2. `vue` - 141 edges
+2. `vue` - 142 edges
 3. `Course` - 140 edges
 4. `cn()` - 93 edges
 5. `reka-ui` - 77 edges
@@ -349,8 +349,8 @@ Cohesion: 0.10
 Nodes (5): AssigneeSearchController, {closure#6}(), Illuminate\Http\JsonResponse, Illuminate\Support\Str, Pdo\Mysql
 
 ### Community 42 - "useAppearance.ts"
-Cohesion: 0.11
-Nodes (22): laravel-vite-plugin, vue-sonner, { appearance, updateAppearance }, tabs, props, appearance, getStoredAppearance(), handleSystemThemeChange() (+14 more)
+Cohesion: 0.12
+Nodes (21): vue-sonner, { appearance, updateAppearance }, tabs, props, appearance, getStoredAppearance(), handleSystemThemeChange(), initializeTheme() (+13 more)
 
 ### Community 43 - "settings.php"
 Cohesion: 0.20
@@ -521,8 +521,8 @@ Cohesion: 0.25
 Nodes (8): optionalDependencies, @laravel/multiplex, lightningcss-linux-x64-gnu, lightningcss-win32-x64-msvc, @rollup/rollup-linux-x64-gnu, @rollup/rollup-win32-x64-msvc, @tailwindcss/oxide-linux-x64-gnu, @tailwindcss/oxide-win32-x64-msvc
 
 ### Community 98 - "vite.config.ts"
-Cohesion: 0.29
-Nodes (6): @inertiajs/vite, @laravel/vite-plugin-wayfinder, @tailwindcss/vite, vite-plus, @vitejs/plugin-vue, vitePort
+Cohesion: 0.25
+Nodes (7): @inertiajs/vite, laravel-vite-plugin, @laravel/vite-plugin-wayfinder, @tailwindcss/vite, vite-plus, @vitejs/plugin-vue, vitePort
 
 ### Community 99 - "AvatarFallback.vue"
 Cohesion: 0.25
