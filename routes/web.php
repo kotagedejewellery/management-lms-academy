@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\UserImportController;
 use App\Http\Controllers\AssessmentAttemptController;
 use App\Http\Controllers\AuditLogController;
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\CourseLibraryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LearningController;
@@ -34,8 +35,11 @@ Route::middleware(['auth', 'verified', 'active', 'audit'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
     Route::get('audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('certificates', [CertificateController::class, 'index'])->name('certificates.index');
+    Route::get('certificates/{certificate}', [CertificateController::class, 'download'])->name('certificates.download');
     Route::post('notifications/{userNotification}/read', [NotificationController::class, 'read'])->name('notifications.read');
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/courses', [ReportController::class, 'courses'])->name('reports.courses');
     Route::get('team-progress', [TeamProgressController::class, 'index'])->name('team-progress.index');
     Route::post('reports/exports', [ReportController::class, 'export'])->name('reports.exports.store');
     Route::get('reports/exports/{reportExport}', [ReportController::class, 'download'])->name('reports.exports.download');
@@ -45,6 +49,7 @@ Route::middleware(['auth', 'verified', 'active', 'audit'])->group(function () {
     Route::get('my-progress', [LearningProgressController::class, 'index'])->name('my-progress.index');
     Route::get('my-learning/{course}', [LearningController::class, 'show'])->name('my-learning.show');
     Route::post('my-learning/{course}/lessons/{lesson}/complete', [LearningController::class, 'completeLesson'])->name('my-learning.lessons.complete');
+    Route::put('my-learning/{course}/lessons/{lesson}/playback', [LearningController::class, 'savePlayback'])->name('my-learning.lessons.playback');
     Route::put('my-learning/{course}/assessments/{assessment}/draft', [AssessmentAttemptController::class, 'saveDraft'])->name('my-learning.assessments.draft');
     Route::post('my-learning/{course}/assessments/{assessment}/submit', [AssessmentAttemptController::class, 'submit'])->name('my-learning.assessments.submit');
     Route::get('my-learning/{course}/assessments/{assessment}', [AssessmentAttemptController::class, 'show'])->name('my-learning.assessments.show');
@@ -53,6 +58,8 @@ Route::middleware(['auth', 'verified', 'active', 'audit'])->group(function () {
     Route::post('course-categories', [CourseCategoryController::class, 'store'])->name('course-categories.store');
     Route::put('course-categories/{courseCategory}', [CourseCategoryController::class, 'update'])->name('course-categories.update');
     Route::get('courses/{course}/content', [CourseContentController::class, 'index'])->name('courses.content');
+    Route::get('courses/{course}/preview', [CourseController::class, 'preview'])->name('courses.preview');
+    Route::get('courses/{course}/thumbnail', [CourseController::class, 'thumbnail'])->name('courses.thumbnail');
     Route::get('courses/{course}/assessments', [AssessmentController::class, 'index'])->name('courses.assessments.index');
     Route::post('courses/{course}/assessments', [AssessmentController::class, 'store'])->name('courses.assessments.store');
     Route::patch('courses/{course}/assessments/{assessment}', [AssessmentController::class, 'update'])->name('courses.assessments.update');

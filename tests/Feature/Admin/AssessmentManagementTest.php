@@ -20,6 +20,7 @@ class AssessmentManagementTest extends TestCase
         $admin = $this->courseAdmin();
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
         $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-004', 'title' => 'Pengenalan', 'passing_grade' => 70]);
+        $course->trainers()->attach($admin);
 
         $this->actingAs($admin)->post(route('courses.assessments.store', $course), ['type' => 'post_test', 'passing_grade' => 65, 'time_limit_minutes' => 30])
             ->assertRedirect(route('courses.assessments.index', $course));
@@ -40,6 +41,7 @@ class AssessmentManagementTest extends TestCase
         $admin = $this->courseAdmin();
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
         $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-005', 'title' => 'Pengenalan', 'passing_grade' => 70]);
+        $course->trainers()->attach($admin);
 
         $this->actingAs($admin)->post(route('courses.assessments.store', $course), [
             'type' => 'pre_test',

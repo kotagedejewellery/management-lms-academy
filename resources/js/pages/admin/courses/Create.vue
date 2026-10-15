@@ -6,6 +6,8 @@ const props = defineProps<{
     divisions: Option[];
     positions: Option[];
     prerequisites: Option[];
+    trainers: Option[];
+    can_assign_trainers: boolean;
 }>();
 defineOptions({
     layout: {

@@ -59,6 +59,7 @@ class CourseCategoryController extends Controller
         abort_unless($request->user()?->hasPermission('manage-courses'), 403);
     }
 
+    /** @return array<string, mixed> */
     private function validatedData(Request $request, ?CourseCategory $category = null): array
     {
         return $request->validate([

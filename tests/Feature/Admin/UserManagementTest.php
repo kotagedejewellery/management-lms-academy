@@ -21,6 +21,7 @@ class UserManagementTest extends TestCase
 
         $response = $this->actingAs($admin)->post(route('users.store'), [
             'employee_id' => 'KGJ-001',
+            'hired_at' => '2026-01-15',
             'name' => 'Employee One',
             'email' => 'employee.one@example.test',
             'phone' => '08123456789',
@@ -31,7 +32,7 @@ class UserManagementTest extends TestCase
         ]);
 
         $response->assertRedirect(route('users.index'));
-        $this->assertDatabaseHas('users', ['employee_id' => 'KGJ-001', 'email' => 'employee.one@example.test', 'phone' => '08123456789']);
+        $this->assertDatabaseHas('users', ['employee_id' => 'KGJ-001', 'hired_at' => '2026-01-15 00:00:00', 'email' => 'employee.one@example.test', 'phone' => '08123456789']);
         $this->assertDatabaseHas('user_roles', ['role_id' => $employeeRole->id]);
     }
 

@@ -14,6 +14,7 @@ class Answer extends Model
         return ['is_correct' => 'boolean'];
     }
 
+    /** @return BelongsTo<Question, $this> */
     public function question(): BelongsTo
     {
         return $this->belongsTo(Question::class);

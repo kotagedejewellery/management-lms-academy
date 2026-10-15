@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Jobs\IssueCertificate;
 use App\Models\Announcement;
 use App\Models\Answer;
 use App\Models\Assessment;
@@ -27,6 +28,8 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\UserImport;
 use App\Models\UserNotification;
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -38,7 +41,7 @@ class LocalTestingSeeder extends Seeder
     public function run(): void
     {
         if (! in_array(app()->environment(), ['local', 'testing'], true)) {
-            $this->command?->warn('LocalTestingSeeder hanya dapat dijalankan pada environment local atau testing.');
+            $this->command->warn('LocalTestingSeeder hanya dapat dijalankan pada environment local atau testing.');
 
             return;
         }
@@ -127,7 +130,7 @@ class LocalTestingSeeder extends Seeder
 
         $onboarding = $this->upsertCourse($categories['onboarding'], [
             'code' => 'ONB-001', 'title' => 'Orientasi KotaGede Jewellery', 'description' => 'Pengenalan budaya kerja, nilai merek, dan standar dasar KGJ.',
-            'estimated_minutes' => 75, 'is_mandatory' => true, 'passing_grade' => 70, 'status' => 'published', 'published_at' => $now->copy()->subDays(21),
+            'estimated_minutes' => 75, 'is_mandatory' => true, 'passing_grade' => 70, 'certificate_enabled' => true, 'status' => 'published', 'published_at' => $now->copy()->subDays(21),
         ]);
         $product = $this->upsertCourse($categories['product'], [
             'code' => 'PRD-101', 'title' => 'Fundamental Produk Perhiasan', 'description' => 'Dasar material, kualitas, dan cara menjelaskan produk kepada pelanggan.',
@@ -147,6 +150,7 @@ class LocalTestingSeeder extends Seeder
             'code' => 'OPS-101', 'title' => 'SOP Pembukaan Toko', 'description' => 'Versi lama SOP pembukaan toko untuk contoh status arsip.',
             'estimated_minutes' => 30, 'is_mandatory' => false, 'passing_grade' => 70, 'status' => 'archived', 'published_at' => null,
         ]);
+        $trainer->managedCourses()->syncWithoutDetaching([$onboarding->id, $product->id, $service->id]);
 
         $onboardingLessons = $this->seedLessons($onboarding, [
             ['title' => 'Mengenal KGJ', 'lessons' => [
@@ -250,6 +254,8 @@ class LocalTestingSeeder extends Seeder
         $this->seedAttempt($preTest, $citraOnboarding, 1, 1, true, $now->copy()->subDays(18));
         $this->seedAttempt($postTest, $citraOnboarding, 1, 1, false, $now->copy()->subDays(11));
         $this->seedAttempt($postTest, $citraOnboarding, 2, 2, true, $now->copy()->subDays(10));
+        (new IssueCertificate($anisaOnboarding->id))->handle();
+        (new IssueCertificate($citraOnboarding->id))->handle();
 
         $announcement = Announcement::query()->updateOrCreate(
             ['title' => 'Selamat datang di KGJ Academy'],
@@ -283,7 +289,8 @@ class LocalTestingSeeder extends Seeder
         $this->seedActivity($lmsAdmin, 'announcement.published', $reminder, ['recipients' => 7], $now->copy()->subDay());
     }
 
-    private function upsertUser(Role $role, array $attributes, string $password, $verifiedAt): User
+    /** @param array<string, mixed> $attributes */
+    private function upsertUser(Role $role, array $attributes, string $password, CarbonInterface $verifiedAt): User
     {
         $user = User::query()->updateOrCreate(['email' => $attributes['email']], [...$attributes, 'password' => $password]);
         $user->forceFill(['email_verified_at' => $verifiedAt])->save();
@@ -292,12 +299,16 @@ class LocalTestingSeeder extends Seeder
         return $user;
     }
 
+    /** @param array<string, mixed> $attributes */
     private function upsertCourse(CourseCategory $category, array $attributes): Course
     {
         return Course::query()->updateOrCreate(['code' => $attributes['code']], [...$attributes, 'category_id' => $category->id]);
     }
 
-    /** @return Collection<string, Lesson> */
+    /**
+     * @param  array<int, array<string, mixed>>  $modules
+     * @return Collection<string, Lesson>
+     */
     private function seedLessons(Course $course, array $modules): Collection
     {
         $lessons = collect();
@@ -326,6 +337,7 @@ class LocalTestingSeeder extends Seeder
         return $lessons;
     }
 
+    /** @param array<int, array<string, mixed>> $questions */
     private function seedAssessment(Course $course, string $type, int $passingGrade, int $timeLimit, array $questions): Assessment
     {
         $assessment = Assessment::query()->updateOrCreate(
@@ -350,6 +362,7 @@ class LocalTestingSeeder extends Seeder
         return $assessment;
     }
 
+    /** @param array<int, Course> $courses */
     private function seedPathCourses(LearningPath $path, array $courses): void
     {
         foreach ($courses as $sequence => $course) {
@@ -360,7 +373,7 @@ class LocalTestingSeeder extends Seeder
         }
     }
 
-    private function seedEnrollment(User $user, Course $course, string $status, $dueAt, $completedAt = null): Enrollment
+    private function seedEnrollment(User $user, Course $course, string $status, CarbonInterface $dueAt, ?CarbonInterface $completedAt = null): Enrollment
     {
         return Enrollment::query()->updateOrCreate(
             ['user_id' => $user->id, 'course_id' => $course->id],
@@ -369,7 +382,7 @@ class LocalTestingSeeder extends Seeder
     }
 
     /** @param Collection<string, Lesson> $lessons */
-    private function completeLessons(Enrollment $enrollment, Collection $lessons, int $count, $completedAt): void
+    private function completeLessons(Enrollment $enrollment, Collection $lessons, int $count, CarbonInterface $completedAt): void
     {
         $lessons->take($count)->each(function (Lesson $lesson) use ($enrollment, $completedAt): void {
             LessonProgress::query()->updateOrCreate(
@@ -379,7 +392,7 @@ class LocalTestingSeeder extends Seeder
         });
     }
 
-    private function seedAttempt(Assessment $assessment, Enrollment $enrollment, int $attemptNumber, int $correctAnswers, bool $passed, $submittedAt): void
+    private function seedAttempt(Assessment $assessment, Enrollment $enrollment, int $attemptNumber, int $correctAnswers, bool $passed, CarbonInterface $submittedAt): void
     {
         $questions = $assessment->questions()->with('answers')->get();
         $attempt = AssessmentAttempt::query()->updateOrCreate(
@@ -404,7 +417,8 @@ class LocalTestingSeeder extends Seeder
         });
     }
 
-    private function seedNotifications(array $users, Announcement $announcement, Announcement $reminder, $now): void
+    /** @param array<int, User> $users */
+    private function seedNotifications(array $users, Announcement $announcement, Announcement $reminder, CarbonInterface $now): void
     {
         foreach ($users as $index => $user) {
             UserNotification::query()->updateOrCreate(
@@ -426,10 +440,11 @@ class LocalTestingSeeder extends Seeder
         }
     }
 
-    private function seedActivity(User $actor, string $event, object $subject, array $properties, $createdAt): void
+    /** @param array<string, mixed> $properties */
+    private function seedActivity(User $actor, string $event, Model $subject, array $properties, CarbonInterface $createdAt): void
     {
         DB::table('activity_logs')->updateOrInsert(
-            ['actor_id' => $actor->id, 'event' => $event, 'subject_type' => $subject::class, 'subject_id' => $subject->id],
+            ['actor_id' => $actor->id, 'event' => $event, 'subject_type' => $subject::class, 'subject_id' => $subject->getKey()],
             ['properties' => json_encode($properties, JSON_THROW_ON_ERROR), 'created_at' => $createdAt],
         );
     }

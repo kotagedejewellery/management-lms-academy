@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
 import InputError from '@/components/InputError.vue';
+import { useUnsavedChangesGuard } from '@/composables/useUnsavedChangesGuard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,6 +17,7 @@ type Option = {
 type ManagedUser = {
     id: number;
     employee_id: string | null;
+    hired_at: string | null;
     name: string;
     email: string;
     phone: string | null;
@@ -38,6 +41,7 @@ const props = defineProps<{
 
 const form = useForm({
     employee_id: props.user?.employee_id ?? '',
+    hired_at: props.user?.hired_at ?? '',
     name: props.user?.name ?? '',
     email: props.user?.email ?? '',
     phone: props.user?.phone ?? '',
@@ -50,24 +54,25 @@ const form = useForm({
     manager_id: props.user?.manager?.id?.toString() ?? '',
     status: props.user?.status ?? 'active',
 });
+const leaveGuard = useUnsavedChangesGuard(() => form.isDirty);
 
 function submit(): void {
     if (props.user) {
-        form.put(`/users/${props.user.id}`);
+        form.put(`/users/${props.user.id}`, {
+            onSuccess: () => form.defaults(),
+        });
 
         return;
     }
 
-    form.post('/users');
+    form.post('/users', { onSuccess: () => form.defaults() });
 }
 </script>
 
 <template>
     <Head :title="title" />
 
-    <div
-        class="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8"
-    >
+    <div class="app-page mx-auto max-w-5xl gap-8">
         <div
             class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"
         >
@@ -104,6 +109,16 @@ function submit(): void {
                             placeholder="Contoh: KGJ-001"
                         />
                         <InputError :message="form.errors.employee_id" />
+                    </div>
+                    <div class="grid gap-2">
+                        <Label for="hired_at">Tanggal masuk</Label>
+                        <Input
+                            id="hired_at"
+                            v-model="form.hired_at"
+                            type="date"
+                            :aria-invalid="Boolean(form.errors.hired_at)"
+                        />
+                        <InputError :message="form.errors.hired_at" />
                     </div>
                     <div class="grid gap-2">
                         <Label for="status">Status akun</Label>
@@ -304,5 +319,15 @@ function submit(): void {
                 }}</Button>
             </div>
         </form>
+        <ConfirmActionDialog
+            :open="leaveGuard.open.value"
+            title="Keluar tanpa menyimpan?"
+            description="Perubahan data karyawan yang belum disimpan akan hilang."
+            confirm-label="Keluar tanpa menyimpan"
+            destructive
+            @update:open="!$event && leaveGuard.reset()"
+            @confirm="leaveGuard.leaveWithoutSaving"
+            @cancel="leaveGuard.reset"
+        />
     </div>
 </template>

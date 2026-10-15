@@ -47,6 +47,8 @@ const remainingSeconds = ref(0);
 const timeExpired = ref(false);
 const submitDialogOpen = ref(false);
 const leaveDialogOpen = ref(false);
+const leaveProcessing = ref(false);
+const leaveSaveFailed = ref(false);
 const answerError = ref('');
 const submitError = ref('');
 const draftStatus = ref<DraftStatus>('saved');
@@ -160,9 +162,32 @@ function requestSubmit(): void {
     answerError.value = '';
     submitDialogOpen.value = true;
 }
-function leaveAssessment(): void {
+async function leaveAssessment(): Promise<void> {
+    if (leaveProcessing.value) return;
+
+    leaveProcessing.value = true;
+    leaveSaveFailed.value = !(await saveDraft());
+    leaveProcessing.value = false;
+
+    if (leaveSaveFailed.value) return;
+
     leaveDialogOpen.value = false;
     router.visit(`/my-learning/${props.course.id}`);
+}
+function leaveWithoutSaving(): void {
+    leaveDialogOpen.value = false;
+    router.visit(`/my-learning/${props.course.id}`);
+}
+function openLeaveDialog(): void {
+    leaveSaveFailed.value = false;
+    leaveDialogOpen.value = true;
+}
+function questionState(index: number): string {
+    if (index === currentQuestionIndex.value) return 'Soal aktif';
+
+    return form.answers[props.assessment.questions[index].id]
+        ? 'Sudah dijawab'
+        : 'Belum dijawab';
 }
 function updateTimer(): void {
     if (!props.assessment.expires_at) return;
@@ -228,7 +253,7 @@ defineOptions({
                         {{ assessmentDescription }}
                     </p>
                 </div>
-                <Button variant="outline" @click="leaveDialogOpen = true"
+                <Button variant="outline" @click="openLeaveDialog"
                     >Kembali ke course</Button
                 >
             </div>
@@ -287,6 +312,36 @@ defineOptions({
                 >
             </div>
         </header>
+        <details
+            v-if="assessment.questions.length > 1"
+            class="mt-5 rounded-xl border border-border bg-card px-4 py-3"
+        >
+            <summary class="cursor-pointer text-sm font-medium text-foreground">
+                Daftar soal
+            </summary>
+            <div class="mt-4 grid grid-cols-5 gap-2 sm:grid-cols-10">
+                <Button
+                    v-for="(_, index) in assessment.questions"
+                    :key="index"
+                    type="button"
+                    size="sm"
+                    class="min-h-10"
+                    :variant="
+                        index === currentQuestionIndex ? 'default' : 'outline'
+                    "
+                    :aria-current="
+                        index === currentQuestionIndex ? 'step' : undefined
+                    "
+                    :aria-label="`Soal ${index + 1}: ${questionState(index)}`"
+                    @click="currentQuestionIndex = index"
+                >
+                    {{ index + 1 }}
+                </Button>
+            </div>
+            <p class="mt-3 text-xs text-muted-foreground">
+                Pilih nomor soal untuk meninjau atau melengkapi jawaban.
+            </p>
+        </details>
         <section
             v-if="assessment.expires_at"
             class="mt-6 flex items-center justify-between rounded-xl border border-border bg-muted/40 px-4 py-3"
@@ -410,8 +465,17 @@ defineOptions({
         <ConfirmActionDialog
             v-model:open="leaveDialogOpen"
             title="Keluar dari assessment?"
-            description="Jawaban yang belum dikirim tersimpan sebagai draft dan dapat dilanjutkan kembali."
-            confirm-label="Keluar"
+            :description="
+                leaveSaveFailed
+                    ? 'Jawaban terbaru belum dapat disimpan. Coba simpan lagi atau keluar tanpa menyimpan perubahan terakhir.'
+                    : 'Jawaban yang belum dikirim akan disimpan sebagai draft sebelum Anda keluar.'
+            "
+            :confirm-label="
+                leaveSaveFailed ? 'Coba simpan lagi' : 'Simpan dan keluar'
+            "
+            :cancel-label="leaveSaveFailed ? 'Keluar tanpa menyimpan' : 'Batal'"
+            :processing="leaveProcessing"
+            @cancel="leaveSaveFailed ? leaveWithoutSaving() : undefined"
             @confirm="leaveAssessment"
         />
     </main>

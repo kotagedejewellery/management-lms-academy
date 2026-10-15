@@ -21,7 +21,7 @@ class LessonResourceTest extends TestCase
     {
         Storage::fake('local');
         $admin = $this->courseAdmin();
-        $module = $this->module();
+        $module = $this->module($admin);
 
         $this->actingAs($admin)->post(route('courses.lessons.store', ['course' => $module->course_id, 'module' => $module->id]), [
             'title' => 'SOP Penjualan',
@@ -86,10 +86,13 @@ class LessonResourceTest extends TestCase
             ->assertNotFound();
     }
 
-    private function module(): CourseModule
+    private function module(?User $trainer = null): CourseModule
     {
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
         $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-001', 'title' => 'Pengenalan KGJ', 'passing_grade' => 70]);
+        if ($trainer) {
+            $course->trainers()->attach($trainer);
+        }
 
         return $course->modules()->create(['title' => 'Mulai di KGJ', 'sequence' => 1]);
     }

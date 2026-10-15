@@ -9,11 +9,13 @@ class LearningPathAssignment extends Model
 {
     protected $fillable = ['user_id', 'learning_path_id'];
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /** @return BelongsTo<LearningPath, $this> */
     public function learningPath(): BelongsTo
     {
         return $this->belongsTo(LearningPath::class);

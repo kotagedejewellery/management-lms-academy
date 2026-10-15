@@ -30,7 +30,7 @@ Progress course dihitung dari `lesson_progress` milik sebuah `enrollment`; statu
 | Paths | `learning_paths`, `learning_path_courses`, `learning_path_rules`, `learning_path_assignments`, `enrollments` |
 | Progress | `lesson_progress` (progress course merupakan nilai turunan) |
 | Assessment | `assessments`, `questions`, `answers`, `assessment_attempts`, `assessment_responses`, `assessment_drafts` |
-| Operations | `announcements`, `user_notifications`, `activity_logs`, `report_exports`, `user_imports` |
+| Operations | `announcements`, `user_notifications`, `certificates`, `activity_logs`, `report_exports`, `user_imports` |
 
 `assessments.type` dibatasi ke `PRE_TEST` atau `POST_TEST`. Satu course dapat memiliki keduanya sebagai record berbeda. `assessments.is_required` berlaku untuk Pre-Test; ketika aktif, materi hanya dapat dibuka setelah Pre-Test disubmit. `attempt_limit` dikonfigurasi 1â€“3 per assessment. `assessment_attempts` menyimpan score, waktu mulai/kirim, pass status, attempt number, dan snapshot nilai yang diperlukan untuk audit.
 
@@ -41,6 +41,7 @@ Progress course dihitung dari `lesson_progress` milik sebuah `enrollment`; statu
 - `lesson_progress`: unique `(enrollment_id, lesson_id)`.
 - Progress course tidak memiliki tabel terpisah: agregasi `lesson_progress` menunjukkan penyelesaian lesson, sedangkan `enrollments.status` dan `enrollments.completed_at` mencatat penyelesaian course.
 - `assessment_attempts`: unique `(assessment_id, enrollment_id, attempt_number)`.
+- `certificates`: unique `enrollment_id` dan unique nomor sertifikat. Sertifikat hanya dibuat untuk enrollment yang sudah `completed` pada course dengan `certificate_enabled`.
 - `learning_path_courses`: unique `(learning_path_id, course_id)` dan memiliki `sequence` positif.
 - `learning_path_assignments`: unique `(user_id, learning_path_id)`.
 - `learning_path_rules`: unique `(learning_path_id, division_id, position_id, branch_id)`; ketiga atribut organisasi harus cocok sebelum assignment otomatis dibuat.
@@ -62,6 +63,7 @@ Progress course dihitung dari `lesson_progress` milik sebuah `enrollment`; statu
 | `lessons` | `(module_id, sequence)` | Course player. |
 | `assessments` | `(course_id, type)` | Membuka Pre/Post-Test. |
 | `assessment_attempts` | `(assessment_id, enrollment_id, attempt_number)` unique; `(enrollment_id, submitted_at)` | Limit attempt dan report user. |
+| `certificates` | `enrollment_id` unique; `number` unique; `(user_id, issued_at)` | Sertifikat learner dan daftar penerbitan admin. |
 | `activity_logs` | `(subject_type, subject_id, created_at)`; `(actor_id, created_at)` | Audit trail. |
 | `user_notifications` | `(user_id, announcement_id)` unique; `(user_id, read_at, created_at)` | In-app notification dan status pengiriman WhatsApp. |
 | `report_exports` | `(user_id, status, created_at)` | Riwayat dan antrean export report. |

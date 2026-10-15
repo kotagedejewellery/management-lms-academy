@@ -3,6 +3,7 @@ import { Head, useForm } from '@inertiajs/vue3';
 import { Plus } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import AssigneePicker from '@/components/AssigneePicker.vue';
+import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -87,7 +88,7 @@ defineOptions({
 
 <template>
     <Head title="Path assignments" />
-    <div class="flex w-full flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="app-page">
         <header
             class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"
         >
@@ -179,6 +180,7 @@ defineOptions({
                 <div class="grid gap-2">
                     <Label for="path-user">Employee</Label
                     ><AssigneePicker id="path-user" v-model="form.user_id" />
+                    <InputError :message="form.errors.user_id" />
                 </div>
                 <div class="grid gap-2">
                     <Label for="path">Learning path</Label
@@ -186,6 +188,7 @@ defineOptions({
                         id="path"
                         v-model="form.learning_path_id"
                         required
+                        :aria-invalid="Boolean(form.errors.learning_path_id)"
                         class="h-10 rounded-md border border-input bg-transparent px-3 text-sm"
                     >
                         <option value="">Pilih learning path</option>
@@ -197,6 +200,7 @@ defineOptions({
                             {{ path.name }}
                         </option>
                     </select>
+                    <InputError :message="form.errors.learning_path_id" />
                 </div>
                 <DialogFooter
                     ><Button
@@ -231,6 +235,9 @@ defineOptions({
                         id="rule-path"
                         v-model="ruleForm.learning_path_id"
                         required
+                        :aria-invalid="
+                            Boolean(ruleForm.errors.learning_path_id)
+                        "
                         class="h-10 rounded-md border border-input bg-transparent px-3 text-sm"
                     >
                         <option value="">Pilih learning path</option>
@@ -242,6 +249,7 @@ defineOptions({
                             {{ path.name }}
                         </option>
                     </select>
+                    <InputError :message="ruleForm.errors.learning_path_id" />
                 </div>
                 <div class="grid gap-2">
                     <Label for="rule-division">Divisi</Label
@@ -249,6 +257,7 @@ defineOptions({
                         id="rule-division"
                         v-model="ruleForm.division_id"
                         required
+                        :aria-invalid="Boolean(ruleForm.errors.division_id)"
                         class="h-10 rounded-md border border-input bg-transparent px-3 text-sm"
                         @change="ruleForm.position_id = ''"
                     >
@@ -261,6 +270,7 @@ defineOptions({
                             {{ division.name }}
                         </option>
                     </select>
+                    <InputError :message="ruleForm.errors.division_id" />
                 </div>
                 <div class="grid gap-2">
                     <Label for="rule-position">Jabatan</Label
@@ -268,6 +278,7 @@ defineOptions({
                         id="rule-position"
                         v-model="ruleForm.position_id"
                         required
+                        :aria-invalid="Boolean(ruleForm.errors.position_id)"
                         :disabled="!ruleForm.division_id"
                         class="h-10 rounded-md border border-input bg-transparent px-3 text-sm disabled:cursor-not-allowed disabled:opacity-60"
                     >
@@ -280,6 +291,7 @@ defineOptions({
                             {{ position.name }}
                         </option>
                     </select>
+                    <InputError :message="ruleForm.errors.position_id" />
                 </div>
                 <div class="grid gap-2">
                     <Label for="rule-branch">Cabang</Label
@@ -287,6 +299,7 @@ defineOptions({
                         id="rule-branch"
                         v-model="ruleForm.branch_id"
                         required
+                        :aria-invalid="Boolean(ruleForm.errors.branch_id)"
                         class="h-10 rounded-md border border-input bg-transparent px-3 text-sm"
                     >
                         <option value="">Pilih cabang</option>
@@ -298,6 +311,7 @@ defineOptions({
                             {{ branch.name }}
                         </option>
                     </select>
+                    <InputError :message="ruleForm.errors.branch_id" />
                 </div>
                 <DialogFooter
                     ><Button

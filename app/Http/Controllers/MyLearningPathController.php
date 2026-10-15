@@ -12,10 +12,48 @@ class MyLearningPathController extends Controller
 {
     public function index(Request $request): Response
     {
-        $assignments = LearningPathAssignment::query()->where('user_id', $request->user()->id)->with('learningPath.pathCourses.course:id,code,title')->latest()->paginate(12);
+        $assignments = LearningPathAssignment::query()->where('user_id', $request->user()->id)->with('learningPath.pathCourses.course:id,code,title,prerequisite_course_id,is_mandatory')->latest()->paginate(12);
         $courseIds = $assignments->getCollection()->flatMap(fn ($a) => $a->learningPath->pathCourses->pluck('course_id'))->unique();
         $enrollments = Enrollment::query()->where('user_id', $request->user()->id)->whereIn('course_id', $courseIds)->whereIn('status', ['active', 'completed', 'not_passed'])->get()->keyBy('course_id');
-        $assignments->getCollection()->transform(fn ($a) => ['id' => $a->id, 'name' => $a->learningPath->name, 'description' => $a->learningPath->description, 'courses' => $a->learningPath->pathCourses->map(fn ($pc) => ['id' => $pc->course_id, 'sequence' => $pc->sequence, 'code' => $pc->course?->code, 'title' => $pc->course?->title, 'enrollment_status' => $enrollments->get($pc->course_id)?->status])]);
+        $assignments->getCollection()->transform(function ($assignment) use ($enrollments): array {
+            $completed = 0;
+            $previousMandatoryIncomplete = false;
+            $courses = $assignment->learningPath->pathCourses->map(function ($pathCourse) use ($enrollments, &$completed, &$previousMandatoryIncomplete): array {
+                $enrollment = $enrollments->get($pathCourse->course_id);
+                $status = $enrollment?->status;
+                $lockedByPrerequisite = $pathCourse->course?->prerequisite_course_id
+                    && $enrollments->get($pathCourse->course->prerequisite_course_id)?->status !== 'completed';
+                $lockedBySequence = $previousMandatoryIncomplete;
+
+                if ($status === 'completed') {
+                    $completed++;
+                }
+
+                if ($pathCourse->course?->is_mandatory && $status !== 'completed') {
+                    $previousMandatoryIncomplete = true;
+                }
+
+                return [
+                    'id' => $pathCourse->course_id,
+                    'sequence' => $pathCourse->sequence,
+                    'code' => $pathCourse->course?->code,
+                    'title' => $pathCourse->course?->title,
+                    'enrollment_status' => $status,
+                    'locked' => $lockedByPrerequisite || $lockedBySequence,
+                    'lock_reason' => $lockedByPrerequisite
+                        ? 'Selesaikan course prasyarat terlebih dahulu.'
+                        : ($lockedBySequence ? 'Selesaikan course wajib sebelumnya terlebih dahulu.' : null),
+                ];
+            });
+
+            return [
+                'id' => $assignment->id,
+                'name' => $assignment->learningPath->name,
+                'description' => $assignment->learningPath->description,
+                'progress' => ['completed' => $completed, 'total' => $courses->count()],
+                'courses' => $courses,
+            ];
+        });
 
         return Inertia::render('learning/Paths', ['paths' => $assignments]);
     }

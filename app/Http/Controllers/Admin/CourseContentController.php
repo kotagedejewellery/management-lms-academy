@@ -8,6 +8,7 @@ use App\Models\CourseModule;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
 use App\Models\LessonResource;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -94,7 +95,9 @@ class CourseContentController extends Controller
         $this->ensureDraft($course);
         $this->ensureModuleBelongsToCourse($course, $module);
         $lessonIds = $module->lessons()->pluck('id');
-        $this->ensureLessonsUnused($lessonIds->all());
+        /** @var list<int> $lessonIdsList */
+        $lessonIdsList = $lessonIds->map(fn (mixed $id): int => (int) $id)->values()->all();
+        $this->ensureLessonsUnused($lessonIdsList);
         $resources = LessonResource::query()->whereIn('lesson_id', $lessonIds)->get();
         $module->delete();
         $this->deleteResourceFiles($resources);
@@ -139,7 +142,7 @@ class CourseContentController extends Controller
         return Storage::disk($resource->disk)->download($resource->path, $resource->original_name, ['Content-Type' => $resource->mime_type]);
     }
 
-    public function previewResource(Request $request, Course $course, CourseModule $module, Lesson $lesson, LessonResource $resource)
+    public function previewResource(Request $request, Course $course, CourseModule $module, Lesson $lesson, LessonResource $resource): StreamedResponse
     {
         $this->authorizeResourceAccess($request, $course);
         $this->ensureModuleBelongsToCourse($course, $module);
@@ -150,7 +153,13 @@ class CourseContentController extends Controller
 
     private function authorizeCourses(Request $request): void
     {
-        abort_unless($request->user()?->hasPermission('manage-courses'), 403);
+        $user = $request->user();
+        abort_unless($user instanceof User && $user->hasPermission('manage-courses'), 403);
+
+        $course = $request->route('course');
+        if ($course instanceof Course) {
+            abort_unless($user->canManageCourse($course), 403);
+        }
     }
 
     private function ensureModuleBelongsToCourse(Course $course, CourseModule $module): void
@@ -163,11 +172,13 @@ class CourseContentController extends Controller
         abort_if($course->status !== 'draft', 422, 'Materi hanya dapat dihapus saat course masih draft.');
     }
 
+    /** @param list<int> $lessonIds */
     private function ensureLessonsUnused(array $lessonIds): void
     {
         abort_if(LessonProgress::query()->whereIn('lesson_id', $lessonIds)->exists(), 422, 'Materi yang sudah memiliki riwayat belajar tidak dapat dihapus.');
     }
 
+    /** @return array<string, mixed> */
     private function moduleData(Request $request, Course $course, ?CourseModule $module = null): array
     {
         return $request->validate([
@@ -176,6 +187,7 @@ class CourseContentController extends Controller
         ]);
     }
 
+    /** @return array<string, mixed> */
     private function lessonData(Request $request, CourseModule $module, ?Lesson $lesson = null): array
     {
         $data = $request->validate([
@@ -203,9 +215,9 @@ class CourseContentController extends Controller
     private function authorizeResourceAccess(Request $request, Course $course): void
     {
         $user = $request->user();
-        abort_unless($user, 403);
+        abort_unless($user instanceof User, 403);
 
-        if ($user->hasPermission('manage-courses')) {
+        if ($user->canManageCourse($course)) {
             return;
         }
 
@@ -231,7 +243,7 @@ class CourseContentController extends Controller
         $disk = config('filesystems.default');
         $path = $file->store('lesson-resources/'.$lesson->id, $disk);
 
-        abort_unless($path, 500);
+        abort_unless(is_string($path), 500);
         $lesson->resources()->create([
             'disk' => $disk,
             'path' => $path,
@@ -241,6 +253,7 @@ class CourseContentController extends Controller
         ]);
     }
 
+    /** @param iterable<LessonResource> $resources */
     private function deleteResourceFiles(iterable $resources): void
     {
         foreach ($resources as $resource) {

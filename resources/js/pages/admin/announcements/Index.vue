@@ -44,7 +44,7 @@ defineOptions({
 </script>
 <template>
     <Head title="Announcements" />
-    <div class="flex w-full flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="app-page">
         <header class="max-w-2xl">
             <h1 class="text-2xl font-semibold tracking-tight text-foreground">
                 Announcements

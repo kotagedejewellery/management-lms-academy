@@ -48,9 +48,9 @@ class EnrollmentController extends Controller
         abort_unless(User::query()->whereKey($data['user_id'])->where('status', 'active')->exists(), 422);
         abort_unless(Course::query()->whereKey($data['course_id'])->where('status', 'published')->exists(), 422);
 
-        Enrollment::query()->updateOrCreate(
+        Enrollment::query()->firstOrCreate(
             ['user_id' => $data['user_id'], 'course_id' => $data['course_id']],
-            ['status' => 'active', 'due_at' => $data['due_at'] ?? null, 'started_at' => null, 'completed_at' => null],
+            ['status' => 'active', 'due_at' => $data['due_at'] ?? null],
         );
 
         return to_route('enrollments.index');

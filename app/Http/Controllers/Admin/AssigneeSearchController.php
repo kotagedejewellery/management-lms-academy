@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class AssigneeSearchController extends Controller
 {
@@ -17,8 +18,8 @@ class AssigneeSearchController extends Controller
         return response()->json(User::query()
             ->where('status', 'active')
             ->where(fn ($query) => $query
-                ->where('name', 'ilike', '%'.$data['q'].'%')
-                ->orWhere('employee_id', 'ilike', '%'.$data['q'].'%'))
+                ->whereRaw('lower(name) like ?', ['%'.Str::lower($data['q']).'%'])
+                ->orWhereRaw('lower(employee_id) like ?', ['%'.Str::lower($data['q']).'%']))
             ->orderBy('name')
             ->limit(15)
             ->get(['id', 'employee_id', 'name']));

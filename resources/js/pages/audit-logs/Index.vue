@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { ShieldCheck } from '@lucide/vue';
+import PageHeader from '@/components/PageHeader.vue';
 
 type Activity = {
     id: number;
@@ -55,16 +56,11 @@ defineOptions({
 </script>
 <template>
     <Head title="Audit activity" />
-    <div class="flex w-full flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
-        <header class="max-w-2xl">
-            <h1 class="text-2xl font-semibold tracking-tight text-foreground">
-                Audit activity
-            </h1>
-            <p class="mt-2 text-sm leading-6 text-muted-foreground">
-                Riwayat tindakan administratif dan submission assessment. Data
-                sensitif, jawaban assessment, dan password tidak dicatat.
-            </p>
-        </header>
+    <div class="app-page">
+        <PageHeader
+            title="Aktivitas audit"
+            description="Riwayat tindakan administratif dan submission assessment. Data sensitif, jawaban assessment, dan password tidak dicatat."
+        />
         <section
             class="overflow-hidden rounded-xl border border-border bg-card"
         >

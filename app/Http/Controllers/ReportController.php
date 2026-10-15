@@ -8,12 +8,15 @@ use App\Models\Division;
 use App\Models\Enrollment;
 use App\Models\ReportExport;
 use App\Support\ReportEnrollmentQuery;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportController extends Controller
 {
@@ -39,7 +42,7 @@ class ReportController extends Controller
 
         return Inertia::render('reports/Index', [
             'enrollments' => $enrollments,
-            'courses' => Course::query()->whereHas('enrollments')->orderBy('title')->limit(100)->get(['id', 'code', 'title']),
+            'courses' => $filters['course_id'] === null ? [] : Course::query()->whereKey($filters['course_id'])->get(['id', 'code', 'title']),
             'divisions' => Division::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']),
             'filters' => $filters,
             'exports' => $request->user()->reportExports()->latest()->limit(5)->get()->map(fn (ReportExport $export) => [
@@ -52,6 +55,22 @@ class ReportController extends Controller
         ]);
     }
 
+    public function courses(Request $request): JsonResponse
+    {
+        $this->authorizeReports($request);
+        $validated = $request->validate(['q' => ['required', 'string', 'min:2', 'max:100']]);
+        $term = '%'.Str::lower($validated['q']).'%';
+
+        return response()->json(Course::query()
+            ->whereHas('enrollments')
+            ->where(fn ($query) => $query
+                ->whereRaw('lower(title) like ?', [$term])
+                ->orWhereRaw('lower(code) like ?', [$term]))
+            ->orderBy('title')
+            ->limit(15)
+            ->get(['id', 'code', 'title']));
+    }
+
     public function export(Request $request): RedirectResponse
     {
         $filters = $this->filters($request);
@@ -61,14 +80,15 @@ class ReportController extends Controller
         return to_route('reports.index', $filters);
     }
 
-    public function download(Request $request, ReportExport $reportExport)
+    public function download(Request $request, ReportExport $reportExport): StreamedResponse
     {
         $this->authorizeReports($request);
-        abort_unless($reportExport->user_id === $request->user()->id && $reportExport->status === 'ready' && $reportExport->path && Storage::disk('local')->exists($reportExport->path), 404);
+        abort_unless($reportExport->user_id === $request->user()->id && $reportExport->status === 'ready' && $reportExport->path && Storage::disk()->exists($reportExport->path), 404);
 
-        return Storage::disk('local')->download($reportExport->path, "laporan-pembelajaran-{$reportExport->id}.csv", ['Content-Type' => 'text/csv; charset=UTF-8']);
+        return Storage::disk()->download($reportExport->path, "laporan-pembelajaran-{$reportExport->id}.csv", ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
 
+    /** @return array{search: string, status: string, course_id: int|null, division_id: int|null} */
     private function filters(Request $request): array
     {
         $this->authorizeReports($request);

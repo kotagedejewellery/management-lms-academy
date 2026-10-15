@@ -7,12 +7,19 @@ use App\Models\Course;
 use App\Models\CourseCategory;
 use App\Models\Division;
 use App\Models\Position;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use RuntimeException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Throwable;
 
 class CourseController extends Controller
 {
@@ -25,9 +32,10 @@ class CourseController extends Controller
         ]);
 
         $courses = Course::query()
-            ->select(['id', 'category_id', 'division_id', 'position_id', 'prerequisite_course_id', 'code', 'title', 'estimated_minutes', 'is_mandatory', 'requires_post_test', 'passing_grade', 'status'])
+            ->select(['id', 'category_id', 'division_id', 'position_id', 'prerequisite_course_id', 'code', 'title', 'thumbnail_path', 'estimated_minutes', 'is_mandatory', 'requires_post_test', 'certificate_enabled', 'passing_grade', 'status'])
             ->with(['category:id,name', 'division:id,name', 'position:id,name', 'prerequisite:id,title'])
             ->withCount('modules')
+            ->when(! $request->user()->hasPermission('manage-enrollments'), fn ($query) => $query->whereHas('trainers', fn ($query) => $query->whereKey($request->user()->id)))
             ->when($filters['search'] ?? null, fn ($query, string $search) => $query->where(fn ($query) => $query->where('title', 'like', "%{$search}%")->orWhere('code', 'like', "%{$search}%")))
             ->when($filters['status'] ?? null, fn ($query, string $status) => $query->where('status', $status))
             ->orderBy('title')
@@ -49,9 +57,13 @@ class CourseController extends Controller
     {
         $this->authorizeCourses($request);
         $data = $this->validatedData($request);
+        $trainerIds = Arr::pull($data, 'trainer_ids');
+        $thumbnail = Arr::pull($data, 'thumbnail');
         $this->ensureOrganizationTarget($data);
         $this->ensureDraft($data);
         $course = Course::query()->create($data);
+        $this->storeThumbnail($course, $thumbnail);
+        $this->syncTrainers($request, $course, $trainerIds);
 
         return to_route('courses.content', $course);
     }
@@ -62,7 +74,7 @@ class CourseController extends Controller
 
         return Inertia::render('admin/courses/Edit', [
             ...$this->formOptions($course),
-            'course' => $this->courseData($course->load(['category:id,name', 'division:id,name', 'position:id,name', 'prerequisite:id,title'])),
+            'course' => $this->courseData($course->load(['category:id,name', 'division:id,name', 'position:id,name', 'prerequisite:id,title', 'trainers:id'])),
         ]);
     }
 
@@ -70,6 +82,8 @@ class CourseController extends Controller
     {
         $this->authorizeCourses($request);
         $data = $this->validatedData($request, $course);
+        $trainerIds = Arr::pull($data, 'trainer_ids');
+        $thumbnail = Arr::pull($data, 'thumbnail');
         $this->ensureOrganizationTarget($data);
         $this->ensurePrerequisiteDoesNotLoop($course, $data['prerequisite_course_id'] ?? null);
 
@@ -84,15 +98,60 @@ class CourseController extends Controller
 
         $data['published_at'] = $data['status'] === 'published' ? ($course->published_at ?? now()) : null;
         $course->update($data);
+        $this->storeThumbnail($course, $thumbnail);
+        $this->syncTrainers($request, $course, $trainerIds);
 
         return to_route('courses.content', $course);
     }
 
-    private function authorizeCourses(Request $request): void
+    public function preview(Request $request, Course $course): Response
     {
-        abort_unless($request->user()?->hasPermission('manage-courses'), 403);
+        $this->authorizeCourses($request);
+        $course->load(['category:id,name', 'division:id,name', 'position:id,name', 'trainers:id,name', 'modules.lessons:id,module_id,title,type,is_required,sequence']);
+
+        return Inertia::render('admin/courses/Preview', [
+            'course' => [
+                ...$this->courseData($course),
+                'trainers' => $course->trainers->map->only(['id', 'name'])->values(),
+                'modules' => $course->modules->map(fn ($module) => [
+                    ...$module->only(['id', 'title', 'sequence']),
+                    'lessons' => $module->lessons->map->only(['id', 'title', 'type', 'is_required', 'sequence'])->values(),
+                ])->values(),
+            ],
+        ]);
     }
 
+    public function thumbnail(Request $request, Course $course): StreamedResponse
+    {
+        $path = $course->thumbnail_path;
+        abort_unless(is_string($path), 404);
+
+        $user = $request->user();
+        $canManage = $user?->canManageCourse($course);
+        $isEligibleLearner = $course->status === 'published'
+            && (! $course->division_id || $course->division_id === $user?->division_id)
+            && (! $course->position_id || $course->position_id === $user?->position_id);
+        abort_unless($canManage || $isEligibleLearner, 403);
+
+        return Storage::disk($course->thumbnail_disk ?: config('filesystems.default'))->response(
+            $path,
+            null,
+            $course->thumbnail_mime ? ['Content-Type' => $course->thumbnail_mime] : [],
+        );
+    }
+
+    private function authorizeCourses(Request $request): void
+    {
+        $user = $request->user();
+        abort_unless($user?->hasPermission('manage-courses'), 403);
+
+        $course = $request->route('course');
+        if ($course instanceof Course) {
+            abort_unless($user->canManageCourse($course), 403);
+        }
+    }
+
+    /** @param array<string, mixed> $data */
     private function ensureDraft(array $data): void
     {
         if ($data['status'] === 'published') {
@@ -100,6 +159,7 @@ class CourseController extends Controller
         }
     }
 
+    /** @param array<string, mixed> $data */
     private function ensureOrganizationTarget(array $data): void
     {
         if (! ($data['position_id'] ?? null)) {
@@ -132,6 +192,7 @@ class CourseController extends Controller
         }
     }
 
+    /** @return array<string, mixed> */
     private function validatedData(Request $request, ?Course $course = null): array
     {
         $data = $request->validate([
@@ -142,15 +203,20 @@ class CourseController extends Controller
             'code' => ['required', 'string', 'max:32', Rule::unique('courses', 'code')->ignore($course)],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:5000'],
+            'thumbnail' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,avif', 'dimensions:ratio=16/9', 'max:2048'],
             'estimated_minutes' => ['nullable', 'integer', 'min:1', 'max:100000'],
             'is_mandatory' => ['required', 'boolean'],
             'requires_post_test' => ['nullable', 'boolean'],
+            'certificate_enabled' => ['nullable', 'boolean'],
             'passing_grade' => ['required', 'integer', 'min:0', 'max:100'],
             'status' => ['required', Rule::in(['draft', 'published', 'archived'])],
+            'trainer_ids' => ['nullable', 'array'],
+            'trainer_ids.*' => ['integer', Rule::exists('users', 'id')],
         ]);
 
         $postTest = $course?->assessments()->where('type', 'post_test')->first();
-        $data['requires_post_test'] = $postTest !== null || ($data['requires_post_test'] ?? $course?->requires_post_test ?? false);
+        $data['requires_post_test'] = $postTest !== null || ($data['requires_post_test'] ?? ($course !== null && $course->requires_post_test));
+        $data['certificate_enabled'] = (bool) ($data['certificate_enabled'] ?? ($course !== null && $course->certificate_enabled));
         if ($postTest) {
             $data['passing_grade'] = $postTest->passing_grade;
         }
@@ -158,16 +224,22 @@ class CourseController extends Controller
         return $data;
     }
 
+    /** @return array<string, mixed> */
     private function formOptions(?Course $course = null): array
     {
+        $canAssignTrainers = request()->user()?->hasPermission('manage-enrollments') ?? false;
+
         return [
             'categories' => CourseCategory::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']),
             'divisions' => Division::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']),
             'positions' => Position::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']),
             'prerequisites' => Course::query()->whereKeyNot($course?->id)->orderBy('title')->get(['id', 'title']),
+            'trainers' => $canAssignTrainers ? User::query()->where('status', 'active')->whereHas('roles', fn ($query) => $query->where('slug', 'trainer'))->orderBy('name')->get(['id', 'name']) : [],
+            'can_assign_trainers' => $canAssignTrainers,
         ];
     }
 
+    /** @return array<string, mixed> */
     private function courseData(Course $course): array
     {
         return [
@@ -175,9 +247,11 @@ class CourseController extends Controller
             'code' => $course->code,
             'title' => $course->title,
             'description' => $course->description,
+            'thumbnail_url' => $course->thumbnail_path ? route('courses.thumbnail', $course) : null,
             'estimated_minutes' => $course->estimated_minutes,
             'is_mandatory' => $course->is_mandatory,
             'requires_post_test' => $course->requires_post_test,
+            'certificate_enabled' => $course->certificate_enabled,
             'passing_grade' => $course->passing_grade,
             'status' => $course->status,
             'category' => $course->category?->only(['id', 'name']),
@@ -185,6 +259,7 @@ class CourseController extends Controller
             'position' => $course->position?->only(['id', 'name']),
             'prerequisite' => $course->prerequisite?->only(['id', 'title']),
             'modules_count' => $course->modules_count ?? $course->modules()->count(),
+            'trainer_ids' => $course->relationLoaded('trainers') ? $course->trainers->pluck('id')->values() : [],
         ];
     }
 
@@ -195,5 +270,62 @@ class CourseController extends Controller
         return $postTest !== null
             && $postTest->questions()->exists()
             && ! $postTest->questions()->whereDoesntHave('answers', fn ($query) => $query->where('is_correct', true))->exists();
+    }
+
+    private function storeThumbnail(Course $course, ?UploadedFile $thumbnail): void
+    {
+        if (! $thumbnail) {
+            return;
+        }
+
+        $disk = config('filesystems.default');
+        $path = $thumbnail->store('course-thumbnails', $disk);
+        if ($path === false) {
+            throw new RuntimeException('Thumbnail course tidak dapat disimpan.');
+        }
+
+        $previousPath = $course->thumbnail_path;
+        $previousDisk = $course->thumbnail_disk ?: $disk;
+
+        try {
+            $course->update([
+                'thumbnail_path' => $path,
+                'thumbnail_disk' => $disk,
+                'thumbnail_mime' => $thumbnail->getMimeType(),
+            ]);
+        } catch (Throwable $exception) {
+            Storage::disk($disk)->delete($path);
+
+            throw $exception;
+        }
+
+        if ($previousPath) {
+            Storage::disk($previousDisk)->delete($previousPath);
+        }
+    }
+
+    /** @param array<int, int>|null $trainerIds */
+    private function syncTrainers(Request $request, Course $course, ?array $trainerIds): void
+    {
+        if (! $request->user()->hasPermission('manage-enrollments')) {
+            abort_if($trainerIds !== null, 403);
+            $course->trainers()->syncWithoutDetaching([$request->user()->id]);
+
+            return;
+        }
+
+        if ($trainerIds === null) {
+            return;
+        }
+
+        $eligibleCount = User::query()
+            ->whereIn('id', $trainerIds)
+            ->whereHas('roles', fn ($query) => $query->where('slug', 'trainer'))
+            ->count();
+        if ($eligibleCount !== count($trainerIds)) {
+            throw ValidationException::withMessages(['trainer_ids' => 'Pilih hanya pengguna dengan role Trainer / Mentor.']);
+        }
+
+        $course->trainers()->sync($trainerIds);
     }
 }

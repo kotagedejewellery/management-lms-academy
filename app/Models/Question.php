@@ -10,11 +10,13 @@ class Question extends Model
 {
     protected $fillable = ['assessment_id', 'prompt', 'explanation', 'points', 'sequence'];
 
+    /** @return BelongsTo<Assessment, $this> */
     public function assessment(): BelongsTo
     {
         return $this->belongsTo(Assessment::class);
     }
 
+    /** @return HasMany<Answer, $this> */
     public function answers(): HasMany
     {
         return $this->hasMany(Answer::class)->orderBy('sequence');

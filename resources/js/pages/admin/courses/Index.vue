@@ -49,7 +49,7 @@ defineOptions({
 
 <template>
     <Head title="Courses" />
-    <div class="flex w-full flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="app-page">
         <div
             class="flex flex-col justify-between gap-4 md:flex-row md:items-end"
         >

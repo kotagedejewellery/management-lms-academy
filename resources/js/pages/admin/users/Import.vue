@@ -47,17 +47,17 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Users', href: '/users' },
-            { title: 'Impor CSV', href: '/user-imports' },
+            { title: 'Impor employee', href: '/user-imports' },
         ],
     },
 });
 </script>
 <template>
-    <Head title="Impor employee CSV" />
-    <div class="flex w-full flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <Head title="Impor employee" />
+    <div class="app-page">
         <header class="max-w-3xl">
             <h1 class="text-2xl font-semibold tracking-tight text-foreground">
-                Impor employee CSV
+                Impor employee
             </h1>
             <p class="mt-2 text-sm leading-6 text-muted-foreground">
                 Baris dengan Employee ID atau email yang sudah ada akan dilewati
@@ -72,7 +72,7 @@ defineOptions({
                 <span class="font-medium text-foreground"
                     >employee_id, name, email</span
                 >. Header opsional: phone, division_code, position_name,
-                branch_code, manager_employee_id, status.
+                branch_code, manager_employee_id, hired_at (YYYY-MM-DD), status.
             </p>
             <form
                 class="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end"
@@ -80,9 +80,9 @@ defineOptions({
             >
                 <label
                     class="grid min-w-0 flex-1 gap-2 text-sm font-medium text-foreground"
-                    >File CSV<input
+                    >File CSV atau XLSX<input
                         type="file"
-                        accept=".csv,text/csv"
+                        accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         required
                         class="block w-full rounded-md border border-input bg-transparent p-2 text-sm file:mr-3 file:border-0 file:bg-muted file:px-2 file:py-1 file:text-sm file:font-medium"
                         @change="choose" /></label
@@ -174,7 +174,7 @@ defineOptions({
         <ConfirmActionDialog
             v-model:open="importDialogOpen"
             title="Mulai impor employee?"
-            :description="`File ${form.file?.name ?? 'CSV'} akan diproses di background. Baris duplikat akan dilewati dan hasilnya dapat dilihat pada daftar impor.`"
+            :description="`File ${form.file?.name ?? 'impor'} akan diproses di background. Baris duplikat akan dilewati dan hasilnya dapat dilihat pada daftar impor.`"
             confirm-label="Mulai impor"
             :processing="form.processing"
             @confirm="submit"

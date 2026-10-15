@@ -24,11 +24,24 @@ class AuthenticationTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->post(route('login.store'), [
-            'email' => $user->email,
+            'identifier' => $user->email,
             'password' => 'password',
         ]);
 
         $this->assertAuthenticated();
+        $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_users_can_authenticate_using_their_employee_id(): void
+    {
+        $user = User::factory()->create(['employee_id' => 'KGJ-LOGIN-001']);
+
+        $response = $this->post(route('login.store'), [
+            'identifier' => 'KGJ-LOGIN-001',
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticatedAs($user);
         $response->assertRedirect(route('dashboard', absolute: false));
     }
 
@@ -44,7 +57,7 @@ class AuthenticationTest extends TestCase
         $user = User::factory()->withTwoFactor()->create();
 
         $response = $this->post(route('login'), [
-            'email' => $user->email,
+            'identifier' => $user->email,
             'password' => 'password',
         ]);
 
@@ -58,7 +71,7 @@ class AuthenticationTest extends TestCase
         $user = User::factory()->create();
 
         $this->post(route('login.store'), [
-            'email' => $user->email,
+            'identifier' => $user->email,
             'password' => 'wrong-password',
         ]);
 
@@ -83,7 +96,7 @@ class AuthenticationTest extends TestCase
         RateLimiter::increment(md5('login'.implode('|', [$user->email, '127.0.0.1'])), amount: 5);
 
         $response = $this->post(route('login.store'), [
-            'email' => $user->email,
+            'identifier' => $user->email,
             'password' => 'wrong-password',
         ]);
 

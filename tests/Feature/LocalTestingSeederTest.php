@@ -30,13 +30,15 @@ class LocalTestingSeederTest extends TestCase
         $this->assertDatabaseCount('assessment_attempts', 7);
         $this->assertDatabaseCount('learning_path_rules', 2);
         $this->assertDatabaseCount('announcements', 2);
-        $this->assertDatabaseCount('activity_logs', 5);
+        $this->assertDatabaseCount('activity_logs', 7);
+        $this->assertDatabaseCount('certificates', 2);
         $this->assertDatabaseHas('user_roles', ['user_id' => User::query()->where('email', 'anisa@kgj.test')->valueOrFail('id'), 'role_id' => Role::query()->where('slug', 'employee')->valueOrFail('id')]);
         $this->assertDatabaseHas('enrollments', ['user_id' => User::query()->where('email', 'anisa@kgj.test')->valueOrFail('id'), 'course_id' => Course::query()->where('code', 'ONB-001')->valueOrFail('id'), 'status' => 'completed']);
         $this->assertDatabaseHas('assessment_responses', ['is_correct' => true]);
         $this->assertDatabaseHas('user_notifications', ['whatsapp_status' => 'failed']);
         Storage::disk('local')->assertExists('demo-resources/pedoman-etika-kerja.pdf');
         Storage::disk('local')->assertExists('exports/demo-progres-pembelajaran.csv');
+        $this->assertDatabaseHas('certificates', ['user_id' => User::query()->where('email', 'anisa@kgj.test')->valueOrFail('id')]);
 
         $this->seed(LocalTestingSeeder::class);
 
@@ -82,7 +84,7 @@ class LocalTestingSeederTest extends TestCase
 
         foreach ([
             route('dashboard'), route('my-learning.index'), route('my-learning-paths.index'), route('course-library.index'), route('my-learning.show', $course),
-            route('my-learning.assessments.show', [$course, $preTest]), route('my-progress.index'), route('notifications.index'),
+            route('my-learning.assessments.show', [$course, $preTest]), route('my-progress.index'), route('notifications.index'), route('certificates.index'),
         ] as $url) {
             $this->actingAs($learner)->get($url)->assertOk();
         }

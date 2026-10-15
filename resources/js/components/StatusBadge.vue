@@ -15,7 +15,11 @@ type Status =
     | 'draft'
     | 'published'
     | 'archived'
-    | 'locked';
+    | 'locked'
+    | 'completed'
+    | 'not_passed'
+    | 'overdue'
+    | 'in_progress';
 
 const props = defineProps<{ status: Status }>();
 
@@ -51,6 +55,26 @@ const presentation = computed(
                 label: 'Terkunci',
                 icon: LockKeyhole,
                 class: 'border-border bg-muted text-muted-foreground',
+            },
+            completed: {
+                label: 'Selesai',
+                icon: CircleCheck,
+                class: 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-300',
+            },
+            not_passed: {
+                label: 'Perlu diulang',
+                icon: CirclePause,
+                class: 'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-300',
+            },
+            overdue: {
+                label: 'Tenggat terlewat',
+                icon: CirclePause,
+                class: 'border-destructive/30 bg-destructive/10 text-destructive',
+            },
+            in_progress: {
+                label: 'Sedang dipelajari',
+                icon: CircleCheck,
+                class: 'border-sky-200 bg-sky-50 text-sky-900 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-300',
             },
         })[props.status],
 );

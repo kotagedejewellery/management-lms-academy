@@ -40,7 +40,7 @@ class LearningPathContentController extends Controller
         $this->authorizePaths($request);
         $this->ensureMutable($learningPath);
         $data = $this->validatedData($request, $learningPath);
-        $course = Course::query()->findOrFail($data['course_id']);
+        $course = Course::query()->findOrFail((int) $data['course_id']);
 
         if ($course->status !== 'published') {
             throw ValidationException::withMessages(['course_id' => 'Hanya course yang sudah dipublikasikan dapat masuk ke learning path.']);
@@ -54,7 +54,8 @@ class LearningPathContentController extends Controller
                 $learningPath->pathCourses()->where('sequence', '>=', $data['sequence'])->increment('sequence', $offset);
                 $learningPath->pathCourses()
                     ->where('sequence', '>=', $data['sequence'] + $offset)
-                    ->update(['sequence' => DB::raw('sequence - '.$count)]);
+                    ->get()
+                    ->each(fn (LearningPathCourse $course) => $course->decrement('sequence', $count));
             }
 
             $learningPath->pathCourses()->create($data);
@@ -117,6 +118,7 @@ class LearningPathContentController extends Controller
         abort_if($learningPath->status === 'archived', 422, 'Learning path yang diarsipkan tidak dapat diubah.');
     }
 
+    /** @return array<string, int> */
     private function validatedData(Request $request, LearningPath $learningPath, ?LearningPathCourse $pathCourse = null): array
     {
         if ($pathCourse) {
@@ -135,7 +137,10 @@ class LearningPathContentController extends Controller
     private function shiftSequences(LearningPath $learningPath, int $from, int $to, int $offset, int $adjustment): void
     {
         $courses = $learningPath->pathCourses()->whereBetween('sequence', [$from, $to]);
-        $courses->increment('sequence', $offset);
-        $learningPath->pathCourses()->whereBetween('sequence', [$from + $offset, $to + $offset])->update(['sequence' => DB::raw('sequence + ('.$adjustment.')')]);
+        $courses->get()->each(fn (LearningPathCourse $course) => $course->increment('sequence', $offset));
+        $learningPath->pathCourses()
+            ->whereBetween('sequence', [$from + $offset, $to + $offset])
+            ->get()
+            ->each(fn (LearningPathCourse $course) => $course->increment('sequence', $adjustment));
     }
 }

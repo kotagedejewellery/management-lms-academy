@@ -2,22 +2,39 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * @property int $id
+ * @property int $category_id
+ * @property int|null $division_id
+ * @property int|null $position_id
+ * @property int|null $prerequisite_course_id
+ * @property string $code
+ * @property string $title
+ * @property string|null $description
+ * @property int|null $estimated_minutes
+ * @property bool $is_mandatory
+ * @property bool $requires_post_test
+ * @property bool $certificate_enabled
+ * @property int $passing_grade
+ * @property string $status
+ * @property Carbon|null $published_at
+ * @property int|null $is_assigned
+ */
 class Course extends Model
 {
-    use HasFactory;
-
-    protected $fillable = ['category_id', 'division_id', 'position_id', 'prerequisite_course_id', 'code', 'title', 'description', 'estimated_minutes', 'is_mandatory', 'requires_post_test', 'passing_grade', 'status', 'published_at'];
+    protected $fillable = ['category_id', 'division_id', 'position_id', 'prerequisite_course_id', 'code', 'title', 'description', 'thumbnail_path', 'thumbnail_disk', 'thumbnail_mime', 'estimated_minutes', 'is_mandatory', 'requires_post_test', 'certificate_enabled', 'passing_grade', 'status', 'published_at'];
 
     protected function casts(): array
     {
-        return ['is_mandatory' => 'boolean', 'requires_post_test' => 'boolean', 'published_at' => 'datetime'];
+        return ['is_mandatory' => 'boolean', 'requires_post_test' => 'boolean', 'certificate_enabled' => 'boolean', 'published_at' => 'datetime'];
     }
 
     protected static function booted(): void
@@ -26,44 +43,58 @@ class Course extends Model
         static::deleted(fn () => Cache::forget('dashboard:management'));
     }
 
+    /** @return BelongsTo<CourseCategory, $this> */
     public function category(): BelongsTo
     {
         return $this->belongsTo(CourseCategory::class, 'category_id');
     }
 
+    /** @return BelongsTo<Division, $this> */
     public function division(): BelongsTo
     {
         return $this->belongsTo(Division::class);
     }
 
+    /** @return BelongsTo<Position, $this> */
     public function position(): BelongsTo
     {
         return $this->belongsTo(Position::class);
     }
 
+    /** @return BelongsTo<Course, $this> */
     public function prerequisite(): BelongsTo
     {
         return $this->belongsTo(self::class, 'prerequisite_course_id');
     }
 
+    /** @return HasMany<CourseModule, $this> */
     public function modules(): HasMany
     {
         return $this->hasMany(CourseModule::class)->orderBy('sequence');
     }
 
+    /** @return HasManyThrough<Lesson, CourseModule, $this> */
     public function lessons(): HasManyThrough
     {
         return $this->hasManyThrough(Lesson::class, CourseModule::class, 'course_id', 'module_id');
     }
 
+    /** @return HasMany<Enrollment, $this> */
     public function enrollments(): HasMany
     {
         return $this->hasMany(Enrollment::class);
     }
 
+    /** @return HasMany<Assessment, $this> */
     public function assessments(): HasMany
     {
         return $this->hasMany(Assessment::class);
+    }
+
+    /** @return BelongsToMany<User, $this> */
+    public function trainers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'course_trainers')->withTimestamps();
     }
 
     public function prerequisiteCompletedBy(User $user): bool

@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/** @property Carbon $created_at */
 class ActivityLog extends Model
 {
     public $timestamps = false;
@@ -16,11 +18,13 @@ class ActivityLog extends Model
         return ['properties' => 'array', 'created_at' => 'datetime'];
     }
 
+    /** @return BelongsTo<User, $this> */
     public function actor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'actor_id');
     }
 
+    /** @param array<string, mixed> $properties */
     public static function record(User $actor, string $event, ?Model $subject = null, array $properties = []): self
     {
         return static::query()->create([

@@ -28,7 +28,7 @@ Isi juga kredensial PostgreSQL, Redis, S3-compatible storage, serta mailer sesua
 
 ## 2. Deploy aplikasi
 
-1. Jalankan suite test dan build asset dari commit yang akan dirilis.
+1. Pull request wajib lulus workflow CI: lint PHP, PHPStan, test Laravel, lint/type-check Vue, dan build asset. Jalankan ulang lokal bila CI tidak tersedia.
 2. Bangun/pull image artefak yang sudah dipin versinya, lalu jalankan release dengan environment production.
 3. Pada container aplikasi, jalankan:
 
@@ -43,7 +43,7 @@ Isi juga kredensial PostgreSQL, Redis, S3-compatible storage, serta mailer sesua
    php artisan queue:work database --sleep=3 --tries=3 --timeout=120
    ```
 
-5. Verifikasi `GET /up` menghasilkan HTTP 200, login administrator berhasil, dan buat satu export laporan untuk memastikan worker memproses job.
+5. Verifikasi `GET /up` menghasilkan HTTP 200, login administrator berhasil, lalu buat satu export laporan dan satu sertifikat course uji untuk memastikan worker memproses job serta storage privat dapat diakses.
 
 Rollback aplikasi memakai image rilis sebelumnya. Jangan melakukan rollback migration destruktif; jika migration sudah dijalankan, pulihkan data melalui prosedur restore atau buat migration korektif yang reviewable.
 

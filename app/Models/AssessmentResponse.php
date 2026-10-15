@@ -14,11 +14,13 @@ class AssessmentResponse extends Model
         return ['is_correct' => 'boolean'];
     }
 
+    /** @return BelongsTo<Question, $this> */
     public function question(): BelongsTo
     {
         return $this->belongsTo(Question::class);
     }
 
+    /** @return BelongsTo<Answer, $this> */
     public function answer(): BelongsTo
     {
         return $this->belongsTo(Answer::class);

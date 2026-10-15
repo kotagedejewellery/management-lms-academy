@@ -58,13 +58,54 @@ class ReportTest extends TestCase
         $this->assertSame('queued', $export->status);
         Queue::assertPushed(GenerateReportExport::class, fn (GenerateReportExport $job) => $job->reportExportId === $export->id);
 
-        Storage::fake('local');
+        Storage::fake('s3');
+        config(['filesystems.default' => 's3']);
         (new GenerateReportExport($export->id))->handle();
         $export->refresh();
         $this->assertSame('ready', $export->status);
-        Storage::disk('local')->assertExists($export->path);
-        $this->assertStringContainsString('KGJ-001', Storage::disk('local')->get($export->path));
+        Storage::disk('s3')->assertExists($export->path);
+        $this->assertStringContainsString('KGJ-001', Storage::disk('s3')->get($export->path));
         $this->actingAs($admin)->get(route('reports.exports.download', $export))->assertOk();
+    }
+
+    public function test_course_search_is_authorized_and_finds_courses_beyond_the_previous_limit(): void
+    {
+        $admin = $this->reportAdmin();
+        $employee = User::factory()->create();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+
+        foreach (range(1, 101) as $number) {
+            $course = Course::query()->create([
+                'category_id' => $category->id,
+                'code' => sprintf('ONB-%03d', $number),
+                'title' => sprintf('Course %03d', $number),
+                'status' => 'published',
+            ]);
+            $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
+        }
+
+        $this->actingAs(User::factory()->create())->getJson(route('reports.courses', ['q' => '101']))->assertForbidden();
+        $this->actingAs($admin)->getJson(route('reports.courses', ['q' => '101']))
+            ->assertOk()
+            ->assertJsonPath('0.code', 'ONB-101');
+    }
+
+    public function test_export_neutralizes_csv_formula_values(): void
+    {
+        Storage::fake('s3');
+        config(['filesystems.default' => 's3']);
+        $admin = $this->reportAdmin();
+        $employee = User::factory()->create(['name' => '=HYPERLINK("https://example.test")', 'employee_id' => 'KGJ-004']);
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-004', 'title' => '+Formula', 'status' => 'published']);
+        $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
+        $export = $admin->reportExports()->create(['filters' => [], 'status' => 'queued']);
+
+        (new GenerateReportExport($export->id))->handle();
+
+        $contents = Storage::disk('s3')->get($export->fresh()->path);
+        $this->assertStringContainsString("'=HYPERLINK", $contents);
+        $this->assertStringContainsString("'+Formula", $contents);
     }
 
     public function test_report_shows_pre_test_baseline_best_post_test_and_improvement_for_not_passed_enrollments(): void

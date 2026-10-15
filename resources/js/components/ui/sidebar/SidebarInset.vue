@@ -12,7 +12,7 @@ const props = defineProps<{
     data-slot="sidebar-inset"
     :class="cn(
       'bg-background relative flex w-full flex-1 flex-col',
-      'md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2',
+      'md:peer-data-[variant=inset]:m-3 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:overflow-hidden md:peer-data-[variant=inset]:rounded-2xl md:peer-data-[variant=inset]:border md:peer-data-[variant=inset]:border-border/85 md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-3',
       props.class,
     )"
   >

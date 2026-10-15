@@ -15,3 +15,9 @@ Volume PostgreSQL lokal bernama `kgj-lms-academy_postgres_data` dan dideklarasik
 Test suite dipaksa memakai SQLite in-memory melalui `phpunit.xml`, sehingga `php artisan test` tidak boleh menulis ke PostgreSQL lokal.
 
 Data demo mencakup organisasi, role/permission, sembilan akun, lima course dengan status berbeda, modul/lesson/resource, learning path dan aturan otomatis, assignment/enrollment/progress, Pre-Test/Post-Test, notifikasi, audit activity, ekspor laporan, dan riwayat import.
+
+Seeder juga menerbitkan dua sertifikat PDF contoh untuk course onboarding yang telah selesai. Sertifikat tersedia melalui menu **Sertifikat** bagi pemiliknya dan LMS Admin.
+
+## Environment lokal yang perlu diisi
+
+Salin `.env.example` menjadi `.env` bila belum ada. Untuk pengujian WhatsApp, isi `FONNTE_TOKEN` dengan token sandbox/akun uji Anda. Untuk pengujian impor user, ganti `IMPORT_INITIAL_PASSWORD` dengan password awal yang aman untuk data lokal. Jangan masukkan kedua nilai tersebut ke Git.

@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/vue3';
 import { Search, UsersRound, X } from '@lucide/vue';
 import EmptyState from '@/components/EmptyState.vue';
 import Pagination from '@/components/Pagination.vue';
+import PageHeader from '@/components/PageHeader.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -58,16 +59,11 @@ defineOptions({
 
 <template>
     <Head title="Progres Tim" />
-    <div class="flex w-full flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
-        <header>
-            <h1 class="text-2xl font-semibold tracking-tight text-foreground">
-                Progres tim
-            </h1>
-            <p class="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-                Pantau baseline, hasil evaluasi, dan improvement direct report
-                Anda tanpa melihat tim lain.
-            </p>
-        </header>
+    <div class="app-page">
+        <PageHeader
+            title="Progres tim"
+            description="Pantau baseline, hasil evaluasi, dan peningkatan direct report Anda tanpa melihat tim lain."
+        />
         <form
             class="grid gap-3 rounded-xl border border-border bg-card p-4 sm:grid-cols-[minmax(0,1fr)_11rem_auto_auto]"
             @submit.prevent="applyFilters"
@@ -85,7 +81,7 @@ defineOptions({
                 ><select
                     id="team-status"
                     v-model="filters.status"
-                    class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+                    class="h-10 rounded-md border border-input bg-transparent px-3 text-sm"
                 >
                     <option value="">Semua status</option>
                     <option value="active">Aktif</option>
@@ -143,7 +139,7 @@ defineOptions({
                 </article>
             </div>
             <div class="hidden overflow-x-auto md:block">
-                <table class="w-full text-left text-sm">
+                <table class="w-full min-w-[860px] text-left text-sm">
                     <thead
                         class="border-b border-border bg-muted/40 text-muted-foreground"
                     >

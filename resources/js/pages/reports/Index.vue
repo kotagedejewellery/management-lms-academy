@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3';
 import { ClipboardList, Download, FileDown, Search, X } from '@lucide/vue';
-import { ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import EmptyState from '@/components/EmptyState.vue';
 import Pagination from '@/components/Pagination.vue';
 import { Button } from '@/components/ui/button';
@@ -34,6 +34,7 @@ type Export = {
     download_url: string | null;
 };
 type Division = { id: number; name: string };
+type Course = { id: number; code: string; title: string };
 const props = defineProps<{
     enrollments: {
         data: Enrollment[];
@@ -43,7 +44,7 @@ const props = defineProps<{
         prev_page_url: string | null;
         next_page_url: string | null;
     };
-    courses: { id: number; code: string; title: string }[];
+    courses: Course[];
     divisions: Division[];
     filters: Filters;
     exports: Export[];
@@ -55,6 +56,22 @@ const filters = {
     division_id: props.filters.division_id?.toString() ?? '',
 };
 const exporting = ref(false);
+const courseOptions = ref<Course[]>(props.courses);
+const courseQuery = ref(
+    props.courses[0]
+        ? `${props.courses[0].code} - ${props.courses[0].title}`
+        : '',
+);
+const courseSearching = ref(false);
+const courseSearchError = ref('');
+let courseSearchTimer: ReturnType<typeof setTimeout> | undefined;
+let courseSearchRequest = 0;
+let exportPollTimer: ReturnType<typeof setInterval> | undefined;
+const hasPendingExport = computed(() =>
+    props.exports.some(
+        (item) => item.status === 'queued' || item.status === 'processing',
+    ),
+);
 function applyFilters(): void {
     router.get('/reports', filters, { preserveState: true, replace: true });
 }
@@ -63,7 +80,43 @@ function clearFilters(): void {
     filters.status = '';
     filters.course_id = '';
     filters.division_id = '';
+    courseQuery.value = '';
+    courseOptions.value = [];
     applyFilters();
+}
+function searchCourses(): void {
+    filters.course_id = '';
+    courseOptions.value = [];
+    courseSearching.value = false;
+    courseSearchError.value = '';
+    clearTimeout(courseSearchTimer);
+
+    const query = courseQuery.value.trim();
+    if (query.length < 2) return;
+
+    const request = ++courseSearchRequest;
+    courseSearching.value = true;
+    courseSearchTimer = setTimeout(async () => {
+        try {
+            const response = await fetch(
+                `/reports/courses?q=${encodeURIComponent(query)}`,
+                { headers: { Accept: 'application/json' } },
+            );
+            if (!response.ok) throw new Error('Course tidak dapat dimuat.');
+            const courses = (await response.json()) as Course[];
+            if (request === courseSearchRequest) courseOptions.value = courses;
+        } catch {
+            if (request === courseSearchRequest) {
+                courseSearchError.value =
+                    'Course tidak dapat dimuat. Periksa koneksi lalu coba lagi.';
+            }
+        } finally {
+            if (request === courseSearchRequest) courseSearching.value = false;
+        }
+    }, 250);
+}
+function retryCourseSearch(): void {
+    searchCourses();
 }
 function exportCsv(): void {
     router.post('/reports/exports', filters, {
@@ -75,6 +128,25 @@ function exportCsv(): void {
 function score(value: number | null): string {
     return value === null ? '—' : value.toFixed(2);
 }
+function startExportPolling(): void {
+    if (exportPollTimer || !hasPendingExport.value) return;
+
+    exportPollTimer = setInterval(() => {
+        router.reload({ only: ['exports'] });
+    }, 5000);
+}
+function stopExportPolling(): void {
+    if (!exportPollTimer) return;
+
+    clearInterval(exportPollTimer);
+    exportPollTimer = undefined;
+}
+watch(hasPendingExport, (pending) => {
+    if (pending) startExportPolling();
+    else stopExportPolling();
+});
+onMounted(startExportPolling);
+onBeforeUnmount(stopExportPolling);
 function statusLabel(status: Enrollment['status']): string {
     return { active: 'Aktif', completed: 'Selesai', not_passed: 'Tidak lulus' }[
         status
@@ -87,13 +159,13 @@ defineOptions({
 
 <template>
     <Head title="Reports" />
-    <div class="flex w-full flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="app-page">
         <header
             class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"
         >
             <div>
                 <h1
-                    class="text-2xl font-semibold tracking-tight text-foreground"
+                    class="text-2xl font-semibold tracking-[-0.025em] text-foreground sm:text-3xl"
                 >
                     Laporan pembelajaran
                 </h1>
@@ -110,7 +182,7 @@ defineOptions({
             >
         </header>
         <form
-            class="grid gap-3 rounded-xl border border-border bg-card p-4 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_11rem_15rem_13rem_auto_auto]"
+            class="grid gap-3 rounded-2xl border border-border/85 bg-card p-4 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_11rem_15rem_13rem_auto_auto]"
             @submit.prevent="applyFilters"
         >
             <div class="grid gap-2">
@@ -135,21 +207,44 @@ defineOptions({
                 </select>
             </div>
             <div class="grid gap-2">
-                <Label for="report-course">Course</Label
-                ><select
+                <Label for="report-course-search">Course</Label>
+                <Input
+                    id="report-course-search"
+                    v-model="courseQuery"
+                    placeholder="Cari nama atau kode course"
+                    autocomplete="off"
+                    @input="searchCourses"
+                />
+                <select
                     id="report-course"
                     v-model="filters.course_id"
                     class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
                 >
                     <option value="">Semua course</option>
                     <option
-                        v-for="course in courses"
+                        v-for="course in courseOptions"
                         :key="course.id"
                         :value="course.id"
                     >
                         {{ course.code }} - {{ course.title }}
                     </option>
                 </select>
+                <p class="text-xs text-muted-foreground" aria-live="polite">
+                    {{
+                        courseSearching
+                            ? 'Mencari course...'
+                            : courseSearchError ||
+                              'Ketik minimal 2 karakter, lalu pilih course.'
+                    }}
+                </p>
+                <Button
+                    v-if="courseSearchError"
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    @click="retryCourseSearch"
+                    >Coba lagi</Button
+                >
             </div>
             <div class="grid gap-2">
                 <Label for="report-division">Divisi</Label
@@ -178,7 +273,7 @@ defineOptions({
             >
         </form>
         <section
-            class="overflow-hidden rounded-xl border border-border bg-card"
+            class="overflow-hidden rounded-2xl border border-border/85 bg-card"
         >
             <div
                 v-if="enrollments.data.length"
@@ -218,7 +313,7 @@ defineOptions({
                 </article>
             </div>
             <div class="hidden overflow-x-auto md:block">
-                <table class="w-full text-left text-sm">
+                <table class="w-full min-w-[920px] text-left text-sm">
                     <thead
                         class="border-b border-border bg-muted/40 text-muted-foreground"
                     >
@@ -302,7 +397,7 @@ defineOptions({
         </section>
         <section
             v-if="exports.length"
-            class="overflow-hidden rounded-xl border border-border bg-card"
+            class="overflow-hidden rounded-2xl border border-border/85 bg-card"
         >
             <div class="border-b border-border px-5 py-4">
                 <h2 class="font-semibold text-foreground">Ekspor terbaru</h2>
@@ -334,7 +429,7 @@ defineOptions({
                         {{
                             item.status === 'failed'
                                 ? 'Buat ekspor baru untuk mencoba kembali.'
-                                : 'Muat ulang halaman untuk melihat status terbaru.'
+                                : 'Status akan diperbarui otomatis selama halaman ini terbuka.'
                         }}
                     </p>
                 </div>

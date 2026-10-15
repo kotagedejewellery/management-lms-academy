@@ -3,6 +3,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import { BookOpen, Clock3, Search, X } from '@lucide/vue';
 import EmptyState from '@/components/EmptyState.vue';
 import Pagination from '@/components/Pagination.vue';
+import PageHeader from '@/components/PageHeader.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,6 +16,7 @@ type Course = {
     estimated_minutes: number | null;
     is_mandatory: boolean;
     is_assigned: boolean;
+    thumbnail_url: string | null;
     category: { name: string } | null;
 };
 
@@ -50,18 +52,11 @@ defineOptions({
 <template>
     <Head title="Course Library" />
 
-    <div
-        class="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8"
-    >
-        <header>
-            <h1 class="text-2xl font-semibold tracking-tight text-foreground">
-                Course Library
-            </h1>
-            <p class="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-                Jelajahi course yang relevan dengan division dan posisi Anda.
-                Materi tersedia setelah course ditetapkan.
-            </p>
-        </header>
+    <div class="app-page">
+        <PageHeader
+            title="Katalog course"
+            description="Jelajahi course yang relevan dengan divisi dan posisi Anda. Materi tersedia setelah course ditetapkan."
+        />
 
         <form class="flex max-w-xl gap-2" @submit.prevent="applySearch">
             <div class="grid flex-1 gap-2">
@@ -93,8 +88,17 @@ defineOptions({
                 <article
                     v-for="course in courses.data"
                     :key="course.id"
-                    class="flex min-h-56 flex-col rounded-xl border border-border bg-card p-5"
+                    class="flex min-h-56 flex-col rounded-2xl border border-border/85 bg-card p-5 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-brand-gold/45"
                 >
+                    <img
+                        v-if="course.thumbnail_url"
+                        :src="course.thumbnail_url"
+                        :alt="`Thumbnail ${course.title}`"
+                        class="mb-4 aspect-[16/7] w-full rounded-lg object-cover"
+                        loading="lazy"
+                        width="640"
+                        height="280"
+                    />
                     <p class="text-sm text-muted-foreground">
                         {{ course.category?.name ?? 'Course' }}
                     </p>

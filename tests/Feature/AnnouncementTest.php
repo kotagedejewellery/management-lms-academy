@@ -12,6 +12,7 @@ use App\Models\UserNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
+use RuntimeException;
 use Tests\TestCase;
 
 class AnnouncementTest extends TestCase
@@ -55,6 +56,23 @@ class AnnouncementTest extends TestCase
         (new SendWhatsappNotification($notification->id))->handle();
         $this->assertDatabaseHas('user_notifications', ['id' => $notification->id, 'whatsapp_status' => 'sent']);
         Http::assertSent(fn ($request) => $request->hasHeader('Authorization', 'fonnte-token') && $request['target'] === '08123456789');
+    }
+
+    public function test_whatsapp_job_retries_temporary_fonnte_failures(): void
+    {
+        config()->set('services.fonnte.token', 'fonnte-token');
+        Http::fake(['https://api.fonnte.com/send' => Http::response([], 503)]);
+        $user = User::factory()->create(['phone' => '08123456789']);
+        $announcement = Announcement::query()->create(['user_id' => $user->id, 'title' => 'Info', 'body' => 'Pesan']);
+        $notification = UserNotification::query()->create(['user_id' => $user->id, 'announcement_id' => $announcement->id, 'title' => 'Info', 'body' => 'Pesan']);
+
+        try {
+            (new SendWhatsappNotification($notification->id))->handle();
+            $this->fail('Temporary Fonnte failures must be retried.');
+        } catch (RuntimeException) {
+            $this->assertDatabaseHas('user_notifications', ['id' => $notification->id, 'whatsapp_status' => 'queued']);
+            $this->assertSame([10, 60], (new SendWhatsappNotification($notification->id))->backoff);
+        }
     }
 
     private function userWithPermission(string $permission): User

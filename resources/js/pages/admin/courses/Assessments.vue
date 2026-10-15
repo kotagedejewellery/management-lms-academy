@@ -4,6 +4,7 @@ import { Plus, Trash2 } from '@lucide/vue';
 import { ref } from 'vue';
 import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
 import InputError from '@/components/InputError.vue';
+import { useUnsavedChangesGuard } from '@/composables/useUnsavedChangesGuard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -68,18 +69,28 @@ const questionToDelete = ref<{
     assessmentId: number;
     questionId: number;
 } | null>(null);
+const deletingQuestion = ref(false);
+const leaveGuard = useUnsavedChangesGuard(
+    () =>
+        createForm.isDirty ||
+        Object.values(settings).some((form) => form.isDirty) ||
+        Object.values(questions).some((form) => form.isDirty),
+);
 
 function create(type: 'pre_test' | 'post_test'): void {
     createForm.type = type;
     createForm.passing_grade = type === 'pre_test' ? '0' : '70';
     createForm.is_required = false;
-    createForm.post(`/courses/${props.course.id}/assessments`);
+    createForm.post(`/courses/${props.course.id}/assessments`, {
+        onSuccess: () => createForm.reset(),
+    });
 }
 function saveSettings(type: 'pre_test' | 'post_test'): void {
     const assessment = props.assessments[type];
     if (assessment)
         settings[type].patch(
             `/courses/${props.course.id}/assessments/${assessment.id}`,
+            { onSuccess: () => settings[type].defaults() },
         );
 }
 function addQuestion(type: 'pre_test' | 'post_test'): void {
@@ -91,10 +102,16 @@ function addQuestion(type: 'pre_test' | 'post_test'): void {
         );
 }
 function deleteQuestion(): void {
-    if (questionToDelete.value)
+    if (questionToDelete.value && !deletingQuestion.value)
         router.delete(
             `/courses/${props.course.id}/assessments/${questionToDelete.value.assessmentId}/questions/${questionToDelete.value.questionId}`,
-            { onFinish: () => (questionToDelete.value = null) },
+            {
+                onStart: () => (deletingQuestion.value = true),
+                onFinish: () => {
+                    deletingQuestion.value = false;
+                    questionToDelete.value = null;
+                },
+            },
         );
 }
 function title(type: 'pre_test' | 'post_test'): string {
@@ -122,7 +139,7 @@ defineOptions({
 
 <template>
     <Head :title="`Assessment — ${course.title}`" />
-    <div class="flex w-full flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="app-page">
         <header
             class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"
         >
@@ -424,8 +441,19 @@ defineOptions({
             description="Soal dan seluruh pilihannya akan dihapus permanen."
             confirm-label="Hapus soal"
             destructive
+            :processing="deletingQuestion"
             @update:open="!$event && (questionToDelete = null)"
             @confirm="deleteQuestion"
+        />
+        <ConfirmActionDialog
+            :open="leaveGuard.open.value"
+            title="Keluar tanpa menyimpan?"
+            description="Perubahan assessment atau soal yang belum disimpan akan hilang."
+            confirm-label="Keluar tanpa menyimpan"
+            destructive
+            @update:open="!$event && leaveGuard.reset()"
+            @confirm="leaveGuard.leaveWithoutSaving"
+            @cancel="leaveGuard.reset"
         />
     </div>
 </template>

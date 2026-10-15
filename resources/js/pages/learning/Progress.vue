@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import { BookOpen, ChevronRight } from '@lucide/vue';
 import EmptyState from '@/components/EmptyState.vue';
 import Pagination from '@/components/Pagination.vue';
+import PageHeader from '@/components/PageHeader.vue';
 import { Button } from '@/components/ui/button';
 
 type Enrollment = {
@@ -39,20 +40,16 @@ defineOptions({
 <template>
     <Head title="My Progress" />
 
-    <div
-        class="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8"
-    >
-        <header>
-            <h1 class="text-2xl font-semibold tracking-tight text-foreground">
-                My Progress
-            </h1>
-            <p class="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-                Lihat penyelesaian lesson dan hasil Post-Test terbaik Anda.
-            </p>
-        </header>
+    <div class="app-page">
+        <PageHeader
+            title="Progres saya"
+            description="Lihat penyelesaian materi dan hasil Post-Test terbaik Anda."
+        />
 
-        <dl class="grid gap-3 sm:grid-cols-2">
-            <div class="rounded-xl border border-border bg-card p-5">
+        <dl
+            class="grid overflow-hidden rounded-2xl border border-border/85 bg-card sm:grid-cols-2"
+        >
+            <div class="p-5 sm:border-r sm:border-border/85">
                 <dt class="text-sm text-muted-foreground">Sedang dipelajari</dt>
                 <dd
                     class="mt-2 text-2xl font-semibold text-foreground tabular-nums"
@@ -60,7 +57,7 @@ defineOptions({
                     {{ stats.active }}
                 </dd>
             </div>
-            <div class="rounded-xl border border-border bg-card p-5">
+            <div class="p-5">
                 <dt class="text-sm text-muted-foreground">Course selesai</dt>
                 <dd
                     class="mt-2 text-2xl font-semibold text-foreground tabular-nums"
@@ -71,13 +68,13 @@ defineOptions({
         </dl>
 
         <section
-            class="overflow-hidden rounded-xl border border-border bg-card"
+            class="overflow-hidden rounded-2xl border border-border/85 bg-card"
         >
             <div v-if="enrollments.data.length" class="divide-y divide-border">
                 <article
                     v-for="item in enrollments.data"
                     :key="item.id"
-                    class="px-5 py-5"
+                    class="data-row px-5 py-5"
                 >
                     <div
                         class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start"
@@ -124,7 +121,7 @@ defineOptions({
                             class="mt-2 h-2 overflow-hidden rounded-full bg-muted"
                         >
                             <div
-                                class="h-full rounded-full bg-foreground transition-[width] duration-300"
+                                class="h-full rounded-full bg-brand-gold transition-[width] duration-300"
                                 :style="{ width: `${item.progress}%` }"
                             />
                         </div>
@@ -137,7 +134,9 @@ defineOptions({
                 title="Belum ada progres pembelajaran"
                 description="Course yang ditetapkan kepada Anda akan tampil di sini."
                 ><Button as-child
-                    ><Link href="/my-learning">Lihat My Learning</Link></Button
+                    ><Link href="/my-learning"
+                        >Lihat pembelajaran saya</Link
+                    ></Button
                 ></EmptyState
             >
             <Pagination

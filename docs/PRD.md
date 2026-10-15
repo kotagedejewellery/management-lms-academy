@@ -74,7 +74,7 @@ Contoh path Customer Service: Brand Introduction → Product Knowledge → Mater
 
 ### Learner
 
-Login; dashboard; My Learning; Learning Path; Course Detail; lesson player video/article/PDF; resources; previous/next; resume progress; Pre-Test; Post-Test; result; profile; dan certificate ketika fase tersebut diaktifkan.
+Login; dashboard; My Learning; Learning Path; Course Detail; lesson player video/article/PDF; resources; previous/next; resume progress; Pre-Test; Post-Test; result; profile; dan sertifikat course yang diaktifkan Admin.
 
 ### Admin dan Manager
 

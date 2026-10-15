@@ -10,6 +10,8 @@ class LocalDatabaseSafetyTest extends TestCase
     {
         $this->assertSame('sqlite', config('database.default'));
         $this->assertSame(':memory:', config('database.connections.sqlite.database'));
+        $this->assertSame('array', env('CACHE_STORE'));
+        $this->assertSame('array', config('cache.default'));
     }
 
     public function test_postgres_volume_is_external_to_the_compose_lifecycle(): void

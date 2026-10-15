@@ -6,6 +6,7 @@ import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
 import EmptyState from '@/components/EmptyState.vue';
 import InputError from '@/components/InputError.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
+import { useUnsavedChangesGuard } from '@/composables/useUnsavedChangesGuard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -35,6 +36,9 @@ const sequences = reactive<Record<number, string>>(
     ),
 );
 const pathCourseToDelete = ref<PathCourse | null>(null);
+const deletingPathCourse = ref(false);
+const updatingPathCourseId = ref<number | null>(null);
+const leaveGuard = useUnsavedChangesGuard(() => form.isDirty);
 
 function addCourse(): void {
     form.post(`/learning-paths/${props.learningPath.id}/courses`, {
@@ -45,13 +49,23 @@ function updateSequence(pathCourse: PathCourse): void {
     router.put(
         `/learning-paths/${props.learningPath.id}/courses/${pathCourse.id}`,
         { course_id: pathCourse.course.id, sequence: sequences[pathCourse.id] },
+        {
+            onStart: () => (updatingPathCourseId.value = pathCourse.id),
+            onFinish: () => (updatingPathCourseId.value = null),
+        },
     );
 }
 function deleteCourse(): void {
-    if (pathCourseToDelete.value)
+    if (pathCourseToDelete.value && !deletingPathCourse.value)
         router.delete(
             `/learning-paths/${props.learningPath.id}/courses/${pathCourseToDelete.value.id}`,
-            { onFinish: () => (pathCourseToDelete.value = null) },
+            {
+                onStart: () => (deletingPathCourse.value = true),
+                onFinish: () => {
+                    deletingPathCourse.value = false;
+                    pathCourseToDelete.value = null;
+                },
+            },
         );
 }
 defineOptions({
@@ -66,7 +80,7 @@ defineOptions({
 
 <template>
     <Head :title="`Susun course — ${learningPath.name}`" />
-    <div class="flex w-full flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="app-page">
         <header
             class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"
         >
@@ -138,6 +152,10 @@ defineOptions({
                                         v-model="sequences[pathCourse.id]"
                                         type="number"
                                         min="1"
+                                        :disabled="
+                                            updatingPathCourseId ===
+                                            pathCourse.id
+                                        "
                                         class="w-20"
                                         required
                                     />
@@ -146,7 +164,14 @@ defineOptions({
                                     type="submit"
                                     variant="outline"
                                     size="sm"
-                                    >Simpan</Button
+                                    :disabled="
+                                        updatingPathCourseId === pathCourse.id
+                                    "
+                                    >{{
+                                        updatingPathCourseId === pathCourse.id
+                                            ? 'Menyimpan…'
+                                            : 'Simpan'
+                                    }}</Button
                                 >
                             </form>
                             <Button
@@ -213,8 +238,19 @@ defineOptions({
             :description="`${pathCourseToDelete?.course.title ?? 'Course'} akan dihapus dari learning path ini.`"
             confirm-label="Hapus course"
             destructive
+            :processing="deletingPathCourse"
             @update:open="!$event && (pathCourseToDelete = null)"
             @confirm="deleteCourse"
+        />
+        <ConfirmActionDialog
+            :open="leaveGuard.open.value"
+            title="Keluar tanpa menyimpan?"
+            description="Course yang sedang Anda tambahkan belum disimpan ke learning path."
+            confirm-label="Keluar tanpa menyimpan"
+            destructive
+            @update:open="!$event && leaveGuard.reset()"
+            @confirm="leaveGuard.leaveWithoutSaving"
+            @cancel="leaveGuard.reset"
         />
     </div>
 </template>

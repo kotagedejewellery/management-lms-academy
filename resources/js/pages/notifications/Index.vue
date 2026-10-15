@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Bell, Check } from '@lucide/vue';
+import { ref } from 'vue';
+import { toast } from 'vue-sonner';
+import PageHeader from '@/components/PageHeader.vue';
 type Notification = {
     id: number;
     title: string;
@@ -15,13 +18,21 @@ const props = defineProps<{
         prev_page_url: string | null;
     };
 }>();
+const markingId = ref<number | null>(null);
 function markRead(notification: Notification): void {
-    if (!notification.read_at)
+    if (!notification.read_at && markingId.value === null) {
         router.post(
             `/notifications/${notification.id}/read`,
             {},
-            { preserveScroll: true },
+            {
+                preserveScroll: true,
+                onStart: () => (markingId.value = notification.id),
+                onSuccess: () =>
+                    toast.success('Notifikasi ditandai sudah dibaca.'),
+                onFinish: () => (markingId.value = null),
+            },
         );
+    }
 }
 function date(value: string): string {
     return new Intl.DateTimeFormat('id-ID', {
@@ -37,18 +48,11 @@ defineOptions({
 </script>
 <template>
     <Head title="Notifications" />
-    <div
-        class="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8"
-    >
-        <header class="max-w-2xl">
-            <h1 class="text-2xl font-semibold tracking-tight text-foreground">
-                Notifications
-            </h1>
-            <p class="mt-2 text-sm leading-6 text-muted-foreground">
-                Pengumuman dari KGJ Academy tersimpan di sini agar dapat dibaca
-                kembali.
-            </p>
-        </header>
+    <div class="app-page">
+        <PageHeader
+            title="Notifikasi"
+            description="Pengumuman dari KGJ Academy tersimpan di sini agar dapat dibaca kembali."
+        />
         <section
             class="overflow-hidden rounded-xl border border-border bg-card"
         >
@@ -60,6 +64,7 @@ defineOptions({
                     v-for="notification in props.notifications.data"
                     :key="notification.id"
                     type="button"
+                    :disabled="markingId === notification.id"
                     class="flex w-full gap-3 px-5 py-5 text-left transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-inset sm:px-6"
                     :class="
                         notification.read_at

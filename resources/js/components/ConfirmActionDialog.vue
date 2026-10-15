@@ -17,18 +17,21 @@ withDefaults(
         title: string;
         description: string;
         confirmLabel: string;
+        cancelLabel?: string;
         processing?: boolean;
         destructive?: boolean;
     }>(),
     {
         processing: false,
         destructive: false,
+        cancelLabel: 'Batal',
     },
 );
 
 const emit = defineEmits<{
     'update:open': [open: boolean];
     confirm: [];
+    cancel: [];
 }>();
 </script>
 
@@ -51,8 +54,11 @@ const emit = defineEmits<{
             </DialogHeader>
             <DialogFooter class="mt-2">
                 <DialogClose as-child>
-                    <Button variant="outline" :disabled="processing"
-                        >Batal</Button
+                    <Button
+                        variant="outline"
+                        :disabled="processing"
+                        @click="emit('cancel')"
+                        >{{ cancelLabel }}</Button
                     >
                 </DialogClose>
                 <Button

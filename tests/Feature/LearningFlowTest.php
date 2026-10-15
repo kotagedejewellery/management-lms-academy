@@ -75,6 +75,23 @@ class LearningFlowTest extends TestCase
         $this->actingAs($employee)->get(route('my-learning.show', $course))->assertOk();
     }
 
+    public function test_my_learning_explains_when_an_assigned_course_is_locked_by_prerequisite(): void
+    {
+        $employee = User::factory()->create();
+        $prerequisite = $this->publishedCourseWithLesson('ONB-PREREQ');
+        $course = $this->publishedCourseWithLesson('ONB-LOCKED');
+        $course->update(['prerequisite_course_id' => $prerequisite->id]);
+        $employee->enrollments()->create(['course_id' => $prerequisite->id, 'status' => 'active', 'due_at' => today()]);
+        $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'active', 'due_at' => today()->addDay()]);
+
+        $this->actingAs($employee)->get(route('my-learning.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('enrollments.data.1.course.id', $course->id)
+                ->where('enrollments.data.1.locked', true)
+                ->where('enrollments.data.1.lock_reason', 'Selesaikan course prasyarat terlebih dahulu.'));
+    }
+
     public function test_terminal_enrollment_cannot_change_lesson_progress(): void
     {
         $employee = User::factory()->create();
@@ -87,6 +104,25 @@ class LearningFlowTest extends TestCase
             ->assertNotFound();
 
         $this->assertDatabaseMissing('lesson_progress', ['lesson_id' => $lesson->id]);
+    }
+
+    public function test_employee_video_resume_position_is_saved_without_marking_the_lesson_complete(): void
+    {
+        $employee = User::factory()->create();
+        $course = $this->publishedCourseWithLesson();
+        $lesson = $course->modules->first()->lessons->first();
+        $lesson->update(['type' => 'video']);
+        $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
+
+        $this->actingAs($employee)
+            ->put(route('my-learning.lessons.playback', [$course, $lesson]), ['seconds' => 42])
+            ->assertNoContent();
+
+        $this->assertDatabaseHas('lesson_progress', [
+            'lesson_id' => $lesson->id,
+            'status' => 'in_progress',
+            'playback_seconds' => 42,
+        ]);
     }
 
     private function publishedCourseWithLesson(string $code = 'ONB-001'): Course

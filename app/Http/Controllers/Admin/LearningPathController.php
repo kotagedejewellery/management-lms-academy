@@ -79,6 +79,7 @@ class LearningPathController extends Controller
         abort_unless($request->user()?->hasPermission('manage-learning-paths'), 403);
     }
 
+    /** @param array<string, mixed> $data */
     private function ensureDraft(array $data): void
     {
         if ($data['status'] === 'published') {
@@ -86,6 +87,7 @@ class LearningPathController extends Controller
         }
     }
 
+    /** @return array<string, mixed> */
     private function validatedData(Request $request, ?LearningPath $learningPath = null): array
     {
         return $request->validate([

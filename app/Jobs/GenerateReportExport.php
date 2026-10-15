@@ -11,6 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
+use RuntimeException;
 use Throwable;
 
 class GenerateReportExport implements ShouldQueue
@@ -24,15 +25,16 @@ class GenerateReportExport implements ShouldQueue
         $export = ReportExport::query()->findOrFail($this->reportExportId);
         $path = "exports/report-{$export->id}.csv";
         $export->update(['status' => 'processing', 'error' => null]);
-        Storage::disk('local')->makeDirectory('exports');
-        $stream = fopen(Storage::disk('local')->path($path), 'wb');
+        $disk = Storage::disk();
+        $stream = tmpfile();
+        throw_unless(is_resource($stream), RuntimeException::class, 'Tidak dapat membuat file ekspor sementara.');
 
         try {
             fwrite($stream, "\xEF\xBB\xBF");
             fputcsv($stream, ['ID Karyawan', 'Nama Karyawan', 'Kode Course', 'Course', 'Status', 'Skor Pre-Test', 'Skor Post-Test Terbaik', 'Improvement', 'Attempt Post-Test', 'Tenggat', 'Selesai']);
             ReportEnrollmentQuery::make($export->filters)->reorder()->chunkById(500, function ($enrollments) use ($stream): void {
                 $enrollments->each(function (Enrollment $enrollment) use ($stream): void {
-                    fputcsv($stream, [
+                    fputcsv($stream, array_map(fn (mixed $value) => $this->csvValue($value), [
                         $enrollment->user?->employee_id,
                         $enrollment->user?->name,
                         $enrollment->course?->code,
@@ -44,11 +46,13 @@ class GenerateReportExport implements ShouldQueue
                         $enrollment->post_test_attempts,
                         $enrollment->due_at?->toDateString(),
                         $enrollment->completed_at?->toDateString(),
-                    ]);
+                    ]));
                 });
             });
+            rewind($stream);
+            throw_unless($disk->writeStream($path, $stream), RuntimeException::class, 'Tidak dapat menyimpan file ekspor.');
         } catch (Throwable $exception) {
-            Storage::disk('local')->delete($path);
+            $disk->delete($path);
             throw $exception;
         } finally {
             fclose($stream);
@@ -63,5 +67,14 @@ class GenerateReportExport implements ShouldQueue
             'status' => 'failed',
             'error' => 'Ekspor gagal diproses. Silakan coba kembali.',
         ]);
+    }
+
+    private function csvValue(mixed $value): mixed
+    {
+        if (is_string($value) && $value !== '' && in_array($value[0], ['=', '+', '-', '@'], true)) {
+            return "'{$value}";
+        }
+
+        return $value;
     }
 }

@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ReportEnrollmentQuery
 {
+    /**
+     * @param  array{search?: string, status?: string, course_id?: int|null, division_id?: int|null}  $filters
+     * @return Builder<Enrollment>
+     */
     public static function make(array $filters): Builder
     {
         $bestPostScore = AssessmentAttempt::query()
@@ -37,11 +41,11 @@ class ReportEnrollmentQuery
             ->selectSub($firstPreScore, 'pre_test_score')
             ->selectSub($postTestAttempts, 'post_test_attempts')
             ->with(['user:id,employee_id,name', 'course:id,code,title'])
-            ->when(in_array($filters['status'] ?? '', ['active', 'completed', 'not_passed'], true), fn (Builder $query) => $query->where('status', $filters['status']))
-            ->when($filters['course_id'] ?? null, fn (Builder $query) => $query->where('course_id', $filters['course_id']))
-            ->when($filters['division_id'] ?? null, fn (Builder $query) => $query->whereHas('user', fn (Builder $query) => $query->where('division_id', $filters['division_id'])))
+            ->when(in_array($filters['status'] ?? '', ['active', 'completed', 'not_passed'], true), fn (Builder $query) => $query->where('status', $filters['status'] ?? ''))
+            ->when($filters['course_id'] ?? null, fn (Builder $query) => $query->where('course_id', $filters['course_id'] ?? null))
+            ->when($filters['division_id'] ?? null, fn (Builder $query) => $query->whereHas('user', fn (Builder $query) => $query->where('division_id', $filters['division_id'] ?? null)))
             ->when(($filters['search'] ?? '') !== '', function (Builder $query) use ($filters): void {
-                $term = '%'.mb_strtolower($filters['search']).'%';
+                $term = '%'.mb_strtolower($filters['search'] ?? '').'%';
                 $query->where(function (Builder $query) use ($term): void {
                     $query->whereHas('user', fn (Builder $query) => $query->whereRaw('lower(name) like ?', [$term])->orWhereRaw('lower(coalesce(employee_id, \'\')) like ?', [$term]))
                         ->orWhereHas('course', fn (Builder $query) => $query->whereRaw('lower(title) like ?', [$term])->orWhereRaw('lower(code) like ?', [$term]));

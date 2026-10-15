@@ -26,8 +26,8 @@ class UserImportController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $this->authorizeUsers($request);
-        $file = $request->validate(['file' => ['required', 'file', 'mimes:csv,txt', 'max:5120']])['file'];
-        $import = $request->user()->userImports()->create(['path' => $file->store('user-imports', 'local'), 'original_name' => $file->getClientOriginalName(), 'status' => 'queued']);
+        $file = $request->validate(['file' => ['required', 'file', 'mimes:csv,txt,xlsx', 'max:5120']])['file'];
+        $import = $request->user()->userImports()->create(['path' => $file->store('user-imports'), 'original_name' => $file->getClientOriginalName(), 'status' => 'queued']);
         ProcessUserImport::dispatch($import->id)->afterCommit();
 
         return to_route('user-imports.index');

@@ -25,19 +25,78 @@ defineOptions({
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
+const props = defineProps<{
+    organization: {
+        employee_id: string | null;
+        division: { name: string } | null;
+        position: { name: string } | null;
+        branch: { name: string } | null;
+        manager: { name: string } | null;
+    };
+}>();
 </script>
 
 <template>
-    <Head title="Profile settings" />
+    <Head title="Profil" />
 
-    <h1 class="sr-only">Profile settings</h1>
+    <h1 class="sr-only">Profil</h1>
 
     <div v-if="user" class="flex flex-col space-y-6">
         <Heading
             variant="small"
-            title="Profile"
-            description="Update your name and email address"
+            title="Profil saya"
+            description="Perbarui nama dan email kerja Anda. Data organisasi dikelola oleh LMS Admin."
         />
+
+        <section class="rounded-xl border border-border bg-card p-5 sm:p-6">
+            <h2 class="font-semibold text-foreground">Identitas organisasi</h2>
+            <dl class="mt-5 grid gap-4 text-sm sm:grid-cols-2">
+                <div>
+                    <dt class="text-muted-foreground">Employee ID</dt>
+                    <dd class="mt-1 font-medium text-foreground">
+                        {{
+                            props.organization.employee_id ?? 'Belum ditetapkan'
+                        }}
+                    </dd>
+                </div>
+                <div>
+                    <dt class="text-muted-foreground">Divisi</dt>
+                    <dd class="mt-1 font-medium text-foreground">
+                        {{
+                            props.organization.division?.name ??
+                            'Belum ditetapkan'
+                        }}
+                    </dd>
+                </div>
+                <div>
+                    <dt class="text-muted-foreground">Jabatan</dt>
+                    <dd class="mt-1 font-medium text-foreground">
+                        {{
+                            props.organization.position?.name ??
+                            'Belum ditetapkan'
+                        }}
+                    </dd>
+                </div>
+                <div>
+                    <dt class="text-muted-foreground">Cabang</dt>
+                    <dd class="mt-1 font-medium text-foreground">
+                        {{
+                            props.organization.branch?.name ??
+                            'Belum ditetapkan'
+                        }}
+                    </dd>
+                </div>
+                <div>
+                    <dt class="text-muted-foreground">Manager</dt>
+                    <dd class="mt-1 font-medium text-foreground">
+                        {{
+                            props.organization.manager?.name ??
+                            'Belum ditetapkan'
+                        }}
+                    </dd>
+                </div>
+            </dl>
+        </section>
 
         <Form
             v-bind="ProfileController.update.form()"
@@ -45,7 +104,7 @@ const user = computed(() => page.props.auth.user);
             v-slot="{ errors, processing }"
         >
             <div class="grid gap-2">
-                <Label for="name">Name</Label>
+                <Label for="name">Nama lengkap</Label>
                 <Input
                     id="name"
                     class="mt-1 block w-full"
@@ -53,13 +112,13 @@ const user = computed(() => page.props.auth.user);
                     :default-value="user.name"
                     required
                     autocomplete="name"
-                    placeholder="Full name"
+                    placeholder="Nama lengkap"
                 />
                 <InputError class="mt-2" :message="errors.name" />
             </div>
 
             <div class="grid gap-2">
-                <Label for="email">Email address</Label>
+                <Label for="email">Email kerja</Label>
                 <Input
                     id="email"
                     type="email"
@@ -68,20 +127,20 @@ const user = computed(() => page.props.auth.user);
                     :default-value="user.email"
                     required
                     autocomplete="username"
-                    placeholder="Email address"
+                    placeholder="email@perusahaan.com"
                 />
                 <InputError class="mt-2" :message="errors.email" />
             </div>
 
             <div v-if="page.props.mustVerifyEmail && !user.email_verified_at">
                 <p class="-mt-4 text-sm text-muted-foreground">
-                    Your email address is unverified.
+                    Email kerja Anda belum terverifikasi.
                     <Link
                         :href="send()"
                         as="button"
                         class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
                     >
-                        Click here to re-send the verification email.
+                        Kirim ulang email verifikasi.
                     </Link>
                 </p>
 
@@ -89,13 +148,13 @@ const user = computed(() => page.props.auth.user);
                     v-if="page.props.status === 'verification-link-sent'"
                     class="mt-2 text-sm font-medium text-green-600"
                 >
-                    A new verification link has been sent to your email address.
+                    Tautan verifikasi baru telah dikirim ke email kerja Anda.
                 </div>
             </div>
 
             <div class="flex items-center gap-4">
                 <Button :disabled="processing" data-test="update-profile-button"
-                    >Save</Button
+                    >Simpan perubahan</Button
                 >
             </div>
         </Form>

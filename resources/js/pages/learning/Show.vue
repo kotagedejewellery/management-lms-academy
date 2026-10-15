@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import {
     BookOpen,
@@ -10,13 +10,22 @@ import {
     Clock3,
     Download,
     FileText,
+    ListTree,
     LockKeyhole,
     Play,
     PlayCircle,
     RotateCcw,
     Trophy,
 } from '@lucide/vue';
+import LearningLessonNavigator from '@/components/LearningLessonNavigator.vue';
 import { Button } from '@/components/ui/button';
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from '@/components/ui/sheet';
 
 type Lesson = {
     id: number;
@@ -43,6 +52,7 @@ type SelectedLesson = LessonEntry & {
     content: string | null;
     transcript: string | null;
     resource_url: string | null;
+    playback_seconds: number;
     resources: { id: number; original_name: string; mime_type: string }[];
 };
 type Assessment = {
@@ -83,6 +93,7 @@ const props = defineProps<{
         pre_test_required: boolean;
         pre_test_completed: boolean;
         metadata: { category: string | null; target_audience: string };
+        mentors: { id: number; name: string }[];
         progress: {
             completed_lessons: number;
             total_lessons: number;
@@ -137,6 +148,11 @@ const postTest = computed(() =>
 );
 const completingLessonId = ref<number | null>(null);
 const lessonError = ref('');
+const lessonNavigatorOpen = ref(false);
+const videoPlayer = ref<HTMLVideoElement | null>(null);
+const lastPlaybackSaved = ref(0);
+const playbackSaving = ref(false);
+const playbackQueued = ref(false);
 const progressPercentage = computed(() =>
     props.course.progress.total_lessons === 0
         ? 0
@@ -249,15 +265,6 @@ function assessmentDescription(assessment: Assessment): string {
 function lessonTypeLabel(type: Lesson['type']): string {
     return { article: 'Artikel', video: 'Video', pdf: 'PDF' }[type];
 }
-function progressStatusLabel(
-    status: Lesson['status'] | Module['status'],
-): string {
-    return {
-        not_started: 'Belum dimulai',
-        in_progress: 'Sedang dipelajari',
-        completed: 'Selesai',
-    }[status];
-}
 function assessmentHref(assessment: Assessment): string {
     return `/my-learning/${props.course.id}/assessments/${assessment.id}`;
 }
@@ -307,6 +314,7 @@ function selectLesson(lesson: LessonEntry, scrollToPlayer = false): void {
                 ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
     }
+    persistPlayback();
     router.get(
         `/my-learning/${props.course.id}`,
         { lesson: lesson.id },
@@ -327,6 +335,15 @@ function selectLesson(lesson: LessonEntry, scrollToPlayer = false): void {
         },
     );
 }
+function selectLessonFromNavigator(lesson: Lesson, module: Module): void {
+    lessonNavigatorOpen.value = false;
+    selectLesson({
+        ...lesson,
+        module_id: module.id,
+        module_title: module.title,
+        module_sequence: module.sequence,
+    });
+}
 function complete(lesson: SelectedLesson): void {
     if (completingLessonId.value !== null) return;
     lessonError.value = '';
@@ -346,6 +363,80 @@ function complete(lesson: SelectedLesson): void {
         },
     );
 }
+function restorePlayback(event: Event): void {
+    const video = event.target as HTMLVideoElement;
+    const seconds = activeLesson.value?.playback_seconds ?? 0;
+    if (
+        seconds > 0 &&
+        Number.isFinite(video.duration) &&
+        seconds < video.duration - 1
+    ) {
+        video.currentTime = seconds;
+        lastPlaybackSaved.value = seconds;
+    }
+}
+function persistPlayback(): void {
+    const lesson = activeLesson.value;
+    const video = videoPlayer.value;
+    if (!lesson || !video || lesson.type !== 'video') return;
+    if (playbackSaving.value) {
+        playbackQueued.value = true;
+
+        return;
+    }
+
+    const seconds = Math.floor(video.currentTime);
+    if (seconds <= 0 || seconds === lastPlaybackSaved.value) return;
+    playbackSaving.value = true;
+    fetch(`/my-learning/${props.course.id}/lessons/${lesson.id}/playback`, {
+        method: 'PUT',
+        keepalive: true,
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'X-CSRF-TOKEN':
+                document.querySelector<HTMLMetaElement>(
+                    'meta[name="csrf-token"]',
+                )?.content ?? '',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({ seconds }),
+    })
+        .then((response) => {
+            if (!response.ok) throw new Error();
+            lastPlaybackSaved.value = seconds;
+        })
+        .catch(() => {
+            lessonError.value =
+                'Posisi video belum tersimpan. Periksa koneksi lalu lanjutkan belajar.';
+        })
+        .finally(() => {
+            playbackSaving.value = false;
+            if (playbackQueued.value) {
+                playbackQueued.value = false;
+                persistPlayback();
+            }
+        });
+}
+function queuePlayback(): void {
+    const video = videoPlayer.value;
+    if (video && Math.floor(video.currentTime) - lastPlaybackSaved.value >= 15)
+        persistPlayback();
+}
+function savePlaybackWhenPageIsHidden(): void {
+    if (document.visibilityState === 'hidden') persistPlayback();
+}
+onMounted(() => {
+    document.addEventListener('visibilitychange', savePlaybackWhenPageIsHidden);
+});
+onBeforeUnmount(() => {
+    document.removeEventListener(
+        'visibilitychange',
+        savePlaybackWhenPageIsHidden,
+    );
+    persistPlayback();
+});
 defineOptions({
     layout: {
         breadcrumbs: [
@@ -358,7 +449,7 @@ defineOptions({
 
 <template>
     <Head :title="course.title" />
-    <main class="w-full px-4 py-6 sm:px-6 lg:px-8">
+    <main class="app-page">
         <section class="border-b border-border pb-6">
             <div
                 class="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between"
@@ -435,6 +526,20 @@ defineOptions({
                     <dt class="text-sm text-muted-foreground">Kategori</dt>
                     <dd class="mt-1 text-lg font-semibold text-foreground">
                         {{ course.metadata.category ?? 'Umum' }}
+                    </dd>
+                </div>
+                <div>
+                    <dt class="text-sm text-muted-foreground">
+                        Trainer / Mentor
+                    </dt>
+                    <dd class="mt-1 text-lg font-semibold text-foreground">
+                        {{
+                            course.mentors.length
+                                ? course.mentors
+                                      .map((mentor) => mentor.name)
+                                      .join(', ')
+                                : 'Belum ditetapkan'
+                        }}
                     </dd>
                 </div>
                 <div>
@@ -541,74 +646,35 @@ defineOptions({
                         </article>
                     </div>
                 </section>
-                <details
-                    class="rounded-xl border border-border bg-card p-4"
-                    open
-                >
-                    <summary
-                        class="flex cursor-pointer list-none items-center gap-2 font-semibold text-foreground"
-                    >
-                        <BookOpen class="size-4 text-primary" />Materi course
-                    </summary>
-                    <div class="mt-4 space-y-4">
-                        <section
-                            v-for="module in course.modules"
-                            :key="module.id"
-                        >
-                            <p
-                                class="text-xs font-semibold tracking-wide text-muted-foreground uppercase"
-                            >
-                                Modul {{ module.sequence }} ·
-                                {{ progressStatusLabel(module.status) }}
-                            </p>
-                            <h3
-                                class="mt-1 text-sm font-semibold text-foreground"
-                            >
-                                {{ module.title }}
-                            </h3>
-                            <div class="mt-2 space-y-1">
-                                <button
-                                    v-for="lesson in module.lessons"
-                                    :key="lesson.id"
-                                    type="button"
-                                    class="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-                                    :class="
-                                        lesson.id === activeLesson?.id
-                                            ? 'bg-muted font-medium text-foreground'
-                                            : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
-                                    "
-                                    :aria-current="
-                                        lesson.id === activeLesson?.id
-                                            ? 'step'
-                                            : undefined
-                                    "
-                                    @click="
-                                        selectLesson({
-                                            ...lesson,
-                                            module_id: module.id,
-                                            module_title: module.title,
-                                            module_sequence: module.sequence,
-                                        })
-                                    "
-                                >
-                                    <CheckCircle2
-                                        v-if="lesson.completed"
-                                        class="size-4 shrink-0 text-emerald-700"
-                                    /><FileText
-                                        v-else
-                                        class="size-4 shrink-0"
-                                    /><span class="min-w-0 flex-1 truncate">{{
-                                        lesson.title
-                                    }}</span
-                                    ><span class="text-xs">{{
-                                        progressStatusLabel(lesson.status)
-                                    }}</span>
-                                </button>
-                            </div>
-                        </section>
-                    </div>
-                </details>
+                <LearningLessonNavigator
+                    class="hidden xl:block"
+                    :modules="course.modules"
+                    :active-lesson-id="activeLesson?.id ?? null"
+                    @select="selectLessonFromNavigator"
+                />
             </aside>
+            <div class="xl:hidden">
+                <Sheet v-model:open="lessonNavigatorOpen">
+                    <SheetTrigger as-child>
+                        <Button variant="outline" class="w-full">
+                            <ListTree />Daftar materi
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent
+                        side="left"
+                        class="w-full max-w-sm overflow-y-auto p-4"
+                    >
+                        <SheetHeader class="mb-4 text-left">
+                            <SheetTitle>Daftar materi</SheetTitle>
+                        </SheetHeader>
+                        <LearningLessonNavigator
+                            :modules="course.modules"
+                            :active-lesson-id="activeLesson?.id ?? null"
+                            @select="selectLessonFromNavigator"
+                        />
+                    </SheetContent>
+                </Sheet>
+            </div>
             <section
                 id="lesson-player"
                 class="scroll-mt-6 rounded-xl border border-border bg-card"
@@ -642,6 +708,10 @@ defineOptions({
                             class="aspect-video w-full rounded-lg bg-black"
                             controls
                             preload="metadata"
+                            ref="videoPlayer"
+                            @loadedmetadata="restorePlayback"
+                            @timeupdate="queuePlayback"
+                            @pause="persistPlayback"
                         >
                             <source :src="activeLesson.resource_url" />
                             Browser Anda tidak mendukung pemutar video.

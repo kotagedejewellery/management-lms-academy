@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 type Person = {
     id: number;
     employee_id: string | null;
+    hired_at: string | null;
     name: string;
     email: string;
     status: 'active' | 'inactive';
@@ -64,13 +65,13 @@ function applyFilters(): void {
 <template>
     <Head title="Users" />
 
-    <div class="flex w-full flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="app-page">
         <div
             class="flex flex-col justify-between gap-4 md:flex-row md:items-end"
         >
             <div class="max-w-2xl">
                 <h1
-                    class="text-2xl font-semibold tracking-tight text-foreground"
+                    class="text-2xl font-semibold tracking-[-0.025em] text-foreground sm:text-3xl"
                 >
                     Users
                 </h1>
@@ -93,7 +94,7 @@ function applyFilters(): void {
         </div>
 
         <form
-            class="grid gap-3 rounded-xl bg-card p-4 shadow-sm ring-1 ring-border sm:grid-cols-[minmax(0,1fr)_11rem_auto]"
+            class="grid gap-3 rounded-2xl border border-border/85 bg-card p-4 sm:grid-cols-[minmax(0,1fr)_11rem_auto]"
             @submit.prevent="applyFilters"
         >
             <div class="relative">
@@ -121,7 +122,7 @@ function applyFilters(): void {
 
         <div
             v-if="users.data.length"
-            class="overflow-hidden rounded-xl bg-card shadow-sm ring-1 ring-border"
+            class="overflow-hidden rounded-2xl border border-border/85 bg-card"
         >
             <div class="hidden overflow-x-auto md:block">
                 <table class="w-full min-w-[760px] text-left text-sm">
@@ -142,11 +143,17 @@ function applyFilters(): void {
                         <tr
                             v-for="user in users.data"
                             :key="user.id"
-                            class="transition-colors hover:bg-muted/30"
+                            class="data-row"
                         >
                             <td class="px-5 py-4">
                                 <div class="font-medium text-foreground">
                                     {{ user.name }}
+                                </div>
+                                <div class="mt-1 text-xs text-muted-foreground">
+                                    Tanggal masuk:
+                                    <span class="tabular-nums">{{
+                                        user.hired_at || 'Belum diisi'
+                                    }}</span>
                                 </div>
                                 <div class="mt-1 text-xs text-muted-foreground">
                                     <span class="tabular-nums">{{
@@ -185,12 +192,22 @@ function applyFilters(): void {
             </div>
 
             <div class="divide-y divide-border md:hidden">
-                <article v-for="user in users.data" :key="user.id" class="p-4">
+                <article
+                    v-for="user in users.data"
+                    :key="user.id"
+                    class="data-row p-4"
+                >
                     <div class="flex items-start justify-between gap-4">
                         <div>
                             <h2 class="font-medium text-foreground">
                                 {{ user.name }}
                             </h2>
+                            <p class="mt-1 text-xs text-muted-foreground">
+                                Tanggal masuk:
+                                <span class="tabular-nums">{{
+                                    user.hired_at || 'Belum diisi'
+                                }}</span>
+                            </p>
                             <p class="mt-1 text-xs text-muted-foreground">
                                 {{ user.employee_id || 'Tanpa ID' }} ·
                                 {{ user.email }}
@@ -221,7 +238,7 @@ function applyFilters(): void {
             </div>
         </div>
 
-        <div v-else class="rounded-xl bg-card shadow-sm ring-1 ring-border">
+        <div v-else class="surface">
             <EmptyState
                 :icon="UserRound"
                 title="Belum ada user yang cocok"

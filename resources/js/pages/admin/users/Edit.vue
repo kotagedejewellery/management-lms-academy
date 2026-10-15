@@ -9,6 +9,7 @@ type Option = {
 type ManagedUser = {
     id: number;
     employee_id: string | null;
+    hired_at: string | null;
     name: string;
     email: string;
     phone: string | null;

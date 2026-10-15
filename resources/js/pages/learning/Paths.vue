@@ -2,6 +2,8 @@
 import { Head, Link } from '@inertiajs/vue3';
 import { ListTree } from '@lucide/vue';
 import EmptyState from '@/components/EmptyState.vue';
+import PageHeader from '@/components/PageHeader.vue';
+import StatusBadge from '@/components/StatusBadge.vue';
 import { Button } from '@/components/ui/button';
 type P = {
     id: number;
@@ -13,7 +15,10 @@ type P = {
         code: string | null;
         title: string | null;
         enrollment_status: string | null;
+        locked: boolean;
+        lock_reason: string | null;
     }[];
+    progress: { completed: number; total: number };
 };
 defineProps<{ paths: { data: P[] } }>();
 defineOptions({
@@ -24,22 +29,16 @@ defineOptions({
 </script>
 <template>
     <Head title="Learning Paths" />
-    <div
-        class="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8"
-    >
-        <header>
-            <h1 class="text-2xl font-semibold tracking-tight text-foreground">
-                Learning Paths
-            </h1>
-            <p class="mt-2 text-sm text-muted-foreground">
-                Ikuti urutan course yang ditetapkan untuk pengembangan Anda.
-            </p>
-        </header>
+    <div class="app-page">
+        <PageHeader
+            title="Jalur belajar saya"
+            description="Ikuti urutan course yang ditetapkan untuk pengembangan kompetensi Anda."
+        />
         <section v-if="paths.data.length" class="grid gap-4">
             <article
                 v-for="path in paths.data"
                 :key="path.id"
-                class="rounded-xl border border-border bg-card p-5"
+                class="rounded-2xl border border-border/85 bg-card p-5"
             >
                 <h2 class="font-semibold text-foreground">{{ path.name }}</h2>
                 <p
@@ -48,11 +47,15 @@ defineOptions({
                 >
                     {{ path.description }}
                 </p>
+                <p class="mt-3 text-sm font-medium text-muted-foreground">
+                    {{ path.progress.completed }}/{{ path.progress.total }}
+                    course selesai
+                </p>
                 <ol class="mt-5 divide-y divide-border">
                     <li
                         v-for="course in path.courses"
                         :key="course.id"
-                        class="flex items-center justify-between gap-3 py-3"
+                        class="data-row flex items-center justify-between gap-3 py-3"
                     >
                         <div>
                             <p class="text-sm text-muted-foreground">
@@ -63,7 +66,10 @@ defineOptions({
                             </p>
                         </div>
                         <Button
-                            v-if="course.enrollment_status === 'active'"
+                            v-if="
+                                course.enrollment_status === 'active' &&
+                                !course.locked
+                            "
                             size="sm"
                             variant="outline"
                             as-child
@@ -71,13 +77,19 @@ defineOptions({
                                 >Buka</Link
                             ></Button
                         >
-                        <p v-else class="text-sm text-muted-foreground">
-                            {{
-                                course.enrollment_status === 'completed'
-                                    ? 'Selesai'
-                                    : 'Belum ditetapkan'
-                            }}
-                        </p>
+                        <StatusBadge
+                            v-else-if="course.enrollment_status === 'completed'"
+                            status="completed"
+                        />
+                        <div v-else class="text-right">
+                            <StatusBadge status="locked" />
+                            <p
+                                v-if="course.lock_reason"
+                                class="mt-1 max-w-48 text-xs text-muted-foreground"
+                            >
+                                {{ course.lock_reason }}
+                            </p>
+                        </div>
                     </li>
                 </ol>
             </article>
@@ -88,7 +100,7 @@ defineOptions({
             title="Belum ada learning path"
             description="Learning path yang ditetapkan akan muncul di sini."
             ><Button as-child
-                ><Link href="/my-learning">My Learning</Link></Button
+                ><Link href="/my-learning">Pembelajaran saya</Link></Button
             ></EmptyState
         >
     </div>

@@ -6,6 +6,7 @@ import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
 import EmptyState from '@/components/EmptyState.vue';
 import InputError from '@/components/InputError.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
+import { useUnsavedChangesGuard } from '@/composables/useUnsavedChangesGuard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -55,6 +56,10 @@ const lessonForm = useForm({
     sequence: '1',
 });
 const deletion = ref<{ label: string; url: string } | null>(null);
+const deleting = ref(false);
+const leaveGuard = useUnsavedChangesGuard(
+    () => moduleForm.isDirty || lessonForm.isDirty,
+);
 
 function addModule(): void {
     moduleForm.post(`/courses/${props.course.id}/modules`, {
@@ -80,9 +85,13 @@ function chooseResource(event: Event): void {
     lessonForm.resource = (event.target as HTMLInputElement).files?.[0] ?? null;
 }
 function confirmDelete(): void {
-    if (deletion.value)
+    if (deletion.value && !deleting.value)
         router.delete(deletion.value.url, {
-            onFinish: () => (deletion.value = null),
+            onStart: () => (deleting.value = true),
+            onFinish: () => {
+                deleting.value = false;
+                deletion.value = null;
+            },
         });
 }
 defineOptions({
@@ -97,7 +106,7 @@ defineOptions({
 
 <template>
     <Head :title="`Materi — ${course.title}`" />
-    <div class="flex w-full flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="app-page">
         <header
             class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"
         >
@@ -433,8 +442,19 @@ defineOptions({
             :description="`Tindakan ini menghapus ${deletion?.label ?? 'konten'} secara permanen.`"
             confirm-label="Hapus"
             destructive
+            :processing="deleting"
             @update:open="!$event && (deletion = null)"
             @confirm="confirmDelete"
+        />
+        <ConfirmActionDialog
+            :open="leaveGuard.open.value"
+            title="Keluar tanpa menyimpan?"
+            description="Perubahan modul atau lesson yang belum disimpan akan hilang."
+            confirm-label="Keluar tanpa menyimpan"
+            destructive
+            @update:open="!$event && leaveGuard.reset()"
+            @confirm="leaveGuard.leaveWithoutSaving"
+            @cancel="leaveGuard.reset"
         />
     </div>
 </template>

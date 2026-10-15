@@ -108,9 +108,16 @@ class AssessmentController extends Controller
 
     private function authorizeCourses(Request $request): void
     {
-        abort_unless($request->user()?->hasPermission('manage-courses'), 403);
+        $user = $request->user();
+        abort_unless($user?->hasPermission('manage-courses'), 403);
+
+        $course = $request->route('course');
+        if ($course instanceof Course) {
+            abort_unless($user->canManageCourse($course), 403);
+        }
     }
 
+    /** @return array<string, mixed>|null */
     private function assessmentData(?Assessment $assessment): ?array
     {
         return $assessment ? [

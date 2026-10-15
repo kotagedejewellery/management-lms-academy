@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\IssueCertificate;
 use App\Models\ActivityLog;
 use App\Models\Assessment;
 use App\Models\AssessmentAttempt;
@@ -10,6 +11,7 @@ use App\Models\Course;
 use App\Models\Enrollment;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -36,15 +38,15 @@ class AssessmentAttemptController extends Controller
                 ...$assessment->only(['id', 'type', 'attempt_limit', 'time_limit_minutes']),
                 'attempts_used' => $attempts->count(),
                 'best_score' => $attempts->max('score'),
-                'attempt_number' => $activeAttempt?->attempt_number ?? $attempts->count() + 1,
-                'expires_at' => $activeAttempt?->expires_at?->toIso8601String(),
+                'attempt_number' => $activeAttempt->attempt_number,
+                'expires_at' => $activeAttempt->expires_at?->toIso8601String(),
                 'draft_answers' => $draft,
                 'questions' => $assessment->questions->map(fn ($question) => [...$question->only(['id', 'prompt', 'points', 'sequence']), 'answers' => $question->answers->map->only(['id', 'content', 'sequence'])]),
             ],
         ]);
     }
 
-    public function saveDraft(Request $request, Course $course, Assessment $assessment)
+    public function saveDraft(Request $request, Course $course, Assessment $assessment): HttpResponse
     {
         abort_unless($assessment->course_id === $course->id, 404);
         $enrollment = $this->enrollment($request, $course);
@@ -91,7 +93,7 @@ class AssessmentAttemptController extends Controller
                 ->where('enrollment_id', $enrollment->id)
                 ->lockForUpdate()
                 ->first();
-            $answers = array_replace($draft?->answers ?? [], $submittedAnswers);
+            $answers = array_replace(is_array($draft?->answers) ? $draft->answers : [], $submittedAnswers);
             $answers = $this->validAnswers($assessment, $answers);
             if ($activeAttempt?->expires_at?->isPast()) {
                 $this->expire($assessment, $activeAttempt);
@@ -130,6 +132,9 @@ class AssessmentAttemptController extends Controller
                 'score' => $attempt->score,
                 'passed' => $attempt->passed,
             ]);
+            if ($assessment->type === 'post_test' && $attempt->passed === true && $course->certificate_enabled) {
+                IssueCertificate::dispatch($enrollment->id)->afterCommit();
+            }
         }
 
         return to_route('my-learning.assessments.result', [$course, $assessment]);
@@ -198,6 +203,8 @@ class AssessmentAttemptController extends Controller
             }
             $this->ensureAvailable($assessment, $course, $enrollment, $activeAttempt);
 
+            $enrollment->update(['started_at' => $enrollment->started_at ?? now()]);
+
             return $activeAttempt ?? $assessment->attempts()->create([
                 'enrollment_id' => $enrollment->id,
                 'attempt_number' => $assessment->attempts()->where('enrollment_id', $enrollment->id)->count() + 1,
@@ -232,6 +239,10 @@ class AssessmentAttemptController extends Controller
         }
     }
 
+    /**
+     * @param  array<array-key, mixed>  $answers
+     * @return array<int, int>
+     */
     private function validAnswers(Assessment $assessment, array $answers): array
     {
         $validAnswers = [];

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
 import InputError from '@/components/InputError.vue';
+import { useUnsavedChangesGuard } from '@/composables/useUnsavedChangesGuard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,14 +14,17 @@ type Course = {
     code: string;
     title: string;
     description: string | null;
+    thumbnail_url: string | null;
     estimated_minutes: number | null;
     is_mandatory: boolean;
+    certificate_enabled: boolean;
     passing_grade: number;
     status: 'draft' | 'published' | 'archived';
     category: Option | null;
     division: Option | null;
     position: Option | null;
     prerequisite: Option | null;
+    trainer_ids: number[];
 };
 const props = defineProps<{
     title: string;
@@ -27,6 +33,8 @@ const props = defineProps<{
     divisions: Option[];
     positions: Option[];
     prerequisites: Option[];
+    trainers: Option[];
+    can_assign_trainers: boolean;
 }>();
 const form = useForm({
     category_id: props.course?.category?.id?.toString() ?? '',
@@ -38,22 +46,45 @@ const form = useForm({
     description: props.course?.description ?? '',
     estimated_minutes: props.course?.estimated_minutes?.toString() ?? '',
     is_mandatory: props.course?.is_mandatory ?? true,
+    certificate_enabled: props.course?.certificate_enabled ?? false,
     passing_grade: props.course?.passing_grade?.toString() ?? '70',
     status: props.course?.status ?? 'draft',
+    trainer_ids: props.course?.trainer_ids ?? [],
+    thumbnail: null as File | null,
 });
+const thumbnailPreview = ref<string | null>(
+    props.course?.thumbnail_url ?? null,
+);
+const displayedThumbnail = computed(
+    () => thumbnailPreview.value ?? props.course?.thumbnail_url ?? null,
+);
+const leaveGuard = useUnsavedChangesGuard(() => form.isDirty);
 function submit(): void {
     if (props.course) {
-        form.put(`/courses/${props.course.id}`);
+        form.put(`/courses/${props.course.id}`, {
+            forceFormData: true,
+            onSuccess: () => form.defaults(),
+        });
         return;
     }
 
-    form.post('/courses');
+    form.post('/courses', {
+        forceFormData: true,
+        onSuccess: () => form.defaults(),
+    });
+}
+function selectThumbnail(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0] ?? null;
+    form.thumbnail = file;
+    thumbnailPreview.value = file
+        ? URL.createObjectURL(file)
+        : (props.course?.thumbnail_url ?? null);
 }
 </script>
 
 <template>
     <Head :title="title" />
-    <div class="flex w-full flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="app-page gap-8">
         <header
             class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"
         >
@@ -68,9 +99,15 @@ function submit(): void {
                     publikasi course.
                 </p>
             </div>
-            <Button variant="outline" as-child
-                ><Link href="/courses">Kembali ke courses</Link></Button
-            >
+            <div class="flex flex-wrap gap-2">
+                <Button v-if="course" variant="outline" as-child
+                    ><Link :href="`/courses/${course.id}/preview`"
+                        >Pratinjau</Link
+                    ></Button
+                ><Button variant="outline" as-child
+                    ><Link href="/courses">Kembali ke courses</Link></Button
+                >
+            </div>
         </header>
 
         <form class="grid gap-8" @submit.prevent="submit">
@@ -127,6 +164,68 @@ function submit(): void {
                             rows="4"
                             class="rounded-md border border-input bg-transparent px-3 py-2 text-sm"
                         /><InputError :message="form.errors.description" />
+                    </div>
+                    <div class="grid gap-2 sm:col-span-2">
+                        <Label for="thumbnail">Thumbnail course</Label>
+                        <div
+                            class="grid gap-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:items-start"
+                        >
+                            <img
+                                v-if="displayedThumbnail"
+                                :src="displayedThumbnail"
+                                alt="Preview thumbnail course"
+                                class="aspect-[16/9] w-full rounded-lg border border-border object-cover"
+                                width="384"
+                                height="216"
+                            />
+                            <div
+                                v-else
+                                class="grid aspect-[16/9] place-items-center rounded-lg border border-dashed border-border bg-muted/40 px-4 text-center text-xs text-muted-foreground"
+                            >
+                                Belum ada thumbnail
+                            </div>
+                            <div class="grid gap-2">
+                                <Input
+                                    id="thumbnail"
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/webp,image/avif"
+                                    @change="selectThumbnail"
+                                />
+                                <p
+                                    class="text-xs leading-5 text-muted-foreground"
+                                >
+                                    JPG, PNG, WebP, atau AVIF. Maksimal 2 MB;
+                                    rasio 16:9 wajib agar tampil rapi di
+                                    katalog.
+                                </p>
+                                <InputError :message="form.errors.thumbnail" />
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        v-if="can_assign_trainers"
+                        class="grid gap-2 sm:col-span-2"
+                    >
+                        <Label for="trainer_ids">Trainer / Mentor</Label>
+                        <select
+                            id="trainer_ids"
+                            v-model="form.trainer_ids"
+                            multiple
+                            class="min-h-24 rounded-md border border-input bg-transparent px-3 py-2 text-sm"
+                        >
+                            <option
+                                v-for="trainer in trainers"
+                                :key="trainer.id"
+                                :value="trainer.id"
+                            >
+                                {{ trainer.name }}
+                            </option>
+                        </select>
+                        <p class="text-xs leading-5 text-muted-foreground">
+                            Pilih trainer yang dapat mengelola materi dan
+                            assessment course ini.
+                        </p>
+                        <InputError :message="form.errors.trainer_ids" />
                     </div>
                     <div class="grid gap-2">
                         <Label for="estimated_minutes"
@@ -210,9 +309,7 @@ function submit(): void {
                             :message="form.errors.prerequisite_course_id"
                         />
                     </div>
-                    <div
-                        class="rounded-lg bg-muted/50 p-4 text-sm leading-6 text-muted-foreground"
-                    >
+                    <div class="text-sm leading-6 text-muted-foreground">
                         <p class="font-medium text-foreground">
                             Aturan kelulusan
                         </p>
@@ -227,6 +324,27 @@ function submit(): void {
                             class="mt-2 inline-flex font-medium text-primary underline underline-offset-4"
                             >Atur assessment dan passing grade</Link
                         >
+                    </div>
+                    <div class="flex items-start gap-3 sm:col-span-2">
+                        <input
+                            id="certificate_enabled"
+                            v-model="form.certificate_enabled"
+                            type="checkbox"
+                            class="mt-1 size-4 rounded border-input text-primary focus:ring-primary"
+                        />
+                        <div class="grid gap-1">
+                            <Label for="certificate_enabled"
+                                >Terbitkan sertifikat saat lulus</Label
+                            >
+                            <p class="text-xs leading-5 text-muted-foreground">
+                                Sertifikat PDF diterbitkan setelah seluruh
+                                lesson wajib selesai dan Post-Test lulus bila
+                                course menggunakan evaluasi.
+                            </p>
+                            <InputError
+                                :message="form.errors.certificate_enabled"
+                            />
+                        </div>
                     </div>
                     <div class="grid gap-2">
                         <Label for="status">Status</Label
@@ -258,5 +376,15 @@ function submit(): void {
                 }}</Button>
             </div>
         </form>
+        <ConfirmActionDialog
+            :open="leaveGuard.open.value"
+            title="Keluar tanpa menyimpan?"
+            description="Perubahan course yang belum disimpan akan hilang."
+            confirm-label="Keluar tanpa menyimpan"
+            destructive
+            @update:open="!$event && leaveGuard.reset()"
+            @confirm="leaveGuard.leaveWithoutSaving"
+            @cancel="leaveGuard.reset"
+        />
     </div>
 </template>

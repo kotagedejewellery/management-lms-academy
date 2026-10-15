@@ -21,7 +21,10 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 /**
  * @property int $id
  * @property string $name
+ * @property string|null $employee_id
+ * @property Carbon|null $hired_at
  * @property string $email
+ * @property string|null $phone
  * @property Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $two_factor_secret
@@ -30,8 +33,13 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property int|null $division_id
+ * @property int|null $position_id
+ * @property int|null $branch_id
+ * @property int|null $manager_id
+ * @property string $status
  */
-#[Fillable(['employee_id', 'name', 'email', 'phone', 'password', 'division_id', 'position_id', 'branch_id', 'manager_id', 'status'])]
+#[Fillable(['employee_id', 'hired_at', 'name', 'email', 'phone', 'password', 'division_id', 'position_id', 'branch_id', 'manager_id', 'status'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
 {
@@ -47,6 +55,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     {
         return [
             'email_verified_at' => 'datetime',
+            'hired_at' => 'date',
             'password' => 'hashed',
             /* @chisel-2fa */
             'two_factor_confirmed_at' => 'datetime',
@@ -60,61 +69,85 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         static::deleted(fn () => Cache::forget('dashboard:management'));
     }
 
+    /** @return BelongsTo<Division, $this> */
     public function division(): BelongsTo
     {
         return $this->belongsTo(Division::class);
     }
 
+    /** @return BelongsTo<Position, $this> */
     public function position(): BelongsTo
     {
         return $this->belongsTo(Position::class);
     }
 
+    /** @return BelongsTo<Branch, $this> */
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function manager(): BelongsTo
     {
         return $this->belongsTo(self::class, 'manager_id');
     }
 
+    /** @return HasMany<User, $this> */
     public function directReports(): HasMany
     {
         return $this->hasMany(self::class, 'manager_id');
     }
 
+    /** @return HasMany<Enrollment, $this> */
     public function enrollments(): HasMany
     {
         return $this->hasMany(Enrollment::class);
     }
 
+    /** @return HasMany<Certificate, $this> */
+    public function certificates(): HasMany
+    {
+        return $this->hasMany(Certificate::class);
+    }
+
+    /** @return BelongsToMany<Course, $this> */
+    public function managedCourses(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class, 'course_trainers')->withTimestamps();
+    }
+
+    /** @return HasMany<ReportExport, $this> */
     public function reportExports(): HasMany
     {
         return $this->hasMany(ReportExport::class);
     }
 
+    /** @return HasMany<LearningPathAssignment, $this> */
     public function learningPathAssignments(): HasMany
     {
         return $this->hasMany(LearningPathAssignment::class);
     }
 
+    /** @return HasMany<UserNotification, $this> */
     public function notifications(): HasMany
     {
         return $this->hasMany(UserNotification::class);
     }
 
+    /** @return HasMany<Announcement, $this> */
     public function announcements(): HasMany
     {
         return $this->hasMany(Announcement::class);
     }
 
+    /** @return HasMany<UserImport, $this> */
     public function userImports(): HasMany
     {
         return $this->hasMany(UserImport::class);
     }
 
+    /** @return BelongsToMany<Role, $this> */
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'user_roles');
@@ -134,5 +167,15 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         }
 
         return $this->roles()->whereHas('permissions', fn ($query) => $query->where('slug', $permission))->exists();
+    }
+
+    public function canManageCourse(Course $course): bool
+    {
+        if (! $this->hasPermission('manage-courses')) {
+            return false;
+        }
+
+        return $this->hasPermission('manage-enrollments')
+            || $this->managedCourses()->whereKey($course)->exists();
     }
 }

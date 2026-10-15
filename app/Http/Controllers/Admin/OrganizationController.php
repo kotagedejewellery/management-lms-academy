@@ -64,6 +64,7 @@ class OrganizationController extends Controller
         abort_unless($request->user()?->hasPermission('manage-organization'), 403);
     }
 
+    /** @return array{class-string<Branch|Division|Position>, string} */
     private function entity(string $type): array
     {
         return match ($type) {
@@ -74,6 +75,7 @@ class OrganizationController extends Controller
         };
     }
 
+    /** @return array<string, mixed> */
     private function validatedData(Request $request, string $type, ?Model $item = null): array
     {
         $rules = [
@@ -93,15 +95,18 @@ class OrganizationController extends Controller
         return $request->validate($rules);
     }
 
+    /** @return array<string, mixed> */
     private function itemData(string $type, Model $item): array
     {
+        $position = $item instanceof Position ? $item : null;
+
         return [
-            'id' => $item->id,
-            'code' => $type === 'positions' ? null : $item->code,
-            'name' => $item->name,
-            'division_id' => $type === 'positions' ? $item->division_id : null,
-            'division' => $type === 'positions' ? $item->division?->only(['id', 'name']) : null,
-            'is_active' => (bool) $item->is_active,
+            'id' => (int) $item->getKey(),
+            'code' => $position ? null : $item->getAttribute('code'),
+            'name' => (string) $item->getAttribute('name'),
+            'division_id' => $position?->division_id,
+            'division' => $position?->division?->only(['id', 'name']),
+            'is_active' => (bool) $item->getAttribute('is_active'),
         ];
     }
 }

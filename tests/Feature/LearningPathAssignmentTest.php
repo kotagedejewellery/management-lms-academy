@@ -122,6 +122,31 @@ class LearningPathAssignmentTest extends TestCase
             ->assertJsonMissingPath('0.email');
     }
 
+    public function test_assigning_an_existing_completed_course_preserves_its_progress(): void
+    {
+        $permission = Permission::query()->create(['slug' => 'manage-enrollments', 'name' => 'Kelola assignment']);
+        $role = Role::query()->create(['slug' => 'lms-admin', 'name' => 'LMS Admin']);
+        $role->permissions()->attach($permission);
+        $admin = User::factory()->create();
+        $admin->roles()->attach($role);
+        $employee = User::factory()->create(['status' => 'active']);
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-RESUME-001', 'title' => 'Pengenalan', 'status' => 'published']);
+        $completedAt = now()->subDay();
+        $enrollment = $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'completed', 'due_at' => now()->addWeek(), 'started_at' => now()->subWeek(), 'completed_at' => $completedAt]);
+
+        $this->actingAs($admin)->post(route('enrollments.store'), [
+            'user_id' => $employee->id,
+            'course_id' => $course->id,
+            'due_at' => now()->addMonth()->toDateString(),
+        ])->assertRedirect(route('enrollments.index'));
+
+        $enrollment->refresh();
+        $this->assertSame('completed', $enrollment->status);
+        $this->assertSame($completedAt->getTimestamp(), $enrollment->completed_at->getTimestamp());
+        $this->assertCount(1, $employee->enrollments()->where('course_id', $course->id)->get());
+    }
+
     public function test_creating_a_rule_queues_a_safe_sync_for_matching_existing_employees(): void
     {
         Queue::fake();

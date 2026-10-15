@@ -43,18 +43,17 @@ defineProps<{
     >
         <div class="grid gap-6">
             <div class="grid gap-2">
-                <Label for="email">Email kerja</Label>
+                <Label for="identifier">Email kerja atau Employee ID</Label>
                 <Input
-                    id="email"
-                    type="email"
-                    name="email"
+                    id="identifier"
+                    name="identifier"
                     required
                     v-focus
                     :tabindex="1"
-                    autocomplete="email"
-                    placeholder="email@perusahaan.com"
+                    autocomplete="username"
+                    placeholder="email@perusahaan.com atau KGJ-001"
                 />
-                <InputError :message="errors.email" />
+                <InputError :message="errors.identifier" />
             </div>
 
             <div class="grid gap-2">

@@ -9,6 +9,8 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\UserImport;
 use App\Services\LearningPathAssignmentService;
+use Carbon\Carbon;
+use Generator;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -16,11 +18,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Throwable;
 
 class ProcessUserImport implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    private const MAX_XLSX_DATA_ROWS = 5000;
 
     public int $tries = 3;
 
@@ -37,16 +42,14 @@ class ProcessUserImport implements ShouldQueue
             return;
         }
 
-        $stream = Storage::disk('local')->readStream($import->path);
-        abort_unless(is_resource($stream), 422, 'File impor tidak dapat dibaca.');
         $import->update(['status' => 'processing', 'errors' => []]);
 
         try {
-            $headers = fgetcsv($stream);
-            $headers = is_array($headers) ? array_map(fn ($header) => strtolower(trim(preg_replace('/^\xEF\xBB\xBF/', '', (string) $header))), $headers) : [];
-            $required = ['employee_id', 'name', 'email'];
-            if (array_diff($required, $headers) || count($headers) !== count(array_unique($headers))) {
-                $this->finish($import, 'failed', 0, 0, 0, [['line' => 1, 'message' => 'Header wajib: employee_id, name, email. Header tidak boleh duplikat.']]);
+            if ($this->xlsxDataRowCount($import) > self::MAX_XLSX_DATA_ROWS) {
+                $this->finish($import, 'failed', 0, 0, 0, [[
+                    'line' => 0,
+                    'message' => 'File XLSX maksimal berisi 5.000 baris data.',
+                ]]);
 
                 return;
             }
@@ -65,12 +68,30 @@ class ProcessUserImport implements ShouldQueue
             $seenEmployeeIds = [];
             $seenEmails = [];
 
-            while (($values = fgetcsv($stream)) !== false) {
-                $total++;
-                if ($values === [null] || $values === []) {
+            $headers = [];
+            foreach ($this->rows($import) as $line => $values) {
+                if ($line === 1) {
+                    $headers = array_map(fn ($header) => strtolower(trim(preg_replace('/^\xEF\xBB\xBF/', '', (string) $header))), $values);
+                    $required = ['employee_id', 'name', 'email'];
+                    if (array_diff($required, $headers) || count($headers) !== count(array_unique($headers))) {
+                        $this->finish($import, 'failed', 0, 0, 0, [['line' => 1, 'message' => 'Header wajib: employee_id, name, email. Header tidak boleh duplikat.']]);
+
+                        return;
+                    }
+
                     continue;
                 }
-                $rows[] = ['line' => $total + 1, 'data' => array_combine($headers, array_pad($values, count($headers), '')) ?: []];
+                $total++;
+                if (! array_filter($values, fn ($value) => filled($value))) {
+                    continue;
+                }
+                $rows[] = [
+                    'line' => $line,
+                    'data' => array_map(
+                        fn ($value) => $value === null ? null : (string) $value,
+                        array_combine($headers, array_pad($values, count($headers), '')) ?: [],
+                    ),
+                ];
                 if (count($rows) === 200) {
                     [$imported, $skipped, $errors] = $this->process($rows, $role, $password, $catalog, $seenEmployeeIds, $seenEmails, $imported, $skipped, $errors);
                     $rows = [];
@@ -83,8 +104,7 @@ class ProcessUserImport implements ShouldQueue
 
             $this->finish($import, 'completed', $total, $imported, $skipped, $errors);
         } finally {
-            fclose($stream);
-            Storage::disk('local')->delete($import->path);
+            Storage::disk()->delete($import->path);
         }
     }
 
@@ -93,6 +113,14 @@ class ProcessUserImport implements ShouldQueue
         UserImport::query()->whereKey($this->userImportId)->update(['status' => 'failed', 'errors' => [['line' => 0, 'message' => 'Impor gagal diproses. Silakan unggah ulang file.']], 'completed_at' => now()]);
     }
 
+    /**
+     * @param  list<array{line: int, data: array<string, string|null>}>  $rows
+     * @param  array{divisions: array<string, Division>, branches: array<string, Branch>, positions: array<string, Position>}  $catalog
+     * @param  array<string, true>  $seenEmployeeIds
+     * @param  array<string, true>  $seenEmails
+     * @param  list<array{line: int, message: string}>  $errors
+     * @return array{int, int, list<array{line: int, message: string}>}
+     */
     private function process(array $rows, Role $role, string $password, array $catalog, array &$seenEmployeeIds, array &$seenEmails, int $imported, int $skipped, array $errors): array
     {
         $employeeIds = collect($rows)->map(fn ($row) => trim((string) ($row['data']['employee_id'] ?? '')))->filter()->all();
@@ -109,10 +137,12 @@ class ProcessUserImport implements ShouldQueue
             $employeeId = $data['employee_id'] ?? '';
             $email = strtolower($data['email'] ?? '');
             $status = $data['status'] ?? 'active';
+            $hiredAt = blank($data['hired_at'] ?? '') ? null : $data['hired_at'];
             $message = blank($employeeId) || blank($data['name'] ?? '') || blank($email) ? 'employee_id, name, dan email wajib diisi.' : null;
             $message ??= ! filter_var($email, FILTER_VALIDATE_EMAIL) ? 'Format email tidak valid.' : null;
             $message ??= isset($seenEmployeeIds[$employeeId]) || isset($seenEmails[$email]) ? 'employee_id atau email sudah terdaftar; baris dilewati.' : null;
             $message ??= ! in_array($status, ['active', 'inactive'], true) ? 'Status hanya boleh active atau inactive.' : null;
+            $message ??= $hiredAt === null || Carbon::hasFormat($hiredAt, 'Y-m-d') ? null : 'Tanggal masuk harus memakai format YYYY-MM-DD.';
             $division = blank($data['division_code'] ?? '') ? null : ($catalog['divisions'][strtoupper($data['division_code'])] ?? null);
             $branch = blank($data['branch_code'] ?? '') ? null : ($catalog['branches'][strtoupper($data['branch_code'])] ?? null);
             $message ??= blank($data['division_code'] ?? '') || $division ? null : 'Kode divisi tidak ditemukan atau tidak aktif.';
@@ -132,8 +162,8 @@ class ProcessUserImport implements ShouldQueue
                 continue;
             }
 
-            $user = DB::transaction(function () use ($employeeId, $data, $email, $status, $division, $position, $branch, $managerId, $password, $role): User {
-                $user = User::query()->create(['employee_id' => $employeeId, 'name' => $data['name'], 'email' => $email, 'phone' => $data['phone'] ?? null, 'password' => $password, 'division_id' => $division?->id, 'position_id' => $position?->id, 'branch_id' => $branch?->id, 'manager_id' => $managerId, 'status' => $status, 'email_verified_at' => now()]);
+            $user = DB::transaction(function () use ($employeeId, $data, $email, $status, $hiredAt, $division, $position, $branch, $managerId, $password, $role): User {
+                $user = User::query()->create(['employee_id' => $employeeId, 'hired_at' => $hiredAt, 'name' => $data['name'], 'email' => $email, 'phone' => $data['phone'] ?? null, 'password' => $password, 'division_id' => $division?->id, 'position_id' => $position?->id, 'branch_id' => $branch?->id, 'manager_id' => $managerId, 'status' => $status, 'email_verified_at' => now()]);
                 $user->roles()->attach($role);
                 app(LearningPathAssignmentService::class)->assignMatching($user);
 
@@ -148,6 +178,71 @@ class ProcessUserImport implements ShouldQueue
         return [$imported, $skipped, $errors];
     }
 
+    /** @return Generator<int, list<string|int|float|null>> */
+    private function rows(UserImport $import): Generator
+    {
+        if (strtolower(pathinfo($import->original_name, PATHINFO_EXTENSION)) === 'xlsx') {
+            $temporaryPath = tempnam(sys_get_temp_dir(), 'kgj-user-import-');
+            if ($temporaryPath === false) {
+                abort(422, 'File impor tidak dapat dipersiapkan.');
+            }
+
+            try {
+                file_put_contents($temporaryPath, Storage::disk()->get($import->path));
+                $reader = IOFactory::createReaderForFile($temporaryPath);
+                $reader->setReadDataOnly(true);
+                $sheet = $reader->load($temporaryPath)->getActiveSheet();
+                foreach ($sheet->getRowIterator() as $row) {
+                    $values = [];
+                    foreach ($row->getCellIterator() as $cell) {
+                        $values[] = $cell->getFormattedValue();
+                    }
+                    yield $row->getRowIndex() => $values;
+                }
+            } finally {
+                @unlink($temporaryPath);
+            }
+
+            return;
+        }
+
+        $stream = Storage::disk()->readStream($import->path);
+        abort_unless(is_resource($stream), 422, 'File impor tidak dapat dibaca.');
+        try {
+            $line = 0;
+            while (($values = fgetcsv($stream)) !== false) {
+                yield ++$line => $values;
+            }
+        } finally {
+            fclose($stream);
+        }
+    }
+
+    private function xlsxDataRowCount(UserImport $import): int
+    {
+        if (strtolower(pathinfo($import->original_name, PATHINFO_EXTENSION)) !== 'xlsx') {
+            return 0;
+        }
+
+        $temporaryPath = tempnam(sys_get_temp_dir(), 'kgj-user-import-');
+        if ($temporaryPath === false) {
+            abort(422, 'File impor tidak dapat dipersiapkan.');
+        }
+
+        try {
+            file_put_contents($temporaryPath, Storage::disk()->get($import->path));
+            $worksheets = IOFactory::createReaderForFile($temporaryPath)->listWorksheetInfo($temporaryPath);
+
+            return max(0, ...array_map(
+                fn (array $worksheet): int => max(0, $worksheet['totalRows'] - 1),
+                $worksheets,
+            ));
+        } finally {
+            @unlink($temporaryPath);
+        }
+    }
+
+    /** @return array{divisions: array<string, Division>, branches: array<string, Branch>, positions: array<string, Position>} */
     private function catalog(): array
     {
         $divisions = Division::query()->where('is_active', true)->get(['id', 'code'])->keyBy(fn (Division $division) => strtoupper($division->code))->all();
@@ -157,6 +252,7 @@ class ProcessUserImport implements ShouldQueue
         return compact('divisions', 'branches', 'positions');
     }
 
+    /** @param list<array{line: int, message: string}> $errors */
     private function finish(UserImport $import, string $status, int $total, int $imported, int $skipped, array $errors): void
     {
         $import->update(['status' => $status, 'total_rows' => $total, 'imported_rows' => $imported, 'skipped_rows' => $skipped, 'errors' => $errors, 'completed_at' => now()]);

@@ -1,40 +1,89 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { ArrowRight, BookOpen, Users } from '@lucide/vue';
+import {
+    ArrowRight,
+    BookOpenCheck,
+    ChartNoAxesCombined,
+    ClipboardCheck,
+    ListChecks,
+    UsersRound,
+} from '@lucide/vue';
+import { computed } from 'vue';
 import EmptyState from '@/components/EmptyState.vue';
+import PageHeader from '@/components/PageHeader.vue';
+import StatusBadge from '@/components/StatusBadge.vue';
 import { Button } from '@/components/ui/button';
 import { dashboard } from '@/routes';
 
 type Stat = { label: string; value: number };
-type Course = {
+type Action = { label: string; href: string };
+type DashboardItem = {
     id: number;
-    code: string;
     title: string;
-    due_at: string | null;
+    description: string;
+    meta: string;
+    href: string | null;
+    locked?: boolean;
+    lock_reason?: string | null;
 };
-type Enrollment = {
-    id: number;
-    employee: string;
-    course: string;
-    status: string;
-    due_at: string | null;
+type LearningSummary = {
+    overall_progress: number;
+    pre_test_pending: number;
+    post_test_ready: number;
 };
 
-defineProps<{
-    mode: 'learner' | 'management';
+const props = defineProps<{
+    mode: 'learner' | 'trainer' | 'manager' | 'operations' | 'executive';
+    title: string;
+    description: string;
     stats: Stat[];
-    continue_course: Course | null;
-    recent_enrollments: Enrollment[];
+    primary_action: Action | null;
+    items_title: string;
+    empty_title: string;
+    empty_description: string;
+    items: DashboardItem[];
+    learning_summary?: LearningSummary;
 }>();
+
+const context = computed(
+    () =>
+        ({
+            learner: {
+                label: 'Fokus belajar Anda',
+                detail: 'Selesaikan materi yang sedang berjalan dan perhatikan tenggat terdekat.',
+                scope: 'Data pembelajaran pribadi Anda.',
+                icon: BookOpenCheck,
+            },
+            trainer: {
+                label: 'Kesiapan materi',
+                detail: 'Lengkapi course yang belum siap diterbitkan sebelum ditugaskan kepada employee.',
+                scope: 'Data course sesuai akses Anda.',
+                icon: ClipboardCheck,
+            },
+            manager: {
+                label: 'Tindak lanjut tim',
+                detail: 'Prioritaskan assignment yang melewati tenggat agar pembelajaran tim tetap berjalan.',
+                scope: 'Data untuk tim yang Anda kelola.',
+                icon: UsersRound,
+            },
+            operations: {
+                label: 'Operasional pembelajaran',
+                detail: 'Pantau assignment terbaru dan lanjutkan pengelolaan program belajar karyawan.',
+                scope: 'Data operasional sesuai akses Anda.',
+                icon: ClipboardCheck,
+            },
+            executive: {
+                label: 'Gambaran organisasi',
+                detail: 'Gunakan laporan untuk meninjau capaian dan area pembelajaran yang memerlukan perhatian.',
+                scope: 'Ringkasan organisasi sesuai akses Anda.',
+                icon: ChartNoAxesCombined,
+            },
+        })[props.mode],
+);
 
 defineOptions({
     layout: {
-        breadcrumbs: [
-            {
-                title: 'Dashboard',
-                href: dashboard(),
-            },
-        ],
+        breadcrumbs: [{ title: 'Dashboard', href: dashboard() }],
     },
 });
 </script>
@@ -42,29 +91,61 @@ defineOptions({
 <template>
     <Head title="Dashboard" />
 
-    <div class="flex w-full flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
-        <header>
-            <h1 class="text-2xl font-semibold tracking-tight text-foreground">
-                Dashboard
-            </h1>
-            <p class="mt-2 text-sm leading-6 text-muted-foreground">
-                {{
-                    mode === 'management'
-                        ? 'Pantau assignment dan penyelesaian course terbaru.'
-                        : 'Lanjutkan pembelajaran dan pantau pencapaian Anda.'
-                }}
-            </p>
-        </header>
+    <div class="app-page flex-1">
+        <PageHeader :title="props.title" :description="props.description">
+            <template #actions>
+                <Button
+                    v-if="props.primary_action"
+                    as-child
+                    class="w-full sm:w-auto"
+                >
+                    <Link :href="props.primary_action.href"
+                        >{{ props.primary_action.label }} <ArrowRight
+                    /></Link>
+                </Button>
+            </template>
+        </PageHeader>
 
-        <dl class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <section
+            class="grid gap-5 rounded-2xl bg-primary p-6 text-primary-foreground sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-7"
+        >
+            <div class="min-w-0">
+                <h2
+                    class="text-lg font-semibold tracking-tight text-primary-foreground"
+                >
+                    {{ context.label }}
+                </h2>
+                <p
+                    class="mt-1 max-w-2xl text-sm leading-6 text-primary-foreground/75"
+                >
+                    {{ context.detail }}
+                </p>
+                <p class="mt-3 text-xs font-medium text-primary-foreground/75">
+                    {{ context.scope }}
+                </p>
+            </div>
             <div
-                v-for="stat in stats"
+                class="grid size-12 place-items-center rounded-full bg-brand-gold/15 text-brand-gold"
+            >
+                <component
+                    :is="context.icon"
+                    class="size-6"
+                    aria-hidden="true"
+                />
+            </div>
+        </section>
+
+        <dl
+            class="grid overflow-hidden rounded-2xl border border-border/85 bg-card sm:grid-cols-2 lg:grid-cols-4"
+        >
+            <div
+                v-for="stat in props.stats"
                 :key="stat.label"
-                class="rounded-xl border border-border bg-card p-5"
+                class="relative p-5 last:border-r-0 sm:odd:border-r lg:border-t-0 lg:border-r sm:[&:nth-child(n+3)]:border-t"
             >
                 <dt class="text-sm text-muted-foreground">{{ stat.label }}</dt>
                 <dd
-                    class="mt-2 text-2xl font-semibold text-foreground tabular-nums"
+                    class="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums"
                 >
                     {{ stat.value }}
                 </dd>
@@ -72,92 +153,87 @@ defineOptions({
         </dl>
 
         <section
-            v-if="mode === 'learner' && continue_course"
-            class="rounded-xl border border-border bg-card p-5"
+            v-if="props.mode === 'learner' && props.learning_summary"
+            class="grid overflow-hidden rounded-2xl border border-border/85 bg-card sm:grid-cols-3"
+            aria-label="Ringkasan evaluasi pembelajaran"
         >
-            <p class="text-sm text-muted-foreground">Lanjutkan pembelajaran</p>
-            <div
-                class="mt-2 flex flex-col justify-between gap-4 sm:flex-row sm:items-center"
-            >
-                <div>
-                    <h2 class="font-semibold text-foreground">
-                        {{ continue_course.title }}
-                    </h2>
-                    <p class="mt-1 text-sm text-muted-foreground">
-                        {{ continue_course.code
-                        }}<span v-if="continue_course.due_at">
-                            · Tenggat {{ continue_course.due_at }}</span
-                        >
-                    </p>
-                </div>
-                <Button as-child
-                    ><Link :href="`/my-learning/${continue_course.id}`"
-                        >Lanjutkan <ArrowRight /></Link
-                ></Button>
-            </div>
-        </section>
-
-        <section
-            v-else-if="mode === 'learner'"
-            class="rounded-xl bg-card shadow-sm ring-1 ring-border"
-        >
-            <EmptyState
-                :icon="BookOpen"
-                title="Belum ada pembelajaran aktif"
-                description="Course yang ditetapkan untuk Anda akan muncul di sini."
-            >
-                <Button as-child variant="outline"
-                    ><Link href="/my-learning">Lihat My Learning</Link></Button
+            <div class="p-5 sm:border-r">
+                <p class="text-sm text-muted-foreground">Progres keseluruhan</p>
+                <p
+                    class="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums"
                 >
-            </EmptyState>
+                    {{ props.learning_summary.overall_progress }}%
+                </p>
+            </div>
+            <div class="border-t p-5 sm:border-t-0 sm:border-r">
+                <p class="text-sm text-muted-foreground">Pre-Test tersedia</p>
+                <p
+                    class="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums"
+                >
+                    {{ props.learning_summary.pre_test_pending }}
+                </p>
+            </div>
+            <div class="border-t p-5 sm:border-t-0">
+                <p class="text-sm text-muted-foreground">
+                    Post-Test siap dikerjakan
+                </p>
+                <p
+                    class="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums"
+                >
+                    {{ props.learning_summary.post_test_ready }}
+                </p>
+            </div>
         </section>
 
         <section
-            v-else
-            class="overflow-hidden rounded-xl border border-border bg-card"
+            class="overflow-hidden rounded-2xl border border-border/85 bg-card"
         >
-            <div class="border-b border-border px-5 py-4">
-                <h2 class="font-semibold text-foreground">
-                    Assignment terbaru
-                </h2>
-            </div>
             <div
-                v-if="recent_enrollments.length"
-                class="divide-y divide-border"
+                class="flex items-center justify-between gap-3 border-b border-border/85 px-5 py-4"
             >
-                <div
-                    v-for="enrollment in recent_enrollments"
-                    :key="enrollment.id"
-                    class="flex flex-col gap-1 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+                <h2 class="font-semibold text-foreground">
+                    {{ props.items_title }}
+                </h2>
+                <span class="text-xs font-medium text-muted-foreground">
+                    {{ props.items.length }} entri
+                </span>
+            </div>
+            <div v-if="props.items.length" class="divide-y divide-border">
+                <component
+                    v-for="item in props.items"
+                    :key="item.id"
+                    :is="item.href ? Link : 'div'"
+                    v-bind="item.href ? { href: item.href } : {}"
+                    class="data-row flex flex-col gap-1 px-5 py-4 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:flex-row sm:items-center sm:justify-between"
                 >
                     <div>
                         <p class="font-medium text-foreground">
-                            {{ enrollment.employee }}
+                            {{ item.title }}
                         </p>
                         <p class="text-sm text-muted-foreground">
-                            {{ enrollment.course }}
+                            {{ item.description }}
                         </p>
                     </div>
-                    <p class="text-sm text-muted-foreground">
-                        {{
-                            enrollment.status === 'completed'
-                                ? 'Selesai'
-                                : 'Aktif'
-                        }}<span v-if="enrollment.due_at">
-                            · {{ enrollment.due_at }}</span
-                        >
-                    </p>
-                </div>
+                    <div
+                        class="flex items-center gap-2 text-sm font-medium text-muted-foreground"
+                    >
+                        <StatusBadge v-if="item.locked" status="locked" />
+                        <span>{{ item.meta }}</span>
+                    </div>
+                </component>
             </div>
             <EmptyState
                 v-else
-                :icon="Users"
-                title="Belum ada assignment"
-                description="Tetapkan course kepada karyawan untuk mulai memantau progres."
-                ><Button as-child
-                    ><Link href="/enrollments">Kelola assignment</Link></Button
-                ></EmptyState
+                :icon="ListChecks"
+                :title="props.empty_title"
+                :description="props.empty_description"
             >
+                <Button v-if="props.primary_action" as-child>
+                    <Link :href="props.primary_action.href">{{
+                        props.primary_action.label
+                    }}</Link>
+                </Button>
+            </EmptyState>
         </section>
     </div>
 </template>

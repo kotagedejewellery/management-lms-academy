@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
+use RuntimeException;
 use Throwable;
 
 class SendWhatsappNotification implements ShouldQueue
@@ -16,6 +17,9 @@ class SendWhatsappNotification implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 3;
+
+    /** @var list<int> */
+    public array $backoff = [10, 60];
 
     public function __construct(public int $notificationId) {}
 
@@ -35,9 +39,17 @@ class SendWhatsappNotification implements ShouldQueue
             'message' => "{$notification->title}\n\n{$notification->body}",
         ]);
 
-        $notification->update($response->successful() && $response->json('status')
-            ? ['whatsapp_status' => 'sent', 'whatsapp_error' => null]
-            : ['whatsapp_status' => 'failed', 'whatsapp_error' => 'Pesan WhatsApp tidak dapat dikirim.']);
+        if ($response->successful() && $response->json('status')) {
+            $notification->update(['whatsapp_status' => 'sent', 'whatsapp_error' => null]);
+
+            return;
+        }
+
+        if ($response->status() === 429 || $response->serverError()) {
+            throw new RuntimeException('Layanan WhatsApp sementara tidak tersedia.');
+        }
+
+        $notification->update(['whatsapp_status' => 'failed', 'whatsapp_error' => 'Pesan WhatsApp tidak dapat dikirim.']);
     }
 
     public function failed(Throwable $exception): void

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
 import InputError from '@/components/InputError.vue';
+import { useUnsavedChangesGuard } from '@/composables/useUnsavedChangesGuard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,21 +19,22 @@ const form = useForm({
     description: props.learningPath?.description ?? '',
     status: props.learningPath?.status ?? 'draft',
 });
+const leaveGuard = useUnsavedChangesGuard(() => form.isDirty);
 function submit(): void {
     if (props.learningPath) {
-        form.put(`/learning-paths/${props.learningPath.id}`);
+        form.put(`/learning-paths/${props.learningPath.id}`, {
+            onSuccess: () => form.defaults(),
+        });
         return;
     }
 
-    form.post('/learning-paths');
+    form.post('/learning-paths', { onSuccess: () => form.defaults() });
 }
 </script>
 
 <template>
     <Head :title="title" />
-    <div
-        class="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8"
-    >
+    <div class="app-page mx-auto max-w-3xl gap-8">
         <div
             class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"
         >
@@ -117,5 +120,15 @@ function submit(): void {
                 }}</Button>
             </div>
         </form>
+        <ConfirmActionDialog
+            :open="leaveGuard.open.value"
+            title="Keluar tanpa menyimpan?"
+            description="Perubahan learning path yang belum disimpan akan hilang."
+            confirm-label="Keluar tanpa menyimpan"
+            destructive
+            @update:open="!$event && leaveGuard.reset()"
+            @confirm="leaveGuard.leaveWithoutSaving"
+            @cancel="leaveGuard.reset"
+        />
     </div>
 </template>

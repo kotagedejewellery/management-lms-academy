@@ -30,7 +30,7 @@ class UserController extends Controller
         ]);
 
         $users = User::query()
-            ->select(['id', 'employee_id', 'name', 'email', 'phone', 'division_id', 'position_id', 'branch_id', 'manager_id', 'status'])
+            ->select(['id', 'employee_id', 'hired_at', 'name', 'email', 'phone', 'division_id', 'position_id', 'branch_id', 'manager_id', 'status'])
             ->with([
                 'roles:id,slug,name',
                 'division:id,name',
@@ -124,10 +124,12 @@ class UserController extends Controller
         return to_route('users.index');
     }
 
+    /** @return array<string, mixed> */
     private function validatedData(Request $request, ?User $user = null): array
     {
         $data = $request->validate([
             'employee_id' => ['nullable', 'string', 'max:64', Rule::unique('users', 'employee_id')->ignore($user)],
+            'hired_at' => ['nullable', 'date'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user)],
             'phone' => ['nullable', 'string', 'max:30'],
@@ -164,6 +166,7 @@ class UserController extends Controller
         return $role;
     }
 
+    /** @return array<string, mixed> */
     private function formOptions(User $actor, ?User $exclude = null): array
     {
         return [
@@ -182,11 +185,13 @@ class UserController extends Controller
         ];
     }
 
+    /** @return array<string, mixed> */
     private function userData(User $user): array
     {
         return [
             'id' => $user->id,
             'employee_id' => $user->employee_id,
+            'hired_at' => $user->hired_at?->toDateString(),
             'name' => $user->name,
             'email' => $user->email,
             'phone' => $user->phone,
