@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UserImportController extends Controller
 {
@@ -31,6 +32,22 @@ class UserImportController extends Controller
         ProcessUserImport::dispatch($import->id)->afterCommit();
 
         return to_route('user-imports.index');
+    }
+
+    public function template(Request $request): StreamedResponse
+    {
+        $this->authorizeUsers($request);
+
+        return response()->streamDownload(function (): void {
+            $output = fopen('php://output', 'wb');
+            if (! is_resource($output)) {
+                return;
+            }
+
+            fputcsv($output, ['employee_id', 'name', 'email', 'phone', 'division_code', 'position_name', 'branch_code', 'manager_employee_id', 'hired_at', 'status']);
+            fputcsv($output, ['EMP-001', 'Nama Employee', 'email@contoh.test', '081234567890', 'DIVISI', 'Nama Jabatan', 'CABANG', '', '2026-01-01', 'active']);
+            fclose($output);
+        }, 'template-import-employee.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
 
     private function authorizeUsers(Request $request): void

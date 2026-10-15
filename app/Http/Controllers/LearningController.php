@@ -106,6 +106,15 @@ class LearningController extends Controller
             ? Lesson::query()->with('resources:id,lesson_id,original_name,mime_type')->findOrFail($selectedSummary->id)
             : null;
         $selectedModule = $selectedLesson ? $course->modules->firstWhere('id', $selectedLesson->module_id) : null;
+        $selectedResource = $selectedLesson?->resources->first(fn ($resource) => match ($selectedLesson->type) {
+            'pdf' => $resource->mime_type === 'application/pdf',
+            'video' => in_array($resource->mime_type, ['video/mp4', 'video/webm'], true),
+            default => false,
+        });
+        $selectedResourceUrl = $selectedLesson->resource_url
+            ?? ($selectedResource && $selectedModule
+                ? route('courses.resources.preview', [$course, $selectedModule, $selectedLesson, $selectedResource])
+                : null);
         $playbackSeconds = $selectedLesson && $lessonProgress->has($selectedLesson->id)
             ? (int) $lessonProgress->get($selectedLesson->id)->playback_seconds
             : 0;
@@ -156,6 +165,7 @@ class LearningController extends Controller
             ],
             'selected_lesson' => $selectedLesson ? [
                 ...$selectedLesson->only(['id', 'module_id', 'title', 'type', 'content', 'transcript', 'resource_url', 'is_required', 'sequence']),
+                'resource_url' => $selectedResourceUrl,
                 'module_title' => $selectedModule?->title,
                 'module_sequence' => $selectedModule?->sequence,
                 'completed' => in_array($selectedLesson->id, $completed, true),

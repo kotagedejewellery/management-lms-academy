@@ -12,7 +12,7 @@ use Illuminate\Support\Carbon;
  */
 class UserNotification extends Model
 {
-    protected $fillable = ['user_id', 'announcement_id', 'title', 'body', 'read_at', 'whatsapp_status', 'whatsapp_error'];
+    protected $fillable = ['user_id', 'announcement_id', 'dedupe_key', 'title', 'body', 'read_at', 'whatsapp_status', 'whatsapp_error'];
 
     protected function casts(): array
     {

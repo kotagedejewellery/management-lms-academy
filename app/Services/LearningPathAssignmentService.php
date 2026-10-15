@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 class LearningPathAssignmentService
 {
+    public function __construct(private UserNotificationService $notifications) {}
+
     public function assign(User $user, LearningPath $learningPath): void
     {
         DB::transaction(function () use ($user, $learningPath): void {
@@ -21,10 +23,16 @@ class LearningPathAssignmentService
             $learningPath->pathCourses()
                 ->whereHas('course', fn ($query) => $query->where('status', 'published'))
                 ->pluck('course_id')
-                ->each(fn (int $courseId) => Enrollment::query()->firstOrCreate([
-                    'user_id' => $user->id,
-                    'course_id' => $courseId,
-                ], ['status' => 'active']));
+                ->each(function (int $courseId) use ($user): void {
+                    $enrollment = Enrollment::query()->firstOrCreate([
+                        'user_id' => $user->id,
+                        'course_id' => $courseId,
+                    ], ['status' => 'active']);
+
+                    if ($enrollment->wasRecentlyCreated) {
+                        $this->notifications->courseAssigned($user, $enrollment);
+                    }
+                });
         });
     }
 

@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class LessonResourceTest extends TestCase
@@ -35,6 +36,21 @@ class LessonResourceTest extends TestCase
 
         $this->assertNotNull($resource);
         Storage::disk('local')->assertExists($resource->path);
+    }
+
+    public function test_admin_cannot_upload_a_pdf_for_a_video_lesson(): void
+    {
+        Storage::fake('local');
+        $admin = $this->courseAdmin();
+        $module = $this->module($admin);
+
+        $this->actingAs($admin)->post(route('courses.lessons.store', ['course' => $module->course_id, 'module' => $module->id]), [
+            'title' => 'Video produk',
+            'type' => 'video',
+            'is_required' => true,
+            'sequence' => 1,
+            'resource' => UploadedFile::fake()->create('panduan.pdf', 200, 'application/pdf'),
+        ])->assertSessionHasErrors('resource');
     }
 
     public function test_employee_cannot_download_private_lesson_resource(): void
@@ -63,6 +79,30 @@ class LessonResourceTest extends TestCase
         $path = 'lesson-resources/'.$lesson->id.'/sop-penjualan.pdf';
         Storage::disk('local')->put($path, 'private resource');
         $resource = $lesson->resources()->create(['disk' => 'local', 'path' => $path, 'original_name' => 'sop-penjualan.pdf', 'mime_type' => 'application/pdf', 'size' => 16]);
+
+        $this->actingAs($employee)
+            ->get(route('courses.resources.preview', [$module->course_id, $module->id, $lesson->id, $resource->id]))
+            ->assertOk();
+
+        $this->actingAs($employee)
+            ->get(route('my-learning.show', ['course' => $module->course_id, 'lesson' => $lesson->id]))
+            ->assertInertia(fn (Assert $page) => $page->where(
+                'selected_lesson.resource_url',
+                route('courses.resources.preview', [$module->course_id, $module->id, $lesson->id, $resource->id]),
+            ));
+    }
+
+    public function test_enrolled_employee_can_preview_a_private_video(): void
+    {
+        Storage::fake('local');
+        $module = $this->module();
+        $module->course->update(['status' => 'published']);
+        $employee = User::factory()->create();
+        $employee->enrollments()->create(['course_id' => $module->course_id, 'status' => 'active']);
+        $lesson = $module->lessons()->create(['title' => 'Video produk', 'type' => 'video', 'is_required' => true, 'sequence' => 1]);
+        $path = 'lesson-resources/'.$lesson->id.'/produk.mp4';
+        Storage::disk('local')->put($path, 'private video');
+        $resource = $lesson->resources()->create(['disk' => 'local', 'path' => $path, 'original_name' => 'produk.mp4', 'mime_type' => 'video/mp4', 'size' => 13]);
 
         $this->actingAs($employee)
             ->get(route('courses.resources.preview', [$module->course_id, $module->id, $lesson->id, $resource->id]))

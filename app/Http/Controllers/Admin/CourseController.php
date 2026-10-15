@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -32,7 +33,7 @@ class CourseController extends Controller
         ]);
 
         $courses = Course::query()
-            ->select(['id', 'category_id', 'division_id', 'position_id', 'prerequisite_course_id', 'code', 'title', 'thumbnail_path', 'estimated_minutes', 'is_mandatory', 'requires_post_test', 'certificate_enabled', 'passing_grade', 'status'])
+            ->select(['id', 'category_id', 'division_id', 'position_id', 'prerequisite_course_id', 'code', 'title', 'thumbnail_path', 'estimated_minutes', 'is_mandatory', 'requires_post_test', 'certificate_enabled', 'passing_grade', 'status', 'updated_at'])
             ->with(['category:id,name', 'division:id,name', 'position:id,name', 'prerequisite:id,title'])
             ->withCount('modules')
             ->when(! $request->user()->hasPermission('manage-enrollments'), fn ($query) => $query->whereHas('trainers', fn ($query) => $query->whereKey($request->user()->id)))
@@ -136,7 +137,10 @@ class CourseController extends Controller
         return Storage::disk($course->thumbnail_disk ?: config('filesystems.default'))->response(
             $path,
             null,
-            $course->thumbnail_mime ? ['Content-Type' => $course->thumbnail_mime] : [],
+            array_filter([
+                'Content-Type' => $course->thumbnail_mime,
+                'Cache-Control' => 'private, max-age=86400, immutable',
+            ]),
         );
     }
 
@@ -247,7 +251,7 @@ class CourseController extends Controller
             'code' => $course->code,
             'title' => $course->title,
             'description' => $course->description,
-            'thumbnail_url' => $course->thumbnail_path ? route('courses.thumbnail', $course) : null,
+            'thumbnail_url' => $course->thumbnail_path ? route('courses.thumbnail', ['course' => $course, 'v' => $course->updated_at?->getTimestamp()]) : null,
             'estimated_minutes' => $course->estimated_minutes,
             'is_mandatory' => $course->is_mandatory,
             'requires_post_test' => $course->requires_post_test,
@@ -279,10 +283,7 @@ class CourseController extends Controller
         }
 
         $disk = config('filesystems.default');
-        $path = $thumbnail->store('course-thumbnails', $disk);
-        if ($path === false) {
-            throw new RuntimeException('Thumbnail course tidak dapat disimpan.');
-        }
+        [$path, $mimeType] = $this->storeOptimizedThumbnail($thumbnail, $disk);
 
         $previousPath = $course->thumbnail_path;
         $previousDisk = $course->thumbnail_disk ?: $disk;
@@ -291,7 +292,7 @@ class CourseController extends Controller
             $course->update([
                 'thumbnail_path' => $path,
                 'thumbnail_disk' => $disk,
-                'thumbnail_mime' => $thumbnail->getMimeType(),
+                'thumbnail_mime' => $mimeType,
             ]);
         } catch (Throwable $exception) {
             Storage::disk($disk)->delete($path);
@@ -302,6 +303,50 @@ class CourseController extends Controller
         if ($previousPath) {
             Storage::disk($previousDisk)->delete($previousPath);
         }
+    }
+
+    /** @return array{0: string, 1: string|null} */
+    private function storeOptimizedThumbnail(UploadedFile $thumbnail, string $disk): array
+    {
+        $mimeType = $thumbnail->getMimeType();
+
+        if (in_array($mimeType, ['image/jpeg', 'image/png', 'image/webp'], true) && function_exists('imagewebp')) {
+            $source = @imagecreatefromstring((string) $thumbnail->get());
+
+            if ($source !== false) {
+                $width = min(1280, imagesx($source));
+                $height = max(1, (int) round($width * 9 / 16));
+                $optimized = imagecreatetruecolor($width, $height);
+                imagealphablending($optimized, false);
+                imagesavealpha($optimized, true);
+                $transparent = imagecolorallocatealpha($optimized, 0, 0, 0, 127);
+                if ($transparent !== false) {
+                    imagefill($optimized, 0, 0, $transparent);
+                }
+                imagecopyresampled($optimized, $source, 0, 0, 0, 0, $width, $height, imagesx($source), imagesy($source));
+
+                ob_start();
+                $encoded = imagewebp($optimized, null, 82);
+                $contents = ob_get_clean();
+                imagedestroy($optimized);
+                imagedestroy($source);
+
+                if ($encoded && is_string($contents)) {
+                    $path = 'course-thumbnails/'.Str::uuid().'.webp';
+
+                    if (Storage::disk($disk)->put($path, $contents)) {
+                        return [$path, 'image/webp'];
+                    }
+                }
+            }
+        }
+
+        $path = $thumbnail->store('course-thumbnails', $disk);
+        if ($path === false) {
+            throw new RuntimeException('Thumbnail course tidak dapat disimpan.');
+        }
+
+        return [$path, $mimeType];
     }
 
     /** @param array<int, int>|null $trainerIds */

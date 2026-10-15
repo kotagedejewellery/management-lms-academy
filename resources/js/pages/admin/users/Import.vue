@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { FileUp } from '@lucide/vue';
+import { Download, FileUp } from '@lucide/vue';
 import { ref } from 'vue';
 import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
 import { Button } from '@/components/ui/button';
@@ -74,6 +74,11 @@ defineOptions({
                 >. Header opsional: phone, division_code, position_name,
                 branch_code, manager_employee_id, hired_at (YYYY-MM-DD), status.
             </p>
+            <Button class="mt-4" variant="outline" size="sm" as-child
+                ><a href="/user-imports/template" download
+                    ><Download />Unduh template CSV</a
+                ></Button
+            >
             <form
                 class="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end"
                 @submit.prevent="requestSubmit"

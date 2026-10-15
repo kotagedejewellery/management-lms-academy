@@ -27,6 +27,39 @@ services:
       REDIS_HOST: redis
       REDIS_CLIENT: predis
       QUEUE_CONNECTION: database
+      DB_QUEUE_RETRY_AFTER: 180
+      FILESYSTEM_DISK: local
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    working_dir: /var/www/html
+    command: php artisan schedule:work
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/html
+      - vendor:/var/www/html/vendor
+      - storage:/var/www/html/storage
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: ${POSTGRES_DB:-kgj_academy}
+      DB_USERNAME: ${POSTGRES_USER:-kgj}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-kgj_local_only}
+      CACHE_STORE: redis
+      REDIS_HOST: redis
+      REDIS_CLIENT: predis
+      QUEUE_CONNECTION: database
+      DB_QUEUE_RETRY_AFTER: 180
       FILESYSTEM_DISK: local
     depends_on:
       db:
@@ -43,6 +76,12 @@ services:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - app
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/up || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
 
   worker:
     build:
@@ -50,6 +89,7 @@ services:
       dockerfile: docker/php/Dockerfile
     working_dir: /var/www/html
     command: php artisan queue:work database --sleep=3 --tries=3 --timeout=120
+    restart: unless-stopped
     volumes:
       - ./:/var/www/html
       - vendor:/var/www/html/vendor
@@ -64,6 +104,7 @@ services:
       DB_USERNAME: ${POSTGRES_USER:-kgj}
       DB_PASSWORD: ${POSTGRES_PASSWORD:-kgj_local_only}
       QUEUE_CONNECTION: database
+      DB_QUEUE_RETRY_AFTER: 180
       FILESYSTEM_DISK: local
     depends_on:
       db:

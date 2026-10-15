@@ -21,13 +21,18 @@ class AuditLogController extends Controller
                 ->when($filters['event'] ?? null, fn ($query, string $event) => $query->where('event', $event))
                 ->latest('id')
                 ->cursorPaginate(30)
-                ->through(fn (ActivityLog $activity) => [
-                    'id' => $activity->id,
-                    'event' => $activity->event,
-                    'actor' => $activity->actor?->only(['name', 'employee_id']),
-                    'subject' => $activity->subject_type ? class_basename($activity->subject_type).' #'.$activity->subject_id : null,
-                    'created_at' => $activity->created_at->toIso8601String(),
-                ]),
+                ->through(function (ActivityLog $activity): array {
+                    $properties = is_array($activity->properties) ? $activity->properties : [];
+
+                    return [
+                        'id' => $activity->id,
+                        'event' => $activity->event,
+                        'actor' => $activity->actor?->only(['name', 'employee_id']),
+                        'subject' => $activity->subject_type ? class_basename($activity->subject_type).' #'.$activity->subject_id : null,
+                        'changes' => $properties['changes'] ?? [],
+                        'created_at' => $activity->created_at->toIso8601String(),
+                    ];
+                }),
             'filters' => $filters,
         ]);
     }

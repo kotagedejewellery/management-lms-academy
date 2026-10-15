@@ -13,6 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
+use RuntimeException;
 
 class IssueCertificate implements ShouldQueue
 {
@@ -50,7 +51,7 @@ class IssueCertificate implements ShouldQueue
         $pdf->render();
 
         $path = "certificates/{$certificate->number}.pdf";
-        Storage::disk()->put($path, $pdf->output());
+        throw_unless(Storage::disk()->put($path, $pdf->output()), RuntimeException::class, 'Tidak dapat menyimpan PDF sertifikat.');
         $certificate->update(['path' => $path, 'issued_at' => now()]);
 
         if ($certificate->wasRecentlyCreated) {

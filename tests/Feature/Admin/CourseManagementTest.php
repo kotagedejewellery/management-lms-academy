@@ -91,12 +91,20 @@ class CourseManagementTest extends TestCase
             'is_mandatory' => true,
             'passing_grade' => 70,
             'status' => 'draft',
-            'thumbnail' => UploadedFile::fake()->image('course.png', 1280, 720),
+            'thumbnail' => UploadedFile::fake()->image('course.png', 1920, 1080),
         ])->assertRedirect();
 
         $course = Course::query()->where('code', 'ONB-THUMB-001')->sole();
         Storage::disk('local')->assertExists($course->thumbnail_path);
-        $this->actingAs($admin)->get(route('courses.thumbnail', $course))->assertOk();
+        $this->assertSame('image/webp', $course->thumbnail_mime);
+        $this->assertStringEndsWith('.webp', $course->thumbnail_path);
+        $dimensions = getimagesizefromstring(Storage::disk('local')->get($course->thumbnail_path));
+        $this->assertIsArray($dimensions);
+        $this->assertSame(1280, $dimensions[0]);
+        $this->assertSame(720, $dimensions[1]);
+        $this->actingAs($admin)->get(route('courses.thumbnail', $course))
+            ->assertOk()
+            ->assertHeader('Cache-Control', 'immutable, max-age=86400, private');
     }
 
     public function test_course_rejects_a_thumbnail_outside_the_catalog_ratio(): void

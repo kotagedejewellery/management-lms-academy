@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\User;
+use App\Services\UserNotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -36,7 +37,7 @@ class EnrollmentController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, UserNotificationService $notifications): RedirectResponse
     {
         $this->authorizeEnrollments($request);
         $data = $request->validate([
@@ -45,13 +46,17 @@ class EnrollmentController extends Controller
             'due_at' => ['nullable', 'date'],
         ]);
 
-        abort_unless(User::query()->whereKey($data['user_id'])->where('status', 'active')->exists(), 422);
-        abort_unless(Course::query()->whereKey($data['course_id'])->where('status', 'published')->exists(), 422);
+        $user = User::query()->whereKey($data['user_id'])->where('status', 'active')->first();
+        $course = Course::query()->whereKey($data['course_id'])->where('status', 'published')->first();
+        abort_unless($user && $course, 422);
 
-        Enrollment::query()->firstOrCreate(
+        $enrollment = Enrollment::query()->firstOrCreate(
             ['user_id' => $data['user_id'], 'course_id' => $data['course_id']],
             ['status' => 'active', 'due_at' => $data['due_at'] ?? null],
         );
+        if ($enrollment->wasRecentlyCreated) {
+            $notifications->courseAssigned($user, $enrollment);
+        }
 
         return to_route('enrollments.index');
     }

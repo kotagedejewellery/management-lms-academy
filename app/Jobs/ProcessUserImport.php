@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\UserImport;
 use App\Services\LearningPathAssignmentService;
+use App\Support\SpreadsheetChunkReadFilter;
 use Carbon\Carbon;
 use Generator;
 use Illuminate\Bus\Queueable;
@@ -45,7 +46,8 @@ class ProcessUserImport implements ShouldQueue
         $import->update(['status' => 'processing', 'errors' => []]);
 
         try {
-            if ($this->xlsxDataRowCount($import) > self::MAX_XLSX_DATA_ROWS) {
+            $xlsxDataRows = $this->xlsxDataRowCount($import);
+            if ($xlsxDataRows > self::MAX_XLSX_DATA_ROWS) {
                 $this->finish($import, 'failed', 0, 0, 0, [[
                     'line' => 0,
                     'message' => 'File XLSX maksimal berisi 5.000 baris data.',
@@ -69,7 +71,7 @@ class ProcessUserImport implements ShouldQueue
             $seenEmails = [];
 
             $headers = [];
-            foreach ($this->rows($import) as $line => $values) {
+            foreach ($this->rows($import, $xlsxDataRows) as $line => $values) {
                 if ($line === 1) {
                     $headers = array_map(fn ($header) => strtolower(trim(preg_replace('/^\xEF\xBB\xBF/', '', (string) $header))), $values);
                     $required = ['employee_id', 'name', 'email'];
@@ -179,25 +181,32 @@ class ProcessUserImport implements ShouldQueue
     }
 
     /** @return Generator<int, list<string|int|float|null>> */
-    private function rows(UserImport $import): Generator
+    private function rows(UserImport $import, int $xlsxDataRows): Generator
     {
         if (strtolower(pathinfo($import->original_name, PATHINFO_EXTENSION)) === 'xlsx') {
-            $temporaryPath = tempnam(sys_get_temp_dir(), 'kgj-user-import-');
-            if ($temporaryPath === false) {
-                abort(422, 'File impor tidak dapat dipersiapkan.');
-            }
+            $temporaryPath = $this->temporaryPath($import);
 
             try {
-                file_put_contents($temporaryPath, Storage::disk()->get($import->path));
-                $reader = IOFactory::createReaderForFile($temporaryPath);
-                $reader->setReadDataOnly(true);
-                $sheet = $reader->load($temporaryPath)->getActiveSheet();
-                foreach ($sheet->getRowIterator() as $row) {
-                    $values = [];
-                    foreach ($row->getCellIterator() as $cell) {
-                        $values[] = $cell->getFormattedValue();
+                $lastRow = $xlsxDataRows + 1;
+                for ($startRow = 1; $startRow <= $lastRow; $startRow += 200) {
+                    $endRow = min($lastRow, $startRow + 199);
+                    $reader = IOFactory::createReaderForFile($temporaryPath);
+                    $reader->setReadDataOnly(true);
+                    $reader->setReadFilter(new SpreadsheetChunkReadFilter($startRow, $endRow));
+                    $spreadsheet = $reader->load($temporaryPath);
+
+                    try {
+                        $sheet = $spreadsheet->getActiveSheet();
+                        foreach ($sheet->getRowIterator($startRow, $endRow) as $row) {
+                            $values = [];
+                            foreach ($row->getCellIterator() as $cell) {
+                                $values[] = $cell->getFormattedValue();
+                            }
+                            yield $row->getRowIndex() => $values;
+                        }
+                    } finally {
+                        $spreadsheet->disconnectWorksheets();
                     }
-                    yield $row->getRowIndex() => $values;
                 }
             } finally {
                 @unlink($temporaryPath);
@@ -224,13 +233,9 @@ class ProcessUserImport implements ShouldQueue
             return 0;
         }
 
-        $temporaryPath = tempnam(sys_get_temp_dir(), 'kgj-user-import-');
-        if ($temporaryPath === false) {
-            abort(422, 'File impor tidak dapat dipersiapkan.');
-        }
+        $temporaryPath = $this->temporaryPath($import);
 
         try {
-            file_put_contents($temporaryPath, Storage::disk()->get($import->path));
             $worksheets = IOFactory::createReaderForFile($temporaryPath)->listWorksheetInfo($temporaryPath);
 
             return max(0, ...array_map(
@@ -240,6 +245,36 @@ class ProcessUserImport implements ShouldQueue
         } finally {
             @unlink($temporaryPath);
         }
+    }
+
+    private function temporaryPath(UserImport $import): string
+    {
+        $temporaryPath = tempnam(sys_get_temp_dir(), 'kgj-user-import-');
+        $stream = Storage::disk()->readStream($import->path);
+        $output = $temporaryPath === false ? false : fopen($temporaryPath, 'wb');
+
+        if (! is_resource($stream) || ! is_resource($output)) {
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
+            if (is_resource($output)) {
+                fclose($output);
+            }
+            if ($temporaryPath !== false) {
+                @unlink($temporaryPath);
+            }
+
+            abort(422, 'File impor tidak dapat dipersiapkan.');
+        }
+
+        try {
+            stream_copy_to_stream($stream, $output);
+        } finally {
+            fclose($stream);
+            fclose($output);
+        }
+
+        return $temporaryPath;
     }
 
     /** @return array{divisions: array<string, Division>, branches: array<string, Branch>, positions: array<string, Position>} */

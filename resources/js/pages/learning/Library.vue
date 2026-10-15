@@ -94,10 +94,11 @@ defineOptions({
                         v-if="course.thumbnail_url"
                         :src="course.thumbnail_url"
                         :alt="`Thumbnail ${course.title}`"
-                        class="mb-4 aspect-[16/7] w-full rounded-lg object-cover"
+                        class="mb-4 aspect-video w-full rounded-lg object-cover"
                         loading="lazy"
-                        width="640"
-                        height="280"
+                        decoding="async"
+                        width="1280"
+                        height="720"
                     />
                     <p class="text-sm text-muted-foreground">
                         {{ course.category?.name ?? 'Course' }}

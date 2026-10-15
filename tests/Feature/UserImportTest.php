@@ -46,6 +46,15 @@ class UserImportTest extends TestCase
         $this->actingAs(User::factory()->create())->get(route('user-imports.index'))->assertForbidden();
     }
 
+    public function test_admin_can_download_the_official_user_import_template(): void
+    {
+        $admin = $this->userWithPermission('manage-users');
+
+        $this->actingAs($admin)->get(route('user-imports.template'))
+            ->assertOk()
+            ->assertDownload('template-import-employee.csv');
+    }
+
     public function test_admin_can_import_xlsx_with_hired_date(): void
     {
         config()->set('imports.initial_password', 'InitialPass123!');
@@ -61,12 +70,41 @@ class UserImportTest extends TestCase
         ]);
         $path = tempnam(sys_get_temp_dir(), 'kgj-import-');
         (new Xlsx($spreadsheet))->save($path);
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
         $file = new UploadedFile($path, 'employees.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', null, true);
 
         $this->actingAs($admin)->post(route('user-imports.store'), ['file' => $file])->assertRedirect(route('user-imports.index'));
         (new ProcessUserImport(UserImport::query()->sole()->id))->handle();
 
         $this->assertDatabaseHas('users', ['employee_id' => 'KGJ-003', 'hired_at' => '2026-01-15 00:00:00']);
+        @unlink($path);
+    }
+
+    public function test_xlsx_import_processes_rows_across_the_chunk_boundary(): void
+    {
+        config()->set('imports.initial_password', 'InitialPass123!');
+        Storage::fake('s3');
+        config(['filesystems.default' => 's3']);
+        Queue::fake();
+        $admin = $this->userWithPermission('manage-users');
+        Role::query()->create(['slug' => 'employee', 'name' => 'Employee']);
+        $spreadsheet = new Spreadsheet;
+        $rows = [['employee_id', 'name', 'email']];
+        foreach (range(1, 201) as $row) {
+            $rows[] = ['KGJ-'.str_pad((string) $row, 4, '0', STR_PAD_LEFT), 'Employee '.$row, "employee{$row}@example.test"];
+        }
+        $spreadsheet->getActiveSheet()->fromArray($rows);
+        $path = tempnam(sys_get_temp_dir(), 'kgj-import-');
+        (new Xlsx($spreadsheet))->save($path);
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
+        $file = new UploadedFile($path, 'employees.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', null, true);
+
+        $this->actingAs($admin)->post(route('user-imports.store'), ['file' => $file])->assertRedirect(route('user-imports.index'));
+        (new ProcessUserImport(UserImport::query()->sole()->id))->handle();
+
+        $this->assertSame(201, User::query()->where('employee_id', 'like', 'KGJ-%')->count());
         @unlink($path);
     }
 
@@ -80,11 +118,13 @@ class UserImportTest extends TestCase
         $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->fromArray([['employee_id', 'name', 'email']], null, 'A1');
-        foreach (range(1, 5001) as $row) {
-            $sheet->fromArray([['KGJ-'.str_pad((string) $row, 5, '0', STR_PAD_LEFT), 'Employee '.$row, "employee{$row}@example.test"]], null, 'A'.($row + 1));
-        }
+        // The preflight check reads worksheet dimensions, so one distant cell proves
+        // the limit without retaining thousands of spreadsheet cells in memory.
+        $sheet->setCellValue('A5002', 'KGJ-05001');
         $path = tempnam(sys_get_temp_dir(), 'kgj-import-');
         (new Xlsx($spreadsheet))->save($path);
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
         $file = new UploadedFile($path, 'employees.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', null, true);
 
         $this->actingAs($admin)->post(route('user-imports.store'), ['file' => $file])->assertRedirect(route('user-imports.index'));

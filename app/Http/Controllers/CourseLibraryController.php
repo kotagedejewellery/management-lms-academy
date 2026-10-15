@@ -22,7 +22,7 @@ class CourseLibraryController extends Controller
             ->limit(1);
 
         $courses = Course::query()
-            ->select(['id', 'category_id', 'code', 'title', 'description', 'thumbnail_path', 'estimated_minutes', 'is_mandatory'])
+            ->select(['id', 'category_id', 'code', 'title', 'description', 'thumbnail_path', 'estimated_minutes', 'is_mandatory', 'updated_at'])
             ->selectSub($assigned, 'is_assigned')
             ->where('status', 'published')
             ->when($user->division_id, fn ($query) => $query->where(fn ($query) => $query->whereNull('division_id')->orWhere('division_id', $user->division_id)), fn ($query) => $query->whereNull('division_id'))
@@ -34,7 +34,7 @@ class CourseLibraryController extends Controller
             ->withQueryString()
             ->through(fn (Course $course) => [
                 ...$course->only(['id', 'code', 'title', 'description', 'estimated_minutes', 'is_mandatory']),
-                'thumbnail_url' => $course->thumbnail_path ? route('courses.thumbnail', $course) : null,
+                'thumbnail_url' => $course->thumbnail_path ? route('courses.thumbnail', ['course' => $course, 'v' => $course->updated_at?->getTimestamp()]) : null,
                 'category' => $course->category?->only(['name']),
                 'is_assigned' => (bool) $course->is_assigned,
             ]);

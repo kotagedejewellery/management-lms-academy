@@ -8,6 +8,7 @@ type Activity = {
     event: string;
     actor: { name: string; employee_id: string | null } | null;
     subject: string | null;
+    changes: Record<string, { before: unknown; after: unknown }>;
     created_at: string;
 };
 const props = defineProps<{
@@ -50,6 +51,33 @@ function date(value: string): string {
         timeStyle: 'short',
     }).format(new Date(value));
 }
+const fieldLabels: Record<string, string> = {
+    employee_id: 'Employee ID',
+    hired_at: 'Tanggal masuk',
+    name: 'Nama',
+    email: 'Email',
+    phone: 'Telepon',
+    division_id: 'Divisi',
+    position_id: 'Jabatan',
+    branch_id: 'Cabang',
+    manager_id: 'Manager',
+    status: 'Status',
+    code: 'Kode',
+    title: 'Judul',
+    description: 'Deskripsi',
+    is_active: 'Status aktif',
+    sequence: 'Urutan',
+};
+function changeEntries(activity: Activity) {
+    return Object.entries(activity.changes);
+}
+function value(value: unknown): string {
+    if (value === null || value === undefined || value === '') return '—';
+    if (value === true) return 'Ya';
+    if (value === false) return 'Tidak';
+
+    return String(value);
+}
 defineOptions({
     layout: { breadcrumbs: [{ title: 'Audit activity', href: '/audit-logs' }] },
 });
@@ -85,6 +113,28 @@ defineOptions({
                                 · {{ activity.subject }}</span
                             >
                         </p>
+                        <dl
+                            v-if="changeEntries(activity).length"
+                            class="mt-3 grid gap-2 text-xs sm:grid-cols-2"
+                        >
+                            <div
+                                v-for="[field, change] in changeEntries(
+                                    activity,
+                                )"
+                                :key="field"
+                                class="rounded-md border border-border/70 bg-muted/30 px-3 py-2"
+                            >
+                                <dt class="font-medium text-foreground">
+                                    {{ fieldLabels[field] ?? field }}
+                                </dt>
+                                <dd class="mt-1 text-muted-foreground">
+                                    Sebelum: {{ value(change.before) }}
+                                </dd>
+                                <dd class="text-muted-foreground">
+                                    Sesudah: {{ value(change.after) }}
+                                </dd>
+                            </div>
+                        </dl>
                     </div>
                     <time
                         class="text-sm text-muted-foreground sm:text-right"

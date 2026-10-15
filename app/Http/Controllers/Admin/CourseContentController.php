@@ -12,12 +12,15 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Throwable;
 
 class CourseContentController extends Controller
 {
@@ -72,8 +75,13 @@ class CourseContentController extends Controller
     {
         $this->authorizeCourses($request);
         $this->ensureModuleBelongsToCourse($course, $module);
-        $lesson = $module->lessons()->create($this->lessonData($request, $module));
-        $this->storeResource($request, $lesson);
+        $data = $this->lessonData($request, $module);
+        $lesson = DB::transaction(function () use ($module, $request, $data): Lesson {
+            $lesson = $module->lessons()->create($data);
+            $this->storeResource($request, $lesson);
+
+            return $lesson;
+        });
 
         return to_route('courses.content', $course);
     }
@@ -83,8 +91,11 @@ class CourseContentController extends Controller
         $this->authorizeCourses($request);
         $this->ensureModuleBelongsToCourse($course, $module);
         abort_unless($lesson->module_id === $module->id, 404);
-        $lesson->update($this->lessonData($request, $module, $lesson));
-        $this->storeResource($request, $lesson);
+        $data = $this->lessonData($request, $module, $lesson);
+        DB::transaction(function () use ($lesson, $request, $data): void {
+            $lesson->update($data);
+            $this->storeResource($request, $lesson);
+        });
 
         return to_route('courses.content', $course);
     }
@@ -146,7 +157,7 @@ class CourseContentController extends Controller
     {
         $this->authorizeResourceAccess($request, $course);
         $this->ensureModuleBelongsToCourse($course, $module);
-        abort_unless($lesson->module_id === $module->id && $resource->lesson_id === $lesson->id && $resource->mime_type === 'application/pdf', 404);
+        abort_unless($lesson->module_id === $module->id && $resource->lesson_id === $lesson->id && in_array($resource->mime_type, ['application/pdf', 'video/mp4', 'video/webm'], true), 404);
 
         return Storage::disk($resource->disk)->response($resource->path, $resource->original_name, ['Content-Type' => $resource->mime_type]);
     }
@@ -209,6 +220,14 @@ class CourseContentController extends Controller
             throw ValidationException::withMessages(['resource_url' => 'Masukkan URL atau unggah file resource untuk video atau PDF.']);
         }
 
+        if ($request->hasFile('resource') && ! $this->resourceMatchesLessonType($data['type'], $request->file('resource')->getMimeType())) {
+            throw ValidationException::withMessages(['resource' => 'Jenis file harus sesuai dengan tipe lesson yang dipilih.']);
+        }
+
+        if ($lesson && $lesson->resources()->whereNotIn('mime_type', $this->acceptedResourceMimes($data['type']))->exists()) {
+            throw ValidationException::withMessages(['type' => 'Hapus resource yang tidak sesuai sebelum mengubah tipe lesson.']);
+        }
+
         return Arr::except($data, 'resource');
     }
 
@@ -242,15 +261,38 @@ class CourseContentController extends Controller
         $file = $request->file('resource');
         $disk = config('filesystems.default');
         $path = $file->store('lesson-resources/'.$lesson->id, $disk);
+        if ($path === false) {
+            throw new RuntimeException('Resource lesson tidak dapat disimpan.');
+        }
 
-        abort_unless(is_string($path), 500);
-        $lesson->resources()->create([
-            'disk' => $disk,
-            'path' => $path,
-            'original_name' => $file->getClientOriginalName(),
-            'mime_type' => $file->getMimeType() ?? 'application/octet-stream',
-            'size' => $file->getSize(),
-        ]);
+        try {
+            $lesson->resources()->create([
+                'disk' => $disk,
+                'path' => $path,
+                'original_name' => $file->getClientOriginalName(),
+                'mime_type' => $file->getMimeType() ?? 'application/octet-stream',
+                'size' => $file->getSize(),
+            ]);
+        } catch (Throwable $exception) {
+            Storage::disk($disk)->delete($path);
+
+            throw $exception;
+        }
+    }
+
+    private function resourceMatchesLessonType(string $lessonType, ?string $mimeType): bool
+    {
+        return in_array($mimeType, $this->acceptedResourceMimes($lessonType), true);
+    }
+
+    /** @return list<string> */
+    private function acceptedResourceMimes(string $lessonType): array
+    {
+        return match ($lessonType) {
+            'pdf' => ['application/pdf'],
+            'video' => ['video/mp4', 'video/webm'],
+            default => [],
+        };
     }
 
     /** @param iterable<LessonResource> $resources */

@@ -21,13 +21,23 @@ class CourseLibraryTest extends TestCase
         $employee = User::factory()->create(['division_id' => $division->id]);
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
         Course::query()->create(['category_id' => $category->id, 'code' => 'GEN-001', 'title' => 'Umum', 'status' => 'published']);
-        Course::query()->create(['category_id' => $category->id, 'division_id' => $division->id, 'code' => 'OPS-001', 'title' => 'Operasional', 'status' => 'published']);
+        $operationalCourse = Course::query()->create([
+            'category_id' => $category->id,
+            'division_id' => $division->id,
+            'code' => 'OPS-001',
+            'title' => 'Operasional',
+            'status' => 'published',
+            'thumbnail_path' => 'course-thumbnails/operasional.webp',
+            'thumbnail_disk' => 'local',
+            'thumbnail_mime' => 'image/webp',
+        ]);
         Course::query()->create(['category_id' => $category->id, 'division_id' => $otherDivision->id, 'code' => 'HR-001', 'title' => 'HR Rahasia', 'status' => 'published']);
 
         $this->actingAs($employee)->get(route('course-library.index'))->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('learning/Library')
             ->has('courses.data', 2)
             ->where('courses.data.0.code', 'OPS-001')
+            ->where('courses.data.0.thumbnail_url', route('courses.thumbnail', ['course' => $operationalCourse, 'v' => $operationalCourse->updated_at?->getTimestamp()]))
             ->where('courses.data.1.code', 'GEN-001'));
     }
 }

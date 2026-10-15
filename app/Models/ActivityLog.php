@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
-/** @property Carbon $created_at */
+/**
+ * @property array<string, mixed>|null $properties
+ * @property Carbon $created_at
+ */
 class ActivityLog extends Model
 {
     public $timestamps = false;

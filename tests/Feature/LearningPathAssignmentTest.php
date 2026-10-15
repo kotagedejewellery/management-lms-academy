@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\SendWhatsappNotification;
 use App\Jobs\SyncLearningPathRule;
 use App\Models\Branch;
 use App\Models\Course;
@@ -23,6 +24,7 @@ class LearningPathAssignmentTest extends TestCase
 
     public function test_admin_assigns_path_and_learner_receives_its_course_enrollment(): void
     {
+        Queue::fake();
         $permission = Permission::query()->create(['slug' => 'manage-enrollments', 'name' => 'Kelola assignment']);
         $role = Role::query()->create(['slug' => 'lms-admin', 'name' => 'LMS Admin']);
         $role->permissions()->attach($permission);
@@ -40,6 +42,8 @@ class LearningPathAssignmentTest extends TestCase
             ->has('paths.data', 1)
             ->where('paths.data.0.courses.0.enrollment_status', 'active'));
         $this->assertDatabaseHas('enrollments', ['user_id' => $learner->id, 'course_id' => $course->id, 'status' => 'active']);
+        $this->assertDatabaseHas('user_notifications', ['user_id' => $learner->id, 'title' => 'Course baru ditetapkan']);
+        Queue::assertPushed(SendWhatsappNotification::class);
     }
 
     public function test_matching_rule_assigns_path_and_courses_when_an_employee_is_created(): void
