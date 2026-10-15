@@ -125,7 +125,9 @@ class UserImportTest extends TestCase
         (new Xlsx($spreadsheet))->save($path);
         $spreadsheet->disconnectWorksheets();
         unset($spreadsheet);
-        $file = new UploadedFile($path, 'employees.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', null, true);
+        $contents = file_get_contents($path);
+        $this->assertIsString($contents);
+        $file = UploadedFile::fake()->createWithContent('employees.xlsx', $contents);
 
         $this->actingAs($admin)->post(route('user-imports.store'), ['file' => $file])->assertRedirect(route('user-imports.index'));
         (new ProcessUserImport(UserImport::query()->sole()->id))->handle();

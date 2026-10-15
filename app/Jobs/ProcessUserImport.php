@@ -18,7 +18,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Throwable;
@@ -250,35 +249,11 @@ class ProcessUserImport implements ShouldQueue
 
     private function temporaryPath(UserImport $import): string
     {
-        $directory = storage_path('app/private/user-imports-tmp');
-
-        try {
-            File::ensureDirectoryExists($directory);
-        } catch (Throwable) {
-            abort(422, 'File impor tidak dapat dipersiapkan.');
-        }
-
-        $temporaryPath = tempnam($directory, 'kgj-user-import-');
+        $temporaryPath = tempnam(sys_get_temp_dir(), 'kgj-user-import-');
         $stream = Storage::disk()->readStream($import->path);
         $output = $temporaryPath === false ? false : fopen($temporaryPath, 'wb');
 
         if (! is_resource($stream) || ! is_resource($output)) {
-            if (is_resource($output)) {
-                fclose($output);
-                $output = false;
-            }
-
-            if ($temporaryPath !== false && ! is_resource($stream)) {
-                try {
-                    $contents = Storage::disk()->get($import->path);
-                    if (is_string($contents) && file_put_contents($temporaryPath, $contents) !== false) {
-                        return $temporaryPath;
-                    }
-                } catch (Throwable) {
-                    // The generic error below keeps the import response safe for users.
-                }
-            }
-
             if (is_resource($stream)) {
                 fclose($stream);
             }
