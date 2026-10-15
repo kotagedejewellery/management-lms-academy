@@ -23132,17 +23132,6 @@
       "source_location": "L1"
     },
     {
-      "id": "ref_laravel_vite_plugin",
-      "label": "laravel-vite-plugin",
-      "_origin": "ast",
-      "community": 42,
-      "community_name": "useAppearance.ts",
-      "file_type": "concept",
-      "norm_label": "laravel-vite-plugin",
-      "source_file": "package.json",
-      "source_location": "L21"
-    },
-    {
       "id": "ref_vue_sonner",
       "label": "vue-sonner",
       "_origin": "ast",
@@ -29111,6 +29100,17 @@
       "norm_label": "@inertiajs/vite",
       "source_file": "package.json",
       "source_location": "L14"
+    },
+    {
+      "id": "ref_laravel_vite_plugin",
+      "label": "laravel-vite-plugin",
+      "_origin": "ast",
+      "community": 98,
+      "community_name": "vite.config.ts",
+      "file_type": "concept",
+      "norm_label": "laravel-vite-plugin",
+      "source_file": "package.json",
+      "source_location": "L21"
     },
     {
       "id": "ref_laravel_vite_plugin_wayfinder",
@@ -48699,7 +48699,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "resources/js/app.ts",
-      "source_location": "L3",
+      "source_location": "L4",
       "weight": 1.0
     },
     {
@@ -48711,7 +48711,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "resources/js/app.ts",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -57428,7 +57428,7 @@
     },
     {
       "source": "resources_js_app",
-      "target": "resources_js_composables_useappearance",
+      "target": "ref_vue",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -57436,11 +57436,12 @@
       "context": "import",
       "source_file": "resources/js/app.ts",
       "source_location": "L3",
+      "type_only": true,
       "weight": 1.0
     },
     {
       "source": "resources_js_app",
-      "target": "resources_js_layouts_applayout",
+      "target": "resources_js_composables_useappearance",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -57452,7 +57453,7 @@
     },
     {
       "source": "resources_js_app",
-      "target": "resources_js_layouts_authlayout",
+      "target": "resources_js_layouts_applayout",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -57464,7 +57465,7 @@
     },
     {
       "source": "resources_js_app",
-      "target": "resources_js_layouts_settings_layout",
+      "target": "resources_js_layouts_authlayout",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -57476,7 +57477,7 @@
     },
     {
       "source": "resources_js_app",
-      "target": "resources_js_lib_flashtoast",
+      "target": "resources_js_layouts_settings_layout",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -57484,6 +57485,18 @@
       "context": "import",
       "source_file": "resources/js/app.ts",
       "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "resources_js_app",
+      "target": "resources_js_lib_flashtoast",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "resources/js/app.ts",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -99704,5 +99717,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "7c5ccd6fb060d1d19a471c44f7fc14a7a569933d"
+  "built_at_commit": "7ef8acec1ccf8a843832a13b47d51a963bba5f70"
 }
