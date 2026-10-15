@@ -13,7 +13,9 @@ services:
     volumes:
       - storage_data:/var/www/html/storage
     networks:
-      - internal
+      internal:
+        aliases:
+          - kgj-lms-fpm
     depends_on:
       db:
         condition: service_healthy
