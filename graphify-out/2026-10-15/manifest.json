@@ -2388,9 +2388,9 @@
     "semantic_hash": ""
   },
   "tests/Feature/UserImportTest.php": {
-    "mtime": 1792037224.2793,
-    "seen": 1792037255.926062,
-    "ast_hash": "bbef0ae678e694e657b69c016668cf60",
+    "mtime": 1792037959.4859118,
+    "seen": 1792037988.873689,
+    "ast_hash": "572196ba0ed1e862d1760781f9e83b15",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_12_000016_add_timing_to_assessments.php": {
@@ -2412,9 +2412,9 @@
     "semantic_hash": ""
   },
   "docs/DEPLOYMENT_RUNBOOK.md": {
-    "mtime": 1791946198.0914018,
-    "seen": 1791946981.0558465,
-    "ast_hash": "874499f02e8d0e5a1cbfa3246e571d36",
+    "mtime": 1792039875.807817,
+    "seen": 1792039898.027211,
+    "ast_hash": "88c23a371f0ba2cf00536b01a34d024e",
     "semantic_hash": ""
   },
   "docs/PERFORMANCE_BASELINE.md": {
@@ -2598,9 +2598,9 @@
     "semantic_hash": ""
   },
   ".github/workflows/ci.yml": {
-    "mtime": 1792037179.871241,
-    "seen": 1792037255.926081,
-    "ast_hash": "0be8768f67e7423c79460ff29ff950d7",
+    "mtime": 1792039875.3112085,
+    "seen": 1792039898.0271947,
+    "ast_hash": "4807658d1e47a13e3c5a2633cdf57e11",
     "semantic_hash": ""
   },
   "README.md": {
@@ -2679,6 +2679,18 @@
     "mtime": 1792032361.1488628,
     "seen": 1792032382.776139,
     "ast_hash": "e549bb2ca3e0409596f4535cf7f0076b",
+    "semantic_hash": ""
+  },
+  "docker/production-entrypoint.sh": {
+    "mtime": 1792039001.9638438,
+    "seen": 1792039724.2046003,
+    "ast_hash": "b7276c3f4246ca4cdf18b77d3dbf3ad1",
+    "semantic_hash": ""
+  },
+  "compose.production.yml": {
+    "mtime": 1792039073.875451,
+    "seen": 1792039724.2061245,
+    "ast_hash": "6a9cc05761bc23304471b82fd3066e40",
     "semantic_hash": ""
   }
 }
