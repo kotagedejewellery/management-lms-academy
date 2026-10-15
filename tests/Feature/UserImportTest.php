@@ -111,8 +111,8 @@ class UserImportTest extends TestCase
     public function test_xlsx_import_rejects_a_workbook_with_more_than_five_thousand_data_rows(): void
     {
         config()->set('imports.initial_password', 'InitialPass123!');
-        Storage::fake('s3');
-        config(['filesystems.default' => 's3']);
+        Storage::fake('local');
+        config(['filesystems.default' => 'local']);
         $admin = $this->userWithPermission('manage-users');
         Role::query()->create(['slug' => 'employee', 'name' => 'Employee']);
         $spreadsheet = new Spreadsheet;
@@ -127,15 +127,20 @@ class UserImportTest extends TestCase
         unset($spreadsheet);
         $contents = file_get_contents($path);
         $this->assertIsString($contents);
-        $file = UploadedFile::fake()->createWithContent('employees.xlsx', $contents);
-
-        $this->actingAs($admin)->post(route('user-imports.store'), ['file' => $file])->assertRedirect(route('user-imports.index'));
-        (new ProcessUserImport(UserImport::query()->sole()->id))->handle();
-
-        $this->assertSame('failed', UserImport::query()->sole()->status);
-        $this->assertSame('File XLSX maksimal berisi 5.000 baris data.', UserImport::query()->sole()->errors[0]['message']);
-        $this->assertSame(0, User::query()->where('employee_id', 'like', 'KGJ-%')->count());
         @unlink($path);
+
+        $import = $admin->userImports()->create([
+            'path' => 'user-imports/oversized.xlsx',
+            'original_name' => 'employees.xlsx',
+            'status' => 'queued',
+        ]);
+        $this->assertTrue(Storage::disk()->put($import->path, $contents));
+
+        (new ProcessUserImport($import->id))->handle();
+
+        $this->assertSame('failed', $import->fresh()->status);
+        $this->assertSame('File XLSX maksimal berisi 5.000 baris data.', $import->fresh()->errors[0]['message']);
+        $this->assertSame(0, User::query()->where('employee_id', 'like', 'KGJ-%')->count());
     }
 
     private function userWithPermission(string $permission): User

@@ -1,17 +1,17 @@
 # Graph Report - KGJ-lms-academy  (2026-10-15)
 
 ## Corpus Check
-- 437 files · ~93,859 words
+- 437 files · ~93,866 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 25 file(s) not represented in the graph (top: (none) 18, .example 2, .conf 1)
 
 ## Summary
-- 2640 nodes · 5898 edges · 160 communities (118 shown, 42 thin omitted)
+- 2640 nodes · 5897 edges · 160 communities (118 shown, 42 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `479c4947`
+- Built from commit: `d75cd41b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -40,7 +40,7 @@
 - Assessment.vue
 - Enrollment
 - SidebarProvider.vue
-- FortifyServiceProvider
+- UserImportController.php
 - bootstrap/app.php
 - IssueCertificate
 - NavUser.vue
@@ -104,7 +104,7 @@
 - Checkbox.vue
 - SidebarMenuSkeleton.vue
 - LearningPathController
-- OrganizationController
+- OrganizationController.php
 - LearningPathAssignmentService
 - notifications/Index.vue
 - SheetContent.vue
@@ -230,7 +230,7 @@ Nodes (9): {closure#1}(), {closure#3}(), {closure#4}(), {closure#5}(), CourseCon
 
 ### Community 9 - "Inertia\Response"
 Cohesion: 0.07
-Nodes (15): AuditLogController, CertificateController, Controller, DashboardController, LearningProgressController, MyLearningPathController, NotificationController, TeamProgressController (+7 more)
+Nodes (15): AnnouncementController, AuditLogController, Controller, DashboardController, LearningProgressController, MyLearningPathController, NotificationController, SecurityController (+7 more)
 
 ### Community 10 - "TwoFactorSetupModal.vue"
 Cohesion: 0.09
@@ -245,8 +245,8 @@ Cohesion: 0.10
 Nodes (8): {closure#1}(), Assessment, CourseCategory, AssessmentManagementTest, AssessmentAttemptTest, CertificateTest, DashboardTest, ReportTest
 
 ### Community 13 - "PasswordValidationRules"
-Cohesion: 0.11
-Nodes (14): CreateNewUser, ResetUserPassword, PasswordValidationRules, ProfileValidationRules, PasswordUpdateRequest, ProfileDeleteRequest, ProfileUpdateRequest, TwoFactorAuthenticationRequest (+6 more)
+Cohesion: 0.06
+Nodes (22): CreateNewUser, ResetUserPassword, PasswordValidationRules, ProfileValidationRules, PasswordUpdateRequest, ProfileDeleteRequest, ProfileUpdateRequest, TwoFactorAuthenticationRequest (+14 more)
 
 ### Community 14 - "Role"
 Cohesion: 0.08
@@ -265,8 +265,8 @@ Cohesion: 0.05
 Nodes (40): resources_js_actions_app_http_controllers_settings_profilecontroller, emit, passwordInput, resources_js_components_ui_dialog_index_dialog, resources_js_components_ui_dialog_index_dialogclose, resources_js_components_ui_dialog_index_dialogcontent, resources_js_components_ui_dialog_index_dialogdescription, resources_js_components_ui_dialog_index_dialogfooter (+32 more)
 
 ### Community 18 - "Illuminate\Http\Request"
-Cohesion: 0.11
-Nodes (15): CourseCategoryController, UserImportController, ReportController, {closure#1}(), {closure#10}(), {closure#11}(), {closure#12}(), {closure#3}() (+7 more)
+Cohesion: 0.13
+Nodes (14): CourseCategoryController, ReportController, {closure#1}(), {closure#10}(), {closure#11}(), {closure#12}(), {closure#3}(), {closure#4}() (+6 more)
 
 ### Community 19 - "Illuminate\Database\Eloquent\Relations\HasMany"
 Cohesion: 0.09
@@ -288,9 +288,9 @@ Nodes (13): {closure#1}(), {closure#3}(), {closure#1}(), {closure#2}(), {closure
 Cohesion: 0.16
 Nodes (16): emits, isMobile, open, openMobile, props, setOpen(), setOpenMobile(), state (+8 more)
 
-### Community 24 - "FortifyServiceProvider"
-Cohesion: 0.16
-Nodes (7): AppServiceProvider, {closure#1}(), FortifyServiceProvider, Carbon\CarbonImmutable, Illuminate\Support\Facades\Date, Illuminate\Support\ServiceProvider, Illuminate\Validation\Rules\Password
+### Community 24 - "UserImportController.php"
+Cohesion: 0.20
+Nodes (3): UserImportController, CertificateController, Symfony\Component\HttpFoundation\StreamedResponse
 
 ### Community 25 - "bootstrap/app.php"
 Cohesion: 0.09
@@ -305,8 +305,8 @@ Cohesion: 0.11
 Nodes (20): Props, { isCurrentOrParentUrl }, NavGroup, { isMobile, state }, loggingOut, logoutDialogOpen, page, user (+12 more)
 
 ### Community 30 - "LearningPath"
-Cohesion: 0.20
-Nodes (5): LearningPathAssignmentController, {closure#4}(), LearningPathContentController, LearningPath, {closure#5}()
+Cohesion: 0.23
+Nodes (4): LearningPathAssignmentController, {closure#4}(), LearningPathContentController, LearningPath
 
 ### Community 31 - "AssessmentAttemptController.php"
 Cohesion: 0.17
@@ -329,8 +329,8 @@ Cohesion: 0.07
 Nodes (32): @inertiajs/vue3, disableDialogOpen, disabling, { hasSetupData, clearTwoFactorAuthData }, Props, showSetupModal, isRecoveryCodesVisible, recoveryCodeSectionRef (+24 more)
 
 ### Community 36 - "Illuminate\Http\RedirectResponse"
-Cohesion: 0.12
-Nodes (7): AssessmentController, {closure#1}(), ProfileController, SecurityController, Illuminate\Auth\Middleware\RequirePassword, Illuminate\Http\RedirectResponse, Illuminate\Support\Facades\Route
+Cohesion: 0.21
+Nodes (4): AssessmentController, {closure#1}(), ProfileController, Illuminate\Http\RedirectResponse
 
 ### Community 37 - "SelectContent.vue"
 Cohesion: 0.05
@@ -349,16 +349,16 @@ Cohesion: 0.10
 Nodes (16): applyFilters(), clearFilters(), Course, courseOptions, courseQuery, courseSearchError, courseSearching, Division (+8 more)
 
 ### Community 41 - "CourseController.php"
-Cohesion: 0.12
-Nodes (3): {closure#6}(), Illuminate\Support\Str, Pdo\Mysql
+Cohesion: 0.10
+Nodes (5): AssigneeSearchController, {closure#6}(), Illuminate\Http\JsonResponse, Illuminate\Support\Str, Pdo\Mysql
 
 ### Community 42 - "useAppearance.ts"
 Cohesion: 0.14
 Nodes (19): { appearance, updateAppearance }, tabs, appearance, getStoredAppearance(), handleSystemThemeChange(), initializeTheme(), mediaQuery(), prefersDark() (+11 more)
 
 ### Community 43 - "web.php"
-Cohesion: 0.17
-Nodes (4): AnnouncementController, AssigneeSearchController, EnrollmentController, Illuminate\Http\JsonResponse
+Cohesion: 0.16
+Nodes (3): EnrollmentController, Illuminate\Auth\Middleware\RequirePassword, Illuminate\Support\Facades\Route
 
 ### Community 44 - "compilerOptions"
 Cohesion: 0.10
@@ -421,8 +421,8 @@ Cohesion: 0.05
 Nodes (25): useUnsavedChangesGuard(), leaveWithoutSaving(), reset(), Assessment, createForm, deletingQuestion, leaveGuard, props (+17 more)
 
 ### Community 61 - "LearningPathAssignmentService.php"
-Cohesion: 0.33
-Nodes (3): {closure#1}(), {closure#3}(), Illuminate\Support\Facades\DB
+Cohesion: 0.29
+Nodes (3): {closure#1}(), {closure#3}(), {closure#5}()
 
 ### Community 62 - "ProcessUserImport"
 Cohesion: 0.25
@@ -679,8 +679,8 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `User` connect `User` to `LearningPathCourse`, `TestCase`, `Course`, `Inertia\Response`, `Chisel`, `CourseCategory`, `PasswordValidationRules`, `Role`, `LearningPathAssignment`, `Illuminate\Http\Request`, `Illuminate\Database\Eloquent\Relations\HasMany`, `DatabaseSeeder.php`, `Enrollment`, `DashboardResolver`, `IssueCertificate`, `LearningPath`, `LearningPathManagementTest`, `Inertia\Testing\AssertableInertia`, `LocalTestingSeeder.php`, `CourseController.php`, `web.php`, `UserController.php`, `UserNotification`, `CourseController`, `.seed`, `LearningPathAssignmentService.php`, `ProcessUserImport.php`, `CourseManagementTest`, `Illuminate\Database\Eloquent\Model`, `UserFactory.php`, `LearningPathAssignmentService`, `LessonResourceTest`, `LearningFlowTest`, `ActivityLog`?**
   _High betweenness centrality (0.075) - this node is a cross-community bridge._
 - **Why does `vue` connect `vue` to `SidebarMenuButton.vue`, `input/index.ts`, `@lucide/vue`, `learning-paths/Content.vue`, `reka-ui`, `TwoFactorSetupModal.vue`, `@vueuse/core`, `Show.vue`, `learning-path-assignments/Index.vue`, `AppSidebar.vue`, `dialog/index.ts`, `Assessment.vue`, `global.d.ts`, `SidebarProvider.vue`, `NavUser.vue`, `AppHeader.vue`, `@inertiajs/vue3`, `SelectContent.vue`, `Sidebar.vue`, `reports/Index.vue`, `useAppearance.ts`, `package.json`, `InputOTPSlot.vue`, `Security.vue`, `courses/Form.vue`, `AssigneePicker.vue`, `types/index.ts`, `Assessments.vue`, `Badge.vue`, `courses/Content.vue`, `AssessmentResult.vue`, `Checkbox.vue`, `SidebarMenuSkeleton.vue`, `notifications/Index.vue`, `SheetContent.vue`, `useCurrentUrl.ts`, `AvatarFallback.vue`, `announcements/Index.vue`?**
-  _High betweenness centrality (0.073) - this node is a cross-community bridge._
-- **Why does `Course` connect `Course` to `Course.php`, `LearningPathCourse`, `User`, `TestCase`, `Inertia\Response`, `CourseCategory`, `Role`, `LearningPathAssignment`, `Illuminate\Http\Request`, `Illuminate\Database\Eloquent\Relations\HasMany`, `Enrollment`, `LearningController`, `LearningPath`, `AssessmentAttemptController.php`, `LearningPathManagementTest`, `Inertia\Testing\AssertableInertia`, `Illuminate\Http\RedirectResponse`, `LocalTestingSeeder.php`, `CourseController.php`, `web.php`, `CourseController`, `.seed`, `CourseManagementTest`, `Illuminate\Database\Eloquent\Model`, `LearningController.php`, `CourseLibraryController.php`, `LessonResourceTest`, `LearningFlowTest`?**
+  _High betweenness centrality (0.071) - this node is a cross-community bridge._
+- **Why does `Course` connect `Course` to `Course.php`, `LearningPathCourse`, `User`, `TestCase`, `Inertia\Response`, `CourseCategory`, `Role`, `LearningPathAssignment`, `Illuminate\Http\Request`, `Illuminate\Database\Eloquent\Relations\HasMany`, `Enrollment`, `UserImportController.php`, `LearningController`, `LearningPath`, `AssessmentAttemptController.php`, `LearningPathManagementTest`, `Inertia\Testing\AssertableInertia`, `Illuminate\Http\RedirectResponse`, `LocalTestingSeeder.php`, `CourseController.php`, `web.php`, `CourseController`, `.seed`, `CourseManagementTest`, `Illuminate\Database\Eloquent\Model`, `LearningController.php`, `CourseLibraryController.php`, `LessonResourceTest`, `LearningFlowTest`?**
   _High betweenness centrality (0.026) - this node is a cross-community bridge._
 - **What connects `$schema`, `style`, `config` to the rest of the system?**
   _749 weakly-connected nodes found - possible documentation gaps or missing edges._

@@ -2388,9 +2388,9 @@
     "semantic_hash": ""
   },
   "tests/Feature/UserImportTest.php": {
-    "mtime": 1792037224.2793,
-    "seen": 1792037255.926062,
-    "ast_hash": "bbef0ae678e694e657b69c016668cf60",
+    "mtime": 1792037959.4859118,
+    "seen": 1792037988.873689,
+    "ast_hash": "572196ba0ed1e862d1760781f9e83b15",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_12_000016_add_timing_to_assessments.php": {
