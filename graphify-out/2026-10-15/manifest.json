@@ -180,9 +180,9 @@
     "semantic_hash": ""
   },
   "composer.json": {
-    "mtime": 1791967352.1723735,
-    "seen": 1791968506.5693529,
-    "ast_hash": "856137a0fd46060c7a2e5714d32736d7",
+    "mtime": 1792033432.292176,
+    "seen": 1792033718.3027396,
+    "ast_hash": "ad6f4ead8cd3938ba4c22599fc46e6cf",
     "semantic_hash": ""
   },
   "config/app.php": {
@@ -1626,9 +1626,9 @@
     "semantic_hash": ""
   },
   ".github/workflows/tests.yml": {
-    "mtime": 1789960740.0,
-    "seen": 1791444957.5713484,
-    "ast_hash": "6b598f402144fb54c048212679f35ffe",
+    "mtime": 1792034682.3598948,
+    "seen": 1792034712.879779,
+    "ast_hash": "0c522f116eb41f3bc55cc91a4badb7f5",
     "semantic_hash": ""
   },
   "pnpm-workspace.yaml": {
@@ -2316,21 +2316,21 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/AuditLogController.php": {
-    "mtime": 1791535805.10365,
-    "seen": 1791535836.548211,
-    "ast_hash": "e97a28fc0710125f7252855462e29c18",
+    "mtime": 1792031453.3102386,
+    "seen": 1792031767.568292,
+    "ast_hash": "e70043d6e1efe047a59805f70dce066d",
     "semantic_hash": ""
   },
   "app/Http/Middleware/RecordAuditActivity.php": {
-    "mtime": 1791537038.729698,
-    "seen": 1791537070.0759127,
-    "ast_hash": "aaff5f3022f31114b3cf902f083145c6",
+    "mtime": 1792031453.923762,
+    "seen": 1792031767.5683305,
+    "ast_hash": "502ce32985d37c90b50b8eb1dd16c396",
     "semantic_hash": ""
   },
   "app/Models/ActivityLog.php": {
-    "mtime": 1791944451.7733147,
-    "seen": 1791944655.078946,
-    "ast_hash": "fd8a9e18df55b1555ae2ba94c15b34a0",
+    "mtime": 1792031526.0818758,
+    "seen": 1792031767.5683548,
+    "ast_hash": "bcae6087289e6d8cf2c737ce8eaee912",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_09_000014_create_activity_logs_table.php": {
@@ -2340,15 +2340,15 @@
     "semantic_hash": ""
   },
   "resources/js/pages/audit-logs/Index.vue": {
-    "mtime": 1791959396.7963588,
-    "seen": 1791960009.224521,
-    "ast_hash": "f435da48e6f33fb4ffb85a169ad4970c",
+    "mtime": 1792033530.341292,
+    "seen": 1792033718.3033855,
+    "ast_hash": "a1baa1edc53ef19ad8a137acac2ec89e",
     "semantic_hash": ""
   },
   "tests/Feature/AuditLogTest.php": {
-    "mtime": 1791535811.5963528,
-    "seen": 1791535836.5488045,
-    "ast_hash": "fad01a2289f2de00e0c3ab2c6c36351a",
+    "mtime": 1792031587.165088,
+    "seen": 1792031767.5693576,
+    "ast_hash": "47fa6f78abb5dc758ca67d6c537a8e71",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/UserImportController.php": {
@@ -2673,6 +2673,12 @@
     "mtime": 1792030321.698786,
     "seen": 1792030648.3406293,
     "ast_hash": "d6bc340931b337381b8d55204104b199",
+    "semantic_hash": ""
+  },
+  "docs/UAT_BROWSER_CHECKLIST.md": {
+    "mtime": 1792032361.1488628,
+    "seen": 1792032382.776139,
+    "ast_hash": "e549bb2ca3e0409596f4535cf7f0076b",
     "semantic_hash": ""
   }
 }

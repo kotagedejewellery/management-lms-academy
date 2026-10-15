@@ -43,7 +43,7 @@ jobs:
         run: composer setup
 
       - name: Generate Wayfinder types
-        run: php artisan wayfinder:generate
+        run: php artisan wayfinder:generate --with-form --no-interaction
 
       - name: Run CI Checks
         run: composer ci:check

@@ -1518,9 +1518,9 @@
     "semantic_hash": ""
   },
   "routes/settings.php": {
-    "mtime": 1791872728.3884542,
-    "seen": 1791875415.6728787,
-    "ast_hash": "d95a5a0e63a9e57a1e7d558202bff340",
+    "mtime": 1792035149.2927427,
+    "seen": 1792035181.1522303,
+    "ast_hash": "9866a53b43d228ee4e5ebb137a2eead7",
     "semantic_hash": ""
   },
   "routes/web.php": {
@@ -1584,9 +1584,9 @@
     "semantic_hash": ""
   },
   "tests/Feature/Settings/ProfileUpdateTest.php": {
-    "mtime": 1791872617.4159617,
-    "seen": 1791875415.6729712,
-    "ast_hash": "245c216fcc14efbd863bc4e246639363",
+    "mtime": 1792035149.9876208,
+    "seen": 1792035181.1522872,
+    "ast_hash": "8630c4041e6adfa5fee1d05a53e72411",
     "semantic_hash": ""
   },
   "tests/Feature/Settings/SecurityTest.php": {
@@ -1626,9 +1626,9 @@
     "semantic_hash": ""
   },
   ".github/workflows/tests.yml": {
-    "mtime": 1792033433.7079628,
-    "seen": 1792033718.3034987,
-    "ast_hash": "adf92e7706d43fb0ec0ee51789086b68",
+    "mtime": 1792034682.3598948,
+    "seen": 1792034712.879779,
+    "ast_hash": "0c522f116eb41f3bc55cc91a4badb7f5",
     "semantic_hash": ""
   },
   "pnpm-workspace.yaml": {
