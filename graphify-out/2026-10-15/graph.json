@@ -16612,7 +16612,7 @@
       "node_kind": "heading",
       "norm_label": "3. auto-deploy github actions",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L50"
+      "source_location": "L47"
     },
     {
       "id": "docs_deployment_runbook_3_backup_dan_restore_database",
@@ -16624,7 +16624,7 @@
       "node_kind": "heading",
       "norm_label": "3. backup dan restore database",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L65"
+      "source_location": "L62"
     },
     {
       "id": "docs_deployment_runbook_4_monitoring_dan_respons_insiden",
@@ -16636,7 +16636,7 @@
       "node_kind": "heading",
       "norm_label": "4. monitoring dan respons insiden",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L84"
+      "source_location": "L81"
     },
     {
       "id": "docs_deployment_runbook_5_checklist_rilis",
@@ -16648,7 +16648,7 @@
       "node_kind": "heading",
       "norm_label": "5. checklist rilis",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L91"
+      "source_location": "L88"
     },
     {
       "id": "docs_deployment_runbook_production_deployment_runbook",
@@ -81811,6 +81811,17 @@
     },
     {
       "source": "docs_deployment_runbook_production_deployment_runbook",
+      "target": "docs_deployment_runbook_3_auto_deploy_github_actions",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_deployment_runbook_production_deployment_runbook",
       "target": "docs_deployment_runbook_1_prasyarat",
       "relation": "contains",
       "_origin": "ast",
@@ -81822,24 +81833,13 @@
     },
     {
       "source": "docs_deployment_runbook_production_deployment_runbook",
-      "target": "docs_deployment_runbook_3_auto_deploy_github_actions",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L50",
-      "weight": 1.0
-    },
-    {
-      "source": "docs_deployment_runbook_production_deployment_runbook",
       "target": "docs_deployment_runbook_3_backup_dan_restore_database",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L65",
+      "source_location": "L62",
       "weight": 1.0
     },
     {
@@ -81850,7 +81850,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L84",
+      "source_location": "L81",
       "weight": 1.0
     },
     {
@@ -81861,7 +81861,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L91",
+      "source_location": "L88",
       "weight": 1.0
     },
     {

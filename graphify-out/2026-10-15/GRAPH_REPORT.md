@@ -1,7 +1,7 @@
 # Graph Report - KGJ-lms-academy  (2026-10-15)
 
 ## Corpus Check
-- 438 files · ~94,551 words
+- 438 files · ~94,591 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 27 file(s) not represented in the graph (top: (none) 18, .example 3, .conf 1)
 
