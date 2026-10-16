@@ -5,6 +5,7 @@ import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
 import InputError from '@/components/InputError.vue';
 import { useUnsavedChangesGuard } from '@/composables/useUnsavedChangesGuard';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -51,12 +52,15 @@ const form = useForm({
     status: props.course?.status ?? 'draft',
     trainer_ids: props.course?.trainer_ids ?? [],
     thumbnail: null as File | null,
+    remove_thumbnail: false,
 });
 const thumbnailPreview = ref<string | null>(
     props.course?.thumbnail_url ?? null,
 );
-const displayedThumbnail = computed(
-    () => thumbnailPreview.value ?? props.course?.thumbnail_url ?? null,
+const displayedThumbnail = computed(() =>
+    form.remove_thumbnail
+        ? null
+        : (thumbnailPreview.value ?? props.course?.thumbnail_url ?? null),
 );
 const leaveGuard = useUnsavedChangesGuard(() => form.isDirty);
 function submit(): void {
@@ -76,9 +80,24 @@ function submit(): void {
 function selectThumbnail(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0] ?? null;
     form.thumbnail = file;
+    form.remove_thumbnail = false;
     thumbnailPreview.value = file
         ? URL.createObjectURL(file)
         : (props.course?.thumbnail_url ?? null);
+}
+function removeThumbnail(): void {
+    form.thumbnail = null;
+    form.remove_thumbnail = true;
+    thumbnailPreview.value = null;
+}
+function restoreThumbnail(): void {
+    form.remove_thumbnail = false;
+    thumbnailPreview.value = props.course?.thumbnail_url ?? null;
+}
+function setTrainerSelection(trainerId: number, selected: boolean): void {
+    form.trainer_ids = selected
+        ? [...new Set([...form.trainer_ids, trainerId])]
+        : form.trainer_ids.filter((id) => id !== trainerId);
 }
 </script>
 
@@ -132,6 +151,7 @@ function selectThumbnail(event: Event): void {
                                 {{ category.name }}
                             </option></select
                         ><InputError :message="form.errors.category_id" /><Link
+                            v-if="can_assign_trainers"
                             href="/course-categories"
                             class="text-xs underline underline-offset-4"
                             >Kelola kategori</Link
@@ -198,6 +218,30 @@ function selectThumbnail(event: Event): void {
                                     rasio 16:9 wajib agar tampil rapi di
                                     katalog.
                                 </p>
+                                <Button
+                                    v-if="
+                                        displayedThumbnail &&
+                                        !form.remove_thumbnail
+                                    "
+                                    type="button"
+                                    variant="outline"
+                                    class="w-fit"
+                                    @click="removeThumbnail"
+                                >
+                                    Hapus thumbnail
+                                </Button>
+                                <Button
+                                    v-else-if="
+                                        form.remove_thumbnail &&
+                                        course?.thumbnail_url
+                                    "
+                                    type="button"
+                                    variant="outline"
+                                    class="w-fit"
+                                    @click="restoreThumbnail"
+                                >
+                                    Batalkan hapus thumbnail
+                                </Button>
                                 <InputError :message="form.errors.thumbnail" />
                             </div>
                         </div>
@@ -207,20 +251,45 @@ function selectThumbnail(event: Event): void {
                         class="grid gap-2 sm:col-span-2"
                     >
                         <Label for="trainer_ids">Trainer / Mentor</Label>
-                        <select
+                        <div
+                            v-if="trainers.length"
                             id="trainer_ids"
-                            v-model="form.trainer_ids"
-                            multiple
-                            class="min-h-24 rounded-md border border-input bg-transparent px-3 py-2 text-sm"
+                            class="grid gap-2 rounded-md border border-input p-3 sm:grid-cols-2"
                         >
-                            <option
+                            <Label
                                 v-for="trainer in trainers"
                                 :key="trainer.id"
-                                :value="trainer.id"
+                                :for="`trainer-${trainer.id}`"
+                                class="flex min-h-9 cursor-pointer items-center gap-3 rounded-md px-2 text-sm hover:bg-muted/60"
                             >
+                                <Checkbox
+                                    :id="`trainer-${trainer.id}`"
+                                    :checked="
+                                        form.trainer_ids.includes(trainer.id)
+                                    "
+                                    @update:checked="
+                                        setTrainerSelection(
+                                            trainer.id,
+                                            $event === true,
+                                        )
+                                    "
+                                />
                                 {{ trainer.name }}
-                            </option>
-                        </select>
+                            </Label>
+                        </div>
+                        <div
+                            v-else
+                            class="rounded-md border border-dashed border-border bg-muted/40 px-3 py-4 text-sm text-muted-foreground"
+                        >
+                            Belum ada pengguna aktif dengan role Trainer /
+                            Mentor.
+                            <Link
+                                href="/users"
+                                class="underline underline-offset-4"
+                                >Kelola pengguna</Link
+                            >
+                            untuk menambahkan trainer terlebih dahulu.
+                        </div>
                         <p class="text-xs leading-5 text-muted-foreground">
                             Pilih trainer yang dapat mengelola materi dan
                             assessment course ini.

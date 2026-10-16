@@ -14,7 +14,7 @@ class CourseCategoryController extends Controller
 {
     public function index(Request $request): Response
     {
-        $this->authorizeCourses($request);
+        $this->authorizeCategories($request);
 
         $categories = CourseCategory::query()
             ->withCount('courses')
@@ -40,7 +40,7 @@ class CourseCategoryController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $this->authorizeCourses($request);
+        $this->authorizeCategories($request);
         CourseCategory::query()->create($this->validatedData($request));
 
         return to_route('course-categories.index');
@@ -48,15 +48,15 @@ class CourseCategoryController extends Controller
 
     public function update(Request $request, CourseCategory $courseCategory): RedirectResponse
     {
-        $this->authorizeCourses($request);
+        $this->authorizeCategories($request);
         $courseCategory->update($this->validatedData($request, $courseCategory));
 
         return to_route('course-categories.index');
     }
 
-    private function authorizeCourses(Request $request): void
+    private function authorizeCategories(Request $request): void
     {
-        abort_unless($request->user()?->hasPermission('manage-courses'), 403);
+        abort_unless($request->user()?->hasPermission('manage-enrollments'), 403);
     }
 
     /** @return array<string, mixed> */

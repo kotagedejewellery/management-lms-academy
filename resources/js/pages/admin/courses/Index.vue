@@ -29,6 +29,7 @@ const props = defineProps<{
         next_page_url: string | null;
     };
     filters: { search?: string; status?: string };
+    can_create_course: boolean;
 }>();
 const search = ref(props.filters.search ?? '');
 const status = ref(props.filters.status ?? '');
@@ -64,7 +65,7 @@ defineOptions({
                     untuk learner.
                 </p>
             </div>
-            <Button as-child
+            <Button v-if="can_create_course" as-child
                 ><Link href="/courses/create"
                     ><Plus /> Tambah course</Link
                 ></Button
@@ -208,8 +209,12 @@ defineOptions({
             <EmptyState
                 :icon="BookOpen"
                 title="Belum ada course yang cocok"
-                description="Tambahkan course pertama atau ubah filter pencarian."
-                ><Button as-child
+                :description="
+                    can_create_course
+                        ? 'Tambahkan course pertama atau ubah filter pencarian.'
+                        : 'Course yang ditugaskan kepada Anda akan muncul di sini.'
+                "
+                ><Button v-if="can_create_course" as-child
                     ><Link href="/courses/create">Tambah course</Link></Button
                 ></EmptyState
             >

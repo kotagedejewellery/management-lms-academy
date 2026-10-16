@@ -28,6 +28,8 @@ Laravel Policies menjadi sumber otorisasi resource. Tidak ada API gateway, micro
 
 `vendor` dan runtime `storage` memakai Docker named volume. Source tetap bind mount untuk pengembangan, sedangkan dependency, cache Blade, session, dan log berjalan pada filesystem Linux agar PHP-FPM tidak terhambat permission atau I/O Windows.
 
+Nginx menerima request hingga 128 MB dan PHP membatasi satu unggahan materi hingga 50 MB (`upload_max_filesize=50M`, `post_max_size=52M`), selaras dengan validasi lesson PDF/video.
+
 Setelah skeleton Laravel dibuat, salin `docker/.env.example` menjadi `.env`, lengkapi `APP_KEY`, lalu jalankan `docker compose up --build`. Konfigurasi bucket privat beserta credential storage dibuat saat resource course mulai diimplementasikan pada Phase 4.
 
 Production harus memakai object storage S3-compatible dengan endpoint, credential, dan artefak/image yang dipin ke digest/checksum yang disetujui.

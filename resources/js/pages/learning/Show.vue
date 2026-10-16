@@ -182,6 +182,40 @@ const pdfPreviewUrl = computed(() => {
         (resource ? resourcePreviewHref(resource) : null)
     );
 });
+function videoEmbedUrl(resourceUrl: string | null): string | null {
+    if (!resourceUrl) return null;
+
+    try {
+        const url = new URL(resourceUrl);
+        const host = url.hostname.replace(/^www\./, '').toLowerCase();
+        if (host === 'youtu.be') {
+            const videoId = url.pathname.split('/').filter(Boolean)[0];
+
+            return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+        }
+        if (host === 'youtube.com' || host === 'm.youtube.com') {
+            const videoId =
+                url.searchParams.get('v') ??
+                url.pathname.match(/^\/(?:embed|shorts)\/([^/]+)/)?.[1];
+
+            return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+        }
+        if (host === 'vimeo.com') {
+            const videoId = url.pathname.match(/^\/(\d+)/)?.[1];
+
+            return videoId ? `https://player.vimeo.com/video/${videoId}` : null;
+        }
+    } catch {
+        return null;
+    }
+
+    return null;
+}
+const embeddedVideoUrl = computed(() =>
+    activeLesson.value?.type === 'video'
+        ? videoEmbedUrl(activeLesson.value.resource_url)
+        : null,
+);
 const courseAction = computed<CourseAction>(() => {
     if (
         props.enrollment.status === 'completed' &&
@@ -700,8 +734,28 @@ defineOptions({
                         >
                     </div>
                     <div class="p-5 sm:p-6">
-                        <video
+                        <iframe
                             v-if="
+                                activeLesson.type === 'video' &&
+                                embeddedVideoUrl
+                            "
+                            :src="embeddedVideoUrl"
+                            :title="`Video ${activeLesson.title}`"
+                            class="aspect-video w-full rounded-lg border border-border bg-black"
+                            allow="
+                                accelerometer;
+                                autoplay;
+                                clipboard-write;
+                                encrypted-media;
+                                gyroscope;
+                                picture-in-picture;
+                                web-share;
+                            "
+                            allowfullscreen
+                            referrerpolicy="strict-origin-when-cross-origin"
+                        />
+                        <video
+                            v-else-if="
                                 activeLesson.type === 'video' &&
                                 activeLesson.resource_url
                             "

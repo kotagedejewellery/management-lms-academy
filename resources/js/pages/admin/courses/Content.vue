@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { BookOpenCheck, Plus, Trash2 } from '@lucide/vue';
+import { BookOpenCheck, Pencil, Plus, Trash2, X } from '@lucide/vue';
 import { ref } from 'vue';
 import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
 import EmptyState from '@/components/EmptyState.vue';
@@ -21,6 +21,9 @@ type Lesson = {
     id: number;
     title: string;
     type: 'article' | 'video' | 'pdf';
+    content: string | null;
+    transcript: string | null;
+    resource_url: string | null;
     resources: Resource[];
     is_required: boolean;
     sequence: number;
@@ -52,11 +55,15 @@ const lessonForm = useForm({
     transcript: '',
     resource_url: '',
     resource: null as File | null,
+    replace_resource: false,
     is_required: true,
     sequence: '1',
 });
 const deletion = ref<{ label: string; url: string } | null>(null);
 const deleting = ref(false);
+const editingLesson = ref<Lesson | null>(null);
+const resourceSource = ref<'file' | 'url'>('file');
+const resourceInputKey = ref(0);
 const leaveGuard = useUnsavedChangesGuard(
     () => moduleForm.isDirty || lessonForm.isDirty,
 );
@@ -67,22 +74,64 @@ function addModule(): void {
     });
 }
 function addLesson(): void {
+    const options = { onSuccess: resetLessonForm };
+    if (editingLesson.value) {
+        lessonForm.put(
+            `/courses/${props.course.id}/modules/${lessonForm.module_id}/lessons/${editingLesson.value.id}`,
+            options,
+        );
+
+        return;
+    }
+
     lessonForm.post(
         `/courses/${props.course.id}/modules/${lessonForm.module_id}/lessons`,
-        {
-            onSuccess: () =>
-                lessonForm.reset(
-                    'title',
-                    'content',
-                    'transcript',
-                    'resource_url',
-                    'resource',
-                ),
-        },
+        options,
     );
+}
+function editLesson(module: Module, lesson: Lesson): void {
+    editingLesson.value = lesson;
+    lessonForm.module_id = module.id.toString();
+    lessonForm.title = lesson.title;
+    lessonForm.type = lesson.type;
+    lessonForm.content = lesson.content ?? '';
+    lessonForm.transcript = lesson.transcript ?? '';
+    lessonForm.resource_url = lesson.resource_url ?? '';
+    lessonForm.resource = null;
+    lessonForm.replace_resource = false;
+    lessonForm.is_required = lesson.is_required;
+    lessonForm.sequence = lesson.sequence.toString();
+    resourceSource.value = lesson.resource_url ? 'url' : 'file';
+    resourceInputKey.value += 1;
+}
+function resetLessonForm(): void {
+    editingLesson.value = null;
+    lessonForm.reset();
+    lessonForm.module_id = props.course.modules[0]?.id?.toString() ?? '';
+    lessonForm.type = 'article';
+    lessonForm.is_required = true;
+    lessonForm.sequence = '1';
+    lessonForm.replace_resource = false;
+    resourceSource.value = 'file';
+    resourceInputKey.value += 1;
+}
+function chooseResourceSource(source: 'file' | 'url'): void {
+    resourceSource.value = source;
+    if (source === 'file') {
+        lessonForm.resource_url = '';
+
+        return;
+    }
+
+    lessonForm.resource = null;
+    lessonForm.replace_resource = false;
+    resourceInputKey.value += 1;
 }
 function chooseResource(event: Event): void {
     lessonForm.resource = (event.target as HTMLInputElement).files?.[0] ?? null;
+    lessonForm.replace_resource = Boolean(
+        editingLesson.value && lessonForm.resource,
+    );
 }
 function confirmDelete(): void {
     if (deletion.value && !deleting.value)
@@ -236,20 +285,32 @@ defineOptions({
                                         </li>
                                     </ul>
                                 </div>
-                                <Button
+                                <div
                                     v-if="course.status === 'draft'"
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon"
-                                    :aria-label="`Hapus lesson ${lesson.title}`"
-                                    @click="
-                                        deletion = {
-                                            label: `lesson ${lesson.title}`,
-                                            url: `/courses/${course.id}/modules/${module.id}/lessons/${lesson.id}`,
-                                        }
-                                    "
-                                    ><Trash2 class="size-4"
-                                /></Button>
+                                    class="flex shrink-0 items-center gap-1"
+                                >
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        :aria-label="`Ubah lesson ${lesson.title}`"
+                                        @click="editLesson(module, lesson)"
+                                        ><Pencil class="size-4"
+                                    /></Button>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        :aria-label="`Hapus lesson ${lesson.title}`"
+                                        @click="
+                                            deletion = {
+                                                label: `lesson ${lesson.title}`,
+                                                url: `/courses/${course.id}/modules/${module.id}/lessons/${lesson.id}`,
+                                            }
+                                        "
+                                        ><Trash2 class="size-4"
+                                    /></Button>
+                                </div>
                             </li>
                         </ol>
                         <p v-else class="mt-4 text-sm text-muted-foreground">
@@ -264,7 +325,7 @@ defineOptions({
                     description="Tambahkan modul pertama melalui formulir di samping."
                 />
             </section>
-            <div class="grid gap-6">
+            <div v-if="course.status === 'draft'" class="grid gap-6">
                 <section
                     class="rounded-xl bg-card p-5 shadow-sm ring-1 ring-border"
                 >
@@ -298,7 +359,16 @@ defineOptions({
                 <section
                     class="rounded-xl bg-card p-5 shadow-sm ring-1 ring-border"
                 >
-                    <h2 class="font-semibold text-foreground">Tambah lesson</h2>
+                    <h2 class="font-semibold text-foreground">
+                        {{ editingLesson ? 'Ubah lesson' : 'Tambah lesson' }}
+                    </h2>
+                    <p class="mt-1 text-sm leading-6 text-muted-foreground">
+                        {{
+                            editingLesson
+                                ? 'Perbarui isi atau sumber materi. File lama dipertahankan sampai Anda memilih file pengganti.'
+                                : 'Pilih jenis materi lalu lengkapi sumber yang akan dibuka learner.'
+                        }}
+                    </p>
                     <form class="mt-5 grid gap-4" @submit.prevent="addLesson">
                         <div class="grid gap-2">
                             <Label for="lesson-module">Modul</Label
@@ -331,12 +401,20 @@ defineOptions({
                             ><select
                                 id="lesson-type"
                                 v-model="lessonForm.type"
+                                :disabled="Boolean(editingLesson)"
                                 class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
                             >
                                 <option value="article">Artikel</option>
                                 <option value="video">Video</option>
                                 <option value="pdf">PDF</option>
                             </select>
+                            <p
+                                v-if="editingLesson"
+                                class="text-xs leading-5 text-muted-foreground"
+                            >
+                                Tipe materi tidak dapat diubah setelah lesson
+                                dibuat.
+                            </p>
                         </div>
                         <div
                             v-if="lessonForm.type === 'article'"
@@ -352,16 +430,62 @@ defineOptions({
                                 :message="lessonForm.errors.content"
                             />
                         </div>
-                        <template v-else
-                            ><div class="grid gap-2">
-                                <Label for="resource-url"
-                                    >URL resource (opsional)</Label
-                                ><Input
+                        <template v-else>
+                            <div class="grid gap-2">
+                                <Label>Sumber materi</Label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <Button
+                                        type="button"
+                                        :variant="
+                                            resourceSource === 'file'
+                                                ? 'default'
+                                                : 'outline'
+                                        "
+                                        :aria-pressed="
+                                            resourceSource === 'file'
+                                        "
+                                        @click="chooseResourceSource('file')"
+                                        >Unggah file</Button
+                                    >
+                                    <Button
+                                        type="button"
+                                        :variant="
+                                            resourceSource === 'url'
+                                                ? 'default'
+                                                : 'outline'
+                                        "
+                                        :aria-pressed="resourceSource === 'url'"
+                                        @click="chooseResourceSource('url')"
+                                        >Gunakan URL</Button
+                                    >
+                                </div>
+                            </div>
+                            <div
+                                v-if="resourceSource === 'url'"
+                                class="grid gap-2"
+                            >
+                                <Label for="resource-url">
+                                    URL
+                                    {{
+                                        lessonForm.type === 'video'
+                                            ? 'video'
+                                            : 'PDF'
+                                    }}
+                                </Label>
+                                <Input
                                     id="resource-url"
                                     v-model="lessonForm.resource_url"
                                     type="url"
                                     placeholder="https://"
-                                /><InputError
+                                    required
+                                />
+                                <p
+                                    class="text-xs leading-5 text-muted-foreground"
+                                >
+                                    Video mendukung URL file MP4/WebM langsung,
+                                    atau tautan YouTube dan Vimeo.
+                                </p>
+                                <InputError
                                     :message="lessonForm.errors.resource_url"
                                 />
                             </div>
@@ -387,25 +511,47 @@ defineOptions({
                                     :message="lessonForm.errors.transcript"
                                 />
                             </div>
-                            <div class="grid gap-2">
-                                <Label for="lesson-resource"
-                                    >Upload resource privat</Label
+                            <div
+                                v-if="resourceSource === 'file'"
+                                class="grid gap-2"
+                            >
+                                <Label for="lesson-resource">{{
+                                    editingLesson
+                                        ? 'Ganti file privat'
+                                        : 'Upload file privat'
+                                }}</Label
                                 ><Input
+                                    :key="resourceInputKey"
                                     id="lesson-resource"
                                     type="file"
-                                    accept="application/pdf,video/mp4,video/webm"
+                                    :accept="
+                                        lessonForm.type === 'pdf'
+                                            ? 'application/pdf'
+                                            : 'video/mp4,video/webm'
+                                    "
+                                    :required="!editingLesson"
                                     @change="chooseResource"
                                 />
                                 <p
                                     class="text-xs leading-5 text-muted-foreground"
                                 >
-                                    PDF, MP4, atau WebM hingga 50 MB. File
-                                    diakses melalui izin aplikasi.
+                                    {{
+                                        lessonForm.type === 'pdf'
+                                            ? 'PDF'
+                                            : 'MP4 atau WebM'
+                                    }}
+                                    hingga 50 MB. File diakses melalui izin
+                                    aplikasi.
+                                    <template v-if="editingLesson">
+                                        Kosongkan bila file saat ini tetap
+                                        digunakan.
+                                    </template>
                                 </p>
                                 <InputError
                                     :message="lessonForm.errors.resource"
-                                /></div
-                        ></template>
+                                />
+                            </div>
+                        </template>
                         <div class="grid gap-2">
                             <Label for="lesson-sequence">Urutan</Label
                             ><Input
@@ -429,12 +575,42 @@ defineOptions({
                                 <option :value="false">Opsional</option>
                             </select>
                         </div>
-                        <Button type="submit" :disabled="lessonForm.processing"
-                            ><Plus /> Tambah lesson</Button
-                        >
+                        <div class="flex flex-wrap gap-3">
+                            <Button
+                                type="submit"
+                                :disabled="lessonForm.processing"
+                            >
+                                <Pencil v-if="editingLesson" />
+                                <Plus v-else />
+                                {{
+                                    editingLesson
+                                        ? 'Simpan perubahan'
+                                        : 'Tambah lesson'
+                                }}
+                            </Button>
+                            <Button
+                                v-if="editingLesson"
+                                type="button"
+                                variant="outline"
+                                :disabled="lessonForm.processing"
+                                @click="resetLessonForm"
+                                ><X /> Batal</Button
+                            >
+                        </div>
                     </form>
                 </section>
             </div>
+            <section
+                v-else
+                class="rounded-xl bg-card p-5 shadow-sm ring-1 ring-border"
+            >
+                <h2 class="font-semibold text-foreground">Materi terkunci</h2>
+                <p class="mt-2 text-sm leading-6 text-muted-foreground">
+                    Course tidak dalam status Draft. Ubah status course menjadi
+                    Draft melalui Pengaturan course sebelum mengubah modul,
+                    lesson, atau sumber materi.
+                </p>
+            </section>
         </div>
         <ConfirmActionDialog
             :open="Boolean(deletion)"

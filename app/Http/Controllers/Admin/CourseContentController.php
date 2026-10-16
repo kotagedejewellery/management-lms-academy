@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -44,6 +45,7 @@ class CourseContentController extends Controller
                         'title' => $lesson->title,
                         'type' => $lesson->type,
                         'content' => $lesson->content,
+                        'transcript' => $lesson->transcript,
                         'resource_url' => $lesson->resource_url,
                         'resources' => $lesson->resources->map(fn (LessonResource $resource) => $resource->only(['id', 'original_name', 'mime_type', 'size'])),
                         'is_required' => $lesson->is_required,
@@ -57,6 +59,7 @@ class CourseContentController extends Controller
     public function storeModule(Request $request, Course $course): RedirectResponse
     {
         $this->authorizeCourses($request);
+        $this->ensureDraft($course);
         $course->modules()->create($this->moduleData($request, $course));
 
         return to_route('courses.content', $course);
@@ -65,6 +68,7 @@ class CourseContentController extends Controller
     public function updateModule(Request $request, Course $course, CourseModule $module): RedirectResponse
     {
         $this->authorizeCourses($request);
+        $this->ensureDraft($course);
         $this->ensureModuleBelongsToCourse($course, $module);
         $module->update($this->moduleData($request, $course, $module));
 
@@ -74,6 +78,7 @@ class CourseContentController extends Controller
     public function storeLesson(Request $request, Course $course, CourseModule $module): RedirectResponse
     {
         $this->authorizeCourses($request);
+        $this->ensureDraft($course);
         $this->ensureModuleBelongsToCourse($course, $module);
         $data = $this->lessonData($request, $module);
         $lesson = DB::transaction(function () use ($module, $request, $data): Lesson {
@@ -89,13 +94,15 @@ class CourseContentController extends Controller
     public function updateLesson(Request $request, Course $course, CourseModule $module, Lesson $lesson): RedirectResponse
     {
         $this->authorizeCourses($request);
+        $this->ensureDraft($course);
         $this->ensureModuleBelongsToCourse($course, $module);
         abort_unless($lesson->module_id === $module->id, 404);
         $data = $this->lessonData($request, $module, $lesson);
-        DB::transaction(function () use ($lesson, $request, $data): void {
+        $resourcesToDelete = DB::transaction(function () use ($lesson, $request, $data): Collection {
             $lesson->update($data);
-            $this->storeResource($request, $lesson);
+            return $this->storeResource($request, $lesson);
         });
+        $this->deleteResourceFiles($resourcesToDelete);
 
         return to_route('courses.content', $course);
     }
@@ -180,7 +187,7 @@ class CourseContentController extends Controller
 
     private function ensureDraft(Course $course): void
     {
-        abort_if($course->status !== 'draft', 422, 'Materi hanya dapat dihapus saat course masih draft.');
+        abort_if($course->status !== 'draft', 422, 'Materi hanya dapat diubah saat course masih draft.');
     }
 
     /** @param list<int> $lessonIds */
@@ -208,6 +215,7 @@ class CourseContentController extends Controller
             'transcript' => ['nullable', 'string', 'max:60000'],
             'resource_url' => ['nullable', 'url', 'max:2048'],
             'resource' => ['nullable', 'file', 'max:51200', 'mimetypes:application/pdf,video/mp4,video/webm'],
+            'replace_resource' => ['nullable', 'boolean'],
             'is_required' => ['required', 'boolean'],
             'sequence' => ['required', 'integer', 'min:1', Rule::unique('lessons', 'sequence')->where('module_id', $module->id)->ignore($lesson)],
         ]);
@@ -216,7 +224,14 @@ class CourseContentController extends Controller
             throw ValidationException::withMessages(['content' => 'Isi artikel wajib diisi.']);
         }
 
-        if (in_array($data['type'], ['video', 'pdf'], true) && blank($data['resource_url'] ?? null) && ! $request->hasFile('resource')) {
+        if ($lesson && $data['type'] !== $lesson->type) {
+            throw ValidationException::withMessages(['type' => 'Tipe materi tidak dapat diubah setelah lesson dibuat.']);
+        }
+
+        $hasExistingSource = $lesson && $lesson->resources()
+            ->whereIn('mime_type', $this->acceptedResourceMimes($data['type']))
+            ->exists();
+        if (in_array($data['type'], ['video', 'pdf'], true) && blank($data['resource_url'] ?? null) && ! $request->hasFile('resource') && ! $hasExistingSource) {
             throw ValidationException::withMessages(['resource_url' => 'Masukkan URL atau unggah file resource untuk video atau PDF.']);
         }
 
@@ -228,7 +243,7 @@ class CourseContentController extends Controller
             throw ValidationException::withMessages(['type' => 'Hapus resource yang tidak sesuai sebelum mengubah tipe lesson.']);
         }
 
-        return Arr::except($data, 'resource');
+        return Arr::except($data, ['resource', 'replace_resource']);
     }
 
     private function authorizeResourceAccess(Request $request, Course $course): void
@@ -252,10 +267,11 @@ class CourseContentController extends Controller
         abort_unless(! $requiredPreTest || $requiredPreTest->attempts()->where('enrollment_id', $enrollment->id)->whereNotNull('submitted_at')->exists(), 403);
     }
 
-    private function storeResource(Request $request, Lesson $lesson): void
+    /** @return Collection<int, LessonResource> */
+    private function storeResource(Request $request, Lesson $lesson): Collection
     {
         if (! $request->hasFile('resource')) {
-            return;
+            return collect();
         }
 
         $file = $request->file('resource');
@@ -266,13 +282,25 @@ class CourseContentController extends Controller
         }
 
         try {
-            $lesson->resources()->create([
+            $resource = $lesson->resources()->create([
                 'disk' => $disk,
                 'path' => $path,
                 'original_name' => $file->getClientOriginalName(),
                 'mime_type' => $file->getMimeType() ?? 'application/octet-stream',
                 'size' => $file->getSize(),
             ]);
+
+            if (! $request->boolean('replace_resource')) {
+                return collect();
+            }
+
+            $replacedResources = $lesson->resources()
+                ->where('id', '!=', $resource->id)
+                ->whereIn('mime_type', $this->acceptedResourceMimes($lesson->type))
+                ->get();
+            $lesson->resources()->whereKey($replacedResources->modelKeys())->delete();
+
+            return $replacedResources;
         } catch (Throwable $exception) {
             Storage::disk($disk)->delete($path);
 

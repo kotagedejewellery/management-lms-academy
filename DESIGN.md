@@ -42,6 +42,8 @@ Target desain diuji pada lebar 390px, 768px, 1024px, dan 1440px. Layout bersifat
 
 `AppShell`, `Sidebar`, `MobileNav`, `Topbar`, `PageHeader`, `MetricCard`, `ProgressBar`, `StatusBadge`, `CourseCard`, `LearningPathStep`, `LessonList`, `AssessmentQuestion`, `TestProgress`, `ResultSummary`, `FilterBar`, `DataTable`, `Pagination`, `EmptyState`, `ErrorState`, `ConfirmDialog`, dan `Toast`.
 
+Pada course builder, formulir lesson membedakan sumber `Unggah file` dan `Gunakan URL`; label wajib menyatakan tipe serta batas file. Thumbnail course dapat diganti atau dihapus sebelum disimpan; pesan validasinya menjelaskan tindakan pemulihan, bukan nama rule teknis. Pemilihan Trainer / Mentor menampilkan akun aktif ber-role tersebut sebagai control pilihan yang jelas; jika kosong, arahkan Admin ke pengelolaan pengguna. Lesson yang ada dapat diubah atau mengganti file dari aksi yang dapat diakses keyboard. Saat course bukan Draft, tampilkan status read-only beserta arahan untuk kembali ke Draft, bukan formulir yang tampak dapat disimpan.
+
 Setiap status memiliki teks dan icon/shape pendamping: Completed, In Progress, Not Started, Passed, Not Passed, Overdue, Locked. Warna saja tidak cukup.
 
 ## 5. Aksesibilitas dan interaksi

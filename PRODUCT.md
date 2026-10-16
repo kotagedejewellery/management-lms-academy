@@ -28,7 +28,7 @@ The product is used on desktop and mobile web by internal employees across divis
 
 ## Capabilities and Constraints
 
-Pre-Test and Post-Test are distinct assessment types; all attempts and responses are retained. Post-Test access requires required lessons to be completed. A course completes only after required lessons and a passing Post-Test. Phase 1 supports manual employee input and Admin-configurable passing grades per course/assessment. Attempt limits, retake rules, course materials per division, production hosting, and certificate rollout remain process-owner decisions.
+Pre-Test and Post-Test are distinct assessment types; all attempts and responses are retained. Post-Test access requires required lessons to be completed. A course completes only after required lessons and a passing Post-Test. Admin builds material while a course is Draft: articles require text, while PDF/video require one valid private file or URL source. Published course content is read-only until the course is returned to Draft. Phase 1 supports manual employee input and Admin-configurable passing grades per course/assessment. Attempt limits, retake rules, course materials per division, production hosting, and certificate rollout remain process-owner decisions.
 
 ## Brand Commitments
 

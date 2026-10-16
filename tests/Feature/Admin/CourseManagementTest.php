@@ -78,6 +78,35 @@ class CourseManagementTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_trainer_cannot_create_courses_or_manage_global_categories(): void
+    {
+        $trainer = $this->trainer();
+
+        $this->actingAs($trainer)->get(route('courses.create'))->assertForbidden();
+        $this->actingAs($trainer)->post(route('courses.store'), [
+            'category_id' => 1,
+            'code' => 'TRN-001',
+            'title' => 'Course mandiri',
+            'is_mandatory' => true,
+            'passing_grade' => 70,
+            'status' => 'draft',
+        ])->assertForbidden();
+        $this->actingAs($trainer)->get(route('course-categories.index'))->assertForbidden();
+    }
+
+    public function test_lms_admin_can_manage_global_categories(): void
+    {
+        $admin = $this->courseAdmin();
+
+        $this->actingAs($admin)->get(route('course-categories.index'))->assertOk();
+        $this->actingAs($admin)->post(route('course-categories.store'), [
+            'name' => 'Onboarding',
+            'is_active' => true,
+        ])->assertRedirect(route('course-categories.index'));
+
+        $this->assertDatabaseHas('course_categories', ['name' => 'Onboarding', 'is_active' => true]);
+    }
+
     public function test_course_thumbnail_is_stored_and_available_to_its_trainer(): void
     {
         Storage::fake('local');
@@ -121,12 +150,70 @@ class CourseManagementTest extends TestCase
             'passing_grade' => 70,
             'status' => 'draft',
             'thumbnail' => UploadedFile::fake()->image('portrait.png', 800, 1000),
-        ])->assertSessionHasErrors('thumbnail');
+        ])->assertSessionHasErrors([
+            'thumbnail' => 'Gunakan gambar dengan rasio 16:9 agar tampil rapi di katalog.',
+        ]);
+    }
+
+    public function test_course_thumbnail_can_be_removed(): void
+    {
+        Storage::fake('local');
+        $admin = $this->courseAdmin();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $path = 'course-thumbnails/thumbnail-lama.webp';
+        Storage::disk('local')->put($path, 'thumbnail lama');
+        $course = Course::query()->create([
+            'category_id' => $category->id,
+            'code' => 'ONB-THUMB-REMOVE',
+            'title' => 'Course thumbnail dihapus',
+            'thumbnail_path' => $path,
+            'thumbnail_disk' => 'local',
+            'thumbnail_mime' => 'image/webp',
+            'passing_grade' => 70,
+            'status' => 'draft',
+        ]);
+        $course->trainers()->attach($admin);
+
+        $this->actingAs($admin)->put(route('courses.update', $course), [
+            'category_id' => $category->id,
+            'code' => $course->code,
+            'title' => $course->title,
+            'is_mandatory' => true,
+            'passing_grade' => 70,
+            'status' => 'draft',
+            'remove_thumbnail' => true,
+        ])->assertRedirect(route('courses.content', $course));
+
+        $course->refresh();
+        $this->assertNull($course->thumbnail_path);
+        $this->assertNull($course->thumbnail_disk);
+        $this->assertNull($course->thumbnail_mime);
+        Storage::disk('local')->assertMissing($path);
+    }
+
+    public function test_course_form_lists_active_trainers_for_an_admin_who_can_assign_them(): void
+    {
+        $admin = $this->courseAdmin();
+        $admin->update(['name' => 'Admin Course']);
+        $activeTrainer = User::factory()->create(['name' => 'Trainer Aktif']);
+        $inactiveTrainer = User::factory()->create(['name' => 'Trainer Nonaktif', 'status' => 'inactive']);
+        $trainerRole = Role::query()->create(['slug' => 'trainer', 'name' => 'Trainer / Mentor']);
+        $activeTrainer->roles()->attach($trainerRole);
+        $inactiveTrainer->roles()->attach($trainerRole);
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-TRAINER-001', 'title' => 'Penugasan trainer', 'passing_grade' => 70, 'status' => 'draft']);
+
+        $this->actingAs($admin)->get(route('courses.edit', $course))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('can_assign_trainers', true)
+                ->has('trainers', 1)
+                ->where('trainers.0.name', 'Trainer Aktif'));
     }
 
     public function test_trainer_can_only_manage_courses_assigned_to_them(): void
     {
-        $trainer = $this->courseAdmin();
+        $trainer = $this->trainer();
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
         $assigned = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-ASSIGNED', 'title' => 'Ditugaskan', 'passing_grade' => 70, 'status' => 'draft']);
         $other = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-OTHER', 'title' => 'Bukan tugas trainer', 'passing_grade' => 70, 'status' => 'draft']);
@@ -142,7 +229,7 @@ class CourseManagementTest extends TestCase
 
     public function test_trainer_cannot_change_course_trainer_assignments(): void
     {
-        $trainer = $this->courseAdmin();
+        $trainer = $this->trainer();
         $otherTrainer = User::factory()->create();
         $otherTrainer->roles()->attach(Role::query()->where('slug', 'trainer')->sole());
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
@@ -244,6 +331,47 @@ class CourseManagementTest extends TestCase
         $this->assertDatabaseHas('lessons', ['id' => $publishedLesson->id]);
     }
 
+    public function test_course_requires_a_valid_source_for_every_media_lesson_before_publish(): void
+    {
+        $admin = $this->courseAdmin();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-MEDIA-001', 'title' => 'Materi media', 'passing_grade' => 70, 'status' => 'draft']);
+        $course->trainers()->attach($admin);
+        $module = $course->modules()->create(['title' => 'Modul', 'sequence' => 1]);
+        $module->lessons()->create(['title' => 'PDF tanpa sumber', 'type' => 'pdf', 'is_required' => true, 'sequence' => 1]);
+
+        $this->actingAs($admin)->put(route('courses.update', $course), [
+            'category_id' => $category->id,
+            'code' => $course->code,
+            'title' => $course->title,
+            'is_mandatory' => true,
+            'passing_grade' => 70,
+            'status' => 'published',
+        ])->assertSessionHasErrors('status');
+    }
+
+    public function test_published_course_content_cannot_be_added_or_edited(): void
+    {
+        $admin = $this->courseAdmin();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-READONLY-001', 'title' => 'Terkunci', 'passing_grade' => 70, 'status' => 'published']);
+        $course->trainers()->attach($admin);
+        $module = $course->modules()->create(['title' => 'Modul', 'sequence' => 1]);
+        $lesson = $module->lessons()->create(['title' => 'Artikel', 'type' => 'article', 'content' => 'Isi awal', 'is_required' => true, 'sequence' => 1]);
+
+        $this->actingAs($admin)->post(route('courses.modules.store', $course), ['title' => 'Modul baru', 'sequence' => 2])->assertStatus(422);
+        $this->actingAs($admin)->put(route('courses.modules.update', [$course, $module]), ['title' => 'Diubah', 'sequence' => 1])->assertStatus(422);
+        $this->actingAs($admin)->post(route('courses.lessons.store', [$course, $module]), [
+            'title' => 'Lesson baru', 'type' => 'article', 'content' => 'Isi', 'is_required' => true, 'sequence' => 2,
+        ])->assertStatus(422);
+        $this->actingAs($admin)->put(route('courses.lessons.update', [$course, $module, $lesson]), [
+            'title' => 'Artikel diubah', 'type' => 'article', 'content' => 'Isi baru', 'is_required' => true, 'sequence' => 1,
+        ])->assertStatus(422);
+
+        $this->assertDatabaseHas('modules', ['id' => $module->id, 'title' => 'Modul']);
+        $this->assertDatabaseHas('lessons', ['id' => $lesson->id, 'title' => 'Artikel', 'content' => 'Isi awal']);
+    }
+
     /** @return array<string, int|string|bool> */
     private function publishedCoursePayload(CourseCategory $category, Course $course): array
     {
@@ -259,6 +387,19 @@ class CourseManagementTest extends TestCase
     }
 
     private function courseAdmin(): User
+    {
+        $coursePermission = Permission::query()->create(['slug' => 'manage-courses', 'name' => 'Kelola course']);
+        $enrollmentPermission = Permission::query()->create(['slug' => 'manage-enrollments', 'name' => 'Kelola assignment']);
+        $role = Role::query()->create(['slug' => 'lms-admin', 'name' => 'LMS Admin']);
+        $role->permissions()->attach([$coursePermission->id, $enrollmentPermission->id]);
+
+        $user = User::factory()->create();
+        $user->roles()->attach($role);
+
+        return $user;
+    }
+
+    private function trainer(): User
     {
         $permission = Permission::query()->create(['slug' => 'manage-courses', 'name' => 'Kelola course']);
         $role = Role::query()->create(['slug' => 'trainer', 'name' => 'Trainer / Mentor']);

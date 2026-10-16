@@ -17,6 +17,8 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+COPY docker/php/uploads.ini $PHP_INI_DIR/conf.d/uploads.ini
+
 COPY composer.json composer.lock ./
 
 RUN composer install --no-interaction --prefer-dist --no-scripts

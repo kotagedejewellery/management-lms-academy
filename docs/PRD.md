@@ -68,6 +68,8 @@ Contoh path Customer Service: Brand Introduction → Product Knowledge → Mater
 - Simpan seluruh attempt, response, score, waktu, dan status untuk audit.
 - Improvement ditampilkan dalam poin: `post_test_score - pre_test_score`, bukan persen.
 - Laporan repeat Post-Test harus menyatakan kebijakan skor (pertama, terakhir, terbaik); default laporan menampilkan skor pertama dan terbaik.
+- Artikel wajib memiliki isi. Lesson PDF/video wajib memiliki satu sumber: file privat yang sesuai atau URL. Course tidak dapat diterbitkan bila ada sumber materi yang belum lengkap.
+- Modul, lesson, dan sumber materi hanya dapat diubah ketika course berstatus Draft; course harus dikembalikan ke Draft sebelum materi Published diubah.
 - Sertifikat hanya diterbitkan bila fitur diaktifkan pada course/path terkait.
 
 ## 7. Kebutuhan fungsional per area
@@ -78,7 +80,7 @@ Login; dashboard; My Learning; Learning Path; Course Detail; lesson player video
 
 ### Admin dan Manager
 
-Kelola user dan impor CSV/Excel; struktur organisasi; course builder; module/lesson; assessment builder; learning path; enrollment; preview/publish; announcements/notifications saat fasenya aktif; dashboard; laporan; export CSV/Excel/PDF; dan audit.
+Kelola user dan impor CSV/Excel; struktur organisasi; course builder; module/lesson; artikel teks; PDF privat; video MP4/WebM privat atau URL video; assessment builder; learning path; enrollment; preview/publish; announcements/notifications saat fasenya aktif; dashboard; laporan; export CSV/Excel/PDF; dan audit.
 
 ### Course minimum
 

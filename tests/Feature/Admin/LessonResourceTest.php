@@ -53,6 +53,66 @@ class LessonResourceTest extends TestCase
         ])->assertSessionHasErrors('resource');
     }
 
+    public function test_admin_can_edit_a_media_lesson_without_reuploading_its_existing_source(): void
+    {
+        Storage::fake('local');
+        $admin = $this->courseAdmin();
+        $module = $this->module($admin);
+        $lesson = $module->lessons()->create(['title' => 'SOP awal', 'type' => 'pdf', 'is_required' => true, 'sequence' => 1]);
+        $path = 'lesson-resources/'.$lesson->id.'/sop.pdf';
+        Storage::disk('local')->put($path, 'private resource');
+        $lesson->resources()->create(['disk' => 'local', 'path' => $path, 'original_name' => 'sop.pdf', 'mime_type' => 'application/pdf', 'size' => 16]);
+
+        $this->actingAs($admin)->put(route('courses.lessons.update', [$module->course, $module, $lesson]), [
+            'title' => 'SOP terbaru',
+            'type' => 'pdf',
+            'is_required' => true,
+            'sequence' => 1,
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('lessons', ['id' => $lesson->id, 'title' => 'SOP terbaru']);
+        Storage::disk('local')->assertExists($path);
+    }
+
+    public function test_admin_can_replace_a_media_lesson_source(): void
+    {
+        Storage::fake('local');
+        $admin = $this->courseAdmin();
+        $module = $this->module($admin);
+        $lesson = $module->lessons()->create(['title' => 'SOP', 'type' => 'pdf', 'is_required' => true, 'sequence' => 1]);
+        $oldPath = 'lesson-resources/'.$lesson->id.'/sop-lama.pdf';
+        Storage::disk('local')->put($oldPath, 'old resource');
+        $lesson->resources()->create(['disk' => 'local', 'path' => $oldPath, 'original_name' => 'sop-lama.pdf', 'mime_type' => 'application/pdf', 'size' => 12]);
+
+        $this->actingAs($admin)->put(route('courses.lessons.update', [$module->course, $module, $lesson]), [
+            'title' => 'SOP',
+            'type' => 'pdf',
+            'is_required' => true,
+            'sequence' => 1,
+            'replace_resource' => true,
+            'resource' => UploadedFile::fake()->create('sop-baru.pdf', 200, 'application/pdf'),
+        ])->assertRedirect();
+
+        $this->assertDatabaseCount('lesson_resources', 1);
+        $this->assertDatabaseHas('lesson_resources', ['lesson_id' => $lesson->id, 'original_name' => 'sop-baru.pdf']);
+        Storage::disk('local')->assertMissing($oldPath);
+    }
+
+    public function test_admin_cannot_change_a_lesson_type_after_it_is_created(): void
+    {
+        $admin = $this->courseAdmin();
+        $module = $this->module($admin);
+        $lesson = $module->lessons()->create(['title' => 'Artikel', 'type' => 'article', 'content' => 'Isi', 'is_required' => true, 'sequence' => 1]);
+
+        $this->actingAs($admin)->put(route('courses.lessons.update', [$module->course, $module, $lesson]), [
+            'title' => 'Artikel',
+            'type' => 'pdf',
+            'is_required' => true,
+            'sequence' => 1,
+            'resource_url' => 'https://example.test/sop.pdf',
+        ])->assertSessionHasErrors('type');
+    }
+
     public function test_employee_cannot_download_private_lesson_resource(): void
     {
         Storage::fake('local');

@@ -44,22 +44,27 @@ class CourseController extends Controller
             ->withQueryString()
             ->through(fn (Course $course) => $this->courseData($course));
 
-        return Inertia::render('admin/courses/Index', ['courses' => $courses, 'filters' => $filters]);
+        return Inertia::render('admin/courses/Index', [
+            'courses' => $courses,
+            'filters' => $filters,
+            'can_create_course' => $request->user()->hasPermission('manage-enrollments'),
+        ]);
     }
 
     public function create(Request $request): Response
     {
-        $this->authorizeCourses($request);
+        $this->authorizeCourses($request, requiresEnrollmentPermission: true);
 
         return Inertia::render('admin/courses/Create', $this->formOptions());
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $this->authorizeCourses($request);
+        $this->authorizeCourses($request, requiresEnrollmentPermission: true);
         $data = $this->validatedData($request);
         $trainerIds = Arr::pull($data, 'trainer_ids');
         $thumbnail = Arr::pull($data, 'thumbnail');
+        Arr::pull($data, 'remove_thumbnail');
         $this->ensureOrganizationTarget($data);
         $this->ensureDraft($data);
         $course = Course::query()->create($data);
@@ -85,12 +90,16 @@ class CourseController extends Controller
         $data = $this->validatedData($request, $course);
         $trainerIds = Arr::pull($data, 'trainer_ids');
         $thumbnail = Arr::pull($data, 'thumbnail');
+        $removeThumbnail = (bool) Arr::pull($data, 'remove_thumbnail');
         $this->ensureOrganizationTarget($data);
         $this->ensurePrerequisiteDoesNotLoop($course, $data['prerequisite_course_id'] ?? null);
 
         if ($data['status'] === 'published') {
             if (! $course->lessons()->exists()) {
                 throw ValidationException::withMessages(['status' => 'Tambahkan minimal satu lesson sebelum menerbitkan course.']);
+            }
+            if (! $this->contentReady($course)) {
+                throw ValidationException::withMessages(['status' => 'Lengkapi sumber untuk setiap materi video atau PDF sebelum menerbitkan course.']);
             }
             if ($data['requires_post_test'] && ! $this->postTestReady($course)) {
                 throw ValidationException::withMessages(['status' => 'Tambahkan Post-Test beserta soal dan jawaban benar sebelum menerbitkan course evaluatif.']);
@@ -99,7 +108,11 @@ class CourseController extends Controller
 
         $data['published_at'] = $data['status'] === 'published' ? ($course->published_at ?? now()) : null;
         $course->update($data);
-        $this->storeThumbnail($course, $thumbnail);
+        if ($thumbnail) {
+            $this->storeThumbnail($course, $thumbnail);
+        } elseif ($removeThumbnail) {
+            $this->removeThumbnail($course);
+        }
         $this->syncTrainers($request, $course, $trainerIds);
 
         return to_route('courses.content', $course);
@@ -144,10 +157,11 @@ class CourseController extends Controller
         );
     }
 
-    private function authorizeCourses(Request $request): void
+    private function authorizeCourses(Request $request, bool $requiresEnrollmentPermission = false): void
     {
         $user = $request->user();
         abort_unless($user?->hasPermission('manage-courses'), 403);
+        abort_if($requiresEnrollmentPermission && ! $user->hasPermission('manage-enrollments'), 403);
 
         $course = $request->route('course');
         if ($course instanceof Course) {
@@ -208,6 +222,7 @@ class CourseController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:5000'],
             'thumbnail' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,avif', 'dimensions:ratio=16/9', 'max:2048'],
+            'remove_thumbnail' => ['nullable', 'boolean'],
             'estimated_minutes' => ['nullable', 'integer', 'min:1', 'max:100000'],
             'is_mandatory' => ['required', 'boolean'],
             'requires_post_test' => ['nullable', 'boolean'],
@@ -216,6 +231,11 @@ class CourseController extends Controller
             'status' => ['required', Rule::in(['draft', 'published', 'archived'])],
             'trainer_ids' => ['nullable', 'array'],
             'trainer_ids.*' => ['integer', Rule::exists('users', 'id')],
+        ], [
+            'thumbnail.image' => 'Pilih file gambar untuk thumbnail course.',
+            'thumbnail.mimes' => 'Gunakan gambar berformat JPG, PNG, WebP, atau AVIF.',
+            'thumbnail.dimensions' => 'Gunakan gambar dengan rasio 16:9 agar tampil rapi di katalog.',
+            'thumbnail.max' => 'Ukuran thumbnail maksimal 2 MB.',
         ]);
 
         $postTest = $course?->assessments()->where('type', 'post_test')->first();
@@ -276,6 +296,29 @@ class CourseController extends Controller
             && ! $postTest->questions()->whereDoesntHave('answers', fn ($query) => $query->where('is_correct', true))->exists();
     }
 
+    private function contentReady(Course $course): bool
+    {
+        $course->loadMissing('modules.lessons.resources:id,lesson_id,mime_type');
+
+        return ! $course->modules->flatMap->lessons->contains(function ($lesson): bool {
+            if ($lesson->type === 'article') {
+                return blank($lesson->content);
+            }
+
+            if (filled($lesson->resource_url)) {
+                return false;
+            }
+
+            $acceptedMimes = match ($lesson->type) {
+                'pdf' => ['application/pdf'],
+                'video' => ['video/mp4', 'video/webm'],
+                default => [],
+            };
+
+            return $acceptedMimes === [] || ! $lesson->resources->contains(fn ($resource): bool => in_array($resource->mime_type, $acceptedMimes, true));
+        });
+    }
+
     private function storeThumbnail(Course $course, ?UploadedFile $thumbnail): void
     {
         if (! $thumbnail) {
@@ -303,6 +346,23 @@ class CourseController extends Controller
         if ($previousPath) {
             Storage::disk($previousDisk)->delete($previousPath);
         }
+    }
+
+    private function removeThumbnail(Course $course): void
+    {
+        $path = $course->thumbnail_path;
+        if (! $path) {
+            return;
+        }
+
+        $disk = $course->thumbnail_disk ?: config('filesystems.default');
+        $course->update([
+            'thumbnail_path' => null,
+            'thumbnail_disk' => null,
+            'thumbnail_mime' => null,
+        ]);
+
+        Storage::disk($disk)->delete($path);
     }
 
     /** @return array{0: string, 1: string|null} */
