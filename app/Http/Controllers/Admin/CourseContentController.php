@@ -100,6 +100,7 @@ class CourseContentController extends Controller
         $data = $this->lessonData($request, $module, $lesson);
         $resourcesToDelete = DB::transaction(function () use ($lesson, $request, $data): Collection {
             $lesson->update($data);
+
             return $this->storeResource($request, $lesson);
         });
         $this->deleteResourceFiles($resourcesToDelete);

@@ -9934,7 +9934,7 @@
       "file_type": "code",
       "norm_label": "{closure#6}()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L117"
+      "source_location": "L118"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_acceptedresourcemimes",
@@ -9946,7 +9946,7 @@
       "file_type": "code",
       "norm_label": ".acceptedresourcemimes()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L317"
+      "source_location": "L318"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_authorizecourses",
@@ -9958,7 +9958,7 @@
       "file_type": "code",
       "norm_label": ".authorizecourses()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L172"
+      "source_location": "L173"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_authorizeresourceaccess",
@@ -9970,7 +9970,7 @@
       "file_type": "code",
       "norm_label": ".authorizeresourceaccess()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L249"
+      "source_location": "L250"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_deleteresourcefiles",
@@ -9982,7 +9982,7 @@
       "file_type": "code",
       "norm_label": ".deleteresourcefiles()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L327"
+      "source_location": "L328"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_destroylesson",
@@ -9994,7 +9994,7 @@
       "file_type": "code",
       "norm_label": ".destroylesson()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L126"
+      "source_location": "L127"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_destroymodule",
@@ -10006,7 +10006,7 @@
       "file_type": "code",
       "norm_label": ".destroymodule()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L110"
+      "source_location": "L111"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_destroyresource",
@@ -10018,7 +10018,7 @@
       "file_type": "code",
       "norm_label": ".destroyresource()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L142"
+      "source_location": "L143"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_downloadresource",
@@ -10030,7 +10030,7 @@
       "file_type": "code",
       "norm_label": ".downloadresource()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L154"
+      "source_location": "L155"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_ensuredraft",
@@ -10042,7 +10042,7 @@
       "file_type": "code",
       "norm_label": ".ensuredraft()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L188"
+      "source_location": "L189"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_ensurelessonsunused",
@@ -10054,7 +10054,7 @@
       "file_type": "code",
       "norm_label": ".ensurelessonsunused()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L194"
+      "source_location": "L195"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_ensuremodulebelongstocourse",
@@ -10066,7 +10066,7 @@
       "file_type": "code",
       "norm_label": ".ensuremodulebelongstocourse()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L183"
+      "source_location": "L184"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_index",
@@ -10090,7 +10090,7 @@
       "file_type": "code",
       "norm_label": ".lessondata()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L209"
+      "source_location": "L210"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_moduledata",
@@ -10102,7 +10102,7 @@
       "file_type": "code",
       "norm_label": ".moduledata()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L200"
+      "source_location": "L201"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_previewresource",
@@ -10114,7 +10114,7 @@
       "file_type": "code",
       "norm_label": ".previewresource()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L163"
+      "source_location": "L164"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_resourcematcheslessontype",
@@ -10126,7 +10126,7 @@
       "file_type": "code",
       "norm_label": ".resourcematcheslessontype()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L311"
+      "source_location": "L312"
     },
     {
       "id": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_storelesson",
@@ -13354,7 +13354,7 @@
       "file_type": "code",
       "norm_label": ".storeresource()",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L271"
+      "source_location": "L272"
     },
     {
       "id": "app_http_controllers_learningcontroller_closure_1",
@@ -31877,24 +31877,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L103",
+      "source_location": "L104",
       "weight": 1.0
     },
     {
       "source": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_destroylesson",
       "target": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_authorizecourses",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L128",
-      "weight": 1.0
-    },
-    {
-      "source": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_destroylesson",
-      "target": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_ensuredraft",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -31906,7 +31894,7 @@
     },
     {
       "source": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_destroylesson",
-      "target": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_ensuremodulebelongstocourse",
+      "target": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_ensuredraft",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -31918,6 +31906,18 @@
     },
     {
       "source": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_destroylesson",
+      "target": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_ensuremodulebelongstocourse",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_destroylesson",
       "target": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_ensurelessonsunused",
       "relation": "calls",
       "_origin": "ast",
@@ -31925,7 +31925,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L132",
+      "source_location": "L133",
       "weight": 1.0
     },
     {
@@ -31937,24 +31937,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L137",
+      "source_location": "L138",
       "weight": 1.0
     },
     {
       "source": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_destroymodule",
       "target": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_authorizecourses",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L112",
-      "weight": 1.0
-    },
-    {
-      "source": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_destroymodule",
-      "target": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_ensuredraft",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -31966,7 +31954,7 @@
     },
     {
       "source": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_destroymodule",
-      "target": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_ensuremodulebelongstocourse",
+      "target": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_ensuredraft",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -31978,6 +31966,18 @@
     },
     {
       "source": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_destroymodule",
+      "target": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_ensuremodulebelongstocourse",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
+      "source_location": "L115",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_destroymodule",
       "target": "app_http_controllers_admin_coursecontentcontroller_coursecontentcontroller_ensurelessonsunused",
       "relation": "calls",
       "_origin": "ast",
@@ -31985,7 +31985,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L118",
+      "source_location": "L119",
       "weight": 1.0
     },
     {
@@ -31997,7 +31997,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L121",
+      "source_location": "L122",
       "weight": 1.0
     },
     {
@@ -32009,7 +32009,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L144",
+      "source_location": "L145",
       "weight": 1.0
     },
     {
@@ -32021,7 +32021,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L145",
+      "source_location": "L146",
       "weight": 1.0
     },
     {
@@ -32033,7 +32033,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L146",
+      "source_location": "L147",
       "weight": 1.0
     },
     {
@@ -32045,7 +32045,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L149",
+      "source_location": "L150",
       "weight": 1.0
     },
     {
@@ -32057,7 +32057,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L156",
+      "source_location": "L157",
       "weight": 1.0
     },
     {
@@ -32069,7 +32069,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L157",
+      "source_location": "L158",
       "weight": 1.0
     },
     {
@@ -32081,7 +32081,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L196",
+      "source_location": "L197",
       "weight": 1.0
     },
     {
@@ -32105,7 +32105,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L232",
+      "source_location": "L233",
       "weight": 1.0
     },
     {
@@ -32117,7 +32117,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L238",
+      "source_location": "L239",
       "weight": 1.0
     },
     {
@@ -32129,7 +32129,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L165",
+      "source_location": "L166",
       "weight": 1.0
     },
     {
@@ -32141,7 +32141,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L166",
+      "source_location": "L167",
       "weight": 1.0
     },
     {
@@ -32153,7 +32153,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L313",
+      "source_location": "L314",
       "weight": 1.0
     },
     {
@@ -32249,7 +32249,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L299",
+      "source_location": "L300",
       "weight": 1.0
     },
     {
@@ -32273,7 +32273,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L105",
+      "source_location": "L106",
       "weight": 1.0
     },
     {
@@ -69745,7 +69745,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L172",
+      "source_location": "L173",
       "weight": 1.0
     },
     {
@@ -69757,7 +69757,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L249",
+      "source_location": "L250",
       "weight": 1.0
     },
     {
@@ -69769,7 +69769,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L249",
+      "source_location": "L250",
       "weight": 1.0
     },
     {
@@ -69781,7 +69781,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L126",
+      "source_location": "L127",
       "weight": 1.0
     },
     {
@@ -69793,7 +69793,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L126",
+      "source_location": "L127",
       "weight": 1.0
     },
     {
@@ -69805,7 +69805,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L126",
+      "source_location": "L127",
       "weight": 1.0
     },
     {
@@ -69817,7 +69817,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L126",
+      "source_location": "L127",
       "weight": 1.0
     },
     {
@@ -69829,7 +69829,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L110",
+      "source_location": "L111",
       "weight": 1.0
     },
     {
@@ -69841,7 +69841,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L110",
+      "source_location": "L111",
       "weight": 1.0
     },
     {
@@ -69853,7 +69853,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L110",
+      "source_location": "L111",
       "weight": 1.0
     },
     {
@@ -69865,7 +69865,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L142",
+      "source_location": "L143",
       "weight": 1.0
     },
     {
@@ -69877,7 +69877,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L142",
+      "source_location": "L143",
       "weight": 1.0
     },
     {
@@ -69889,7 +69889,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L142",
+      "source_location": "L143",
       "weight": 1.0
     },
     {
@@ -69901,7 +69901,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L142",
+      "source_location": "L143",
       "weight": 1.0
     },
     {
@@ -69913,7 +69913,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L142",
+      "source_location": "L143",
       "weight": 1.0
     },
     {
@@ -69925,7 +69925,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L154",
+      "source_location": "L155",
       "weight": 1.0
     },
     {
@@ -69937,7 +69937,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L154",
+      "source_location": "L155",
       "weight": 1.0
     },
     {
@@ -69949,7 +69949,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L154",
+      "source_location": "L155",
       "weight": 1.0
     },
     {
@@ -69961,7 +69961,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L154",
+      "source_location": "L155",
       "weight": 1.0
     },
     {
@@ -69973,7 +69973,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L154",
+      "source_location": "L155",
       "weight": 1.0
     },
     {
@@ -69985,7 +69985,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L188",
+      "source_location": "L189",
       "weight": 1.0
     },
     {
@@ -69997,7 +69997,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L183",
+      "source_location": "L184",
       "weight": 1.0
     },
     {
@@ -70009,7 +70009,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L183",
+      "source_location": "L184",
       "weight": 1.0
     },
     {
@@ -70045,7 +70045,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L209",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -70057,7 +70057,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L209",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -70069,7 +70069,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L209",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -70081,7 +70081,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L200",
+      "source_location": "L201",
       "weight": 1.0
     },
     {
@@ -70093,7 +70093,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L200",
+      "source_location": "L201",
       "weight": 1.0
     },
     {
@@ -70105,7 +70105,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L200",
+      "source_location": "L201",
       "weight": 1.0
     },
     {
@@ -70117,7 +70117,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L163",
+      "source_location": "L164",
       "weight": 1.0
     },
     {
@@ -70129,7 +70129,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L163",
+      "source_location": "L164",
       "weight": 1.0
     },
     {
@@ -70141,7 +70141,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L163",
+      "source_location": "L164",
       "weight": 1.0
     },
     {
@@ -70153,7 +70153,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L163",
+      "source_location": "L164",
       "weight": 1.0
     },
     {
@@ -70165,7 +70165,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L163",
+      "source_location": "L164",
       "weight": 1.0
     },
     {
@@ -70237,7 +70237,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L271",
+      "source_location": "L272",
       "weight": 1.0
     },
     {
@@ -70249,7 +70249,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L271",
+      "source_location": "L272",
       "weight": 1.0
     },
     {
@@ -75253,7 +75253,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L126",
+      "source_location": "L127",
       "weight": 1.0
     },
     {
@@ -75265,7 +75265,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L110",
+      "source_location": "L111",
       "weight": 1.0
     },
     {
@@ -75277,7 +75277,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L142",
+      "source_location": "L143",
       "weight": 1.0
     },
     {
@@ -75289,7 +75289,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L154",
+      "source_location": "L155",
       "weight": 1.0
     },
     {
@@ -75313,7 +75313,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L163",
+      "source_location": "L164",
       "weight": 1.0
     },
     {
@@ -75349,7 +75349,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L271",
+      "source_location": "L272",
       "weight": 1.0
     },
     {
@@ -77690,7 +77690,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L117",
+      "source_location": "L118",
       "weight": 1.0
     },
     {
@@ -95081,7 +95081,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L110",
+      "source_location": "L111",
       "weight": 1.0
     },
     {
@@ -95092,7 +95092,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L126",
+      "source_location": "L127",
       "weight": 1.0
     },
     {
@@ -95103,7 +95103,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L142",
+      "source_location": "L143",
       "weight": 1.0
     },
     {
@@ -95114,7 +95114,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L154",
+      "source_location": "L155",
       "weight": 1.0
     },
     {
@@ -95125,7 +95125,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L163",
+      "source_location": "L164",
       "weight": 1.0
     },
     {
@@ -95136,7 +95136,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L172",
+      "source_location": "L173",
       "weight": 1.0
     },
     {
@@ -95147,7 +95147,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L183",
+      "source_location": "L184",
       "weight": 1.0
     },
     {
@@ -95158,7 +95158,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L188",
+      "source_location": "L189",
       "weight": 1.0
     },
     {
@@ -95169,7 +95169,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L194",
+      "source_location": "L195",
       "weight": 1.0
     },
     {
@@ -95180,7 +95180,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L200",
+      "source_location": "L201",
       "weight": 1.0
     },
     {
@@ -95191,7 +95191,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L209",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -95202,7 +95202,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L249",
+      "source_location": "L250",
       "weight": 1.0
     },
     {
@@ -95213,7 +95213,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L271",
+      "source_location": "L272",
       "weight": 1.0
     },
     {
@@ -95235,7 +95235,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L311",
+      "source_location": "L312",
       "weight": 1.0
     },
     {
@@ -95246,7 +95246,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L317",
+      "source_location": "L318",
       "weight": 1.0
     },
     {
@@ -95257,7 +95257,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CourseContentController.php",
-      "source_location": "L327",
+      "source_location": "L328",
       "weight": 1.0
     },
     {
@@ -101756,5 +101756,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "97db90b0cf0510f26f637b79cf278884fed76c42"
+  "built_at_commit": "2bf370eaf793825a4db651f267dc5fe4ca3e5532"
 }

@@ -1836,9 +1836,9 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/CourseContentController.php": {
-    "mtime": 1792114682.7978244,
-    "seen": 1792115210.2323794,
-    "ast_hash": "31c7445a5c594cf3b70c3dda8fc7363e",
+    "mtime": 1792122369.3172507,
+    "seen": 1792122396.4047663,
+    "ast_hash": "deb7ce62485435bcf2251b3fef502a4c",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/CourseController.php": {

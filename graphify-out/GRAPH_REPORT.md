@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `97db90b0`
+- Built from commit: `2bf370ea`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -690,9 +690,9 @@ Nodes (3): pdfPreviewUrl, resourceDownloadHref(), resourcePreviewHref()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Audit akses role` connect `Audit akses role` to `TestCase`?**
-  _High betweenness centrality (0.433) - this node is a cross-community bridge._
+  _High betweenness centrality (0.429) - this node is a cross-community bridge._
 - **Why does `Bukti pemeriksaan` connect `TestCase` to `CourseManagementTest`, `Course`, `Role`, `Audit akses role`, `DashboardTest`?**
-  _High betweenness centrality (0.432) - this node is a cross-community bridge._
+  _High betweenness centrality (0.427) - this node is a cross-community bridge._
 - **What connects `$schema`, `style`, `config` to the rest of the system?**
   _767 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `SidebarMenuButton.vue` be split into smaller, more focused modules?**
