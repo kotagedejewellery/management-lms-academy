@@ -20,7 +20,7 @@ class DashboardTest extends TestCase
     public function test_guests_are_redirected_to_the_login_page()
     {
         $response = $this->get(route('dashboard'));
-        $response->assertRedirect(route('login'));
+        $response->assertRedirect(route('login', absolute: false));
     }
 
     public function test_authenticated_users_see_their_learning_dashboard()

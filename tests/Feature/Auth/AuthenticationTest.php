@@ -19,6 +19,14 @@ class AuthenticationTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_authenticated_users_are_redirected_to_the_relative_dashboard_path(): void
+    {
+        $response = $this->actingAs(User::factory()->create())
+            ->get(route('login'));
+
+        $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
     public function test_users_can_authenticate_using_the_login_screen()
     {
         $user = User::factory()->create();

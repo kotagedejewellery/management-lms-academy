@@ -1530,9 +1530,9 @@
     "semantic_hash": ""
   },
   "tests/Feature/Auth/AuthenticationTest.php": {
-    "mtime": 1791965141.6359403,
-    "seen": 1791965709.9402297,
-    "ast_hash": "266b64d0ee68b0405ae48fb32bc519e6",
+    "mtime": 1792121379.572065,
+    "seen": 1792121813.5502675,
+    "ast_hash": "4bcd955eb87ac27957912fc0e1d8dae9",
     "semantic_hash": ""
   },
   "tests/Feature/Auth/EmailVerificationTest.php": {
@@ -1572,9 +1572,9 @@
     "semantic_hash": ""
   },
   "tests/Feature/DashboardTest.php": {
-    "mtime": 1791969922.4425,
-    "seen": 1791970273.8350246,
-    "ast_hash": "bc8a2a35f5c55aa22eb782e389d0fd92",
+    "mtime": 1792121379.084498,
+    "seen": 1792121813.550413,
+    "ast_hash": "c69ef71d6847747fc97f51211e66fdb1",
     "semantic_hash": ""
   },
   "tests/Feature/ExampleTest.php": {
@@ -2706,15 +2706,15 @@
     "semantic_hash": ""
   },
   "resources/js/navigation/sidebar.test.ts": {
-    "mtime": 1792120124.845115,
-    "seen": 1792120150.2978957,
-    "ast_hash": "8e7924d6dbc2b70e50f87c2b00ff169e",
+    "mtime": 1792120932.3115456,
+    "seen": 1792121002.2390747,
+    "ast_hash": "94a0f63ec519da2bbb5fdfcba0a3b9fb",
     "semantic_hash": ""
   },
   "resources/js/navigation/sidebar.ts": {
-    "mtime": 1792120011.626987,
-    "seen": 1792120109.8472593,
-    "ast_hash": "1905a8718e23e03df41237c5de991637",
+    "mtime": 1792120959.319199,
+    "seen": 1792121002.2390802,
+    "ast_hash": "d57a08a9e5da081f2bc2c0cbffc3de1e",
     "semantic_hash": ""
   }
 }

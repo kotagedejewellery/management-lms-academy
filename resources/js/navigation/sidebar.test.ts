@@ -135,6 +135,14 @@ const expectedItems: Record<string, string[]> = {
 };
 
 describe('sidebar navigation', () => {
+    it('uses a path string for the dashboard link', () => {
+        const dashboardItem = buildSidebarNavigation(
+            capabilityProfiles.employee,
+        )[0].items[0];
+
+        expect(dashboardItem.href).toBe('/dashboard');
+    });
+
     it.each(Object.keys(capabilityProfiles))(
         'shows the approved items for %s',
         (role) => {

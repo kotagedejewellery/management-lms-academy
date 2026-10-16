@@ -21722,7 +21722,7 @@
       "file_type": "code",
       "norm_label": "capabilityprofiles",
       "source_file": "resources/js/navigation/sidebar.test.ts",
-      "source_location": "L7"
+      "source_location": "L4"
     },
     {
       "id": "resources_js_navigation_sidebar_test_expecteditems",
@@ -21733,7 +21733,7 @@
       "file_type": "code",
       "norm_label": "expecteditems",
       "source_file": "resources/js/navigation/sidebar.test.ts",
-      "source_location": "L70"
+      "source_location": "L67"
     },
     {
       "id": "resources_js_components_inputerror",
@@ -30295,6 +30295,18 @@
       "type": "external"
     },
     {
+      "id": "ref_vitest",
+      "label": "ref_vitest",
+      "_origin": "semantic",
+      "community": 27,
+      "community_name": "AppSidebar.vue",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "ref_vitest",
+      "source_file": "",
+      "type": "external"
+    },
+    {
       "id": "resources_js_components_ui_sidebar_index_sidebar",
       "label": "resources_js_components_ui_sidebar_index_sidebar",
       "_origin": "semantic",
@@ -31467,17 +31479,6 @@
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_types_index_twofactorconfigcontent",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "ref_vitest",
-      "label": "ref_vitest",
-      "community": 27,
-      "community_name": "AppSidebar.vue",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "ref_vitest",
       "source_file": "",
       "type": "external"
     }
@@ -88830,7 +88831,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "resources/js/navigation/sidebar.test.ts",
-      "source_location": "L7",
+      "source_location": "L4",
       "weight": 1.0
     },
     {
@@ -88841,7 +88842,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "resources/js/navigation/sidebar.test.ts",
-      "source_location": "L70",
+      "source_location": "L67",
       "weight": 1.0
     },
     {

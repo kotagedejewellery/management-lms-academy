@@ -2706,15 +2706,15 @@
     "semantic_hash": ""
   },
   "resources/js/navigation/sidebar.test.ts": {
-    "mtime": 1792119915.138975,
-    "seen": 1792120109.8472571,
-    "ast_hash": "f935a911e8ae6db3a7b000308bc046c8",
+    "mtime": 1792120932.3115456,
+    "seen": 1792121002.2390747,
+    "ast_hash": "94a0f63ec519da2bbb5fdfcba0a3b9fb",
     "semantic_hash": ""
   },
   "resources/js/navigation/sidebar.ts": {
-    "mtime": 1792120011.626987,
-    "seen": 1792120109.8472593,
-    "ast_hash": "1905a8718e23e03df41237c5de991637",
+    "mtime": 1792120959.319199,
+    "seen": 1792121002.2390802,
+    "ast_hash": "d57a08a9e5da081f2bc2c0cbffc3de1e",
     "semantic_hash": ""
   }
 }

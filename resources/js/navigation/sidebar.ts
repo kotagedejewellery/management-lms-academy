@@ -136,7 +136,11 @@ export function buildSidebarNavigation(
         {
             title: 'Utama',
             items: [
-                { title: 'Dashboard', href: dashboard(), icon: LayoutGrid },
+                {
+                    title: 'Dashboard',
+                    href: dashboard.url(),
+                    icon: LayoutGrid,
+                },
             ],
         },
         ...(learning.length
