@@ -9,6 +9,7 @@ use App\Models\Lesson;
 use App\Models\LessonProgress;
 use App\Models\LessonResource;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -60,7 +61,13 @@ class CourseContentController extends Controller
     {
         $this->authorizeCourses($request);
         $this->ensureDraft($course);
-        $course->modules()->create($this->moduleData($request, $course));
+        $data = $this->moduleData($request, $course);
+
+        DB::transaction(function () use ($course, $data): void {
+            $lockedCourse = Course::query()->lockForUpdate()->findOrFail($course->id);
+            $this->ensureDraft($lockedCourse);
+            $lockedCourse->modules()->create([...$data, 'sequence' => $lockedCourse->modules()->max('sequence') + 1]);
+        });
 
         return to_route('courses.content', $course);
     }
@@ -70,7 +77,7 @@ class CourseContentController extends Controller
         $this->authorizeCourses($request);
         $this->ensureDraft($course);
         $this->ensureModuleBelongsToCourse($course, $module);
-        $module->update($this->moduleData($request, $course, $module));
+        $module->update([...$this->moduleData($request, $course, $module), 'sequence' => $module->sequence]);
 
         return to_route('courses.content', $course);
     }
@@ -82,7 +89,8 @@ class CourseContentController extends Controller
         $this->ensureModuleBelongsToCourse($course, $module);
         $data = $this->lessonData($request, $module);
         $lesson = DB::transaction(function () use ($module, $request, $data): Lesson {
-            $lesson = $module->lessons()->create($data);
+            $lockedModule = CourseModule::query()->lockForUpdate()->findOrFail($module->id);
+            $lesson = $lockedModule->lessons()->create([...$data, 'sequence' => $lockedModule->lessons()->max('sequence') + 1]);
             $this->storeResource($request, $lesson);
 
             return $lesson;
@@ -99,7 +107,7 @@ class CourseContentController extends Controller
         abort_unless($lesson->module_id === $module->id, 404);
         $data = $this->lessonData($request, $module, $lesson);
         $resourcesToDelete = DB::transaction(function () use ($lesson, $request, $data): Collection {
-            $lesson->update($data);
+            $lesson->update([...$data, 'sequence' => $lesson->sequence]);
 
             return $this->storeResource($request, $lesson);
         });
@@ -118,7 +126,11 @@ class CourseContentController extends Controller
         $lessonIdsList = $lessonIds->map(fn (mixed $id): int => (int) $id)->values()->all();
         $this->ensureLessonsUnused($lessonIdsList);
         $resources = LessonResource::query()->whereIn('lesson_id', $lessonIds)->get();
-        $module->delete();
+        DB::transaction(function () use ($course, $module): void {
+            $sequence = $module->sequence;
+            $module->delete();
+            $course->modules()->where('sequence', '>', $sequence)->decrement('sequence');
+        });
         $this->deleteResourceFiles($resources);
 
         return to_route('courses.content', $course);
@@ -136,6 +148,59 @@ class CourseContentController extends Controller
         $lesson->delete();
         $module->lessons()->where('sequence', '>', $sequence)->decrement('sequence');
         $this->deleteResourceFiles($resources);
+
+        return to_route('courses.content', $course);
+    }
+
+    public function moveModule(Request $request, Course $course, CourseModule $module): RedirectResponse
+    {
+        $this->authorizeCourses($request);
+        $this->ensureDraft($course);
+        $this->ensureModuleBelongsToCourse($course, $module);
+        $direction = $request->validate(['direction' => ['required', Rule::in(['up', 'down'])]])['direction'];
+
+        DB::transaction(function () use ($course, $module, $direction): void {
+            Course::query()->lockForUpdate()->findOrFail($course->id);
+            $current = CourseModule::query()->lockForUpdate()->findOrFail($module->id);
+            $target = CourseModule::query()
+                ->where('course_id', $course->id)
+                ->when($direction === 'up', fn ($query) => $query->where('sequence', '<', $current->sequence)->orderByDesc('sequence'), fn ($query) => $query->where('sequence', '>', $current->sequence)->orderBy('sequence'))
+                ->lockForUpdate()
+                ->first();
+
+            if (! $target) {
+                return;
+            }
+
+            $this->swapSequences($current, $target);
+        });
+
+        return to_route('courses.content', $course);
+    }
+
+    public function moveLesson(Request $request, Course $course, CourseModule $module, Lesson $lesson): RedirectResponse
+    {
+        $this->authorizeCourses($request);
+        $this->ensureDraft($course);
+        $this->ensureModuleBelongsToCourse($course, $module);
+        abort_unless($lesson->module_id === $module->id, 404);
+        $direction = $request->validate(['direction' => ['required', Rule::in(['up', 'down'])]])['direction'];
+
+        DB::transaction(function () use ($module, $lesson, $direction): void {
+            CourseModule::query()->lockForUpdate()->findOrFail($module->id);
+            $current = Lesson::query()->lockForUpdate()->findOrFail($lesson->id);
+            $target = Lesson::query()
+                ->where('module_id', $module->id)
+                ->when($direction === 'up', fn ($query) => $query->where('sequence', '<', $current->sequence)->orderByDesc('sequence'), fn ($query) => $query->where('sequence', '>', $current->sequence)->orderBy('sequence'))
+                ->lockForUpdate()
+                ->first();
+
+            if (! $target) {
+                return;
+            }
+
+            $this->swapSequences($current, $target);
+        });
 
         return to_route('courses.content', $course);
     }
@@ -202,7 +267,6 @@ class CourseContentController extends Controller
     {
         return $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'sequence' => ['required', 'integer', 'min:1', Rule::unique('modules', 'sequence')->where('course_id', $course->id)->ignore($module)],
         ]);
     }
 
@@ -211,14 +275,13 @@ class CourseContentController extends Controller
     {
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'type' => ['required', Rule::in(['article', 'video', 'pdf'])],
+            'type' => ['required', Rule::in(['article', 'video', 'pdf', 'presentation'])],
             'content' => ['nullable', 'string', 'max:60000'],
             'transcript' => ['nullable', 'string', 'max:60000'],
             'resource_url' => ['nullable', 'url', 'max:2048'],
             'resource' => ['nullable', 'file', 'max:51200', 'mimetypes:application/pdf,video/mp4,video/webm'],
             'replace_resource' => ['nullable', 'boolean'],
             'is_required' => ['required', 'boolean'],
-            'sequence' => ['required', 'integer', 'min:1', Rule::unique('lessons', 'sequence')->where('module_id', $module->id)->ignore($lesson)],
         ]);
 
         if ($data['type'] === 'article' && blank($data['content'])) {
@@ -234,6 +297,10 @@ class CourseContentController extends Controller
             ->exists();
         if (in_array($data['type'], ['video', 'pdf'], true) && blank($data['resource_url'] ?? null) && ! $request->hasFile('resource') && ! $hasExistingSource) {
             throw ValidationException::withMessages(['resource_url' => 'Masukkan URL atau unggah file resource untuk video atau PDF.']);
+        }
+
+        if ($data['type'] === 'presentation' && ! $this->isCanvaViewUrl($data['resource_url'] ?? null)) {
+            throw ValidationException::withMessages(['resource_url' => 'Gunakan tautan Canva yang dapat dilihat (view atau embed), bukan tautan editor.']);
         }
 
         if ($request->hasFile('resource') && ! $this->resourceMatchesLessonType($data['type'], $request->file('resource')->getMimeType())) {
@@ -312,6 +379,42 @@ class CourseContentController extends Controller
     private function resourceMatchesLessonType(string $lessonType, ?string $mimeType): bool
     {
         return in_array($mimeType, $this->acceptedResourceMimes($lessonType), true);
+    }
+
+    private function isCanvaViewUrl(?string $resourceUrl): bool
+    {
+        if (blank($resourceUrl)) {
+            return false;
+        }
+
+        $host = strtolower((string) parse_url($resourceUrl, PHP_URL_HOST));
+        $path = trim(strtolower((string) parse_url($resourceUrl, PHP_URL_PATH)), '/');
+
+        if ($host === 'canva.link') {
+            return $path !== '';
+        }
+
+        if (! in_array($host, ['canva.com', 'www.canva.com'], true)) {
+            return false;
+        }
+
+        $segments = explode('/', $path);
+        if ($segments[0] !== 'design' || in_array('edit', $segments, true)) {
+            return false;
+        }
+
+        parse_str((string) parse_url($resourceUrl, PHP_URL_QUERY), $query);
+
+        return in_array('view', $segments, true) || array_key_exists('embed', $query);
+    }
+
+    private function swapSequences(Model $current, Model $target): void
+    {
+        $currentSequence = (int) $current->getAttribute('sequence');
+        $targetSequence = (int) $target->getAttribute('sequence');
+        $current->update(['sequence' => 0]);
+        $target->update(['sequence' => $currentSequence]);
+        $current->update(['sequence' => $targetSequence]);
     }
 
     /** @return list<string> */

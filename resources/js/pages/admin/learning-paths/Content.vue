@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { ListOrdered, Plus, Trash2 } from '@lucide/vue';
-import { reactive, ref } from 'vue';
+import { ChevronDown, ChevronUp, ListOrdered, Plus, Trash2 } from '@lucide/vue';
+import { ref } from 'vue';
 import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
 import EmptyState from '@/components/EmptyState.vue';
+import FormErrorSummary from '@/components/FormErrorSummary.vue';
 import InputError from '@/components/InputError.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
 import { useUnsavedChangesGuard } from '@/composables/useUnsavedChangesGuard';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Spinner } from '@/components/ui/spinner';
 
 type Course = { id: number; code: string; title: string; status?: 'published' };
 type PathCourse = { id: number; sequence: number; course: Course };
@@ -25,19 +26,10 @@ const props = defineProps<{
 }>();
 const form = useForm({
     course_id: '',
-    sequence: String(props.learningPath.courses.length + 1),
 });
-const sequences = reactive<Record<number, string>>(
-    Object.fromEntries(
-        props.learningPath.courses.map((pathCourse) => [
-            pathCourse.id,
-            String(pathCourse.sequence),
-        ]),
-    ),
-);
 const pathCourseToDelete = ref<PathCourse | null>(null);
 const deletingPathCourse = ref(false);
-const updatingPathCourseId = ref<number | null>(null);
+const movingPathCourseId = ref<number | null>(null);
 const leaveGuard = useUnsavedChangesGuard(() => form.isDirty);
 
 function addCourse(): void {
@@ -45,13 +37,17 @@ function addCourse(): void {
         onSuccess: () => form.reset('course_id'),
     });
 }
-function updateSequence(pathCourse: PathCourse): void {
-    router.put(
-        `/learning-paths/${props.learningPath.id}/courses/${pathCourse.id}`,
-        { course_id: pathCourse.course.id, sequence: sequences[pathCourse.id] },
+function movePathCourse(
+    pathCourse: PathCourse,
+    direction: 'up' | 'down',
+): void {
+    router.patch(
+        `/learning-paths/${props.learningPath.id}/courses/${pathCourse.id}/move`,
+        { direction },
         {
-            onStart: () => (updatingPathCourseId.value = pathCourse.id),
-            onFinish: () => (updatingPathCourseId.value = null),
+            preserveScroll: true,
+            onStart: () => (movingPathCourseId.value = pathCourse.id),
+            onFinish: () => (movingPathCourseId.value = null),
         },
     );
 }
@@ -115,7 +111,9 @@ defineOptions({
                     class="divide-y divide-border"
                 >
                     <article
-                        v-for="pathCourse in learningPath.courses"
+                        v-for="(
+                            pathCourse, pathCourseIndex
+                        ) in learningPath.courses"
                         :key="pathCourse.id"
                         class="flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:justify-between"
                     >
@@ -137,43 +135,35 @@ defineOptions({
                                 · Dipublikasikan
                             </p>
                         </div>
-                        <div class="flex items-end gap-2">
-                            <form
-                                class="flex items-end gap-2"
-                                @submit.prevent="updateSequence(pathCourse)"
-                            >
-                                <div class="grid gap-2">
-                                    <Label
-                                        :for="`sequence-${pathCourse.id}`"
-                                        class="text-xs"
-                                        >Urutan</Label
-                                    ><Input
-                                        :id="`sequence-${pathCourse.id}`"
-                                        v-model="sequences[pathCourse.id]"
-                                        type="number"
-                                        min="1"
-                                        :disabled="
-                                            updatingPathCourseId ===
-                                            pathCourse.id
-                                        "
-                                        class="w-20"
-                                        required
-                                    />
-                                </div>
-                                <Button
-                                    type="submit"
-                                    variant="outline"
-                                    size="sm"
-                                    :disabled="
-                                        updatingPathCourseId === pathCourse.id
-                                    "
-                                    >{{
-                                        updatingPathCourseId === pathCourse.id
-                                            ? 'Menyimpan…'
-                                            : 'Simpan'
-                                    }}</Button
-                                >
-                            </form>
+                        <div
+                            v-if="learningPath.status !== 'archived'"
+                            class="flex shrink-0 items-center gap-1"
+                        >
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                :disabled="
+                                    movingPathCourseId !== null ||
+                                    pathCourseIndex === 0
+                                "
+                                :aria-label="`Naikkan ${pathCourse.course.title}`"
+                                @click="movePathCourse(pathCourse, 'up')"
+                                ><ChevronUp class="size-4"
+                            /></Button>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                :disabled="
+                                    movingPathCourseId !== null ||
+                                    pathCourseIndex ===
+                                        learningPath.courses.length - 1
+                                "
+                                :aria-label="`Turunkan ${pathCourse.course.title}`"
+                                @click="movePathCourse(pathCourse, 'down')"
+                                ><ChevronDown class="size-4"
+                            /></Button>
                             <Button
                                 v-if="learningPath.status === 'draft'"
                                 type="button"
@@ -198,6 +188,7 @@ defineOptions({
             >
                 <h2 class="font-semibold text-foreground">Tambah course</h2>
                 <form class="mt-5 grid gap-4" @submit.prevent="addCourse">
+                    <FormErrorSummary :errors="form.errors" />
                     <div class="grid gap-2">
                         <Label for="course-id">Course</Label
                         ><select
@@ -216,18 +207,14 @@ defineOptions({
                             </option></select
                         ><InputError :message="form.errors.course_id" />
                     </div>
-                    <div class="grid gap-2">
-                        <Label for="sequence">Urutan</Label
-                        ><Input
-                            id="sequence"
-                            v-model="form.sequence"
-                            type="number"
-                            min="1"
-                            required
-                        /><InputError :message="form.errors.sequence" />
-                    </div>
                     <Button type="submit" :disabled="form.processing"
-                        ><Plus /> Tambah course</Button
+                        ><Spinner v-if="form.processing" />
+                        <Plus v-else />
+                        {{
+                            form.processing
+                                ? 'Menambahkan course…'
+                                : 'Tambah course'
+                        }}</Button
                     >
                 </form>
             </section>

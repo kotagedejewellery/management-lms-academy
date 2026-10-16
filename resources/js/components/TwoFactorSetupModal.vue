@@ -46,26 +46,26 @@ const pinInputContainerRef = useTemplateRef('pinInputContainerRef');
 const modalConfig = computed<TwoFactorConfigContent>(() => {
     if (props.twoFactorEnabled) {
         return {
-            title: 'Two-factor authentication enabled',
+            title: 'Autentikasi dua faktor aktif',
             description:
-                'Two-factor authentication is now enabled. Scan the QR code or enter the setup key in your authenticator app.',
-            buttonText: 'Close',
+                'Pindai kode QR atau masukkan kunci pengaturan ke aplikasi autentikator Anda.',
+            buttonText: 'Tutup',
         };
     }
 
     if (showVerificationStep.value) {
         return {
-            title: 'Verify authentication code',
-            description: 'Enter the 6-digit code from your authenticator app',
-            buttonText: 'Continue',
+            title: 'Verifikasi kode autentikasi',
+            description: 'Masukkan kode 6 digit dari aplikasi autentikator.',
+            buttonText: 'Lanjutkan',
         };
     }
 
     return {
-        title: 'Enable two-factor authentication',
+        title: 'Aktifkan autentikasi dua faktor',
         description:
-            'To finish enabling two-factor authentication, scan the QR code or enter the setup key in your authenticator app',
-        buttonText: 'Continue',
+            'Untuk menyelesaikan pengaturan, pindai kode QR atau masukkan kunci pengaturan ke aplikasi autentikator Anda.',
+        buttonText: 'Lanjutkan',
     };
 });
 
@@ -197,7 +197,7 @@ watch(
                                 class="absolute inset-0 top-1/2 h-px w-full bg-border"
                             />
                             <span class="relative bg-card px-2 py-1"
-                                >or, enter the code manually</span
+                                >atau masukkan kode secara manual</span
                             >
                         </div>
 
@@ -279,14 +279,14 @@ watch(
                                     @click="showVerificationStep = false"
                                     :disabled="processing"
                                 >
-                                    Back
+                                    Kembali
                                 </Button>
                                 <Button
                                     type="submit"
                                     class="w-auto flex-1"
                                     :disabled="processing || code.length < 6"
                                 >
-                                    Confirm
+                                    Konfirmasi
                                 </Button>
                             </div>
                         </div>

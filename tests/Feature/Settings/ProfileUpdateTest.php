@@ -4,6 +4,7 @@ namespace Tests\Feature\Settings;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class ProfileUpdateTest extends TestCase
@@ -19,6 +20,41 @@ class ProfileUpdateTest extends TestCase
             ->get(route('profile.edit'));
 
         $response->assertOk();
+    }
+
+    public function test_profile_only_offers_email_verification_when_the_feature_is_enabled(): void
+    {
+        config(['fortify.features' => []]);
+
+        $this->actingAs(User::factory()->unverified()->create())
+            ->get(route('profile.edit'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('settings/Profile')
+                ->where('mustVerifyEmail', false),
+            );
+    }
+
+    public function test_shared_user_includes_an_unverified_email_status(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        $this->actingAs($user)
+            ->get(route('profile.edit'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('auth.user.email_verified_at')
+                ->where('auth.user.email_verified_at', null),
+            );
+    }
+
+    public function test_shared_user_includes_a_verified_email_status(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('profile.edit'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('auth.user.email_verified_at'),
+            );
     }
 
     public function test_settings_redirects_to_the_profile_page(): void
@@ -79,37 +115,12 @@ class ProfileUpdateTest extends TestCase
         $this->assertNotNull($user->refresh()->email_verified_at);
     }
 
-    public function test_user_cannot_delete_their_account_to_preserve_audit_history(): void
+    public function test_profile_deletion_is_not_an_available_route(): void
     {
         $user = User::factory()->create();
 
-        $response = $this
-            ->actingAs($user)
-            ->delete(route('profile.destroy'), [
-                'password' => 'password',
-            ]);
-
-        $response->assertSessionHasErrors('profile');
-
-        $this->assertAuthenticatedAs($user);
-        $this->assertNotNull($user->fresh());
-    }
-
-    public function test_correct_password_must_be_provided_to_delete_account()
-    {
-        $user = User::factory()->create();
-
-        $response = $this
-            ->actingAs($user)
-            ->from(route('profile.edit'))
-            ->delete(route('profile.destroy'), [
-                'password' => 'wrong-password',
-            ]);
-
-        $response
-            ->assertSessionHasErrors('password')
-            ->assertRedirect(route('profile.edit'));
-
-        $this->assertNotNull($user->fresh());
+        $this->actingAs($user)
+            ->delete('/settings/profile')
+            ->assertMethodNotAllowed();
     }
 }

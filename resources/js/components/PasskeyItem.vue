@@ -43,10 +43,10 @@ function handleDelete(): void {
                     </span>
                 </div>
                 <p class="text-sm text-muted-foreground">
-                    Added {{ passkey.created_at_diff }}
+                    Ditambahkan {{ passkey.created_at_diff }}
                     <template v-if="passkey.last_used_at_diff">
                         <span class="mx-1 text-muted-foreground/50">/</span>
-                        Last used {{ passkey.last_used_at_diff }}
+                        Terakhir digunakan {{ passkey.last_used_at_diff }}
                     </template>
                 </p>
             </div>
@@ -64,7 +64,7 @@ function handleDelete(): void {
         <ConfirmActionDialog
             v-model:open="confirmOpen"
             title="Hapus passkey?"
-            :description="`Passkey “${passkey.name}” tidak dapat lagi digunakan untuk masuk ke akun Anda.`"
+            :description="`Passkey ${passkey.name} tidak dapat lagi digunakan untuk masuk ke akun Anda.`"
             confirm-label="Hapus passkey"
             :processing="isDeleting"
             destructive

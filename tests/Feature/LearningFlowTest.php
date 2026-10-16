@@ -50,6 +50,26 @@ class LearningFlowTest extends TestCase
         $this->assertDatabaseHas('enrollments', ['user_id' => $employee->id, 'course_id' => $course->id]);
     }
 
+    public function test_enrolled_employee_receives_a_canva_presentation_in_the_lesson_player(): void
+    {
+        $employee = User::factory()->create();
+        $course = $this->publishedCourseWithLesson();
+        $lesson = $course->modules->first()->lessons->first();
+        $lesson->update([
+            'type' => 'presentation',
+            'content' => null,
+            'resource_url' => 'https://www.canva.com/design/DAHJVwit-10/presentasi-layanan/view?embed',
+        ]);
+        $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
+
+        $this->actingAs($employee)->get(route('my-learning.show', ['course' => $course, 'lesson' => $lesson]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('learning/Show')
+                ->where('selected_lesson.type', 'presentation')
+                ->where('selected_lesson.resource_url', 'https://www.canva.com/design/DAHJVwit-10/presentasi-layanan/view?embed'));
+    }
+
     public function test_employee_cannot_access_another_employees_course(): void
     {
         $course = $this->publishedCourseWithLesson();

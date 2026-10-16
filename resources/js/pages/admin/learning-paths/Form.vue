@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
+import FormErrorSummary from '@/components/FormErrorSummary.vue';
 import InputError from '@/components/InputError.vue';
 import { useUnsavedChangesGuard } from '@/composables/useUnsavedChangesGuard';
 import { Button } from '@/components/ui/button';
@@ -56,6 +57,7 @@ function submit(): void {
             >
         </div>
         <form class="grid gap-6" @submit.prevent="submit">
+            <FormErrorSummary :errors="form.errors" />
             <section
                 class="rounded-xl bg-card p-5 shadow-sm ring-1 ring-border sm:p-6"
             >

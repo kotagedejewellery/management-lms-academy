@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
+import FormErrorSummary from '@/components/FormErrorSummary.vue';
 import InputError from '@/components/InputError.vue';
 import { useUnsavedChangesGuard } from '@/composables/useUnsavedChangesGuard';
 import { Button } from '@/components/ui/button';
@@ -131,6 +132,7 @@ function setTrainerSelection(trainerId: number, selected: boolean): void {
 
         <form class="grid gap-8" @submit.prevent="submit">
             <input v-model="form.passing_grade" type="hidden" />
+            <FormErrorSummary :errors="form.errors" />
             <section class="rounded-xl border border-border bg-card p-5 sm:p-6">
                 <h2 class="font-semibold text-foreground">Informasi course</h2>
                 <div class="mt-5 grid gap-5 sm:grid-cols-2">

@@ -1,15 +1,25 @@
 <script setup lang="ts">
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { BookOpenCheck, Pencil, Plus, Trash2, X } from '@lucide/vue';
+import {
+    BookOpenCheck,
+    ChevronDown,
+    ChevronUp,
+    Pencil,
+    Plus,
+    Trash2,
+    X,
+} from '@lucide/vue';
 import { ref } from 'vue';
 import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
 import EmptyState from '@/components/EmptyState.vue';
+import FormErrorSummary from '@/components/FormErrorSummary.vue';
 import InputError from '@/components/InputError.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
 import { useUnsavedChangesGuard } from '@/composables/useUnsavedChangesGuard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Spinner } from '@/components/ui/spinner';
 
 type Resource = {
     id: number;
@@ -20,7 +30,7 @@ type Resource = {
 type Lesson = {
     id: number;
     title: string;
-    type: 'article' | 'video' | 'pdf';
+    type: 'article' | 'video' | 'pdf' | 'presentation';
     content: string | null;
     transcript: string | null;
     resource_url: string | null;
@@ -45,7 +55,6 @@ const props = defineProps<{
 }>();
 const moduleForm = useForm({
     title: '',
-    sequence: String(props.course.modules.length + 1),
 });
 const lessonForm = useForm({
     module_id: props.course.modules[0]?.id?.toString() ?? '',
@@ -57,13 +66,13 @@ const lessonForm = useForm({
     resource: null as File | null,
     replace_resource: false,
     is_required: true,
-    sequence: '1',
 });
 const deletion = ref<{ label: string; url: string } | null>(null);
 const deleting = ref(false);
 const editingLesson = ref<Lesson | null>(null);
 const resourceSource = ref<'file' | 'url'>('file');
 const resourceInputKey = ref(0);
+const movingItem = ref<string | null>(null);
 const leaveGuard = useUnsavedChangesGuard(
     () => moduleForm.isDirty || lessonForm.isDirty,
 );
@@ -100,7 +109,6 @@ function editLesson(module: Module, lesson: Lesson): void {
     lessonForm.resource = null;
     lessonForm.replace_resource = false;
     lessonForm.is_required = lesson.is_required;
-    lessonForm.sequence = lesson.sequence.toString();
     resourceSource.value = lesson.resource_url ? 'url' : 'file';
     resourceInputKey.value += 1;
 }
@@ -110,7 +118,6 @@ function resetLessonForm(): void {
     lessonForm.module_id = props.course.modules[0]?.id?.toString() ?? '';
     lessonForm.type = 'article';
     lessonForm.is_required = true;
-    lessonForm.sequence = '1';
     lessonForm.replace_resource = false;
     resourceSource.value = 'file';
     resourceInputKey.value += 1;
@@ -142,6 +149,32 @@ function confirmDelete(): void {
                 deletion.value = null;
             },
         });
+}
+function moveModule(module: Module, direction: 'up' | 'down'): void {
+    router.patch(
+        `/courses/${props.course.id}/modules/${module.id}/move`,
+        { direction },
+        {
+            preserveScroll: true,
+            onStart: () => (movingItem.value = `module-${module.id}`),
+            onFinish: () => (movingItem.value = null),
+        },
+    );
+}
+function moveLesson(
+    module: Module,
+    lesson: Lesson,
+    direction: 'up' | 'down',
+): void {
+    router.patch(
+        `/courses/${props.course.id}/modules/${module.id}/lessons/${lesson.id}/move`,
+        { direction },
+        {
+            preserveScroll: true,
+            onStart: () => (movingItem.value = `lesson-${lesson.id}`),
+            onFinish: () => (movingItem.value = null),
+        },
+    );
 }
 defineOptions({
     layout: {
@@ -196,7 +229,7 @@ defineOptions({
                     class="divide-y divide-border"
                 >
                     <article
-                        v-for="module in course.modules"
+                        v-for="(module, moduleIndex) in course.modules"
                         :key="module.id"
                         class="px-5 py-5"
                     >
@@ -209,27 +242,55 @@ defineOptions({
                                     {{ module.lessons.length }} lesson
                                 </p>
                             </div>
-                            <Button
+                            <div
                                 v-if="course.status === 'draft'"
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                :aria-label="`Hapus modul ${module.title}`"
-                                @click="
-                                    deletion = {
-                                        label: `modul ${module.title}`,
-                                        url: `/courses/${course.id}/modules/${module.id}`,
-                                    }
-                                "
-                                ><Trash2 class="size-4"
-                            /></Button>
+                                class="flex shrink-0 items-center gap-1"
+                            >
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    :disabled="
+                                        movingItem !== null || moduleIndex === 0
+                                    "
+                                    :aria-label="`Naikkan modul ${module.title}`"
+                                    @click="moveModule(module, 'up')"
+                                    ><ChevronUp class="size-4"
+                                /></Button>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    :disabled="
+                                        movingItem !== null ||
+                                        moduleIndex ===
+                                            course.modules.length - 1
+                                    "
+                                    :aria-label="`Turunkan modul ${module.title}`"
+                                    @click="moveModule(module, 'down')"
+                                    ><ChevronDown class="size-4"
+                                /></Button>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    :aria-label="`Hapus modul ${module.title}`"
+                                    @click="
+                                        deletion = {
+                                            label: `modul ${module.title}`,
+                                            url: `/courses/${course.id}/modules/${module.id}`,
+                                        }
+                                    "
+                                    ><Trash2 class="size-4"
+                                /></Button>
+                            </div>
                         </div>
                         <ol
                             v-if="module.lessons.length"
                             class="mt-4 divide-y divide-border rounded-lg border border-border"
                         >
                             <li
-                                v-for="lesson in module.lessons"
+                                v-for="(lesson, lessonIndex) in module.lessons"
                                 :key="lesson.id"
                                 class="flex items-center justify-between gap-3 px-4 py-3"
                             >
@@ -248,7 +309,9 @@ defineOptions({
                                                 ? 'Artikel'
                                                 : lesson.type === 'video'
                                                   ? 'Video'
-                                                  : 'PDF'
+                                                  : lesson.type === 'pdf'
+                                                    ? 'PDF'
+                                                    : 'Presentasi Canva'
                                         }}
                                         ·
                                         {{
@@ -293,6 +356,35 @@ defineOptions({
                                         type="button"
                                         variant="ghost"
                                         size="icon"
+                                        :disabled="
+                                            movingItem !== null ||
+                                            lessonIndex === 0
+                                        "
+                                        :aria-label="`Naikkan lesson ${lesson.title}`"
+                                        @click="
+                                            moveLesson(module, lesson, 'up')
+                                        "
+                                        ><ChevronUp class="size-4"
+                                    /></Button>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        :disabled="
+                                            movingItem !== null ||
+                                            lessonIndex ===
+                                                module.lessons.length - 1
+                                        "
+                                        :aria-label="`Turunkan lesson ${lesson.title}`"
+                                        @click="
+                                            moveLesson(module, lesson, 'down')
+                                        "
+                                        ><ChevronDown class="size-4"
+                                    /></Button>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
                                         :aria-label="`Ubah lesson ${lesson.title}`"
                                         @click="editLesson(module, lesson)"
                                         ><Pencil class="size-4"
@@ -331,6 +423,7 @@ defineOptions({
                 >
                     <h2 class="font-semibold text-foreground">Tambah modul</h2>
                     <form class="mt-5 grid gap-4" @submit.prevent="addModule">
+                        <FormErrorSummary :errors="moduleForm.errors" />
                         <div class="grid gap-2">
                             <Label for="module-title">Judul modul</Label
                             ><Input
@@ -339,20 +432,14 @@ defineOptions({
                                 required
                             /><InputError :message="moduleForm.errors.title" />
                         </div>
-                        <div class="grid gap-2">
-                            <Label for="module-sequence">Urutan</Label
-                            ><Input
-                                id="module-sequence"
-                                v-model="moduleForm.sequence"
-                                type="number"
-                                min="1"
-                                required
-                            /><InputError
-                                :message="moduleForm.errors.sequence"
-                            />
-                        </div>
                         <Button type="submit" :disabled="moduleForm.processing"
-                            ><Plus /> Tambah modul</Button
+                            ><Spinner v-if="moduleForm.processing" />
+                            <Plus v-else />
+                            {{
+                                moduleForm.processing
+                                    ? 'Menyimpan modul…'
+                                    : 'Tambah modul'
+                            }}</Button
                         >
                     </form>
                 </section>
@@ -370,6 +457,7 @@ defineOptions({
                         }}
                     </p>
                     <form class="mt-5 grid gap-4" @submit.prevent="addLesson">
+                        <FormErrorSummary :errors="lessonForm.errors" />
                         <div class="grid gap-2">
                             <Label for="lesson-module">Modul</Label
                             ><select
@@ -387,6 +475,9 @@ defineOptions({
                                     {{ module.sequence }}. {{ module.title }}
                                 </option>
                             </select>
+                            <InputError
+                                :message="lessonForm.errors.module_id"
+                            />
                         </div>
                         <div class="grid gap-2">
                             <Label for="lesson-title">Judul lesson</Label
@@ -407,6 +498,9 @@ defineOptions({
                                 <option value="article">Artikel</option>
                                 <option value="video">Video</option>
                                 <option value="pdf">PDF</option>
+                                <option value="presentation">
+                                    Presentasi Canva
+                                </option>
                             </select>
                             <p
                                 v-if="editingLesson"
@@ -430,6 +524,31 @@ defineOptions({
                                 :message="lessonForm.errors.content"
                             />
                         </div>
+                        <template
+                            v-else-if="lessonForm.type === 'presentation'"
+                        >
+                            <div class="grid gap-2">
+                                <Label for="resource-url">URL Canva</Label>
+                                <Input
+                                    id="resource-url"
+                                    v-model="lessonForm.resource_url"
+                                    type="url"
+                                    placeholder="https://www.canva.com/design/.../view"
+                                    required
+                                />
+                                <p
+                                    class="text-xs leading-5 text-muted-foreground"
+                                >
+                                    Dari Canva, pilih Share lalu atur akses ke
+                                    <strong>Can view</strong>. Gunakan tautan
+                                    view, embed, atau canva.link; tautan editor
+                                    tidak dapat digunakan.
+                                </p>
+                                <InputError
+                                    :message="lessonForm.errors.resource_url"
+                                />
+                            </div>
+                        </template>
                         <template v-else>
                             <div class="grid gap-2">
                                 <Label>Sumber materi</Label>
@@ -444,6 +563,7 @@ defineOptions({
                                         :aria-pressed="
                                             resourceSource === 'file'
                                         "
+                                        :disabled="lessonForm.processing"
                                         @click="chooseResourceSource('file')"
                                         >Unggah file</Button
                                     >
@@ -455,6 +575,7 @@ defineOptions({
                                                 : 'outline'
                                         "
                                         :aria-pressed="resourceSource === 'url'"
+                                        :disabled="lessonForm.processing"
                                         @click="chooseResourceSource('url')"
                                         >Gunakan URL</Button
                                     >
@@ -530,6 +651,7 @@ defineOptions({
                                             : 'video/mp4,video/webm'
                                     "
                                     :required="!editingLesson"
+                                    :disabled="lessonForm.processing"
                                     @change="chooseResource"
                                 />
                                 <p
@@ -547,23 +669,54 @@ defineOptions({
                                         digunakan.
                                     </template>
                                 </p>
+                                <p
+                                    v-if="lessonForm.resource"
+                                    class="text-xs font-medium text-foreground"
+                                >
+                                    File dipilih: {{ lessonForm.resource.name }}
+                                </p>
+                                <div
+                                    v-if="lessonForm.processing"
+                                    class="grid gap-2"
+                                    role="status"
+                                    aria-live="polite"
+                                >
+                                    <p class="text-xs text-muted-foreground">
+                                        {{
+                                            lessonForm.progress
+                                                ? 'Mengunggah file ' +
+                                                  lessonForm.progress
+                                                      .percentage +
+                                                  '%'
+                                                : 'Menyiapkan lesson…'
+                                        }}
+                                    </p>
+                                    <div
+                                        class="h-2 overflow-hidden rounded-full bg-muted"
+                                        role="progressbar"
+                                        aria-label="Progres unggah file lesson"
+                                        :aria-valuenow="
+                                            lessonForm.progress?.percentage ?? 0
+                                        "
+                                        aria-valuemin="0"
+                                        aria-valuemax="100"
+                                    >
+                                        <div
+                                            class="h-full bg-primary transition-[width] duration-200"
+                                            :style="{
+                                                width:
+                                                    (lessonForm.progress
+                                                        ?.percentage ?? 0) +
+                                                    '%',
+                                            }"
+                                        />
+                                    </div>
+                                </div>
                                 <InputError
                                     :message="lessonForm.errors.resource"
                                 />
                             </div>
                         </template>
-                        <div class="grid gap-2">
-                            <Label for="lesson-sequence">Urutan</Label
-                            ><Input
-                                id="lesson-sequence"
-                                v-model="lessonForm.sequence"
-                                type="number"
-                                min="1"
-                                required
-                            /><InputError
-                                :message="lessonForm.errors.sequence"
-                            />
-                        </div>
                         <div class="grid gap-2">
                             <Label for="lesson-required">Kewajiban</Label
                             ><select
@@ -580,12 +733,17 @@ defineOptions({
                                 type="submit"
                                 :disabled="lessonForm.processing"
                             >
-                                <Pencil v-if="editingLesson" />
+                                <Spinner v-if="lessonForm.processing" />
+                                <Pencil v-else-if="editingLesson" />
                                 <Plus v-else />
                                 {{
-                                    editingLesson
-                                        ? 'Simpan perubahan'
-                                        : 'Tambah lesson'
+                                    lessonForm.processing
+                                        ? editingLesson
+                                            ? 'Menyimpan lesson…'
+                                            : 'Menambahkan lesson…'
+                                        : editingLesson
+                                          ? 'Simpan perubahan'
+                                          : 'Tambah lesson'
                                 }}
                             </Button>
                             <Button

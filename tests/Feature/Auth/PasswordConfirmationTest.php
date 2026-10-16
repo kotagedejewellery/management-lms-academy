@@ -30,4 +30,22 @@ class PasswordConfirmationTest extends TestCase
 
         $response->assertRedirect(route('login'));
     }
+
+    public function test_user_can_confirm_their_password_without_an_identifier_column(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->post(route('password.confirm.store'), [
+                'password' => 'password',
+            ]);
+
+        $response
+            ->assertRedirect(config('fortify.home'))
+            ->assertSessionHasNoErrors();
+
+        $this->assertNotNull(
+            $response->getSession()->get('auth.password_confirmed_at'),
+        );
+    }
 }

@@ -64,12 +64,15 @@ Route::middleware(['auth', 'verified', 'active', 'audit'])->group(function () {
     Route::post('courses/{course}/assessments', [AssessmentController::class, 'store'])->name('courses.assessments.store');
     Route::patch('courses/{course}/assessments/{assessment}', [AssessmentController::class, 'update'])->name('courses.assessments.update');
     Route::post('courses/{course}/assessments/{assessment}/questions', [AssessmentController::class, 'storeQuestion'])->name('courses.assessments.questions.store');
+    Route::patch('courses/{course}/assessments/{assessment}/questions/{question}/move', [AssessmentController::class, 'moveQuestion'])->name('courses.assessments.questions.move');
     Route::delete('courses/{course}/assessments/{assessment}/questions/{question}', [AssessmentController::class, 'destroyQuestion'])->name('courses.assessments.questions.destroy');
     Route::post('courses/{course}/modules', [CourseContentController::class, 'storeModule'])->name('courses.modules.store');
     Route::put('courses/{course}/modules/{module}', [CourseContentController::class, 'updateModule'])->name('courses.modules.update');
+    Route::patch('courses/{course}/modules/{module}/move', [CourseContentController::class, 'moveModule'])->name('courses.modules.move');
     Route::delete('courses/{course}/modules/{module}', [CourseContentController::class, 'destroyModule'])->name('courses.modules.destroy');
     Route::post('courses/{course}/modules/{module}/lessons', [CourseContentController::class, 'storeLesson'])->name('courses.lessons.store');
     Route::put('courses/{course}/modules/{module}/lessons/{lesson}', [CourseContentController::class, 'updateLesson'])->name('courses.lessons.update');
+    Route::patch('courses/{course}/modules/{module}/lessons/{lesson}/move', [CourseContentController::class, 'moveLesson'])->name('courses.lessons.move');
     Route::delete('courses/{course}/modules/{module}/lessons/{lesson}', [CourseContentController::class, 'destroyLesson'])->name('courses.lessons.destroy');
     Route::delete('courses/{course}/modules/{module}/lessons/{lesson}/resources/{resource}', [CourseContentController::class, 'destroyResource'])->name('courses.resources.destroy');
     Route::get('courses/{course}/modules/{module}/lessons/{lesson}/resources/{resource}/preview', [CourseContentController::class, 'previewResource'])->name('courses.resources.preview');
@@ -77,7 +80,7 @@ Route::middleware(['auth', 'verified', 'active', 'audit'])->group(function () {
     Route::resource('courses', CourseController::class)->except('show', 'destroy');
     Route::get('learning-paths/{learningPath}/content', [LearningPathContentController::class, 'index'])->name('learning-paths.content');
     Route::post('learning-paths/{learningPath}/courses', [LearningPathContentController::class, 'store'])->name('learning-paths.courses.store');
-    Route::put('learning-paths/{learningPath}/courses/{pathCourse}', [LearningPathContentController::class, 'update'])->name('learning-paths.courses.update');
+    Route::patch('learning-paths/{learningPath}/courses/{pathCourse}/move', [LearningPathContentController::class, 'move'])->name('learning-paths.courses.move');
     Route::delete('learning-paths/{learningPath}/courses/{pathCourse}', [LearningPathContentController::class, 'destroy'])->name('learning-paths.courses.destroy');
     Route::resource('learning-paths', LearningPathController::class)->except('show', 'destroy');
     Route::get('enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');

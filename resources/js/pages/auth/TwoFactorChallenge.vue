@@ -18,18 +18,17 @@ const code = ref<string>('');
 const authConfigContent = computed<TwoFactorConfigContent>(() => {
     if (showRecoveryInput.value) {
         return {
-            title: 'Recovery code',
+            title: 'Kode pemulihan',
             description:
-                'Please confirm access to your account by entering one of your emergency recovery codes.',
-            buttonText: 'login using an authentication code',
+                'Masukkan salah satu kode pemulihan untuk mengakses akun.',
+            buttonText: 'Gunakan kode autentikasi',
         };
     }
 
     return {
-        title: 'Authentication code',
-        description:
-            'Enter the authentication code provided by your authenticator application.',
-        buttonText: 'login using a recovery code',
+        title: 'Kode autentikasi',
+        description: 'Masukkan kode dari aplikasi autentikator Anda.',
+        buttonText: 'Gunakan kode pemulihan',
     };
 });
 
@@ -48,7 +47,7 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
 </script>
 
 <template>
-    <Head title="Two-factor authentication" />
+    <Head title="Autentikasi dua faktor" />
 
     <div class="space-y-6">
         <template v-if="!showRecoveryInput">
@@ -82,11 +81,11 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
                     </div>
                     <InputError :message="errors.code" />
                 </div>
-                <Button type="submit" class="w-full" :disabled="processing"
-                    >Continue</Button
-                >
+                <Button type="submit" class="w-full" :disabled="processing">{{
+                    processing ? 'Memverifikasi…' : 'Lanjutkan'
+                }}</Button>
                 <div class="text-center text-sm text-muted-foreground">
-                    <span>or you can </span>
+                    <span>Atau </span>
                     <button
                         type="button"
                         class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
@@ -108,17 +107,17 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
                 <Input
                     name="recovery_code"
                     type="text"
-                    placeholder="Enter recovery code"
+                    placeholder="Masukkan kode pemulihan"
                     v-focus
                     required
                 />
                 <InputError :message="errors.recovery_code" />
-                <Button type="submit" class="w-full" :disabled="processing"
-                    >Continue</Button
-                >
+                <Button type="submit" class="w-full" :disabled="processing">{{
+                    processing ? 'Memverifikasi…' : 'Lanjutkan'
+                }}</Button>
 
                 <div class="text-center text-sm text-muted-foreground">
-                    <span>or you can </span>
+                    <span>Atau </span>
                     <button
                         type="button"
                         class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"

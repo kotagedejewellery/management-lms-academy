@@ -30,7 +30,7 @@ import {
 type Lesson = {
     id: number;
     title: string;
-    type: 'article' | 'video' | 'pdf';
+    type: 'article' | 'video' | 'pdf' | 'presentation';
     is_required: boolean;
     sequence: number;
     completed: boolean;
@@ -297,7 +297,12 @@ function assessmentDescription(assessment: Assessment): string {
           : 'Terkunci sampai materi wajib selesai.';
 }
 function lessonTypeLabel(type: Lesson['type']): string {
-    return { article: 'Artikel', video: 'Video', pdf: 'PDF' }[type];
+    return {
+        article: 'Artikel',
+        video: 'Video',
+        pdf: 'PDF',
+        presentation: 'Presentasi Canva',
+    }[type];
 }
 function assessmentHref(assessment: Assessment): string {
     return `/my-learning/${props.course.id}/assessments/${assessment.id}`;
@@ -795,6 +800,41 @@ defineOptions({
                                 ditampilkan.
                             </p>
                         </div>
+                        <div
+                            v-else-if="
+                                activeLesson.type === 'presentation' &&
+                                activeLesson.resource_url
+                            "
+                        >
+                            <iframe
+                                :src="activeLesson.resource_url"
+                                :title="`Presentasi ${activeLesson.title}`"
+                                class="aspect-video w-full rounded-lg border border-border bg-muted"
+                                allowfullscreen
+                                referrerpolicy="strict-origin-when-cross-origin"
+                            />
+                            <a
+                                :href="activeLesson.resource_url"
+                                target="_blank"
+                                rel="noopener"
+                                class="mt-3 inline-flex items-center gap-2 text-sm font-medium text-primary underline underline-offset-4"
+                                ><Download class="size-4" />Buka presentasi di
+                                Canva</a
+                            >
+                        </div>
+                        <div
+                            v-else-if="activeLesson.type === 'presentation'"
+                            class="rounded-lg border border-border bg-muted/40 p-6"
+                        >
+                            <FileText class="size-8 text-primary" />
+                            <h3 class="mt-4 font-semibold text-foreground">
+                                Presentasi Canva
+                            </h3>
+                            <p class="mt-2 text-sm text-muted-foreground">
+                                Presentasi belum memiliki tautan yang dapat
+                                ditampilkan.
+                            </p>
+                        </div>
                         <article v-else class="max-w-3xl">
                             <p
                                 v-if="activeLesson.content"
@@ -835,7 +875,8 @@ defineOptions({
                                 <a
                                     v-if="
                                         activeLesson.resource_url &&
-                                        activeLesson.type !== 'video'
+                                        activeLesson.type !== 'video' &&
+                                        activeLesson.type !== 'presentation'
                                     "
                                     :href="activeLesson.resource_url"
                                     target="_blank"

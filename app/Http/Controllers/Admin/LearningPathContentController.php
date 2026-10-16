@@ -47,49 +47,15 @@ class LearningPathContentController extends Controller
         }
 
         DB::transaction(function () use ($learningPath, $data): void {
-            $count = $learningPath->pathCourses()->count();
+            $lockedLearningPath = LearningPath::query()->lockForUpdate()->findOrFail($learningPath->id);
+            $this->ensureMutable($lockedLearningPath);
 
-            if ($data['sequence'] <= $count) {
-                $offset = $count + 1;
-                $learningPath->pathCourses()->where('sequence', '>=', $data['sequence'])->increment('sequence', $offset);
-                $learningPath->pathCourses()
-                    ->where('sequence', '>=', $data['sequence'] + $offset)
-                    ->get()
-                    ->each(fn (LearningPathCourse $course) => $course->decrement('sequence', $count));
-            }
-
-            $learningPath->pathCourses()->create($data);
+            $count = $lockedLearningPath->pathCourses()->count();
+            $lockedLearningPath->pathCourses()->create([...$data, 'sequence' => $count + 1]);
         });
 
         if ($learningPath->status === 'published') {
             SyncLearningPath::dispatch($learningPath->id);
-        }
-
-        return to_route('learning-paths.content', $learningPath);
-    }
-
-    public function update(Request $request, LearningPath $learningPath, LearningPathCourse $pathCourse): RedirectResponse
-    {
-        $this->authorizePaths($request);
-        $this->ensureMutable($learningPath);
-        abort_unless($pathCourse->learning_path_id === $learningPath->id, 404);
-        $data = $this->validatedData($request, $learningPath, $pathCourse);
-
-        if ($data['sequence'] !== $pathCourse->sequence) {
-            DB::transaction(function () use ($learningPath, $pathCourse, $data): void {
-                $count = $learningPath->pathCourses()->count();
-                $offset = $count + 1;
-                $oldSequence = $pathCourse->sequence;
-                $pathCourse->update(['sequence' => 0]);
-
-                if ($data['sequence'] < $oldSequence) {
-                    $this->shiftSequences($learningPath, $data['sequence'], $oldSequence - 1, $offset, -$count);
-                } else {
-                    $this->shiftSequences($learningPath, $oldSequence + 1, $data['sequence'], $offset, -($count + 2));
-                }
-
-                $pathCourse->update(['sequence' => $data['sequence']]);
-            });
         }
 
         return to_route('learning-paths.content', $learningPath);
@@ -108,6 +74,36 @@ class LearningPathContentController extends Controller
         return to_route('learning-paths.content', $learningPath);
     }
 
+    public function move(Request $request, LearningPath $learningPath, LearningPathCourse $pathCourse): RedirectResponse
+    {
+        $this->authorizePaths($request);
+        $this->ensureMutable($learningPath);
+        abort_unless($pathCourse->learning_path_id === $learningPath->id, 404);
+        $direction = $request->validate(['direction' => ['required', Rule::in(['up', 'down'])]])['direction'];
+
+        DB::transaction(function () use ($learningPath, $pathCourse, $direction): void {
+            LearningPath::query()->lockForUpdate()->findOrFail($learningPath->id);
+            $current = LearningPathCourse::query()->lockForUpdate()->findOrFail($pathCourse->id);
+            $target = LearningPathCourse::query()
+                ->where('learning_path_id', $learningPath->id)
+                ->when($direction === 'up', fn ($query) => $query->where('sequence', '<', $current->sequence)->orderByDesc('sequence'), fn ($query) => $query->where('sequence', '>', $current->sequence)->orderBy('sequence'))
+                ->lockForUpdate()
+                ->first();
+
+            if (! $target) {
+                return;
+            }
+
+            $currentSequence = $current->sequence;
+            $targetSequence = $target->sequence;
+            $current->update(['sequence' => 0]);
+            $target->update(['sequence' => $currentSequence]);
+            $current->update(['sequence' => $targetSequence]);
+        });
+
+        return to_route('learning-paths.content', $learningPath);
+    }
+
     private function authorizePaths(Request $request): void
     {
         abort_unless($request->user()?->hasPermission('manage-learning-paths'), 403);
@@ -119,28 +115,10 @@ class LearningPathContentController extends Controller
     }
 
     /** @return array<string, int> */
-    private function validatedData(Request $request, LearningPath $learningPath, ?LearningPathCourse $pathCourse = null): array
+    private function validatedData(Request $request, LearningPath $learningPath): array
     {
-        if ($pathCourse) {
-            return $request->validate([
-                'course_id' => ['required', 'integer', Rule::in([$pathCourse->course_id])],
-                'sequence' => ['required', 'integer', 'min:1', 'max:'.$learningPath->pathCourses()->count()],
-            ]);
-        }
-
         return $request->validate([
-            'course_id' => ['required', 'integer', Rule::exists('courses', 'id'), Rule::unique('learning_path_courses', 'course_id')->where('learning_path_id', $learningPath->id)->ignore($pathCourse)],
-            'sequence' => ['required', 'integer', 'min:1', 'max:'.($learningPath->pathCourses()->count() + 1)],
+            'course_id' => ['required', 'integer', Rule::exists('courses', 'id'), Rule::unique('learning_path_courses', 'course_id')->where('learning_path_id', $learningPath->id)],
         ]);
-    }
-
-    private function shiftSequences(LearningPath $learningPath, int $from, int $to, int $offset, int $adjustment): void
-    {
-        $courses = $learningPath->pathCourses()->whereBetween('sequence', [$from, $to]);
-        $courses->get()->each(fn (LearningPathCourse $course) => $course->increment('sequence', $offset));
-        $learningPath->pathCourses()
-            ->whereBetween('sequence', [$from + $offset, $to + $offset])
-            ->get()
-            ->each(fn (LearningPathCourse $course) => $course->increment('sequence', $adjustment));
     }
 }

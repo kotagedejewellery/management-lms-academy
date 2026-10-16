@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Settings\ProfileDeleteRequest;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use Laravel\Fortify\Features;
 
 class ProfileController extends Controller
 {
@@ -26,7 +25,7 @@ class ProfileController extends Controller
         ]);
 
         return Inertia::render('settings/Profile', [
-            'mustVerifyEmail' => true,
+            'mustVerifyEmail' => Features::enabled(Features::emailVerification()),
             'status' => $request->session()->get('status'),
             'organization' => [
                 'employee_id' => $user->employee_id,
@@ -51,18 +50,8 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Profile updated.')]);
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Profil berhasil diperbarui.']);
 
         return to_route('profile.edit');
-    }
-
-    /**
-     * Delete the user's profile.
-     */
-    public function destroy(ProfileDeleteRequest $request): RedirectResponse
-    {
-        throw ValidationException::withMessages([
-            'profile' => 'Akun internal tidak dapat dihapus untuk menjaga riwayat pembelajaran dan audit. Hubungi LMS Admin untuk menonaktifkan akun.',
-        ]);
     }
 }

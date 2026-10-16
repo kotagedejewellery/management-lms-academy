@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { Form, Head, usePage } from '@inertiajs/vue3';
-import { Link } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { Form, Head, Link, usePage } from '@inertiajs/vue3';
+import { MailCheck } from '@lucide/vue';
+import { computed, ref } from 'vue';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
-import DeleteUser from '@/components/DeleteUser.vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,7 +16,7 @@ defineOptions({
     layout: {
         breadcrumbs: [
             {
-                title: 'Profile settings',
+                title: 'Pengaturan profil',
                 href: edit(),
             },
         ],
@@ -25,6 +25,11 @@ defineOptions({
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
+const isEmailVerified = computed(() => Boolean(user.value?.email_verified_at));
+const email = ref(user.value?.email ?? '');
+const isEmailChanged = computed(
+    () => email.value.trim().toLowerCase() !== user.value?.email.toLowerCase(),
+);
 const props = defineProps<{
     organization: {
         employee_id: string | null;
@@ -48,14 +53,43 @@ const props = defineProps<{
             description="Perbarui nama dan email kerja Anda. Data organisasi dikelola oleh LMS Admin."
         />
 
+        <Alert
+            v-if="page.props.mustVerifyEmail && !isEmailVerified"
+            class="items-start"
+        >
+            <MailCheck class="mt-0.5 size-4" />
+            <AlertTitle>Verifikasi email diperlukan</AlertTitle>
+            <AlertDescription>
+                Verifikasi <strong>{{ user.email }}</strong> untuk membuka
+                pengaturan keamanan dan tampilan akun.
+                <Link
+                    :href="send()"
+                    as="button"
+                    class="ml-1 font-medium text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors hover:decoration-current dark:decoration-neutral-500"
+                >
+                    Kirim ulang tautan verifikasi.
+                </Link>
+                <p
+                    v-if="page.props.status === 'verification-link-sent'"
+                    class="mt-2 font-medium text-foreground"
+                >
+                    Tautan verifikasi baru telah dikirim.
+                </p>
+            </AlertDescription>
+        </Alert>
+
         <section class="rounded-xl border border-border bg-card p-5 sm:p-6">
-            <h2 class="font-semibold text-foreground">Identitas organisasi</h2>
+            <h2 class="font-semibold text-foreground">Data organisasi</h2>
+            <p class="mt-1 text-sm text-muted-foreground">
+                Hubungi LMS Admin bila data berikut perlu diperbarui.
+            </p>
             <dl class="mt-5 grid gap-4 text-sm sm:grid-cols-2">
                 <div>
-                    <dt class="text-muted-foreground">Employee ID</dt>
+                    <dt class="text-muted-foreground">ID Karyawan</dt>
                     <dd class="mt-1 font-medium text-foreground">
                         {{
-                            props.organization.employee_id ?? 'Belum ditetapkan'
+                            props.organization.employee_id ??
+                            'Belum diatur oleh LMS Admin'
                         }}
                     </dd>
                 </div>
@@ -64,7 +98,7 @@ const props = defineProps<{
                     <dd class="mt-1 font-medium text-foreground">
                         {{
                             props.organization.division?.name ??
-                            'Belum ditetapkan'
+                            'Belum diatur oleh LMS Admin'
                         }}
                     </dd>
                 </div>
@@ -73,7 +107,7 @@ const props = defineProps<{
                     <dd class="mt-1 font-medium text-foreground">
                         {{
                             props.organization.position?.name ??
-                            'Belum ditetapkan'
+                            'Belum diatur oleh LMS Admin'
                         }}
                     </dd>
                 </div>
@@ -82,7 +116,7 @@ const props = defineProps<{
                     <dd class="mt-1 font-medium text-foreground">
                         {{
                             props.organization.branch?.name ??
-                            'Belum ditetapkan'
+                            'Belum diatur oleh LMS Admin'
                         }}
                     </dd>
                 </div>
@@ -91,7 +125,7 @@ const props = defineProps<{
                     <dd class="mt-1 font-medium text-foreground">
                         {{
                             props.organization.manager?.name ??
-                            'Belum ditetapkan'
+                            'Belum diatur oleh LMS Admin'
                         }}
                     </dd>
                 </div>
@@ -124,7 +158,7 @@ const props = defineProps<{
                     type="email"
                     class="mt-1 block w-full"
                     name="email"
-                    :default-value="user.email"
+                    v-model="email"
                     required
                     autocomplete="username"
                     placeholder="email@perusahaan.com"
@@ -132,25 +166,13 @@ const props = defineProps<{
                 <InputError class="mt-2" :message="errors.email" />
             </div>
 
-            <div v-if="page.props.mustVerifyEmail && !user.email_verified_at">
-                <p class="-mt-4 text-sm text-muted-foreground">
-                    Email kerja Anda belum terverifikasi.
-                    <Link
-                        :href="send()"
-                        as="button"
-                        class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                    >
-                        Kirim ulang email verifikasi.
-                    </Link>
-                </p>
-
-                <div
-                    v-if="page.props.status === 'verification-link-sent'"
-                    class="mt-2 text-sm font-medium text-green-600"
-                >
-                    Tautan verifikasi baru telah dikirim ke email kerja Anda.
-                </div>
-            </div>
+            <p
+                v-if="page.props.mustVerifyEmail && isEmailChanged"
+                class="-mt-4 text-sm text-muted-foreground"
+            >
+                Email baru harus diverifikasi sebelum pengaturan keamanan dan
+                tampilan dapat digunakan.
+            </p>
 
             <div class="flex items-center gap-4">
                 <Button :disabled="processing" data-test="update-profile-button"
@@ -159,6 +181,4 @@ const props = defineProps<{
             </div>
         </Form>
     </div>
-
-    <DeleteUser />
 </template>

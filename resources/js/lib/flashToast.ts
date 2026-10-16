@@ -2,6 +2,43 @@ import { router } from '@inertiajs/vue3';
 import { toast } from 'vue-sonner';
 import type { FlashToast } from '@/types/ui';
 
+function successMessage(method: string, url: string): string {
+    if (url === '/reports/exports') return 'Ekspor laporan sedang disiapkan.';
+    if (url === '/user-imports') return 'File diterima dan sedang diproses.';
+    if (url === '/announcements') return 'Pengumuman berhasil dikirim.';
+    if (url.includes('/assessments/') && url.endsWith('/submit')) {
+        return 'Jawaban berhasil dikirim.';
+    }
+    if (url.endsWith('/move')) return 'Urutan berhasil diperbarui.';
+    if (url.includes('/lessons')) {
+        return method === 'post'
+            ? 'Lesson berhasil ditambahkan.'
+            : method === 'delete'
+              ? 'Lesson berhasil dihapus.'
+              : 'Lesson berhasil diperbarui.';
+    }
+    if (url.includes('/modules')) {
+        return method === 'post'
+            ? 'Modul berhasil ditambahkan.'
+            : method === 'delete'
+              ? 'Modul berhasil dihapus.'
+              : 'Modul berhasil diperbarui.';
+    }
+    if (url.includes('/questions')) {
+        return method === 'post'
+            ? 'Soal berhasil ditambahkan.'
+            : method === 'delete'
+              ? 'Soal berhasil dihapus.'
+              : 'Soal berhasil diperbarui.';
+    }
+
+    return method === 'post'
+        ? 'Data berhasil ditambahkan.'
+        : method === 'delete'
+          ? 'Data berhasil dihapus.'
+          : 'Perubahan berhasil disimpan.';
+}
+
 export function initializeFlashToast(): void {
     const mutations = new Map<string, { method: string; url: string }>();
 
@@ -49,42 +86,27 @@ export function initializeFlashToast(): void {
             return;
         }
 
-        if (mutation.url === '/reports/exports') {
-            toast.info('Ekspor laporan sedang disiapkan.');
-            return;
-        }
-
-        if (mutation.url === '/user-imports') {
-            toast.info('File diterima dan sedang diproses.');
-            return;
-        }
-
-        if (mutation.url === '/announcements') {
-            toast.success('Pengumuman berhasil dikirim.');
-            return;
-        }
+        const message = successMessage(mutation.method, mutation.url);
 
         if (
-            mutation.url.includes('/assessments/') &&
-            mutation.url.endsWith('/submit')
+            mutation.url === '/reports/exports' ||
+            mutation.url === '/user-imports'
         ) {
-            toast.success('Jawaban berhasil dikirim.');
+            toast.info(message);
+
             return;
         }
 
-        toast.success(
-            mutation.method === 'post'
-                ? 'Data berhasil ditambahkan.'
-                : mutation.method === 'delete'
-                  ? 'Data berhasil dihapus.'
-                  : 'Perubahan berhasil disimpan.',
-        );
+        toast.success(message);
     });
 
     router.on('error', (event) => {
         if (event.detail.visitId && mutations.delete(event.detail.visitId)) {
+            const actionMessage = event.detail.errors.action;
+
             toast.error(
-                'Periksa kembali field yang ditandai sebelum melanjutkan.',
+                actionMessage ??
+                    'Periksa kembali field yang ditandai sebelum melanjutkan.',
             );
         }
     });
@@ -93,9 +115,17 @@ export function initializeFlashToast(): void {
         toast.error('Koneksi bermasalah. Periksa jaringan lalu coba kembali.');
     });
 
-    router.on('httpException', () => {
+    router.on('httpException', (event) => {
+        if (event.detail.response.status === 403) {
+            toast.error(
+                'Anda tidak memiliki akses untuk melakukan tindakan ini.',
+            );
+
+            return;
+        }
+
         toast.error(
-            'Sistem belum dapat memproses permintaan ini. Coba lagi sebentar.',
+            'Permintaan belum dapat diproses. Coba lagi sebentar atau hubungi LMS Admin bila masalah berlanjut.',
         );
     });
 }

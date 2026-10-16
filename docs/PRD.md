@@ -64,7 +64,7 @@ Contoh path Customer Service: Brand Introduction → Product Knowledge → Mater
 - Pre-Test wajib mengunci materi sampai disubmit; skor rendah tetap tidak menggagalkan course.
 - Course dengan Post-Test selesai bila lesson mandatory selesai dan Post-Test lulus passing grade. Course tanpa Post-Test selesai saat lesson mandatory selesai.
 - Jumlah attempt dan retake diatur per assessment dalam rentang 1â€“3; kegagalan pada attempt terakhir memberi status `Not Passed`.
-- Course wajib dalam learning path berjalan berurutan: course wajib sebelumnya harus selesai sebelum course wajib berikutnya dapat dibuka.
+- Course wajib dalam learning path berjalan berurutan: course wajib sebelumnya harus selesai sebelum course wajib berikutnya dapat dibuka. Course baru ditambahkan di akhir path; Admin mengubah urutan dengan aksi Naik/Turun. Soal assessment juga ditambahkan otomatis di akhir dan dapat dipindahkan dengan aksi yang sama.
 - Simpan seluruh attempt, response, score, waktu, dan status untuk audit.
 - Improvement ditampilkan dalam poin: `post_test_score - pre_test_score`, bukan persen.
 - Laporan repeat Post-Test harus menyatakan kebijakan skor (pertama, terakhir, terbaik); default laporan menampilkan skor pertama dan terbaik.
@@ -102,6 +102,7 @@ Course Code, title, description, category, division, position, duration, mandato
 | JavaScript | Page-level code splitting; chart/library berat tidak masuk bundle awal. |
 | Render | Memoization hanya untuk turunan data atau list berat yang sudah terbukti mahal. |
 | Kerja berat | Import, export, email massal, generate certificate/report, dan pemrosesan file berjalan melalui queue. |
+| Feedback pengguna | Validasi menggunakan bahasa Indonesia dan nama field yang manusiawi; form menampilkan ringkasan serta error inline, memfokuskan error pertama, mengunci double-submit, dan memperlihatkan progres unggah. Aturan bisnis yang menolak aksi menjelaskan penyebab serta tindakan lanjutan. |
 
 ## 9. Security, privacy, dan audit
 

@@ -71,6 +71,82 @@ class CourseManagementTest extends TestCase
         $this->assertDatabaseHas('courses', ['id' => $courseId, 'status' => 'published']);
     }
 
+    public function test_course_content_appends_and_reorders_modules_and_lessons_without_manual_sequences(): void
+    {
+        $admin = $this->courseAdmin();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-ORDER-001', 'title' => 'Urutan materi', 'passing_grade' => 70, 'status' => 'draft']);
+        $course->trainers()->attach($admin);
+
+        $this->actingAs($admin)->post(route('courses.modules.store', $course), ['title' => 'Modul pertama'])->assertRedirect();
+        $this->actingAs($admin)->post(route('courses.modules.store', $course), ['title' => 'Modul kedua'])->assertRedirect();
+
+        $firstModule = $course->modules()->where('title', 'Modul pertama')->firstOrFail();
+        $secondModule = $course->modules()->where('title', 'Modul kedua')->firstOrFail();
+        $this->assertDatabaseHas('modules', ['id' => $firstModule->id, 'sequence' => 1]);
+        $this->assertDatabaseHas('modules', ['id' => $secondModule->id, 'sequence' => 2]);
+
+        $this->actingAs($admin)->patch(route('courses.modules.move', [$course, $firstModule]), ['direction' => 'down'])->assertRedirect();
+        $this->assertDatabaseHas('modules', ['id' => $firstModule->id, 'sequence' => 2]);
+        $this->assertDatabaseHas('modules', ['id' => $secondModule->id, 'sequence' => 1]);
+
+        $this->actingAs($admin)->delete(route('courses.modules.destroy', [$course, $secondModule]))->assertRedirect();
+        $this->assertDatabaseHas('modules', ['id' => $firstModule->id, 'sequence' => 1]);
+
+        $this->actingAs($admin)->post(route('courses.lessons.store', [$course, $firstModule]), [
+            'title' => 'Lesson pertama',
+            'type' => 'article',
+            'content' => 'Isi pertama',
+            'is_required' => true,
+        ])->assertRedirect();
+        $this->actingAs($admin)->post(route('courses.lessons.store', [$course, $firstModule]), [
+            'title' => 'Lesson kedua',
+            'type' => 'article',
+            'content' => 'Isi kedua',
+            'is_required' => true,
+        ])->assertRedirect();
+
+        $firstLesson = $firstModule->lessons()->where('title', 'Lesson pertama')->firstOrFail();
+        $secondLesson = $firstModule->lessons()->where('title', 'Lesson kedua')->firstOrFail();
+        $this->assertDatabaseHas('lessons', ['id' => $firstLesson->id, 'sequence' => 1]);
+        $this->assertDatabaseHas('lessons', ['id' => $secondLesson->id, 'sequence' => 2]);
+
+        $this->actingAs($admin)->patch(route('courses.lessons.move', [$course, $firstModule, $firstLesson]), ['direction' => 'down'])->assertRedirect();
+        $this->assertDatabaseHas('lessons', ['id' => $firstLesson->id, 'sequence' => 2]);
+        $this->assertDatabaseHas('lessons', ['id' => $secondLesson->id, 'sequence' => 1]);
+
+        $this->actingAs($admin)->delete(route('courses.lessons.destroy', [$course, $firstModule, $secondLesson]))->assertRedirect();
+        $this->assertDatabaseHas('lessons', ['id' => $firstLesson->id, 'sequence' => 1]);
+    }
+
+    public function test_course_admin_can_reorder_assessment_questions_without_manual_sequences(): void
+    {
+        $admin = $this->courseAdmin();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-QUESTION-001', 'title' => 'Urutan soal', 'passing_grade' => 70, 'status' => 'draft']);
+        $course->trainers()->attach($admin);
+        $assessment = Assessment::query()->create(['course_id' => $course->id, 'type' => 'post_test', 'passing_grade' => 70, 'attempt_limit' => 3]);
+
+        foreach (['Soal pertama', 'Soal kedua'] as $prompt) {
+            $this->actingAs($admin)->post(route('courses.assessments.questions.store', [$course, $assessment]), [
+                'prompt' => $prompt,
+                'points' => 1,
+                'answers' => ['Benar', 'Salah'],
+                'correct_answer' => 0,
+            ])->assertRedirect();
+        }
+
+        $firstQuestion = $assessment->questions()->where('prompt', 'Soal pertama')->firstOrFail();
+        $secondQuestion = $assessment->questions()->where('prompt', 'Soal kedua')->firstOrFail();
+        $this->assertDatabaseHas('questions', ['id' => $firstQuestion->id, 'sequence' => 1]);
+        $this->assertDatabaseHas('questions', ['id' => $secondQuestion->id, 'sequence' => 2]);
+
+        $this->actingAs($admin)->patch(route('courses.assessments.questions.move', [$course, $assessment, $secondQuestion]), ['direction' => 'up'])->assertRedirect();
+
+        $this->assertDatabaseHas('questions', ['id' => $firstQuestion->id, 'sequence' => 2]);
+        $this->assertDatabaseHas('questions', ['id' => $secondQuestion->id, 'sequence' => 1]);
+    }
+
     public function test_employee_cannot_manage_courses(): void
     {
         $this->actingAs(User::factory()->create())
@@ -348,6 +424,34 @@ class CourseManagementTest extends TestCase
             'passing_grade' => 70,
             'status' => 'published',
         ])->assertSessionHasErrors('status');
+    }
+
+    public function test_course_with_a_canva_presentation_can_be_published(): void
+    {
+        $admin = $this->courseAdmin();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-CANVA-001', 'title' => 'Presentasi Canva', 'passing_grade' => 70, 'status' => 'draft']);
+        $course->trainers()->attach($admin);
+        $module = $course->modules()->create(['title' => 'Modul', 'sequence' => 1]);
+        $module->lessons()->create([
+            'title' => 'Presentasi layanan pelanggan',
+            'type' => 'presentation',
+            'resource_url' => 'https://www.canva.com/design/DAHJVwit-10/presentasi-layanan/view?embed',
+            'is_required' => true,
+            'sequence' => 1,
+        ]);
+
+        $this->actingAs($admin)->put(route('courses.update', $course), [
+            'category_id' => $category->id,
+            'code' => $course->code,
+            'title' => $course->title,
+            'is_mandatory' => true,
+            'requires_post_test' => false,
+            'passing_grade' => 70,
+            'status' => 'published',
+        ])->assertRedirect(route('courses.content', $course));
+
+        $this->assertDatabaseHas('courses', ['id' => $course->id, 'status' => 'published']);
     }
 
     public function test_published_course_content_cannot_be_added_or_edited(): void

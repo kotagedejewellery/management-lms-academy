@@ -4,7 +4,7 @@ import { CheckCircle2, FileText } from '@lucide/vue';
 type Lesson = {
     id: number;
     title: string;
-    type: 'article' | 'video' | 'pdf';
+    type: 'article' | 'video' | 'pdf' | 'presentation';
     is_required: boolean;
     sequence: number;
     completed: boolean;

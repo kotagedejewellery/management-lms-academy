@@ -24,7 +24,7 @@ defineOptions({
     layout: {
         breadcrumbs: [
             {
-                title: 'Security settings',
+                title: 'Keamanan akun',
                 href: edit(),
             },
         ],
@@ -33,16 +33,46 @@ defineOptions({
 </script>
 
 <template>
-    <Head title="Security settings" />
+    <Head title="Keamanan akun" />
 
-    <h1 class="sr-only">Security settings</h1>
+    <h1 class="sr-only">Keamanan akun</h1>
 
     <div class="space-y-6">
         <Heading
             variant="small"
-            title="Update password"
-            description="Ensure your account is using a long, random password to stay secure"
+            title="Ubah kata sandi"
+            description="Gunakan kata sandi panjang dan unik untuk menjaga keamanan akun."
         />
+
+        <section class="rounded-xl border border-border bg-card p-5 sm:p-6">
+            <h2 class="font-semibold text-foreground">Status keamanan</h2>
+            <dl class="mt-4 grid gap-4 text-sm sm:grid-cols-2">
+                <div>
+                    <dt class="text-muted-foreground">
+                        Autentikasi dua faktor
+                    </dt>
+                    <dd class="mt-1 font-medium text-foreground">
+                        {{
+                            !props.canManageTwoFactor
+                                ? 'Belum tersedia'
+                                : props.twoFactorEnabled
+                                  ? 'Aktif'
+                                  : 'Belum aktif'
+                        }}
+                    </dd>
+                </div>
+                <div>
+                    <dt class="text-muted-foreground">Passkey</dt>
+                    <dd class="mt-1 font-medium text-foreground">
+                        {{
+                            !props.canManagePasskeys
+                                ? 'Belum tersedia'
+                                : `${props.passkeys?.length ?? 0} terdaftar`
+                        }}
+                    </dd>
+                </div>
+            </dl>
+        </section>
 
         <Form
             v-bind="SecurityController.update.form()"
@@ -59,38 +89,40 @@ defineOptions({
             v-slot="{ errors, processing }"
         >
             <div class="grid gap-2">
-                <Label for="current_password">Current password</Label>
+                <Label for="current_password">Kata sandi saat ini</Label>
                 <PasswordInput
                     id="current_password"
                     name="current_password"
                     class="mt-1 block w-full"
                     autocomplete="current-password"
-                    placeholder="Current password"
+                    placeholder="Masukkan kata sandi saat ini"
                 />
                 <InputError :message="errors.current_password" />
             </div>
 
             <div class="grid gap-2">
-                <Label for="password">New password</Label>
+                <Label for="password">Kata sandi baru</Label>
                 <PasswordInput
                     id="password"
                     name="password"
                     class="mt-1 block w-full"
                     autocomplete="new-password"
-                    placeholder="New password"
+                    placeholder="Masukkan kata sandi baru"
                     :passwordrules="props.passwordRules"
                 />
                 <InputError :message="errors.password" />
             </div>
 
             <div class="grid gap-2">
-                <Label for="password_confirmation">Confirm password</Label>
+                <Label for="password_confirmation"
+                    >Konfirmasi kata sandi baru</Label
+                >
                 <PasswordInput
                     id="password_confirmation"
                     name="password_confirmation"
                     class="mt-1 block w-full"
                     autocomplete="new-password"
-                    placeholder="Confirm password"
+                    placeholder="Ulangi kata sandi baru"
                     :passwordrules="props.passwordRules"
                 />
                 <InputError :message="errors.password_confirmation" />
@@ -101,7 +133,7 @@ defineOptions({
                     :disabled="processing"
                     data-test="update-password-button"
                 >
-                    Save
+                    Simpan kata sandi
                 </Button>
             </div>
         </Form>

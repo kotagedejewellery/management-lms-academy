@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { Plus, Trash2 } from '@lucide/vue';
+import { ChevronDown, ChevronUp, Plus, Trash2 } from '@lucide/vue';
 import { ref } from 'vue';
 import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
+import FormErrorSummary from '@/components/FormErrorSummary.vue';
 import InputError from '@/components/InputError.vue';
 import { useUnsavedChangesGuard } from '@/composables/useUnsavedChangesGuard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Spinner } from '@/components/ui/spinner';
 
 type Assessment = {
     id: number;
@@ -70,6 +72,7 @@ const questionToDelete = ref<{
     questionId: number;
 } | null>(null);
 const deletingQuestion = ref(false);
+const movingQuestionId = ref<number | null>(null);
 const leaveGuard = useUnsavedChangesGuard(
     () =>
         createForm.isDirty ||
@@ -113,6 +116,21 @@ function deleteQuestion(): void {
                 },
             },
         );
+}
+function moveQuestion(
+    assessment: Assessment,
+    question: Assessment['questions'][number],
+    direction: 'up' | 'down',
+): void {
+    router.patch(
+        `/courses/${props.course.id}/assessments/${assessment.id}/questions/${question.id}/move`,
+        { direction },
+        {
+            preserveScroll: true,
+            onStart: () => (movingQuestionId.value = question.id),
+            onFinish: () => (movingQuestionId.value = null),
+        },
+    );
 }
 function title(type: 'pre_test' | 'post_test'): string {
     return type === 'pre_test' ? 'Pre-Test' : 'Post-Test';
@@ -191,6 +209,7 @@ defineOptions({
                     class="mt-5 grid gap-4 border-t border-border pt-5"
                     @submit.prevent="create(type)"
                 >
+                    <FormErrorSummary :errors="createForm.errors" />
                     <div class="grid gap-2">
                         <Label :for="`${type}-passing-grade`"
                             >Passing grade</Label
@@ -260,6 +279,10 @@ defineOptions({
                         class="mt-5 grid gap-4 border-t border-border pt-5 sm:grid-cols-2"
                         @submit.prevent="saveSettings(type)"
                     >
+                        <FormErrorSummary
+                            class="sm:col-span-2"
+                            :errors="settings[type].errors"
+                        />
                         <div class="grid gap-2">
                             <Label :for="`${type}-edit-passing-grade`"
                                 >Passing grade</Label
@@ -324,7 +347,9 @@ defineOptions({
                         class="mt-5 divide-y divide-border border-t border-border"
                     >
                         <li
-                            v-for="question in assessments[type]?.questions"
+                            v-for="(question, questionIndex) in assessments[
+                                type
+                            ]?.questions"
                             :key="question.id"
                             class="py-4"
                         >
@@ -333,19 +358,61 @@ defineOptions({
                                     {{ question.sequence }}.
                                     {{ question.prompt }}
                                 </p>
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon"
-                                    :aria-label="`Hapus soal ${question.sequence}`"
-                                    @click="
-                                        questionToDelete = {
-                                            assessmentId: assessments[type]!.id,
-                                            questionId: question.id,
-                                        }
-                                    "
-                                    ><Trash2 class="size-4"
-                                /></Button>
+                                <div class="flex shrink-0 items-center gap-1">
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        :disabled="
+                                            movingQuestionId !== null ||
+                                            questionIndex === 0
+                                        "
+                                        :aria-label="`Naikkan soal ${question.sequence}`"
+                                        @click="
+                                            moveQuestion(
+                                                assessments[type]!,
+                                                question,
+                                                'up',
+                                            )
+                                        "
+                                        ><ChevronUp class="size-4"
+                                    /></Button>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        :disabled="
+                                            movingQuestionId !== null ||
+                                            questionIndex ===
+                                                assessments[type]!.questions
+                                                    .length -
+                                                    1
+                                        "
+                                        :aria-label="`Turunkan soal ${question.sequence}`"
+                                        @click="
+                                            moveQuestion(
+                                                assessments[type]!,
+                                                question,
+                                                'down',
+                                            )
+                                        "
+                                        ><ChevronDown class="size-4"
+                                    /></Button>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        :aria-label="`Hapus soal ${question.sequence}`"
+                                        @click="
+                                            questionToDelete = {
+                                                assessmentId:
+                                                    assessments[type]!.id,
+                                                questionId: question.id,
+                                            }
+                                        "
+                                        ><Trash2 class="size-4"
+                                    /></Button>
+                                </div>
                             </div>
                             <p
                                 v-for="answer in question.answers"
@@ -375,6 +442,7 @@ defineOptions({
                         class="mt-5 grid gap-3 border-t border-border pt-5"
                         @submit.prevent="addQuestion(type)"
                     >
+                        <FormErrorSummary :errors="questions[type].errors" />
                         <div class="grid gap-2">
                             <Label :for="`${type}-prompt`">Soal</Label
                             ><textarea
@@ -429,7 +497,13 @@ defineOptions({
                         <Button
                             type="submit"
                             :disabled="questions[type].processing"
-                            >Tambah soal</Button
+                            ><Spinner v-if="questions[type].processing" />
+                            <Plus v-else />
+                            {{
+                                questions[type].processing
+                                    ? 'Menambahkan soal…'
+                                    : 'Tambah soal'
+                            }}</Button
                         >
                     </form>
                 </template>

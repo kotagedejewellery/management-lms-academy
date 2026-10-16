@@ -52,20 +52,15 @@ class LearningPathManagementTest extends TestCase
 
         $this->actingAs($admin)->post(route('learning-paths.courses.store', $pathId), [
             'course_id' => $course->id,
-            'sequence' => 1,
         ])->assertRedirect();
 
         $this->actingAs($admin)->post(route('learning-paths.courses.store', $pathId), [
             'course_id' => $secondCourse->id,
-            'sequence' => 2,
         ])->assertRedirect();
 
         $secondPathCourseId = (int) \DB::table('learning_path_courses')->where('course_id', $secondCourse->id)->value('id');
 
-        $this->actingAs($admin)->put(route('learning-paths.courses.update', [$pathId, $secondPathCourseId]), [
-            'course_id' => $secondCourse->id,
-            'sequence' => 1,
-        ])->assertRedirect();
+        $this->actingAs($admin)->patch(route('learning-paths.courses.move', [$pathId, $secondPathCourseId]), ['direction' => 'up'])->assertRedirect();
 
         $this->assertDatabaseHas('learning_path_courses', ['course_id' => $secondCourse->id, 'sequence' => 1]);
         $this->assertDatabaseHas('learning_path_courses', ['course_id' => $course->id, 'sequence' => 2]);
@@ -85,7 +80,28 @@ class LearningPathManagementTest extends TestCase
             ->assertForbidden();
     }
 
-    public function test_inserting_course_into_a_path_shifts_existing_courses_and_syncs_published_assignments(): void
+    public function test_path_appends_and_reorders_courses_without_manual_sequences(): void
+    {
+        $admin = $this->pathAdmin();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $first = Course::query()->create(['category_id' => $category->id, 'code' => 'PATH-ORDER-001', 'title' => 'Pertama', 'passing_grade' => 70, 'status' => 'published']);
+        $second = Course::query()->create(['category_id' => $category->id, 'code' => 'PATH-ORDER-002', 'title' => 'Kedua', 'passing_grade' => 70, 'status' => 'published']);
+        $path = LearningPath::query()->create(['name' => 'Path urutan', 'status' => 'draft']);
+
+        $this->actingAs($admin)->post(route('learning-paths.courses.store', $path), ['course_id' => $first->id])->assertRedirect();
+        $this->actingAs($admin)->post(route('learning-paths.courses.store', $path), ['course_id' => $second->id])->assertRedirect();
+
+        $firstPathCourse = $path->pathCourses()->where('course_id', $first->id)->firstOrFail();
+        $secondPathCourse = $path->pathCourses()->where('course_id', $second->id)->firstOrFail();
+        $this->assertDatabaseHas('learning_path_courses', ['id' => $firstPathCourse->id, 'sequence' => 1]);
+        $this->assertDatabaseHas('learning_path_courses', ['id' => $secondPathCourse->id, 'sequence' => 2]);
+
+        $this->actingAs($admin)->patch(route('learning-paths.courses.move', [$path, $secondPathCourse]), ['direction' => 'up'])->assertRedirect();
+        $this->assertDatabaseHas('learning_path_courses', ['id' => $firstPathCourse->id, 'sequence' => 2]);
+        $this->assertDatabaseHas('learning_path_courses', ['id' => $secondPathCourse->id, 'sequence' => 1]);
+    }
+
+    public function test_adding_course_to_a_path_appends_it_and_syncs_published_assignments(): void
     {
         Queue::fake();
         $admin = $this->pathAdmin();
@@ -99,12 +115,11 @@ class LearningPathManagementTest extends TestCase
 
         $this->actingAs($admin)->post(route('learning-paths.courses.store', $path), [
             'course_id' => $inserted->id,
-            'sequence' => 1,
         ])->assertRedirect();
 
-        $this->assertDatabaseHas('learning_path_courses', ['learning_path_id' => $path->id, 'course_id' => $inserted->id, 'sequence' => 1]);
-        $this->assertDatabaseHas('learning_path_courses', ['learning_path_id' => $path->id, 'course_id' => $first->id, 'sequence' => 2]);
-        $this->assertDatabaseHas('learning_path_courses', ['learning_path_id' => $path->id, 'course_id' => $second->id, 'sequence' => 3]);
+        $this->assertDatabaseHas('learning_path_courses', ['learning_path_id' => $path->id, 'course_id' => $first->id, 'sequence' => 1]);
+        $this->assertDatabaseHas('learning_path_courses', ['learning_path_id' => $path->id, 'course_id' => $second->id, 'sequence' => 2]);
+        $this->assertDatabaseHas('learning_path_courses', ['learning_path_id' => $path->id, 'course_id' => $inserted->id, 'sequence' => 3]);
         Queue::assertPushed(SyncLearningPath::class, fn (SyncLearningPath $job) => $job->learningPathId === $path->id);
     }
 

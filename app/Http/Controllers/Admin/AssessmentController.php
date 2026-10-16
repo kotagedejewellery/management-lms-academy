@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Models\Question;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -81,15 +82,18 @@ class AssessmentController extends Controller
         ]);
         abort_unless(array_key_exists($data['correct_answer'], $data['answers']), 422);
 
-        $question = $assessment->questions()->create([
-            'prompt' => $data['prompt'],
-            'explanation' => $data['explanation'] ?? null,
-            'points' => $data['points'],
-            'sequence' => $assessment->questions()->count() + 1,
-        ]);
-        foreach ($data['answers'] as $sequence => $content) {
-            $question->answers()->create(['content' => $content, 'sequence' => $sequence + 1, 'is_correct' => $sequence === $data['correct_answer']]);
-        }
+        DB::transaction(function () use ($assessment, $data): void {
+            $lockedAssessment = Assessment::query()->lockForUpdate()->findOrFail($assessment->id);
+            $question = $lockedAssessment->questions()->create([
+                'prompt' => $data['prompt'],
+                'explanation' => $data['explanation'] ?? null,
+                'points' => $data['points'],
+                'sequence' => $lockedAssessment->questions()->max('sequence') + 1,
+            ]);
+            foreach ($data['answers'] as $sequence => $content) {
+                $question->answers()->create(['content' => $content, 'sequence' => $sequence + 1, 'is_correct' => $sequence === $data['correct_answer']]);
+            }
+        });
 
         return to_route('courses.assessments.index', $course);
     }
@@ -99,9 +103,43 @@ class AssessmentController extends Controller
         $this->authorizeCourses($request);
         abort_unless($assessment->course_id === $course->id && $question->assessment_id === $assessment->id, 404);
         abort_if($assessment->attempts()->exists(), 422, 'Soal yang sudah memiliki riwayat pengerjaan tidak dapat dihapus.');
-        $sequence = $question->sequence;
-        $question->delete();
-        $assessment->questions()->where('sequence', '>', $sequence)->decrement('sequence');
+        DB::transaction(function () use ($assessment, $question): void {
+            Assessment::query()->lockForUpdate()->findOrFail($assessment->id);
+            $lockedQuestion = Question::query()->lockForUpdate()->findOrFail($question->id);
+            $sequence = $lockedQuestion->sequence;
+            $lockedQuestion->delete();
+            $assessment->questions()->where('sequence', '>', $sequence)->decrement('sequence');
+        });
+
+        return to_route('courses.assessments.index', $course);
+    }
+
+    public function moveQuestion(Request $request, Course $course, Assessment $assessment, Question $question): RedirectResponse
+    {
+        $this->authorizeCourses($request);
+        abort_unless($assessment->course_id === $course->id && $question->assessment_id === $assessment->id, 404);
+        abort_if($assessment->attempts()->exists(), 422, 'Soal yang sudah memiliki riwayat pengerjaan tidak dapat diubah urutannya.');
+        $direction = $request->validate(['direction' => ['required', Rule::in(['up', 'down'])]])['direction'];
+
+        DB::transaction(function () use ($assessment, $question, $direction): void {
+            Assessment::query()->lockForUpdate()->findOrFail($assessment->id);
+            $current = Question::query()->lockForUpdate()->findOrFail($question->id);
+            $target = Question::query()
+                ->where('assessment_id', $assessment->id)
+                ->when($direction === 'up', fn ($query) => $query->where('sequence', '<', $current->sequence)->orderByDesc('sequence'), fn ($query) => $query->where('sequence', '>', $current->sequence)->orderBy('sequence'))
+                ->lockForUpdate()
+                ->first();
+
+            if (! $target) {
+                return;
+            }
+
+            $currentSequence = $current->sequence;
+            $targetSequence = $target->sequence;
+            $current->update(['sequence' => 0]);
+            $target->update(['sequence' => $currentSequence]);
+            $current->update(['sequence' => $targetSequence]);
+        });
 
         return to_route('courses.assessments.index', $course);
     }

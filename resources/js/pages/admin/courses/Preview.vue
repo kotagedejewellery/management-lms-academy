@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { BookOpen, Clock3, FileText, PlayCircle } from '@lucide/vue';
+import {
+    BookOpen,
+    Clock3,
+    FileText,
+    PlayCircle,
+    Presentation,
+} from '@lucide/vue';
 import { Button } from '@/components/ui/button';
 
 type Lesson = {
     id: number;
     title: string;
-    type: 'article' | 'video' | 'pdf';
+    type: 'article' | 'video' | 'pdf' | 'presentation';
     is_required: boolean;
     sequence: number;
 };
@@ -29,7 +35,12 @@ type Course = {
 };
 const props = defineProps<{ course: Course }>();
 function typeLabel(type: Lesson['type']): string {
-    return { article: 'Artikel', video: 'Video', pdf: 'PDF' }[type];
+    return {
+        article: 'Artikel',
+        video: 'Video',
+        pdf: 'PDF',
+        presentation: 'Presentasi Canva',
+    }[type];
 }
 defineOptions({
     layout: {
@@ -141,7 +152,9 @@ defineOptions({
                                             ? PlayCircle
                                             : lesson.type === 'pdf'
                                               ? FileText
-                                              : BookOpen
+                                              : lesson.type === 'presentation'
+                                                ? Presentation
+                                                : BookOpen
                                     "
                                     class="size-4 shrink-0 text-muted-foreground"
                                 />{{ lesson.sequence }}.

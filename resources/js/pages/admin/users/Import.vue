@@ -3,7 +3,10 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import { Download, FileUp } from '@lucide/vue';
 import { ref } from 'vue';
 import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
+import FormErrorSummary from '@/components/FormErrorSummary.vue';
+import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
 
 type Import = {
     id: number;
@@ -80,26 +83,69 @@ defineOptions({
                 ></Button
             >
             <form
-                class="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end"
+                class="mt-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"
                 @submit.prevent="requestSubmit"
             >
-                <label
-                    class="grid min-w-0 flex-1 gap-2 text-sm font-medium text-foreground"
-                    >File CSV atau XLSX<input
+                <FormErrorSummary class="sm:col-span-2" :errors="form.errors" />
+                <div class="grid min-w-0 gap-2">
+                    <label
+                        for="import-file"
+                        class="text-sm font-medium text-foreground"
+                        >File CSV atau XLSX</label
+                    ><input
+                        id="import-file"
                         type="file"
                         accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         required
-                        class="block w-full rounded-md border border-input bg-transparent p-2 text-sm file:mr-3 file:border-0 file:bg-muted file:px-2 file:py-1 file:text-sm file:font-medium"
-                        @change="choose" /></label
-                ><Button type="submit" :disabled="form.processing || !form.file"
-                    ><FileUp />{{
+                        :disabled="form.processing"
+                        class="block w-full rounded-md border border-input bg-transparent p-2 text-sm file:mr-3 file:border-0 file:bg-muted file:px-2 file:py-1 file:text-sm file:font-medium disabled:cursor-not-allowed disabled:opacity-60"
+                        @change="choose"
+                    />
+                    <p
+                        v-if="form.file"
+                        class="truncate text-xs text-muted-foreground"
+                    >
+                        File dipilih: {{ form.file.name }}
+                    </p>
+                    <InputError :message="form.errors.file" />
+                </div>
+                <Button type="submit" :disabled="form.processing || !form.file"
+                    ><Spinner v-if="form.processing" /> <FileUp v-else />{{
                         form.processing ? 'Mengunggah…' : 'Mulai impor'
                     }}</Button
                 >
+                <div
+                    v-if="form.processing"
+                    class="grid gap-2 sm:col-span-2"
+                    role="status"
+                    aria-live="polite"
+                >
+                    <p class="text-sm text-muted-foreground">
+                        {{
+                            form.progress
+                                ? 'Mengunggah file ' +
+                                  form.progress.percentage +
+                                  '%'
+                                : 'Menyiapkan file untuk diunggah…'
+                        }}
+                    </p>
+                    <div
+                        class="h-2 overflow-hidden rounded-full bg-muted"
+                        role="progressbar"
+                        aria-label="Progres unggah file impor"
+                        :aria-valuenow="form.progress?.percentage ?? 0"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                    >
+                        <div
+                            class="h-full bg-primary transition-[width] duration-200"
+                            :style="{
+                                width: (form.progress?.percentage ?? 0) + '%',
+                            }"
+                        />
+                    </div>
+                </div>
             </form>
-            <p v-if="form.errors.file" class="mt-3 text-sm text-destructive">
-                {{ form.errors.file }}
-            </p>
         </section>
         <section
             class="overflow-hidden rounded-xl border border-border bg-card"

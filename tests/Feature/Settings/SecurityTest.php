@@ -56,6 +56,19 @@ class SecurityTest extends TestCase
         $response->assertRedirect(route('password.confirm'));
     }
 
+    public function test_unverified_user_is_redirected_to_email_verification_from_security_and_appearance(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        $this->actingAs($user)
+            ->get(route('security.edit'))
+            ->assertRedirect(route('verification.notice'));
+
+        $this->actingAs($user)
+            ->get(route('appearance.edit'))
+            ->assertRedirect(route('verification.notice'));
+    }
+
     public function test_security_page_renders_without_two_factor_when_feature_is_disabled()
     {
         $this->skipUnlessFortifyHas(Features::twoFactorAuthentication());

@@ -53,6 +53,74 @@ class LessonResourceTest extends TestCase
         ])->assertSessionHasErrors('resource');
     }
 
+    public function test_admin_can_add_a_canva_view_presentation(): void
+    {
+        $admin = $this->courseAdmin();
+        $module = $this->module($admin);
+
+        $this->actingAs($admin)->post(route('courses.lessons.store', ['course' => $module->course_id, 'module' => $module->id]), [
+            'title' => 'Presentasi layanan pelanggan',
+            'type' => 'presentation',
+            'resource_url' => 'https://www.canva.com/design/DAHJVwit-10/presentasi-layanan/view?embed',
+            'is_required' => true,
+            'sequence' => 1,
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('lessons', [
+            'module_id' => $module->id,
+            'type' => 'presentation',
+            'resource_url' => 'https://www.canva.com/design/DAHJVwit-10/presentasi-layanan/view?embed',
+        ]);
+    }
+
+    public function test_admin_cannot_add_a_canva_editor_link_as_a_presentation(): void
+    {
+        $admin = $this->courseAdmin();
+        $module = $this->module($admin);
+
+        $this->actingAs($admin)->post(route('courses.lessons.store', ['course' => $module->course_id, 'module' => $module->id]), [
+            'title' => 'Presentasi layanan pelanggan',
+            'type' => 'presentation',
+            'resource_url' => 'https://www.canva.com/design/DAHJVwit-10/presentasi-layanan/edit',
+            'is_required' => true,
+            'sequence' => 1,
+        ])->assertSessionHasErrors('resource_url');
+    }
+
+    public function test_admin_cannot_add_a_canva_link_that_is_neither_viewable_nor_embeddable(): void
+    {
+        $admin = $this->courseAdmin();
+        $module = $this->module($admin);
+
+        $this->actingAs($admin)->post(route('courses.lessons.store', ['course' => $module->course_id, 'module' => $module->id]), [
+            'title' => 'Presentasi layanan pelanggan',
+            'type' => 'presentation',
+            'resource_url' => 'https://www.canva.com/design/DAHJVwit-10/presentasi-layanan/comment',
+            'is_required' => true,
+            'sequence' => 1,
+        ])->assertSessionHasErrors('resource_url');
+    }
+
+    public function test_admin_can_add_a_canva_short_link_presentation(): void
+    {
+        $admin = $this->courseAdmin();
+        $module = $this->module($admin);
+
+        $this->actingAs($admin)->post(route('courses.lessons.store', ['course' => $module->course_id, 'module' => $module->id]), [
+            'title' => 'Presentasi singkat',
+            'type' => 'presentation',
+            'resource_url' => 'https://canva.link/89g2ztdcfb7og9q',
+            'is_required' => true,
+            'sequence' => 1,
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('lessons', [
+            'module_id' => $module->id,
+            'type' => 'presentation',
+            'resource_url' => 'https://canva.link/89g2ztdcfb7og9q',
+        ]);
+    }
+
     public function test_admin_can_edit_a_media_lesson_without_reuploading_its_existing_source(): void
     {
         Storage::fake('local');

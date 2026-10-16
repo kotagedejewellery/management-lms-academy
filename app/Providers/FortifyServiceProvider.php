@@ -44,6 +44,10 @@ class FortifyServiceProvider extends ServiceProvider
     private function configureActions(): void
     {
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
+        Fortify::confirmPasswordsUsing(
+            fn (User $user, ?string $password): bool => $password !== null
+                && Hash::check($password, $user->password),
+        );
         Fortify::authenticateUsing(function (Request $request) {
             $identifier = trim((string) $request->input('identifier'));
             $user = User::query()

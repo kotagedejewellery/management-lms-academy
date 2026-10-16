@@ -5,9 +5,9 @@ import { useAppearance } from '@/composables/useAppearance';
 const { appearance, updateAppearance } = useAppearance();
 
 const tabs = [
-    { value: 'light', Icon: Sun, label: 'Light' },
-    { value: 'dark', Icon: Moon, label: 'Dark' },
-    { value: 'system', Icon: Monitor, label: 'System' },
+    { value: 'light', Icon: Sun, label: 'Terang' },
+    { value: 'dark', Icon: Moon, label: 'Gelap' },
+    { value: 'system', Icon: Monitor, label: 'Ikuti sistem' },
 ] as const;
 </script>
 
@@ -18,7 +18,9 @@ const tabs = [
         <button
             v-for="{ value, Icon, label } in tabs"
             :key="value"
+            type="button"
             @click="updateAppearance(value)"
+            :aria-pressed="appearance === value"
             :class="[
                 'flex items-center rounded-md px-3.5 py-1.5 transition-colors',
                 appearance === value

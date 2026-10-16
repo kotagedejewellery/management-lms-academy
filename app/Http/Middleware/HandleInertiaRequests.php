@@ -41,7 +41,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'name' => config('app.name'),
             'auth' => [
-                'user' => $user?->only(['id', 'name', 'email', 'employee_id', 'status']),
+                'user' => $user?->only(['id', 'name', 'email', 'employee_id', 'status', 'email_verified_at']),
                 'isSuperAdmin' => $user?->hasRole('super-admin') ?? false,
                 'can' => [
                     'manageUsers' => $user?->hasPermission('manage-users') ?? false,

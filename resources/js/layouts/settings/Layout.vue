@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import Heading from '@/components/Heading.vue';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
@@ -10,59 +12,86 @@ import { edit as editProfile } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
 import type { NavItem } from '@/types';
 
-const sidebarNavItems: NavItem[] = [
+type SettingsNavItem = NavItem & { requiresVerification?: boolean };
+
+const sidebarNavItems: SettingsNavItem[] = [
     {
-        title: 'Profile',
+        title: 'Profil',
         href: editProfile(),
     },
     {
-        title: 'Security',
+        title: 'Keamanan',
         href: editSecurity(),
+        requiresVerification: true,
     },
     {
-        title: 'Appearance',
+        title: 'Tampilan',
         href: editAppearance(),
+        requiresVerification: true,
     },
 ];
 
 const { isCurrentOrParentUrl } = useCurrentUrl();
+const page = usePage();
+const isEmailVerified = computed(() =>
+    Boolean(page.props.auth.user?.email_verified_at),
+);
+
+function canOpen(item: SettingsNavItem): boolean {
+    return !item.requiresVerification || isEmailVerified.value;
+}
 </script>
 
 <template>
-    <div class="px-4 py-6 sm:px-6 lg:px-8 xl:px-10">
+    <div class="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 xl:px-10">
         <Heading
-            title="Settings"
-            description="Manage your profile and account settings"
+            title="Pengaturan akun"
+            description="Kelola profil, keamanan, dan tampilan akun Anda."
         />
 
-        <div class="flex flex-col lg:flex-row lg:space-x-12">
-            <aside class="w-full max-w-xl lg:w-48">
+        <div class="flex flex-col lg:flex-row lg:gap-12">
+            <aside class="w-full max-w-2xl lg:w-52">
                 <nav
                     class="flex flex-col space-y-1 space-x-0"
-                    aria-label="Settings"
+                    aria-label="Pengaturan akun"
                 >
-                    <Button
+                    <template
                         v-for="item in sidebarNavItems"
                         :key="toUrl(item.href)"
-                        variant="ghost"
-                        :class="[
-                            'w-full justify-start',
-                            { 'bg-muted': isCurrentOrParentUrl(item.href) },
-                        ]"
-                        as-child
                     >
-                        <Link :href="item.href">
-                            <component :is="item.icon" class="h-4 w-4" />
-                            {{ item.title }}
-                        </Link>
-                    </Button>
+                        <Button
+                            v-if="canOpen(item)"
+                            variant="ghost"
+                            :class="[
+                                'w-full justify-start',
+                                {
+                                    'bg-muted': isCurrentOrParentUrl(item.href),
+                                },
+                            ]"
+                            as-child
+                        >
+                            <Link :href="item.href">
+                                {{ item.title }}
+                            </Link>
+                        </Button>
+                        <div
+                            v-else
+                            class="flex min-h-9 items-center justify-between rounded-md px-3 py-2 text-sm text-muted-foreground"
+                            aria-disabled="true"
+                        >
+                            <span>{{ item.title }}</span>
+                            <Badge variant="secondary" class="text-[10px]">
+                                Perlu verifikasi
+                            </Badge>
+                        </div>
+                    </template>
                 </nav>
             </aside>
 
             <Separator class="my-6 lg:hidden" />
 
-            <div class="flex-1 md:max-w-2xl">
-                <section class="max-w-xl space-y-12">
+            <div class="flex-1 lg:max-w-3xl">
+                <section class="max-w-2xl space-y-12">
                     <slot />
                 </section>
             </div>
