@@ -391,7 +391,10 @@ function selectLesson(lesson: LessonEntry, scrollToPlayer = false): void {
         },
     );
 }
-function selectLessonFromNavigator(lesson: Lesson, module: Module): void {
+function selectLessonFromNavigator(
+    lesson: Lesson,
+    module: Pick<Module, 'id' | 'title' | 'sequence'>,
+): void {
     lessonNavigatorOpen.value = false;
     selectLesson({
         ...lesson,

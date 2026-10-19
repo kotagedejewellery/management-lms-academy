@@ -15,7 +15,7 @@ type Module = {
     id: number;
     title: string;
     sequence: number;
-    status: 'not_started' | 'in_progress' | 'completed';
+    status: 'not_started' | 'in_progress' | 'completed' | 'locked';
     lessons: Lesson[];
 };
 
