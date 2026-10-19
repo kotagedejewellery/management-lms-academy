@@ -7,7 +7,9 @@ use App\Models\Permission;
 use App\Models\Position;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class UserManagementTest extends TestCase
@@ -16,6 +18,8 @@ class UserManagementTest extends TestCase
 
     public function test_lms_admin_can_create_an_employee(): void
     {
+        Notification::fake();
+
         $admin = $this->userWithPermission('manage-users');
         $employeeRole = Role::query()->create(['slug' => 'employee', 'name' => 'Employee / Learner']);
 
@@ -34,6 +38,9 @@ class UserManagementTest extends TestCase
         $response->assertRedirect(route('users.index'));
         $this->assertDatabaseHas('users', ['employee_id' => 'KGJ-001', 'hired_at' => '2026-01-15 00:00:00', 'email' => 'employee.one@example.test', 'phone' => '08123456789']);
         $this->assertDatabaseHas('user_roles', ['role_id' => $employeeRole->id]);
+        $employee = User::query()->where('email', 'employee.one@example.test')->sole();
+        $this->assertNull($employee->email_verified_at);
+        Notification::assertSentTo($employee, VerifyEmail::class);
     }
 
     public function test_employee_cannot_access_user_management(): void

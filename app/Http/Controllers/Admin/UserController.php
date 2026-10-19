@@ -71,7 +71,7 @@ class UserController extends Controller
         $data = $this->validatedData($request);
         $role = $this->assignableRole($request->user(), $data['role_id']);
         unset($data['role_id'], $data['password_confirmation']);
-        $data['email_verified_at'] = now();
+        $data['email_verified_at'] = null;
 
         $user = DB::transaction(function () use ($data, $role, $assignments): User {
             $user = User::query()->create($data);
@@ -80,6 +80,9 @@ class UserController extends Controller
 
             return $user;
         });
+
+        $user->sendEmailVerificationNotification();
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Akun dibuat. Tautan verifikasi telah dikirim ke email kerja pengguna.']);
 
         return to_route('users.index');
     }

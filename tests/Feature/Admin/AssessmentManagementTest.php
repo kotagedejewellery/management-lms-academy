@@ -60,6 +60,29 @@ class AssessmentManagementTest extends TestCase
         ])->assertSessionHasErrors('attempt_limit');
     }
 
+    public function test_course_admin_can_create_optional_pre_and_post_tests_for_a_module(): void
+    {
+        $admin = $this->courseAdmin();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-MODULE-001', 'title' => 'Pengenalan', 'passing_grade' => 70]);
+        $module = $course->modules()->create(['title' => 'Produk', 'sequence' => 1]);
+        $course->trainers()->attach($admin);
+
+        foreach (['pre_test', 'post_test'] as $type) {
+            $this->actingAs($admin)->post(route('courses.assessments.store', $course), [
+                'module_id' => $module->id,
+                'type' => $type,
+                'passing_grade' => $type === 'pre_test' ? 0 : 70,
+                'attempt_limit' => 3,
+            ])->assertRedirect(route('courses.assessments.index', [$course, 'module' => $module->id]));
+        }
+
+        $this->assertDatabaseCount('assessments', 2);
+        $this->assertDatabaseHas('assessments', ['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'pre_test', 'is_required' => true]);
+        $this->assertDatabaseHas('assessments', ['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'post_test', 'is_required' => true]);
+        $this->assertFalse($course->fresh()->requires_post_test);
+    }
+
     private function courseAdmin(): User
     {
         $permission = Permission::query()->create(['slug' => 'manage-courses', 'name' => 'Kelola course']);

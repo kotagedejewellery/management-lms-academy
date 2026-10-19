@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Assessment;
 use App\Models\Course;
+use App\Models\CourseModule;
 use App\Models\Question;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,10 +20,20 @@ class AssessmentController extends Controller
     {
         $this->authorizeCourses($request);
         $course->load('modules');
-        $assessments = Assessment::query()->where('course_id', $course->id)->with('questions.answers')->get()->keyBy('type');
+        $moduleId = $request->integer('module');
+        $module = $moduleId ? $course->modules->firstWhere('id', $moduleId) : null;
+        abort_if($moduleId && ! $module, 404);
+        $assessments = Assessment::query()
+            ->where('course_id', $course->id)
+            ->when($module, fn ($query) => $query->where('module_id', $module->id), fn ($query) => $query->whereNull('module_id'))
+            ->with('questions.answers')
+            ->get()
+            ->keyBy('type');
 
         return Inertia::render('admin/courses/Assessments', [
             'course' => $course->only(['id', 'code', 'title']),
+            'modules' => $course->modules->map->only(['id', 'title', 'sequence'])->values(),
+            'selected_module' => $module?->only(['id', 'title']),
             'assessments' => collect(['pre_test', 'post_test'])->mapWithKeys(fn (string $type) => [$type => $this->assessmentData($assessments->get($type))]),
         ]);
     }
@@ -31,21 +42,38 @@ class AssessmentController extends Controller
     {
         $this->authorizeCourses($request);
         $data = $request->validate([
-            'type' => ['required', Rule::in(['pre_test', 'post_test']), Rule::unique('assessments', 'type')->where('course_id', $course->id)],
+            'type' => ['required', Rule::in(['pre_test', 'post_test'])],
             'passing_grade' => ['required', 'integer', 'min:0', 'max:100'],
             'attempt_limit' => ['nullable', 'integer', 'min:1', 'max:3'],
             'is_required' => ['nullable', 'boolean'],
             'time_limit_minutes' => ['nullable', 'integer', 'min:1', 'max:180'],
+            'module_id' => ['nullable', 'integer'],
         ]);
+
+        $module = isset($data['module_id'])
+            ? CourseModule::query()->where('course_id', $course->id)->find($data['module_id'])
+            : null;
+        if (isset($data['module_id']) && ! $module) {
+            throw ValidationException::withMessages(['module_id' => 'Modul evaluasi tidak ditemukan pada course ini.']);
+        }
+        $duplicate = Assessment::query()
+            ->where('course_id', $course->id)
+            ->where('type', $data['type'])
+            ->when($module, fn ($query) => $query->where('module_id', $module->id), fn ($query) => $query->whereNull('module_id'))
+            ->exists();
+        if ($duplicate) {
+            throw ValidationException::withMessages(['type' => 'Jenis assessment ini sudah tersedia pada scope yang dipilih.']);
+        }
 
         $assessment = $course->assessments()->create([
             ...$data,
+            'module_id' => $module?->id,
             'attempt_limit' => $data['attempt_limit'] ?? 3,
-            'is_required' => $data['type'] === 'pre_test' && ($data['is_required'] ?? false),
+            'is_required' => $module !== null || ($data['type'] === 'pre_test' && ($data['is_required'] ?? false)),
         ]);
         $this->syncCoursePassingGrade($course, $assessment);
 
-        return to_route('courses.assessments.index', $course);
+        return to_route('courses.assessments.index', ['course' => $course, 'module' => $module?->id]);
     }
 
     public function update(Request $request, Course $course, Assessment $assessment): RedirectResponse
@@ -59,13 +87,13 @@ class AssessmentController extends Controller
             'is_required' => ['sometimes', 'boolean'],
             'time_limit_minutes' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:180'],
         ]);
-        if ($assessment->type !== 'pre_test') {
+        if ($assessment->module_id !== null || $assessment->type !== 'pre_test') {
             unset($data['is_required']);
         }
         $assessment->update($data);
         $this->syncCoursePassingGrade($course, $assessment);
 
-        return to_route('courses.assessments.index', $course);
+        return to_route('courses.assessments.index', ['course' => $course, 'module' => $assessment->module_id]);
     }
 
     public function storeQuestion(Request $request, Course $course, Assessment $assessment): RedirectResponse
@@ -95,7 +123,7 @@ class AssessmentController extends Controller
             }
         });
 
-        return to_route('courses.assessments.index', $course);
+        return to_route('courses.assessments.index', ['course' => $course, 'module' => $assessment->module_id]);
     }
 
     public function destroyQuestion(Request $request, Course $course, Assessment $assessment, Question $question): RedirectResponse
@@ -111,7 +139,7 @@ class AssessmentController extends Controller
             $assessment->questions()->where('sequence', '>', $sequence)->decrement('sequence');
         });
 
-        return to_route('courses.assessments.index', $course);
+        return to_route('courses.assessments.index', ['course' => $course, 'module' => $assessment->module_id]);
     }
 
     public function moveQuestion(Request $request, Course $course, Assessment $assessment, Question $question): RedirectResponse
@@ -141,7 +169,7 @@ class AssessmentController extends Controller
             $current->update(['sequence' => $targetSequence]);
         });
 
-        return to_route('courses.assessments.index', $course);
+        return to_route('courses.assessments.index', ['course' => $course, 'module' => $assessment->module_id]);
     }
 
     private function authorizeCourses(Request $request): void
@@ -159,14 +187,14 @@ class AssessmentController extends Controller
     private function assessmentData(?Assessment $assessment): ?array
     {
         return $assessment ? [
-            ...$assessment->only(['id', 'type', 'is_required', 'passing_grade', 'attempt_limit', 'time_limit_minutes']),
+            ...$assessment->only(['id', 'module_id', 'type', 'is_required', 'passing_grade', 'attempt_limit', 'time_limit_minutes']),
             'questions' => $assessment->questions->map(fn ($question) => [...$question->only(['id', 'prompt', 'explanation', 'points', 'sequence']), 'answers' => $question->answers->map->only(['id', 'content', 'is_correct', 'sequence'])]),
         ] : null;
     }
 
     private function syncCoursePassingGrade(Course $course, Assessment $assessment): void
     {
-        if ($assessment->type === 'post_test') {
+        if ($assessment->module_id === null && $assessment->type === 'post_test') {
             $course->update(['passing_grade' => $assessment->passing_grade, 'requires_post_test' => true]);
         }
     }

@@ -8,6 +8,7 @@ use App\Models\CourseModule;
 use App\Models\Enrollment;
 use App\Models\Lesson;
 use App\Support\LearningAvailability;
+use App\Support\ModuleLearningProgression;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
@@ -78,7 +79,16 @@ class LearningController extends Controller
             'position:id,name',
             'trainers:id,name',
             'modules.lessons' => fn ($query) => $query->select(['id', 'module_id', 'title', 'type', 'is_required', 'sequence']),
+            'modules.assessments' => fn ($query) => $query
+                ->withCount('questions')
+                ->with([
+                    'attempts' => fn ($attempts) => $attempts
+                        ->where('enrollment_id', $enrollment->id)
+                        ->whereNotNull('submitted_at')
+                        ->orderByDesc('attempt_number'),
+                ]),
             'assessments' => fn ($query) => $query
+                ->whereNull('module_id')
                 ->select(['id', 'course_id', 'type', 'is_required', 'attempt_limit'])
                 ->withCount('questions')
                 ->with([
@@ -94,15 +104,18 @@ class LearningController extends Controller
         $completedRequiredLessonCount = count(array_intersect($requiredLessonIds, $completed));
         $postTestReady = $requiredLessonIds === [] || $completedRequiredLessonCount === count($requiredLessonIds);
         $totalLessonCount = $course->modules->sum(fn ($module) => $module->lessons->count());
+        $moduleStates = app(ModuleLearningProgression::class)->states($course, $enrollment);
         /** @var Collection<int, Lesson> $lessons */
         $lessons = $course->modules->flatMap(fn (CourseModule $module) => $module->lessons);
+        $requiredPreTest = $course->assessments->first(fn ($assessment) => $assessment->type === 'pre_test' && $assessment->is_required);
+        $preTestCompleted = ! $requiredPreTest || $requiredPreTest->attempts->isNotEmpty();
+        $availableLessons = $lessons->filter(fn (Lesson $lesson) => $preTestCompleted && ($moduleStates->get($lesson->module_id)['materials_unlocked'] ?? false));
         $requestedLessonId = $request->integer('lesson');
         $selectedSummary = $requestedLessonId ? $lessons->firstWhere('id', $requestedLessonId) : null;
         abort_if($request->has('lesson') && ! $selectedSummary, 404);
-        $selectedSummary ??= $lessons->first(fn (Lesson $lesson) => ! in_array($lesson->id, $completed, true)) ?? $lessons->first();
-        $requiredPreTest = $course->assessments->first(fn ($assessment) => $assessment->type === 'pre_test' && $assessment->is_required);
-        $preTestCompleted = ! $requiredPreTest || $requiredPreTest->attempts->isNotEmpty();
-        $selectedLesson = $preTestCompleted && $selectedSummary
+        abort_if($selectedSummary && ! $availableLessons->contains('id', $selectedSummary->id), 403);
+        $selectedSummary ??= $availableLessons->first(fn (Lesson $lesson) => ! in_array($lesson->id, $completed, true)) ?? $availableLessons->first();
+        $selectedLesson = $selectedSummary
             ? Lesson::query()->with('resources:id,lesson_id,original_name,mime_type')->findOrFail($selectedSummary->id)
             : null;
         $selectedModule = $selectedLesson ? $course->modules->firstWhere('id', $selectedLesson->module_id) : null;
@@ -148,16 +161,36 @@ class LearningController extends Controller
                 }),
                 'pre_test_required' => $requiredPreTest !== null,
                 'pre_test_completed' => $preTestCompleted,
-                'modules' => $course->modules->map(function ($module) use ($completed, $selectedSummary) {
-                    $moduleCompleted = $module->lessons->every(fn (Lesson $lesson) => in_array($lesson->id, $completed, true));
+                'modules' => $course->modules->map(function ($module) use ($completed, $selectedSummary, $moduleStates, $preTestCompleted) {
+                    $state = $moduleStates->get($module->id);
+                    $moduleCompleted = $state['completed'] ?? false;
                     $moduleInProgress = ! $moduleCompleted && ($module->lessons->contains(fn (Lesson $lesson) => in_array($lesson->id, $completed, true)) || $module->lessons->contains('id', $selectedSummary?->id));
+                    $moduleRequiredLessons = $module->lessons->where('is_required', true);
+                    $modulePostReady = $moduleRequiredLessons->isEmpty() || $moduleRequiredLessons->every(fn (Lesson $lesson) => in_array($lesson->id, $completed, true));
 
                     return [
                         ...$module->only(['id', 'title', 'sequence']),
-                        'status' => $moduleCompleted ? 'completed' : ($moduleInProgress ? 'in_progress' : 'not_started'),
+                        'status' => $moduleCompleted ? 'completed' : (! $preTestCompleted || ! ($state['materials_unlocked'] ?? false) ? 'locked' : ($moduleInProgress ? 'in_progress' : 'not_started')),
+                        'locked' => ! $preTestCompleted || ! ($state['materials_unlocked'] ?? false),
+                        'lock_reason' => ! $preTestCompleted
+                            ? 'Selesaikan Pre-Test course terlebih dahulu.'
+                            : (! ($state['unlocked'] ?? false) ? 'Selesaikan Post-Test modul sebelumnya terlebih dahulu.' : 'Selesaikan Pre-Test modul ini terlebih dahulu.'),
+                        'assessments' => $module->assessments->map(function ($assessment) use ($modulePostReady, $state) {
+                            $attempts = $assessment->attempts;
+                            $latestAttempt = $attempts->first();
+
+                            return [
+                                ...$assessment->only(['id', 'module_id', 'type', 'is_required', 'attempt_limit']),
+                                'ready' => $assessment->questions_count > 0 && ($assessment->type === 'pre_test' ? ($state['unlocked'] ?? false) : ($state['post_available'] ?? $modulePostReady)),
+                                'attempts_used' => $attempts->count(),
+                                'best_score' => $attempts->max('score'),
+                                'latest_attempt' => $latestAttempt?->only(['attempt_number', 'score', 'passed']),
+                            ];
+                        })->values(),
                         'lessons' => $module->lessons->map(fn (Lesson $lesson) => [
                             ...$lesson->only(['id', 'title', 'type', 'is_required', 'sequence']),
                             'completed' => in_array($lesson->id, $completed, true),
+                            'locked' => ! $preTestCompleted || ! ($state['materials_unlocked'] ?? false),
                             'status' => in_array($lesson->id, $completed, true) ? 'completed' : ($selectedSummary?->id === $lesson->id ? 'in_progress' : 'not_started'),
                         ]),
                     ];
@@ -181,10 +214,7 @@ class LearningController extends Controller
         abort_unless($enrollment->status === 'active', 404);
         abort_unless($lesson->type === 'video' && $lesson->module()->where('course_id', $course->id)->exists(), 404);
 
-        $preTest = $course->assessments()->where('type', 'pre_test')->where('is_required', true)->first();
-        if ($preTest && ! $preTest->attempts()->where('enrollment_id', $enrollment->id)->whereNotNull('submitted_at')->exists()) {
-            throw ValidationException::withMessages(['pre_test' => 'Selesaikan Pre-Test wajib sebelum memulai materi.']);
-        }
+        $this->ensureLessonAvailable($course, $enrollment, $lesson);
 
         $seconds = $request->validate(['seconds' => ['required', 'integer', 'min:0', 'max:604800']])['seconds'];
         $progress = $enrollment->lessonProgress()->firstOrNew(['lesson_id' => $lesson->id]);
@@ -201,10 +231,7 @@ class LearningController extends Controller
         $enrollment = $this->enrollment($request, $course);
         abort_unless($enrollment->status === 'active', 404);
         abort_unless($lesson->module()->where('course_id', $course->id)->exists(), 404);
-        $preTest = $course->assessments()->where('type', 'pre_test')->where('is_required', true)->first();
-        if ($preTest && ! $preTest->attempts()->where('enrollment_id', $enrollment->id)->whereNotNull('submitted_at')->exists()) {
-            throw ValidationException::withMessages(['pre_test' => 'Selesaikan Pre-Test wajib sebelum memulai materi.']);
-        }
+        $this->ensureLessonAvailable($course, $enrollment, $lesson);
 
         $enrollment->lessonProgress()->updateOrCreate(
             ['lesson_id' => $lesson->id],
@@ -212,7 +239,7 @@ class LearningController extends Controller
         );
         $enrollment->update(['started_at' => $enrollment->started_at ?? now()]);
 
-        if (! $course->requires_post_test && $this->requiredLessonsCompleted($course, $enrollment)) {
+        if (! $course->requires_post_test && app(ModuleLearningProgression::class)->courseModulesCompleted($course, $enrollment)) {
             $enrollment->update(['status' => 'completed', 'completed_at' => now()]);
             if ($course->certificate_enabled) {
                 IssueCertificate::dispatch($enrollment->id);
@@ -244,5 +271,18 @@ class LearningController extends Controller
             ->where('status', 'completed')
             ->whereIn('lesson_id', $requiredLessonIds)
             ->count() === $requiredLessonIds->count();
+    }
+
+    private function ensureLessonAvailable(Course $course, Enrollment $enrollment, Lesson $lesson): void
+    {
+        $coursePreTest = $course->assessments()->whereNull('module_id')->where('type', 'pre_test')->where('is_required', true)->first();
+        if ($coursePreTest && ! $coursePreTest->attempts()->where('enrollment_id', $enrollment->id)->whereNotNull('submitted_at')->exists()) {
+            throw ValidationException::withMessages(['pre_test' => 'Selesaikan Pre-Test wajib sebelum memulai materi.']);
+        }
+
+        $module = $lesson->module;
+        if (! $module || ! app(ModuleLearningProgression::class)->canAccessLesson($course, $enrollment, $module)) {
+            throw ValidationException::withMessages(['module' => 'Selesaikan Pre-Test atau modul sebelumnya sebelum membuka materi ini.']);
+        }
     }
 }

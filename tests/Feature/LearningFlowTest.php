@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Course;
 use App\Models\CourseCategory;
+use App\Models\Assessment;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
@@ -68,6 +69,23 @@ class LearningFlowTest extends TestCase
                 ->component('learning/Show')
                 ->where('selected_lesson.type', 'presentation')
                 ->where('selected_lesson.resource_url', 'https://www.canva.com/design/DAHJVwit-10/presentasi-layanan/view?embed'));
+    }
+
+    public function test_module_pre_test_does_not_expose_its_lesson_in_the_player(): void
+    {
+        $employee = User::factory()->create();
+        $course = $this->publishedCourseWithLesson();
+        $module = $course->modules->first();
+        $assessment = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'pre_test', 'is_required' => true, 'passing_grade' => 0, 'attempt_limit' => 3]);
+        $assessment->questions()->create(['prompt' => 'Siap?', 'points' => 1, 'sequence' => 1])->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
+        $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
+
+        $this->actingAs($employee)->get(route('my-learning.show', $course))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('selected_lesson', null)
+                ->where('course.modules.0.status', 'locked')
+                ->where('course.modules.0.lessons.0.locked', true));
     }
 
     public function test_employee_cannot_access_another_employees_course(): void

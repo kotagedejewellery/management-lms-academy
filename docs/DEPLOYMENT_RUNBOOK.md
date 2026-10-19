@@ -17,7 +17,7 @@ cp .env.production.example .env.production
 nano .env.production
 ```
 
-Ganti `APP_URL` dan `TRAEFIK_HOST` dengan subdomain final, isi password PostgreSQL yang kuat, `IMPORT_INITIAL_PASSWORD`, dan token Fonnte bila digunakan. `APP_URL` wajib memakai `https://` (bukan `http://`) agar browser tidak memblokir asset Vite sebagai mixed content. Jangan set `ASSET_URL` ke URL HTTP. Pastikan network Traefik tersedia, lalu buat volume persistent satu kali. Perintah ini idempotent dan tidak menghapus data:
+Ganti `APP_URL` dan `TRAEFIK_HOST` dengan subdomain final, isi password PostgreSQL yang kuat, `IMPORT_INITIAL_PASSWORD`, dan token Fonnte bila digunakan. Isi juga `MAIL_PASSWORD` dengan SMTP API key Resend serta gunakan alamat pengirim yang telah diverifikasi di Resend; reset password dan verifikasi akun baru bergantung pada SMTP ini. `APP_URL` wajib memakai `https://` (bukan `http://`) agar browser tidak memblokir asset Vite sebagai mixed content. Jangan set `ASSET_URL` ke URL HTTP. Pastikan network Traefik tersedia, lalu buat volume persistent satu kali. Perintah ini idempotent dan tidak menghapus data:
 
 ```sh
 docker network inspect proxy >/dev/null
@@ -45,6 +45,12 @@ docker compose --env-file .env.production -f compose.production.yml exec -T web 
 `compose.production.yml` hanya menempatkan service `web` pada network `proxy`; PostgreSQL, Redis, PHP-FPM, worker, dan scheduler tidak memiliki port publik.
 
 PHP-FPM (`app`), `worker`, dan `scheduler` juga terhubung ke network Docker `outbound` tanpa port publik. Network ini hanya menyediakan akses keluar yang diperlukan untuk layanan eksternal seperti SMTP; PostgreSQL dan Redis tetap berada hanya pada network `internal`.
+
+Jika konfigurasi environment mengharuskan pembuatan ulang `app`, buat ulang juga `web` dalam perintah yang sama. Nginx pada `web` menyimpan target PHP-FPM saat mulai berjalan; membuat ulang `app` saja dapat membuat `web` tetap menunjuk ke container lama dan menghasilkan `502`.
+
+```sh
+docker compose --env-file .env.production -f compose.production.yml up -d --force-recreate app web worker scheduler
+```
 
 ### Data katalog awal
 

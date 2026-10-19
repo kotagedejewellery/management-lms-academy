@@ -417,7 +417,7 @@ defineOptions({
                     description="Tambahkan modul pertama melalui formulir di samping."
                 />
             </section>
-            <div v-if="course.status === 'draft'" class="grid gap-6">
+            <div v-if="course.status === 'draft'" class="grid min-w-0 gap-6">
                 <section
                     class="rounded-xl bg-card p-5 shadow-sm ring-1 ring-border"
                 >
@@ -464,7 +464,7 @@ defineOptions({
                                 id="lesson-module"
                                 v-model="lessonForm.module_id"
                                 required
-                                class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+                                class="h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 text-sm"
                             >
                                 <option value="">Pilih modul</option>
                                 <option
@@ -493,7 +493,7 @@ defineOptions({
                                 id="lesson-type"
                                 v-model="lessonForm.type"
                                 :disabled="Boolean(editingLesson)"
-                                class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+                                class="h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 text-sm"
                             >
                                 <option value="article">Artikel</option>
                                 <option value="video">Video</option>
@@ -722,7 +722,7 @@ defineOptions({
                             ><select
                                 id="lesson-required"
                                 v-model="lessonForm.is_required"
-                                class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+                                class="h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 text-sm"
                             >
                                 <option :value="true">Wajib</option>
                                 <option :value="false">Opsional</option>

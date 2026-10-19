@@ -24,4 +24,10 @@ class CourseModule extends Model
     {
         return $this->hasMany(Lesson::class, 'module_id')->orderBy('sequence');
     }
+
+    /** @return HasMany<Assessment, $this> */
+    public function assessments(): HasMany
+    {
+        return $this->hasMany(Assessment::class, 'module_id');
+    }
 }

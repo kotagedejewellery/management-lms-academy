@@ -74,6 +74,7 @@ class DashboardResolver
             ->pluck('total', 'modules.course_id');
         $assessments = Assessment::query()
             ->whereIn('course_id', $courseIds)
+            ->whereNull('module_id')
             ->whereIn('type', ['pre_test', 'post_test'])
             ->withCount('questions')
             ->get(['id', 'course_id', 'type', 'is_required']);

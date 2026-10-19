@@ -238,7 +238,7 @@ class CourseController extends Controller
             'thumbnail.max' => 'Ukuran thumbnail maksimal 2 MB.',
         ]);
 
-        $postTest = $course?->assessments()->where('type', 'post_test')->first();
+        $postTest = $course?->assessments()->whereNull('module_id')->where('type', 'post_test')->first();
         $data['requires_post_test'] = $postTest !== null || ($data['requires_post_test'] ?? ($course !== null && $course->requires_post_test));
         $data['certificate_enabled'] = (bool) ($data['certificate_enabled'] ?? ($course !== null && $course->certificate_enabled));
         if ($postTest) {
@@ -289,7 +289,7 @@ class CourseController extends Controller
 
     private function postTestReady(Course $course): bool
     {
-        $postTest = $course->assessments()->where('type', 'post_test')->first();
+        $postTest = $course->assessments()->whereNull('module_id')->where('type', 'post_test')->first();
 
         return $postTest !== null
             && $postTest->questions()->exists()

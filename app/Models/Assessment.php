@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @property int $id
  * @property int $course_id
+ * @property int|null $module_id
  * @property string $type
  * @property bool $is_required
  * @property int $passing_grade
@@ -18,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Assessment extends Model
 {
-    protected $fillable = ['course_id', 'type', 'is_required', 'passing_grade', 'attempt_limit', 'time_limit_minutes'];
+    protected $fillable = ['course_id', 'module_id', 'type', 'is_required', 'passing_grade', 'attempt_limit', 'time_limit_minutes'];
 
     protected function casts(): array
     {
@@ -29,6 +30,12 @@ class Assessment extends Model
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    /** @return BelongsTo<CourseModule, $this> */
+    public function module(): BelongsTo
+    {
+        return $this->belongsTo(CourseModule::class, 'module_id');
     }
 
     /** @return HasMany<Question, $this> */

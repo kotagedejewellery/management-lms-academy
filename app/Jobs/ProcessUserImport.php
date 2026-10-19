@@ -165,12 +165,13 @@ class ProcessUserImport implements ShouldQueue
             }
 
             $user = DB::transaction(function () use ($employeeId, $data, $email, $status, $hiredAt, $division, $position, $branch, $managerId, $password, $role): User {
-                $user = User::query()->create(['employee_id' => $employeeId, 'hired_at' => $hiredAt, 'name' => $data['name'], 'email' => $email, 'phone' => $data['phone'] ?? null, 'password' => $password, 'division_id' => $division?->id, 'position_id' => $position?->id, 'branch_id' => $branch?->id, 'manager_id' => $managerId, 'status' => $status, 'email_verified_at' => now()]);
+                $user = User::query()->create(['employee_id' => $employeeId, 'hired_at' => $hiredAt, 'name' => $data['name'], 'email' => $email, 'phone' => $data['phone'] ?? null, 'password' => $password, 'division_id' => $division?->id, 'position_id' => $position?->id, 'branch_id' => $branch?->id, 'manager_id' => $managerId, 'status' => $status, 'email_verified_at' => null]);
                 $user->roles()->attach($role);
                 app(LearningPathAssignmentService::class)->assignMatching($user);
 
                 return $user;
             });
+            $user->sendEmailVerificationNotification();
             $seenEmployeeIds[$employeeId] = true;
             $seenEmails[$email] = true;
             $managerIds[$employeeId] = $user->id;

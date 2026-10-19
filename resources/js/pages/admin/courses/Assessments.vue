@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { ChevronDown, ChevronUp, Plus, Trash2 } from '@lucide/vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
 import FormErrorSummary from '@/components/FormErrorSummary.vue';
 import InputError from '@/components/InputError.vue';
@@ -29,14 +29,19 @@ type Assessment = {
 };
 const props = defineProps<{
     course: { id: number; code: string; title: string };
+    modules: { id: number; title: string; sequence: number }[];
+    selected_module: { id: number; title: string } | null;
     assessments: Record<'pre_test' | 'post_test', Assessment | null>;
 }>();
+const selectedModuleId = ref(props.selected_module?.id.toString() ?? '');
+const moduleScope = computed(() => props.selected_module !== null);
 const createForm = useForm({
     type: 'pre_test' as 'pre_test' | 'post_test',
     passing_grade: '0',
     attempt_limit: '3',
     is_required: false,
     time_limit_minutes: '',
+    module_id: props.selected_module?.id.toString() ?? '',
 });
 const settings = Object.fromEntries(
     ['pre_test', 'post_test'].map((type) => {
@@ -83,10 +88,17 @@ const leaveGuard = useUnsavedChangesGuard(
 function create(type: 'pre_test' | 'post_test'): void {
     createForm.type = type;
     createForm.passing_grade = type === 'pre_test' ? '0' : '70';
-    createForm.is_required = false;
+    createForm.is_required = moduleScope.value;
+    createForm.module_id = selectedModuleId.value;
     createForm.post(`/courses/${props.course.id}/assessments`, {
         onSuccess: () => createForm.reset(),
     });
+}
+function changeScope(): void {
+    router.get(
+        `/courses/${props.course.id}/assessments`,
+        selectedModuleId.value ? { module: selectedModuleId.value } : {},
+    );
 }
 function saveSettings(type: 'pre_test' | 'post_test'): void {
     const assessment = props.assessments[type];
@@ -139,6 +151,11 @@ function description(
     type: 'pre_test' | 'post_test',
     assessment: Assessment | null,
 ): string {
+    if (moduleScope.value)
+        return type === 'pre_test'
+            ? 'Wajib diselesaikan sebelum materi modul dapat dibuka.'
+            : 'Harus lulus sebelum learner dapat melanjutkan ke modul berikutnya.';
+
     return type === 'pre_test'
         ? assessment?.is_required
             ? 'Wajib diselesaikan sebelum learner membuka materi.'
@@ -179,6 +196,24 @@ defineOptions({
                 ></Button
             >
         </header>
+        <div class="max-w-md">
+            <Label for="assessment-module">Ruang lingkup evaluasi</Label>
+            <select
+                id="assessment-module"
+                v-model="selectedModuleId"
+                class="mt-2 flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                @change="changeScope"
+            >
+                <option value="">Evaluasi course</option>
+                <option
+                    v-for="module in modules"
+                    :key="module.id"
+                    :value="String(module.id)"
+                >
+                    Modul {{ module.sequence }} · {{ module.title }}
+                </option>
+            </select>
+        </div>
         <div class="grid gap-6 lg:grid-cols-2">
             <section
                 v-for="type in ['pre_test', 'post_test'] as const"
@@ -235,7 +270,7 @@ defineOptions({
                         />
                     </div>
                     <label
-                        v-if="type === 'pre_test'"
+                        v-if="type === 'pre_test' && !moduleScope"
                         class="flex items-start gap-3 rounded-lg border border-border p-3 text-sm"
                         ><input
                             v-model="createForm.is_required"
@@ -320,7 +355,7 @@ defineOptions({
                             />
                         </div>
                         <label
-                            v-if="type === 'pre_test'"
+                            v-if="type === 'pre_test' && !moduleScope"
                             class="flex items-center gap-3 self-end rounded-lg border border-border px-3 py-2 text-sm"
                             ><input
                                 v-model="settings[type].is_required"

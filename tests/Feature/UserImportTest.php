@@ -7,8 +7,10 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserImport;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -21,6 +23,8 @@ class UserImportTest extends TestCase
 
     public function test_admin_queues_csv_import_and_duplicate_rows_are_skipped(): void
     {
+        Notification::fake();
+
         config()->set('imports.initial_password', 'InitialPass123!');
         Storage::fake('s3');
         config(['filesystems.default' => 's3']);
@@ -39,6 +43,9 @@ class UserImportTest extends TestCase
         $this->assertSame('completed', $import->fresh()->status);
         $this->assertSame(1, $import->fresh()->imported_rows);
         $this->assertSame(1, $import->fresh()->skipped_rows);
+        $employee = User::query()->where('email', 'two@example.test')->sole();
+        $this->assertNull($employee->email_verified_at);
+        Notification::assertSentTo($employee, VerifyEmail::class);
     }
 
     public function test_employee_cannot_start_user_import(): void

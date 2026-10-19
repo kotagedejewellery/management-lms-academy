@@ -34,13 +34,17 @@ type Lesson = {
     is_required: boolean;
     sequence: number;
     completed: boolean;
-    status: 'not_started' | 'in_progress' | 'completed';
+    status: 'not_started' | 'in_progress' | 'completed' | 'locked';
+    locked: boolean;
 };
 type Module = {
     id: number;
     title: string;
     sequence: number;
-    status: 'not_started' | 'in_progress' | 'completed';
+    status: 'not_started' | 'in_progress' | 'completed' | 'locked';
+    locked: boolean;
+    lock_reason: string;
+    assessments: Assessment[];
     lessons: Lesson[];
 };
 type LessonEntry = Lesson & {
@@ -57,6 +61,7 @@ type SelectedLesson = LessonEntry & {
 };
 type Assessment = {
     id: number;
+    module_id: number | null;
     type: 'pre_test' | 'post_test';
     is_required: boolean;
     ready: boolean;
@@ -288,6 +293,13 @@ function assessmentTitle(assessment: Assessment): string {
     return assessment.type === 'pre_test' ? 'Pre-Test' : 'Post-Test';
 }
 function assessmentDescription(assessment: Assessment): string {
+    if (assessment.module_id !== null)
+        return assessment.type === 'pre_test'
+            ? 'Wajib diselesaikan sebelum materi modul dapat dibuka.'
+            : assessment.ready
+              ? 'Lulus Post-Test untuk membuka modul berikutnya.'
+              : 'Selesaikan lesson wajib modul untuk membuka Post-Test.';
+
     return assessment.type === 'pre_test'
         ? assessment.is_required
             ? 'Tes baseline wajib sebelum materi dapat dibuka.'
@@ -342,6 +354,10 @@ function assessmentAction(
 }
 function selectLesson(lesson: LessonEntry, scrollToPlayer = false): void {
     lessonError.value = '';
+    if (lesson.locked) {
+        lessonError.value = 'Materi ini masih terkunci. Selesaikan evaluasi yang diwajibkan terlebih dahulu.';
+        return;
+    }
     if (props.course.pre_test_required && !props.course.pre_test_completed) {
         lessonError.value = 'Selesaikan Pre-Test wajib sebelum membuka materi.';
         return;
@@ -683,6 +699,62 @@ defineOptions({
                                 </div>
                             </div>
                         </article>
+                    </div>
+                </section>
+                <section
+                    v-if="
+                        course.modules.some(
+                            (module) => module.assessments.length,
+                        )
+                    "
+                    class="rounded-xl border border-border bg-card p-4"
+                >
+                    <h2
+                        class="flex items-center gap-2 font-semibold text-foreground"
+                    >
+                        <Trophy class="size-4 text-primary" />Evaluasi modul
+                    </h2>
+                    <div class="mt-3 space-y-3">
+                        <div
+                            v-for="module in course.modules.filter(
+                                (item) => item.assessments.length,
+                            )"
+                            :key="module.id"
+                            class="rounded-lg border border-border p-3"
+                        >
+                            <h3 class="text-sm font-medium text-foreground">
+                                Modul {{ module.sequence }} · {{ module.title }}
+                            </h3>
+                            <div class="mt-2 space-y-2">
+                                <article
+                                    v-for="assessment in module.assessments"
+                                    :key="assessment.id"
+                                    class="rounded-md bg-muted/40 p-2.5"
+                                >
+                                    <p
+                                        class="text-sm font-medium text-foreground"
+                                    >
+                                        {{ assessmentTitle(assessment) }}
+                                    </p>
+                                    <p
+                                        class="mt-1 text-xs leading-5 text-muted-foreground"
+                                    >
+                                        {{ assessmentDescription(assessment) }}
+                                    </p>
+                                    <Link
+                                        v-if="assessmentAction(assessment)"
+                                        :href="
+                                            assessmentAction(assessment)
+                                                ?.href ?? '#'
+                                        "
+                                        class="mt-2 inline-flex text-xs font-semibold text-primary underline underline-offset-4"
+                                        >{{
+                                            assessmentAction(assessment)?.label
+                                        }}</Link
+                                    >
+                                </article>
+                            </div>
+                        </div>
                     </div>
                 </section>
                 <LearningLessonNavigator

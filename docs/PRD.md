@@ -27,7 +27,7 @@ KGJ Academy adalah Learning Management System internal untuk onboarding, SOP, pr
 
 ## 4. Scope MVP
 
-1. Login, reset password, session authentication, dan RBAC.
+1. Login dengan password, verifikasi email kerja, reset password melalui email, session authentication, dan RBAC. Akun yang dibuat Admin maupun impor harus memverifikasi email kerja sebelum memasuki area terverifikasi. Autentikasi dua faktor serta passkey tidak termasuk scope internal saat ini.
 2. User, divisi, jabatan, cabang, manager, dan status akun.
 3. Course, module, lesson, resource, thumbnail, dan status Draft/Published/Archived.
 4. Learning path, prerequisite, enrollment, dan assignment dasar.
@@ -60,8 +60,9 @@ Contoh path Customer Service: Brand Introduction → Product Knowledge → Mater
 ## 6. Aturan bisnis yang tidak boleh berubah tanpa persetujuan pemilik proses
 
 - Pre-Test dan Post-Test adalah tipe assessment berbeda; record atau hasilnya tidak boleh saling menimpa.
-- Post-Test baru terbuka setelah semua lesson mandatory selesai.
-- Pre-Test wajib mengunci materi sampai disubmit; skor rendah tetap tidak menggagalkan course.
+- Admin dapat memilih modul mana yang memiliki Pre-Test atau Post-Test; test tidak wajib dibuat untuk setiap modul.
+- Pre-Test modul yang dibuat mengunci materi modul sampai disubmit; skor rendah tetap tidak menggagalkan course.
+- Post-Test modul yang dibuat baru terbuka setelah lesson mandatory modul selesai dan harus lulus sebelum modul berikutnya dapat dibuka.
 - Course dengan Post-Test selesai bila lesson mandatory selesai dan Post-Test lulus passing grade. Course tanpa Post-Test selesai saat lesson mandatory selesai.
 - Jumlah attempt dan retake diatur per assessment dalam rentang 1â€“3; kegagalan pada attempt terakhir memberi status `Not Passed`.
 - Course wajib dalam learning path berjalan berurutan: course wajib sebelumnya harus selesai sebelum course wajib berikutnya dapat dibuka. Course baru ditambahkan di akhir path; Admin mengubah urutan dengan aksi Naik/Turun. Soal assessment juga ditambahkan otomatis di akhir dan dapat dipindahkan dengan aksi yang sama.

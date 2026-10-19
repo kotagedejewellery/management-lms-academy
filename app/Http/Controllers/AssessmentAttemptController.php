@@ -9,6 +9,7 @@ use App\Models\AssessmentAttempt;
 use App\Models\AssessmentDraft;
 use App\Models\Course;
 use App\Models\Enrollment;
+use App\Support\ModuleLearningProgression;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
@@ -117,7 +118,9 @@ class AssessmentAttemptController extends Controller
             $attempt->update(['score' => $score, 'passed' => $passed, 'submitted_at' => now()]);
             $attempt->responses()->createMany($responses);
             $draft?->delete();
-            if ($passed === true && $course->requires_post_test) {
+            if ($assessment->module_id === null && $passed === true && $course->requires_post_test) {
+                $enrollment->update(['status' => 'completed', 'completed_at' => now()]);
+            } elseif ($assessment->module_id !== null && $passed === true && ! $course->requires_post_test && app(ModuleLearningProgression::class)->courseModulesCompleted($course, $enrollment)) {
                 $enrollment->update(['status' => 'completed', 'completed_at' => now()]);
             } elseif ($assessment->type === 'post_test' && $attempt->attempt_number >= $assessment->attempt_limit) {
                 $enrollment->update(['status' => 'not_passed', 'completed_at' => null]);
@@ -132,7 +135,7 @@ class AssessmentAttemptController extends Controller
                 'score' => $attempt->score,
                 'passed' => $attempt->passed,
             ]);
-            if ($assessment->type === 'post_test' && $attempt->passed === true && $course->certificate_enabled) {
+            if ($assessment->type === 'post_test' && $attempt->passed === true && $course->certificate_enabled && $enrollment->fresh()->status === 'completed') {
                 IssueCertificate::dispatch($enrollment->id)->afterCommit();
             }
         }
@@ -147,7 +150,14 @@ class AssessmentAttemptController extends Controller
         $attempts = $assessment->attempts()->where('enrollment_id', $enrollment->id)->whereNotNull('submitted_at')->orderByDesc('attempt_number')->get();
         abort_if($attempts->isEmpty(), 404);
 
-        $baseline = $course->assessments()->where('type', 'pre_test')->first()?->attempts()->where('enrollment_id', $enrollment->id)->whereNotNull('submitted_at')->oldest('attempt_number')->value('score');
+        $baseline = $course->assessments()
+            ->where('type', 'pre_test')
+            ->when($assessment->module_id, fn ($query, int $moduleId) => $query->where('module_id', $moduleId), fn ($query) => $query->whereNull('module_id'))
+            ->first()?->attempts()
+            ->where('enrollment_id', $enrollment->id)
+            ->whereNotNull('submitted_at')
+            ->oldest('attempt_number')
+            ->value('score');
         $bestScore = $attempts->max('score');
         $latest = $attempts->first();
         $latest->load(['responses.question.answers', 'responses.answer']);
@@ -171,9 +181,11 @@ class AssessmentAttemptController extends Controller
         ]);
     }
 
-    private function requiredLessonsCompleted(Course $course, Enrollment $enrollment): bool
+    private function requiredLessonsCompleted(Assessment $assessment, Course $course, Enrollment $enrollment): bool
     {
-        $required = $course->lessons()->where('is_required', true)->pluck('lessons.id');
+        $required = $assessment->module_id
+            ? $course->lessons()->where('module_id', $assessment->module_id)->where('is_required', true)->pluck('lessons.id')
+            : $course->lessons()->where('is_required', true)->pluck('lessons.id');
 
         return $required->isEmpty() || $enrollment->lessonProgress()->where('status', 'completed')->whereIn('lesson_id', $required)->count() === $required->count();
     }
@@ -231,8 +243,10 @@ class AssessmentAttemptController extends Controller
         if (! $assessment->questions()->exists()) {
             throw ValidationException::withMessages(['assessment' => 'Assessment belum siap karena belum memiliki soal.']);
         }
-        if ($assessment->type === 'post_test' && ! $this->requiredLessonsCompleted($course, $enrollment)) {
-            throw ValidationException::withMessages(['assessment' => 'Selesaikan seluruh lesson wajib sebelum membuka Post-Test.']);
+        if (! app(ModuleLearningProgression::class)->canStartAssessment($assessment, $course, $enrollment)) {
+            throw ValidationException::withMessages(['assessment' => $assessment->type === 'pre_test'
+                ? 'Selesaikan modul sebelumnya sebelum membuka Pre-Test ini.'
+                : 'Selesaikan seluruh lesson wajib sebelum membuka Post-Test.']);
         }
         if (! $activeAttempt && $assessment->attempts()->where('enrollment_id', $enrollment->id)->whereNotNull('submitted_at')->count() >= $assessment->attempt_limit) {
             throw ValidationException::withMessages(['assessment' => "Batas maksimal {$assessment->attempt_limit} percobaan telah tercapai."]);

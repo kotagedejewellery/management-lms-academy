@@ -7,16 +7,10 @@ import PasswordInput from '@/components/PasswordInput.vue';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { edit } from '@/routes/security';
-import type { Props as ManagePasskeysProps } from '@/components/ManagePasskeys.vue';
-import ManagePasskeys from '@/components/ManagePasskeys.vue';
-import type { Props as ManageTwoFactorProps } from '@/components/ManageTwoFactor.vue';
-import ManageTwoFactor from '@/components/ManageTwoFactor.vue';
 
-// oxfmt-ignore
 type Props = {
     passwordRules: string;
-} & ManagePasskeysProps &
-    ManageTwoFactorProps;
+};
 
 const props = defineProps<Props>();
 
@@ -43,36 +37,6 @@ defineOptions({
             title="Ubah kata sandi"
             description="Gunakan kata sandi panjang dan unik untuk menjaga keamanan akun."
         />
-
-        <section class="rounded-xl border border-border bg-card p-5 sm:p-6">
-            <h2 class="font-semibold text-foreground">Status keamanan</h2>
-            <dl class="mt-4 grid gap-4 text-sm sm:grid-cols-2">
-                <div>
-                    <dt class="text-muted-foreground">
-                        Autentikasi dua faktor
-                    </dt>
-                    <dd class="mt-1 font-medium text-foreground">
-                        {{
-                            !props.canManageTwoFactor
-                                ? 'Belum tersedia'
-                                : props.twoFactorEnabled
-                                  ? 'Aktif'
-                                  : 'Belum aktif'
-                        }}
-                    </dd>
-                </div>
-                <div>
-                    <dt class="text-muted-foreground">Passkey</dt>
-                    <dd class="mt-1 font-medium text-foreground">
-                        {{
-                            !props.canManagePasskeys
-                                ? 'Belum tersedia'
-                                : `${props.passkeys?.length ?? 0} terdaftar`
-                        }}
-                    </dd>
-                </div>
-            </dl>
-        </section>
 
         <Form
             v-bind="SecurityController.update.form()"
@@ -138,15 +102,4 @@ defineOptions({
             </div>
         </Form>
     </div>
-
-    <ManageTwoFactor
-        :canManageTwoFactor="canManageTwoFactor"
-        :requiresConfirmation="requiresConfirmation"
-        :twoFactorEnabled="twoFactorEnabled"
-    />
-
-    <ManagePasskeys
-        :canManagePasskeys="canManagePasskeys"
-        :passkeys="passkeys"
-    />
 </template>

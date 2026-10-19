@@ -19,12 +19,14 @@ class ReportEnrollmentQuery
             ->join('assessments', 'assessments.id', '=', 'assessment_attempts.assessment_id')
             ->whereColumn('assessment_attempts.enrollment_id', 'enrollments.id')
             ->where('assessments.type', 'post_test')
+            ->whereNull('assessments.module_id')
             ->whereNotNull('assessment_attempts.submitted_at');
         $firstPreScore = AssessmentAttempt::query()
             ->select('assessment_attempts.score')
             ->join('assessments', 'assessments.id', '=', 'assessment_attempts.assessment_id')
             ->whereColumn('assessment_attempts.enrollment_id', 'enrollments.id')
             ->where('assessments.type', 'pre_test')
+            ->whereNull('assessments.module_id')
             ->whereNotNull('assessment_attempts.submitted_at')
             ->orderBy('assessment_attempts.attempt_number')
             ->limit(1);
@@ -33,6 +35,7 @@ class ReportEnrollmentQuery
             ->join('assessments', 'assessments.id', '=', 'assessment_attempts.assessment_id')
             ->whereColumn('assessment_attempts.enrollment_id', 'enrollments.id')
             ->where('assessments.type', 'post_test')
+            ->whereNull('assessments.module_id')
             ->whereNotNull('assessment_attempts.submitted_at');
 
         return Enrollment::query()

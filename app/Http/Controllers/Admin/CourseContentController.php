@@ -9,6 +9,7 @@ use App\Models\Lesson;
 use App\Models\LessonProgress;
 use App\Models\LessonResource;
 use App\Models\User;
+use App\Support\ModuleLearningProgression;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -331,8 +332,14 @@ class CourseContentController extends Controller
             ->first();
         abort_unless($enrollment && $course->prerequisiteCompletedBy($user), 403);
 
-        $requiredPreTest = $course->assessments()->where('type', 'pre_test')->where('is_required', true)->first();
+        $requiredPreTest = $course->assessments()->whereNull('module_id')->where('type', 'pre_test')->where('is_required', true)->first();
         abort_unless(! $requiredPreTest || $requiredPreTest->attempts()->where('enrollment_id', $enrollment->id)->whereNotNull('submitted_at')->exists(), 403);
+
+        $lesson = $request->route('lesson');
+        if ($lesson instanceof Lesson) {
+            $module = $lesson->module;
+            abort_unless($module && app(ModuleLearningProgression::class)->canAccessLesson($course, $enrollment, $module), 403);
+        }
     }
 
     /** @return Collection<int, LessonResource> */

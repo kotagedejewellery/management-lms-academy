@@ -71,6 +71,34 @@ class AssessmentAttemptTest extends TestCase
         $this->assertDatabaseHas('enrollments', ['id' => $enrollment->id, 'status' => 'completed']);
     }
 
+    public function test_module_pre_test_blocks_material_and_post_test_blocks_the_next_module(): void
+    {
+        $user = User::factory()->create();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-MODULE-POST-001', 'title' => 'Materi modul', 'passing_grade' => 70, 'status' => 'published']);
+        $module = $course->modules()->create(['title' => 'Produk', 'sequence' => 1]);
+        $lesson = $module->lessons()->create(['title' => 'Lesson', 'type' => 'article', 'content' => 'Isi', 'is_required' => true, 'sequence' => 1]);
+        $nextModule = $course->modules()->create(['title' => 'Layanan', 'sequence' => 2]);
+        $nextLesson = $nextModule->lessons()->create(['title' => 'Lesson berikutnya', 'type' => 'article', 'content' => 'Isi', 'is_required' => true, 'sequence' => 1]);
+        $enrollment = $user->enrollments()->create(['course_id' => $course->id]);
+        $preTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'pre_test', 'is_required' => true, 'passing_grade' => 0, 'attempt_limit' => 3]);
+        $preQuestion = $preTest->questions()->create(['prompt' => 'Siap?', 'points' => 1, 'sequence' => 1]);
+        $preAnswer = $preQuestion->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
+        $assessment = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'post_test', 'is_required' => true, 'passing_grade' => 70, 'attempt_limit' => 3]);
+        $question = $assessment->questions()->create(['prompt' => 'Benar?', 'points' => 1, 'sequence' => 1]);
+        $correct = $question->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
+
+        $this->actingAs($user)->post(route('my-learning.lessons.complete', [$course, $lesson]))->assertSessionHasErrors('module');
+        $this->actingAs($user)->post(route('my-learning.assessments.submit', [$course, $preTest]), ['answers' => [$preQuestion->id => $preAnswer->id]])
+            ->assertRedirect(route('my-learning.assessments.result', [$course, $preTest]));
+        $this->actingAs($user)->post(route('my-learning.lessons.complete', [$course, $lesson]))->assertRedirect();
+        $this->actingAs($user)->post(route('my-learning.lessons.complete', [$course, $nextLesson]))->assertSessionHasErrors('module');
+        $this->actingAs($user)->post(route('my-learning.assessments.submit', [$course, $assessment]), ['answers' => [$question->id => $correct->id]])
+            ->assertRedirect(route('my-learning.assessments.result', [$course, $assessment]));
+        $this->actingAs($user)->post(route('my-learning.lessons.complete', [$course, $nextLesson]))->assertRedirect();
+        $this->assertDatabaseHas('enrollments', ['id' => $enrollment->id, 'status' => 'completed']);
+    }
+
     public function test_last_failed_post_test_attempt_marks_the_course_not_passed(): void
     {
         $user = User::factory()->create();

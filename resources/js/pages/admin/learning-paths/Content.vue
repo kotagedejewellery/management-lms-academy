@@ -184,7 +184,7 @@ defineOptions({
                 />
             </section>
             <section
-                class="rounded-xl bg-card p-5 shadow-sm ring-1 ring-border"
+                class="min-w-0 rounded-xl bg-card p-5 shadow-sm ring-1 ring-border"
             >
                 <h2 class="font-semibold text-foreground">Tambah course</h2>
                 <form class="mt-5 grid gap-4" @submit.prevent="addCourse">
@@ -195,7 +195,7 @@ defineOptions({
                             id="course-id"
                             v-model="form.course_id"
                             required
-                            class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+                            class="h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 text-sm"
                         >
                             <option value="">Pilih course</option>
                             <option

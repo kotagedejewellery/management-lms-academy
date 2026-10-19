@@ -17,8 +17,6 @@ class RecordAuditActivity
     private const EXCLUDED_ATTRIBUTES = [
         'password',
         'remember_token',
-        'two_factor_secret',
-        'two_factor_recovery_codes',
         'token',
         'api_token',
         'access_token',

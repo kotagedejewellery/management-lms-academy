@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CheckCircle2, FileText } from '@lucide/vue';
+import { CheckCircle2, FileText, LockKeyhole } from '@lucide/vue';
 
 type Lesson = {
     id: number;
@@ -8,7 +8,8 @@ type Lesson = {
     is_required: boolean;
     sequence: number;
     completed: boolean;
-    status: 'not_started' | 'in_progress' | 'completed';
+    locked: boolean;
+    status: 'not_started' | 'in_progress' | 'completed' | 'locked';
 };
 type Module = {
     id: number;
@@ -32,6 +33,7 @@ function statusLabel(status: Lesson['status']): string {
         not_started: 'Belum dimulai',
         in_progress: 'Sedang dipelajari',
         completed: 'Selesai',
+        locked: 'Terkunci',
     }[status];
 }
 </script>
@@ -58,18 +60,22 @@ function statusLabel(status: Lesson['status']): string {
                         :key="lesson.id"
                         type="button"
                         class="flex min-h-11 w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                        :disabled="lesson.locked"
                         :class="
                             lesson.id === activeLessonId
                                 ? 'bg-brand-gold/15 font-medium text-foreground'
-                                : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
+                                : lesson.locked
+                                  ? 'cursor-not-allowed text-muted-foreground/70'
+                                  : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
                         "
                         :aria-current="
                             lesson.id === activeLessonId ? 'step' : undefined
                         "
                         @click="$emit('select', lesson, module)"
                     >
+                        <LockKeyhole v-if="lesson.locked" class="size-4 shrink-0" />
                         <CheckCircle2
-                            v-if="lesson.completed"
+                            v-else-if="lesson.completed"
                             class="size-4 shrink-0 text-emerald-700"
                         />
                         <FileText v-else class="size-4 shrink-0" />
