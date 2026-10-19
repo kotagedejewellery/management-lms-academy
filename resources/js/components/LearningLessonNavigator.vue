@@ -73,7 +73,10 @@ function statusLabel(status: Lesson['status']): string {
                         "
                         @click="$emit('select', lesson, module)"
                     >
-                        <LockKeyhole v-if="lesson.locked" class="size-4 shrink-0" />
+                        <LockKeyhole
+                            v-if="lesson.locked"
+                            class="size-4 shrink-0"
+                        />
                         <CheckCircle2
                             v-else-if="lesson.completed"
                             class="size-4 shrink-0 text-emerald-700"

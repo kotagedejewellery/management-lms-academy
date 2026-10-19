@@ -355,7 +355,8 @@ function assessmentAction(
 function selectLesson(lesson: LessonEntry, scrollToPlayer = false): void {
     lessonError.value = '';
     if (lesson.locked) {
-        lessonError.value = 'Materi ini masih terkunci. Selesaikan evaluasi yang diwajibkan terlebih dahulu.';
+        lessonError.value =
+            'Materi ini masih terkunci. Selesaikan evaluasi yang diwajibkan terlebih dahulu.';
         return;
     }
     if (props.course.pre_test_required && !props.course.pre_test_completed) {
