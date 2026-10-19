@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -51,7 +52,7 @@ class AssessmentController extends Controller
         ]);
 
         $module = isset($data['module_id'])
-            ? CourseModule::query()->where('course_id', $course->id)->find($data['module_id'])
+            ? CourseModule::query()->where('course_id', $course->id)->whereKey($data['module_id'])->first()
             : null;
         if (isset($data['module_id']) && ! $module) {
             throw ValidationException::withMessages(['module_id' => 'Modul evaluasi tidak ditemukan pada course ini.']);

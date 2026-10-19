@@ -181,15 +181,6 @@ class AssessmentAttemptController extends Controller
         ]);
     }
 
-    private function requiredLessonsCompleted(Assessment $assessment, Course $course, Enrollment $enrollment): bool
-    {
-        $required = $assessment->module_id
-            ? $course->lessons()->where('module_id', $assessment->module_id)->where('is_required', true)->pluck('lessons.id')
-            : $course->lessons()->where('is_required', true)->pluck('lessons.id');
-
-        return $required->isEmpty() || $enrollment->lessonProgress()->where('status', 'completed')->whereIn('lesson_id', $required)->count() === $required->count();
-    }
-
     private function enrollment(Request $request, Course $course, bool $includeTerminal = false): Enrollment
     {
         $statuses = $includeTerminal ? ['active', 'completed', 'not_passed'] : ['active', 'completed'];

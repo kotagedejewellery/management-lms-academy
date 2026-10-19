@@ -263,16 +263,6 @@ class LearningController extends Controller
         return $enrollment;
     }
 
-    private function requiredLessonsCompleted(Course $course, Enrollment $enrollment): bool
-    {
-        $requiredLessonIds = $course->lessons()->where('is_required', true)->pluck('lessons.id');
-
-        return $requiredLessonIds->isEmpty() || $enrollment->lessonProgress()
-            ->where('status', 'completed')
-            ->whereIn('lesson_id', $requiredLessonIds)
-            ->count() === $requiredLessonIds->count();
-    }
-
     private function ensureLessonAvailable(Course $course, Enrollment $enrollment, Lesson $lesson): void
     {
         $coursePreTest = $course->assessments()->whereNull('module_id')->where('type', 'pre_test')->where('is_required', true)->first();
