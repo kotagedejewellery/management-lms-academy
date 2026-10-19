@@ -44,6 +44,8 @@ docker compose --env-file .env.production -f compose.production.yml exec -T web 
 
 `compose.production.yml` hanya menempatkan service `web` pada network `proxy`; PostgreSQL, Redis, PHP-FPM, worker, dan scheduler tidak memiliki port publik.
 
+PHP-FPM (`app`), `worker`, dan `scheduler` juga terhubung ke network Docker `outbound` tanpa port publik. Network ini hanya menyediakan akses keluar yang diperlukan untuk layanan eksternal seperti SMTP; PostgreSQL dan Redis tetap berada hanya pada network `internal`.
+
 ### Data katalog awal
 
 Deploy otomatis tidak menjalankan seeder katalog agar setiap push tidak mengubah data bisnis. Untuk memasukkan materi awal Customer Service satu kali setelah release berhasil, jalankan secara eksplisit di VPS:

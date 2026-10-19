@@ -16,6 +16,7 @@ services:
       internal:
         aliases:
           - kgj-lms-fpm
+      outbound:
     depends_on:
       db:
         condition: service_healthy
@@ -68,6 +69,7 @@ services:
       - storage_data:/var/www/html/storage
     networks:
       - internal
+      - outbound
     depends_on:
       db:
         condition: service_healthy
@@ -84,6 +86,7 @@ services:
       - storage_data:/var/www/html/storage
     networks:
       - internal
+      - outbound
     depends_on:
       db:
         condition: service_healthy
@@ -127,6 +130,7 @@ networks:
     name: ${TRAEFIK_NETWORK:-proxy}
   internal:
     internal: true
+  outbound:
 
 volumes:
   postgres_data:
