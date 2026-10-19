@@ -44,6 +44,18 @@ docker compose --env-file .env.production -f compose.production.yml exec -T web 
 
 `compose.production.yml` hanya menempatkan service `web` pada network `proxy`; PostgreSQL, Redis, PHP-FPM, worker, dan scheduler tidak memiliki port publik.
 
+### Data katalog awal
+
+Deploy otomatis tidak menjalankan seeder katalog agar setiap push tidak mengubah data bisnis. Untuk memasukkan materi awal Customer Service satu kali setelah release berhasil, jalankan secara eksplisit di VPS:
+
+```sh
+cd /opt/apps/sistem-lms-academy/management-lms-academy
+dc=(docker compose --env-file .env.production -f compose.production.yml)
+"${dc[@]}" exec -T app php artisan db:seed --class='Database\Seeders\CustomerServiceDealmakerSeeder' --force
+```
+
+Seeder hanya membuat course `CS-DEAL-001`, kategori `Layanan Pelanggan`, 10 modul, dan 20 lesson. Ia tidak membuat akun, struktur organisasi, assignment, atau enrollment. Seluruh record menggunakan `firstOrCreate`, sehingga menjalankan ulang tidak menduplikasi maupun menimpa perubahan Admin pada course tersebut.
+
 ## 3. Auto-deploy GitHub Actions
 
 Workflow CI akan men-deploy otomatis hanya ketika seluruh quality check lulus pada push ke `main`. Deploy pertama akan dilewati dengan aman sampai repository dan `.env.production` tersedia di VPS; setelah konfigurasi awal selesai, jalankan ulang workflow tersebut dari GitHub Actions atau lakukan push berikutnya. Tambahkan repository secrets berikut:

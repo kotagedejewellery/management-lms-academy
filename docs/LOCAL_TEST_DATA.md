@@ -18,6 +18,16 @@ Data demo mencakup organisasi, role/permission, sembilan akun, lima course denga
 
 Seeder juga menerbitkan dua sertifikat PDF contoh untuk course onboarding yang telah selesai. Sertifikat tersedia melalui menu **Sertifikat** bagi pemiliknya dan LMS Admin.
 
+## Materi Customer Service Dealmaker Mastery
+
+Setelah data demo dasar tersedia, jalankan perintah berikut untuk memasukkan satu course tambahan yang dapat langsung diuji pada learner:
+
+```powershell
+docker compose exec -T app php artisan db:seed --class=Database\Seeders\LocalCustomerServiceDealmakerSeeder --force
+```
+
+Seeder ini hanya membuat atau memperbarui course `CS-DEAL-001` beserta 10 modul dan 20 lesson (presentasi Canva serta video YouTube). Course diterbitkan, dikelola oleh `trainer@kgj.test`, dan ditugaskan ke `anisa@kgj.test`. Tautan Canva Modul 1–5 disimpan sebagai tautan baca (`/view`); pemilik Canva tetap harus mengatur izin tautan tersebut ke **view** agar dapat dibuka learner. Seeder tidak menghapus atau mengubah course lain.
+
 ## Environment lokal yang perlu diisi
 
 Salin `.env.example` menjadi `.env` bila belum ada. Untuk pengujian WhatsApp, isi `FONNTE_TOKEN` dengan token sandbox/akun uji Anda. Untuk pengujian impor user, ganti `IMPORT_INITIAL_PASSWORD` dengan password awal yang aman untuk data lokal. Jangan masukkan kedua nilai tersebut ke Git.
