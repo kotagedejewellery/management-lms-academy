@@ -11,6 +11,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 type Option = { id: number; name?: string; title?: string };
+type PublicationReadiness = {
+    ready: boolean;
+    checks: {
+        ready: boolean;
+        label: string;
+        message: string;
+        href: string | null;
+    }[];
+};
 type Course = {
     id: number;
     code: string;
@@ -37,6 +46,7 @@ const props = defineProps<{
     prerequisites: Option[];
     trainers: Option[];
     can_assign_trainers: boolean;
+    publication_readiness?: PublicationReadiness;
 }>();
 const form = useForm({
     category_id: props.course?.category?.id?.toString() ?? '',
@@ -64,7 +74,12 @@ const displayedThumbnail = computed(() =>
         : (thumbnailPreview.value ?? props.course?.thumbnail_url ?? null),
 );
 const leaveGuard = useUnsavedChangesGuard(() => form.isDirty);
-function submit(): void {
+function submitCourse(): void {
+    submitWithStatus(form.status);
+}
+function submitWithStatus(status: Course['status']): void {
+    form.status = status;
+
     if (props.course) {
         form.put(`/courses/${props.course.id}`, {
             forceFormData: true,
@@ -130,7 +145,7 @@ function setTrainerSelection(trainerId: number, selected: boolean): void {
             </div>
         </header>
 
-        <form class="grid gap-8" @submit.prevent="submit">
+        <form class="grid gap-8" @submit.prevent="submitCourse">
             <input v-model="form.passing_grade" type="hidden" />
             <FormErrorSummary :errors="form.errors" />
             <section class="rounded-xl border border-border bg-card p-5 sm:p-6">
@@ -425,26 +440,89 @@ function setTrainerSelection(trainerId: number, selected: boolean): void {
                             class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
                         >
                             <option value="draft">Draf</option>
-                            <option value="published">Dipublikasikan</option>
+                            <option
+                                v-if="form.status === 'published'"
+                                value="published"
+                            >
+                                Dipublikasikan
+                            </option>
                             <option value="archived">Diarsipkan</option>
                         </select>
                         <p class="text-xs leading-5 text-muted-foreground">
-                            Course evaluatif memerlukan Post-Test yang telah
-                            memiliki soal dan jawaban benar sebelum
-                            dipublikasikan.
+                            Semua Pre-Test dan Post-Test yang digunakan wajib
+                            memiliki soal dengan tepat satu jawaban benar.
                         </p>
                         <InputError :message="form.errors.status" />
                     </div>
                 </div>
+            </section>
+            <section
+                v-if="course && publication_readiness"
+                class="rounded-xl border border-border bg-card p-5 sm:p-6"
+            >
+                <div>
+                    <h2 class="font-semibold text-foreground">
+                        Kesiapan publikasi
+                    </h2>
+                    <p class="mt-1 text-sm leading-6 text-muted-foreground">
+                        Periksa seluruh item sebelum course diterbitkan.
+                    </p>
+                </div>
+                <ul class="mt-5 grid gap-3" aria-label="Checklist publikasi">
+                    <li
+                        v-for="check in publication_readiness.checks"
+                        :key="`${check.label}-${check.message}`"
+                        class="flex items-start justify-between gap-4 rounded-lg border p-3 text-sm"
+                        :class="
+                            check.ready
+                                ? 'border-emerald-200 bg-emerald-50/60'
+                                : 'border-destructive/30 bg-destructive/5'
+                        "
+                    >
+                        <div class="flex gap-3">
+                            <span aria-hidden="true">{{
+                                check.ready ? '✓' : '!'
+                            }}</span>
+                            <div>
+                                <p class="font-medium text-foreground">
+                                    {{ check.label }}
+                                </p>
+                                <p class="mt-1 text-muted-foreground">
+                                    {{ check.message }}
+                                </p>
+                            </div>
+                        </div>
+                        <Link
+                            v-if="!check.ready && check.href"
+                            :href="check.href"
+                            class="shrink-0 font-medium text-primary underline underline-offset-4"
+                            >Perbaiki</Link
+                        >
+                    </li>
+                </ul>
             </section>
             <div
                 class="flex flex-col-reverse justify-end gap-3 border-t border-border pt-5 sm:flex-row"
             >
                 <Button variant="outline" as-child
                     ><Link href="/courses">Batal</Link></Button
-                ><Button type="submit" :disabled="form.processing">{{
-                    form.processing ? 'Menyimpan…' : 'Simpan course'
-                }}</Button>
+                ><Button
+                    type="button"
+                    variant="outline"
+                    :disabled="form.processing"
+                    @click="submitWithStatus('draft')"
+                    >{{
+                        form.processing ? 'Menyimpan…' : 'Simpan sebagai draf'
+                    }}</Button
+                ><Button
+                    v-if="course"
+                    type="button"
+                    :disabled="form.processing || !publication_readiness?.ready"
+                    @click="submitWithStatus('published')"
+                    >{{
+                        form.processing ? 'Menerbitkan…' : 'Publikasikan course'
+                    }}</Button
+                >
             </div>
         </form>
         <ConfirmActionDialog

@@ -82,6 +82,7 @@ class CourseController extends Controller
         return Inertia::render('admin/courses/Edit', [
             ...$this->formOptions($course),
             'course' => $this->courseData($course->load(['category:id,name', 'division:id,name', 'position:id,name', 'prerequisite:id,title', 'trainers:id'])),
+            'publication_readiness' => $this->publicationReadiness($course),
         ]);
     }
 
@@ -96,13 +97,7 @@ class CourseController extends Controller
         $this->ensurePrerequisiteDoesNotLoop($course, $data['prerequisite_course_id'] ?? null);
 
         if ($data['status'] === 'published') {
-            if (! $course->lessons()->exists()) {
-                throw ValidationException::withMessages(['status' => 'Tambahkan minimal satu lesson sebelum menerbitkan course.']);
-            }
-            if (! $this->contentReady($course)) {
-                throw ValidationException::withMessages(['status' => 'Lengkapi sumber untuk setiap materi video atau PDF sebelum menerbitkan course.']);
-            }
-            if ($message = $this->assessmentReadinessError($course, $data['requires_post_test'])) {
+            if ($message = $this->publicationReadinessError($course, $data['requires_post_test'])) {
                 throw ValidationException::withMessages(['status' => $message]);
             }
         }
@@ -115,6 +110,15 @@ class CourseController extends Controller
             $this->removeThumbnail($course);
         }
         $this->syncTrainers($request, $course, $trainerIds);
+
+        Inertia::flash('toast', [
+            'type' => 'success',
+            'message' => match ($data['status']) {
+                'published' => 'Course berhasil dipublikasikan.',
+                'archived' => 'Course berhasil diarsipkan.',
+                default => 'Course berhasil disimpan sebagai draf.',
+            },
+        ]);
 
         return to_route('courses.content', $course);
     }
@@ -288,8 +292,21 @@ class CourseController extends Controller
         ];
     }
 
-    private function assessmentReadinessError(Course $course, bool $requiresCoursePostTest): ?string
+    /** @return array{ready: bool, checks: list<array{ready: bool, label: string, message: string, href: string|null}>} */
+    private function publicationReadiness(Course $course, ?bool $requiresCoursePostTest = null): array
     {
+        $requiresCoursePostTest ??= $course->requires_post_test;
+        $checks = [];
+        $checks[] = $course->lessons()->exists()
+            ? ['ready' => true, 'label' => 'Materi course', 'message' => 'Minimal satu materi tersedia.', 'href' => route('courses.content', $course)]
+            : ['ready' => false, 'label' => 'Materi course', 'message' => 'Tambahkan minimal satu materi sebelum menerbitkan course.', 'href' => route('courses.content', $course)];
+
+        if ($checks[0]['ready']) {
+            $checks[] = $this->contentReady($course)
+                ? ['ready' => true, 'label' => 'Sumber materi', 'message' => 'Setiap materi memiliki sumber yang valid.', 'href' => route('courses.content', $course)]
+                : ['ready' => false, 'label' => 'Sumber materi', 'message' => 'Lengkapi sumber untuk setiap materi video atau PDF sebelum menerbitkan course.', 'href' => route('courses.content', $course)];
+        }
+
         $assessments = $course->assessments()
             ->with(['module:id,title', 'questions.answers'])
             ->where(function ($query): void {
@@ -300,22 +317,64 @@ class CourseController extends Controller
             ->get();
 
         if ($requiresCoursePostTest && ! $assessments->contains(fn (Assessment $assessment): bool => $assessment->module_id === null && $assessment->type === 'post_test')) {
-            return 'Tambahkan Post-Test course beserta soal dan jawaban benar sebelum menerbitkan course evaluatif.';
+            $checks[] = [
+                'ready' => false,
+                'label' => 'Post-Test course',
+                'message' => 'Tambahkan Post-Test course beserta soal dan jawaban benar sebelum menerbitkan course evaluatif.',
+                'href' => route('courses.assessments.index', $course),
+            ];
         }
 
         foreach ($assessments as $assessment) {
-            $label = $assessment->module_id
-                ? ucfirst(str_replace('_', '-', $assessment->type)).' modul '.$assessment->module?->title
-                : ucfirst(str_replace('_', '-', $assessment->type)).' course';
+            $label = $this->assessmentLabel($assessment);
+            $href = route('courses.assessments.index', array_filter([
+                'course' => $course,
+                'module' => $assessment->module_id,
+            ]));
             if ($assessment->questions->isEmpty()) {
-                return "{$label} belum memiliki soal.";
+                $checks[] = ['ready' => false, 'label' => $label, 'message' => "{$label} belum memiliki soal.", 'href' => $href];
+
+                continue;
             }
-            if ($assessment->questions->contains(fn ($question): bool => $question->answers->where('is_correct', true)->count() !== 1)) {
-                return "Setiap soal pada {$label} harus memiliki tepat satu jawaban benar.";
+            if ($question = $assessment->questions->first(fn ($question): bool => $question->answers->where('is_correct', true)->count() !== 1)) {
+                $checks[] = [
+                    'ready' => false,
+                    'label' => $label,
+                    'message' => "Soal {$question->sequence} pada {$label} harus memiliki tepat satu jawaban benar.",
+                    'href' => route('courses.assessments.index', array_filter([
+                        'course' => $course,
+                        'module' => $assessment->module_id,
+                        'question' => $question->id,
+                    ])),
+                ];
+
+                continue;
             }
+
+            $checks[] = ['ready' => true, 'label' => $label, 'message' => "{$label} siap dipublikasikan.", 'href' => $href];
         }
 
-        return null;
+        return [
+            'ready' => collect($checks)->every(fn (array $check): bool => $check['ready']),
+            'checks' => $checks,
+        ];
+    }
+
+    private function publicationReadinessError(Course $course, bool $requiresCoursePostTest): ?string
+    {
+        $check = collect($this->publicationReadiness($course, $requiresCoursePostTest)['checks'])
+            ->firstWhere('ready', false);
+
+        return $check['message'] ?? null;
+    }
+
+    private function assessmentLabel(Assessment $assessment): string
+    {
+        $typeLabel = $assessment->type === 'pre_test' ? 'Pre-Test' : 'Post-Test';
+
+        return $assessment->module_id
+            ? $typeLabel.' modul '.$assessment->module?->title
+            : $typeLabel.' course';
     }
 
     private function contentReady(Course $course): bool

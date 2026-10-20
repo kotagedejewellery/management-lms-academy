@@ -13,6 +13,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
 class CourseManagementTest extends TestCase
@@ -359,7 +360,61 @@ class CourseManagementTest extends TestCase
         $payload['requires_post_test'] = false;
 
         $this->actingAs($admin)->put(route('courses.update', $course), $payload)
-            ->assertSessionHasErrors('status');
+            ->assertSessionHasErrors([
+                'status' => 'Post-Test modul Modul belum memiliki soal.',
+            ]);
+    }
+
+    public function test_publish_error_identifies_the_question_without_an_answer_key(): void
+    {
+        $admin = $this->courseAdmin();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-ANSWER-KEY-001', 'title' => 'Kunci jawaban', 'passing_grade' => 70, 'status' => 'draft']);
+        $course->trainers()->attach($admin);
+        $module = $course->modules()->create(['title' => 'Product Knowledge', 'sequence' => 1]);
+        $module->lessons()->create(['title' => 'Lesson', 'type' => 'article', 'content' => 'Isi', 'is_required' => true, 'sequence' => 1]);
+        $assessment = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'pre_test', 'is_required' => true, 'passing_grade' => 0, 'attempt_limit' => 1]);
+        $question = $assessment->questions()->create(['prompt' => 'Pilih jawaban benar.', 'points' => 1, 'sequence' => 1]);
+        $question->answers()->createMany([
+            ['content' => 'Pilihan satu', 'is_correct' => false, 'sequence' => 1],
+            ['content' => 'Pilihan dua', 'is_correct' => false, 'sequence' => 2],
+        ]);
+
+        $payload = $this->publishedCoursePayload($category, $course);
+        $payload['requires_post_test'] = false;
+
+        $this->actingAs($admin)->put(route('courses.update', $course), $payload)
+            ->assertSessionHasErrors([
+                'status' => 'Soal 1 pada Pre-Test modul Product Knowledge harus memiliki tepat satu jawaban benar.',
+            ]);
+    }
+
+    public function test_course_edit_exposes_a_linked_publication_checklist(): void
+    {
+        $admin = $this->courseAdmin();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-CHECKLIST-001', 'title' => 'Checklist', 'passing_grade' => 70, 'status' => 'draft']);
+        $course->trainers()->attach($admin);
+        $module = $course->modules()->create(['title' => 'Product Knowledge', 'sequence' => 1]);
+        $module->lessons()->create(['title' => 'Lesson', 'type' => 'article', 'content' => 'Isi', 'is_required' => true, 'sequence' => 1]);
+        $assessment = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'pre_test', 'is_required' => true, 'passing_grade' => 0, 'attempt_limit' => 1]);
+        $question = $assessment->questions()->create(['prompt' => 'Pilih jawaban benar.', 'points' => 1, 'sequence' => 1]);
+        $question->answers()->createMany([
+            ['content' => 'Pilihan satu', 'is_correct' => false, 'sequence' => 1],
+            ['content' => 'Pilihan dua', 'is_correct' => false, 'sequence' => 2],
+        ]);
+
+        $this->actingAs($admin)->get(route('courses.edit', $course))
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('admin/courses/Edit')
+                ->where('publication_readiness.ready', false)
+                ->has('publication_readiness.checks', 3)
+                ->where('publication_readiness.checks.2.message', 'Soal 1 pada Pre-Test modul Product Knowledge harus memiliki tepat satu jawaban benar.')
+                ->where('publication_readiness.checks.2.href', route('courses.assessments.index', [
+                    'course' => $course,
+                    'module' => $module,
+                    'question' => $question,
+                ])));
     }
 
     public function test_course_cannot_be_published_with_an_incomplete_required_course_pre_test(): void

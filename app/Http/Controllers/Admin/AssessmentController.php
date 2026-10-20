@@ -28,14 +28,16 @@ class AssessmentController extends Controller
             ->where('course_id', $course->id)
             ->when($module, fn ($query) => $query->where('module_id', $module->id), fn ($query) => $query->whereNull('module_id'))
             ->with('questions.answers')
+            ->withCount('attempts')
             ->get()
             ->keyBy('type');
 
         return Inertia::render('admin/courses/Assessments', [
-            'course' => $course->only(['id', 'code', 'title']),
+            'course' => $course->only(['id', 'code', 'title', 'status']),
             'modules' => $course->modules->map->only(['id', 'title', 'sequence'])->values(),
             'selected_module' => $module?->only(['id', 'title']),
-            'assessments' => collect(['pre_test', 'post_test'])->mapWithKeys(fn (string $type) => [$type => $this->assessmentData($assessments->get($type))]),
+            'selected_question_id' => $request->integer('question') ?: null,
+            'assessments' => collect(['pre_test', 'post_test'])->mapWithKeys(fn (string $type) => [$type => $this->assessmentData($assessments->get($type), $course)]),
         ]);
     }
 
@@ -45,7 +47,7 @@ class AssessmentController extends Controller
         $this->ensureEditable($course);
         $data = $request->validate([
             'type' => ['required', Rule::in(['pre_test', 'post_test'])],
-            'passing_grade' => ['required', 'integer', 'min:0', 'max:100'],
+            'passing_grade' => ['nullable', 'integer', 'min:0', 'max:100'],
             'attempt_limit' => ['nullable', 'integer', 'min:1', 'max:3'],
             'is_required' => ['nullable', 'boolean'],
             'time_limit_minutes' => ['nullable', 'integer', 'min:1', 'max:180'],
@@ -70,10 +72,15 @@ class AssessmentController extends Controller
         $assessment = $course->assessments()->create([
             ...$data,
             'module_id' => $module?->id,
-            'attempt_limit' => $data['attempt_limit'] ?? 3,
+            'passing_grade' => $data['type'] === 'pre_test' ? 0 : $data['passing_grade'],
+            'attempt_limit' => $data['type'] === 'pre_test' ? 1 : ($data['attempt_limit'] ?? 3),
             'is_required' => $module !== null || ($data['type'] === 'pre_test' && ($data['is_required'] ?? false)),
         ]);
         $this->syncCoursePassingGrade($course, $assessment);
+        Inertia::flash('toast', [
+            'type' => 'success',
+            'message' => ($assessment->type === 'pre_test' ? 'Pre-Test' : 'Post-Test').' berhasil dibuat.',
+        ]);
 
         return to_route('courses.assessments.index', ['course' => $course, 'module' => $module?->id]);
     }
@@ -85,7 +92,7 @@ class AssessmentController extends Controller
         $this->ensureEditable($course, $assessment);
 
         $data = $request->validate([
-            'passing_grade' => ['required', 'integer', 'min:0', 'max:100'],
+            'passing_grade' => ['nullable', 'integer', 'min:0', 'max:100'],
             'attempt_limit' => ['sometimes', 'integer', 'min:1', 'max:3'],
             'is_required' => ['sometimes', 'boolean'],
             'time_limit_minutes' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:180'],
@@ -93,8 +100,18 @@ class AssessmentController extends Controller
         if ($assessment->module_id !== null || $assessment->type !== 'pre_test') {
             unset($data['is_required']);
         }
+        if ($assessment->type === 'pre_test') {
+            $data['passing_grade'] = 0;
+            $data['attempt_limit'] = 1;
+        } else {
+            $data['passing_grade'] ??= $assessment->passing_grade;
+        }
         $assessment->update($data);
         $this->syncCoursePassingGrade($course, $assessment);
+        Inertia::flash('toast', [
+            'type' => 'success',
+            'message' => 'Pengaturan '.($assessment->type === 'pre_test' ? 'Pre-Test' : 'Post-Test').' berhasil disimpan.',
+        ]);
 
         return to_route('courses.assessments.index', ['course' => $course, 'module' => $assessment->module_id]);
     }
@@ -142,6 +159,42 @@ class AssessmentController extends Controller
             $lockedQuestion->delete();
             $assessment->questions()->where('sequence', '>', $sequence)->decrement('sequence');
         });
+
+        return to_route('courses.assessments.index', ['course' => $course, 'module' => $assessment->module_id]);
+    }
+
+    public function updateQuestion(Request $request, Course $course, Assessment $assessment, Question $question): RedirectResponse
+    {
+        $this->authorizeCourses($request);
+        abort_unless($assessment->course_id === $course->id && $question->assessment_id === $assessment->id, 404);
+        $this->ensureEditable($course, $assessment);
+        $data = $request->validate([
+            'prompt' => ['required', 'string', 'max:5000'],
+            'explanation' => ['nullable', 'string', 'max:5000'],
+            'points' => ['required', 'integer', 'min:1', 'max:100'],
+            'answers' => ['required', 'array', 'min:2', 'max:6'],
+            'answers.*' => ['required', 'string', 'max:2000'],
+            'correct_answer' => ['required', 'integer', 'min:0'],
+        ]);
+        abort_unless(array_key_exists($data['correct_answer'], $data['answers']), 422);
+
+        DB::transaction(function () use ($question, $data): void {
+            $lockedQuestion = Question::query()->lockForUpdate()->findOrFail($question->id);
+            $lockedQuestion->update([
+                'prompt' => $data['prompt'],
+                'explanation' => $data['explanation'] ?? null,
+                'points' => $data['points'],
+            ]);
+            $lockedQuestion->answers()->delete();
+            foreach ($data['answers'] as $sequence => $content) {
+                $lockedQuestion->answers()->create([
+                    'content' => $content,
+                    'sequence' => $sequence + 1,
+                    'is_correct' => $sequence === $data['correct_answer'],
+                ]);
+            }
+        });
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Soal berhasil diperbarui.']);
 
         return to_route('courses.assessments.index', ['course' => $course, 'module' => $assessment->module_id]);
     }
@@ -194,12 +247,26 @@ class AssessmentController extends Controller
     }
 
     /** @return array<string, mixed>|null */
-    private function assessmentData(?Assessment $assessment): ?array
+    private function assessmentData(?Assessment $assessment, Course $course): ?array
     {
-        return $assessment ? [
+        if (! $assessment) {
+            return null;
+        }
+
+        $attemptsCount = $assessment->attempts_count;
+        $editable = $course->status === 'draft' && $attemptsCount === 0;
+
+        return [
             ...$assessment->only(['id', 'module_id', 'type', 'is_required', 'passing_grade', 'attempt_limit', 'time_limit_minutes']),
+            'attempts_count' => $attemptsCount,
+            'editable' => $editable,
+            'lock_reason' => $editable
+                ? null
+                : ($course->status !== 'draft'
+                    ? 'Assessment terkunci karena course tidak berstatus Draf.'
+                    : 'Assessment terkunci karena sudah memiliki riwayat pengerjaan learner.'),
             'questions' => $assessment->questions->map(fn ($question) => [...$question->only(['id', 'prompt', 'explanation', 'points', 'sequence']), 'answers' => $question->answers->map->only(['id', 'content', 'is_correct', 'sequence'])]),
-        ] : null;
+        ];
     }
 
     private function syncCoursePassingGrade(Course $course, Assessment $assessment): void

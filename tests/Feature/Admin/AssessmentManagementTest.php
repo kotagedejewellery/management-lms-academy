@@ -36,7 +36,7 @@ class AssessmentManagementTest extends TestCase
         $this->actingAs($admin)->patch(route('courses.assessments.update', [$course, $assessment]), ['passing_grade' => 101])->assertSessionHasErrors('passing_grade');
     }
 
-    public function test_course_admin_can_configure_pre_test_requirement_and_attempt_limit_up_to_three(): void
+    public function test_pre_test_is_always_a_single_attempt_baseline(): void
     {
         $admin = $this->courseAdmin();
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
@@ -45,19 +45,30 @@ class AssessmentManagementTest extends TestCase
 
         $this->actingAs($admin)->post(route('courses.assessments.store', $course), [
             'type' => 'pre_test',
-            'passing_grade' => 0,
-            'attempt_limit' => 2,
+            'passing_grade' => 80,
+            'attempt_limit' => 3,
             'is_required' => true,
         ])->assertRedirect(route('courses.assessments.index', $course));
 
         $assessment = Assessment::query()->sole();
-        $this->assertDatabaseHas('assessments', ['id' => $assessment->id, 'attempt_limit' => 2, 'is_required' => true]);
+        $this->assertDatabaseHas('assessments', [
+            'id' => $assessment->id,
+            'passing_grade' => 0,
+            'attempt_limit' => 1,
+            'is_required' => true,
+        ]);
 
         $this->actingAs($admin)->patch(route('courses.assessments.update', [$course, $assessment]), [
-            'passing_grade' => 0,
-            'attempt_limit' => 4,
+            'passing_grade' => 100,
+            'attempt_limit' => 3,
             'is_required' => true,
-        ])->assertSessionHasErrors('attempt_limit');
+        ])->assertRedirect(route('courses.assessments.index', $course));
+
+        $this->assertDatabaseHas('assessments', [
+            'id' => $assessment->id,
+            'passing_grade' => 0,
+            'attempt_limit' => 1,
+        ]);
     }
 
     public function test_course_admin_can_create_optional_pre_and_post_tests_for_a_module(): void
@@ -113,12 +124,51 @@ class AssessmentManagementTest extends TestCase
         $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-HISTORY-EVAL-001', 'title' => 'Evaluasi bersejarah', 'passing_grade' => 70, 'status' => 'draft']);
         $course->trainers()->attach($admin);
         $assessment = Assessment::query()->create(['course_id' => $course->id, 'type' => 'pre_test', 'passing_grade' => 0, 'attempt_limit' => 3]);
+        $question = $assessment->questions()->create(['prompt' => 'Pertanyaan awal', 'points' => 1, 'sequence' => 1]);
+        $question->answers()->createMany([
+            ['content' => 'Ya', 'is_correct' => true, 'sequence' => 1],
+            ['content' => 'Tidak', 'is_correct' => false, 'sequence' => 2],
+        ]);
         $assessment->attempts()->create(['enrollment_id' => User::factory()->create()->enrollments()->create(['course_id' => $course->id])->id, 'attempt_number' => 1, 'score' => 100, 'submitted_at' => now()]);
 
         $this->actingAs($admin)->patch(route('courses.assessments.update', [$course, $assessment]), ['passing_grade' => 10])->assertStatus(422);
         $this->actingAs($admin)->post(route('courses.assessments.questions.store', [$course, $assessment]), [
             'prompt' => 'Pertanyaan baru', 'points' => 1, 'answers' => ['Ya', 'Tidak'], 'correct_answer' => 0,
         ])->assertStatus(422);
+        $this->actingAs($admin)->put(route('courses.assessments.questions.update', [$course, $assessment, $question]), [
+            'prompt' => 'Pertanyaan diubah', 'points' => 1, 'answers' => ['Ya', 'Tidak'], 'correct_answer' => 0,
+        ])->assertStatus(422);
+    }
+
+    public function test_course_admin_can_edit_a_draft_question_and_its_answer_key(): void
+    {
+        $admin = $this->courseAdmin();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-EDIT-QUESTION-001', 'title' => 'Edit soal', 'passing_grade' => 70]);
+        $course->trainers()->attach($admin);
+        $assessment = Assessment::query()->create(['course_id' => $course->id, 'type' => 'post_test', 'passing_grade' => 70, 'attempt_limit' => 3]);
+        $question = $assessment->questions()->create(['prompt' => 'Jawaban awal?', 'points' => 1, 'sequence' => 1]);
+        $question->answers()->createMany([
+            ['content' => 'Pilihan awal benar', 'is_correct' => true, 'sequence' => 1],
+            ['content' => 'Pilihan awal salah', 'is_correct' => false, 'sequence' => 2],
+        ]);
+
+        $this->actingAs($admin)->put(route('courses.assessments.questions.update', [$course, $assessment, $question]), [
+            'prompt' => 'Jawaban yang diperbarui?',
+            'explanation' => 'Pembahasan baru.',
+            'points' => 5,
+            'answers' => ['Pilihan pertama', 'Pilihan kedua'],
+            'correct_answer' => 1,
+        ])->assertRedirect(route('courses.assessments.index', $course));
+
+        $this->assertDatabaseHas('questions', [
+            'id' => $question->id,
+            'prompt' => 'Jawaban yang diperbarui?',
+            'explanation' => 'Pembahasan baru.',
+            'points' => 5,
+        ]);
+        $this->assertDatabaseHas('answers', ['question_id' => $question->id, 'content' => 'Pilihan kedua', 'is_correct' => true]);
+        $this->assertDatabaseHas('answers', ['question_id' => $question->id, 'content' => 'Pilihan pertama', 'is_correct' => false]);
     }
 
     private function courseAdmin(): User

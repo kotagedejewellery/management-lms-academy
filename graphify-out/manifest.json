@@ -1,14 +1,14 @@
 {
   "DESIGN.md": {
-    "mtime": 1792143329.9839003,
-    "seen": 1792143687.5883524,
-    "ast_hash": "18755374902093022f8ba6d7cc40fb1c",
+    "mtime": 1792483041.8242211,
+    "seen": 1792483732.8213592,
+    "ast_hash": "53a443b14315872f31862f20e12aa959",
     "semantic_hash": ""
   },
   "PRODUCT.md": {
-    "mtime": 1792459937.7277393,
-    "seen": 1792460232.9349527,
-    "ast_hash": "b5c305279c1d7ae52fda45d993cb364a",
+    "mtime": 1792483041.0506928,
+    "seen": 1792483732.821363,
+    "ast_hash": "ea27d91fe51061ee3778cd9a7d0431b6",
     "semantic_hash": ""
   },
   "docker-compose.yml": {
@@ -24,9 +24,9 @@
     "semantic_hash": ""
   },
   "docs/PRD.md": {
-    "mtime": 1792459937.0232472,
-    "seen": 1792460232.934984,
-    "ast_hash": "1dd7bdad66419dadb0b320728a8fba2e",
+    "mtime": 1792483070.0834842,
+    "seen": 1792483732.8213775,
+    "ast_hash": "281295e0c5719711ff5f48baeaf7d5b2",
     "semantic_hash": ""
   },
   "docs/SYSTEM_ARCHITECTURE.md": {
@@ -1302,9 +1302,9 @@
     "semantic_hash": ""
   },
   "resources/js/lib/flashToast.ts": {
-    "mtime": 1792143225.5623646,
-    "seen": 1792143687.5881603,
-    "ast_hash": "7932673b7f80fa6a8017e309f791279b",
+    "mtime": 1792482722.6726148,
+    "seen": 1792483732.8211553,
+    "ast_hash": "54e8b9374bf8b9555803882536bfec9a",
     "semantic_hash": ""
   },
   "resources/js/lib/utils.ts": {
@@ -1422,9 +1422,9 @@
     "semantic_hash": ""
   },
   "routes/web.php": {
-    "mtime": 1792459869.381671,
-    "seen": 1792460232.934767,
-    "ast_hash": "9fdb039b4e23a05f9b9a41494ef43867",
+    "mtime": 1792482001.4751627,
+    "seen": 1792483732.8212705,
+    "ast_hash": "32e387e8e78c7700efc6b20d46933074",
     "semantic_hash": ""
   },
   "tests/Feature/Auth/AuthenticationTest.php": {
@@ -1734,15 +1734,15 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/CourseController.php": {
-    "mtime": 1792465420.4195504,
-    "seen": 1792465769.168905,
-    "ast_hash": "13fc2d75c3a1de93cb2c5a4d7d0eff27",
+    "mtime": 1792484066.297232,
+    "seen": 1792484250.069051,
+    "ast_hash": "b66000249863aa51ed230991582a1cdf",
     "semantic_hash": ""
   },
   "tests/Feature/Admin/CourseManagementTest.php": {
-    "mtime": 1792465799.443686,
-    "seen": 1792465920.4870377,
-    "ast_hash": "f293b691b00300cc1be543b92ac314fc",
+    "mtime": 1792483121.1342554,
+    "seen": 1792483732.8212786,
+    "ast_hash": "7c8c699b7f296b406975204a44cd17cb",
     "semantic_hash": ""
   },
   "resources/js/pages/admin/courses/Categories.vue": {
@@ -1764,9 +1764,9 @@
     "semantic_hash": ""
   },
   "resources/js/pages/admin/courses/Form.vue": {
-    "mtime": 1792143106.7875996,
-    "seen": 1792143687.588181,
-    "ast_hash": "3fe97753c9022e8eac332c52b358d22a",
+    "mtime": 1792483323.0793052,
+    "seen": 1792483732.8211792,
+    "ast_hash": "9db2f4ba3a995f9f0a091ba10b260c31",
     "semantic_hash": ""
   },
   "resources/js/pages/admin/courses/Content.vue": {
@@ -1956,27 +1956,27 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/AssessmentController.php": {
-    "mtime": 1792465183.372535,
-    "seen": 1792465769.1688938,
-    "ast_hash": "1e6e4c9bfc76e24364dd13e219a7223e",
+    "mtime": 1792482997.8269894,
+    "seen": 1792483732.820529,
+    "ast_hash": "c278dba8fdf4ec5486ef20d09ab1eead",
     "semantic_hash": ""
   },
   "resources/js/pages/admin/courses/Assessments.vue": {
-    "mtime": 1792395338.0780804,
-    "seen": 1792397255.5254335,
-    "ast_hash": "a5e494faf0bba6d33a23deb5681ea68b",
+    "mtime": 1792482894.8891082,
+    "seen": 1792483732.8211684,
+    "ast_hash": "8eeb5d9950de4bb696a74a779795e0bc",
     "semantic_hash": ""
   },
   "app/Http/Controllers/AssessmentAttemptController.php": {
-    "mtime": 1792465182.794792,
-    "seen": 1792465769.1689253,
-    "ast_hash": "a9d28b6f5ef82e3e24361506dbf842e7",
+    "mtime": 1792484053.8507214,
+    "seen": 1792484250.0690675,
+    "ast_hash": "5016534e7dcbeacbf0628b916a3b41f9",
     "semantic_hash": ""
   },
   "tests/Feature/AssessmentAttemptTest.php": {
-    "mtime": 1792465070.8280385,
-    "seen": 1792465769.1698058,
-    "ast_hash": "4a55304be0430f29f4848d93faa6617c",
+    "mtime": 1792483988.5927587,
+    "seen": 1792484250.0697188,
+    "ast_hash": "b1faf9fec83aad3348c9a2e511d1741f",
     "semantic_hash": ""
   },
   "resources/js/pages/learning/Assessment.vue": {
@@ -2292,9 +2292,9 @@
     "semantic_hash": ""
   },
   "tests/Feature/Admin/AssessmentManagementTest.php": {
-    "mtime": 1792465071.7191043,
-    "seen": 1792465769.1697838,
-    "ast_hash": "92a473be251b9b84c9d259bf20437531",
+    "mtime": 1792483092.2470813,
+    "seen": 1792483732.8212767,
+    "ast_hash": "d140cc62b3295428fa300465648840c1",
     "semantic_hash": ""
   },
   "scripts/patch-wayfinder.mjs": {
@@ -2304,9 +2304,9 @@
     "semantic_hash": ""
   },
   "docs/DEPLOYMENT_RUNBOOK.md": {
-    "mtime": 1792390678.1977808,
-    "seen": 1792391191.8818805,
-    "ast_hash": "a7ab33f0f77d4e6e7bec4872d7322260",
+    "mtime": 1792487333.3084738,
+    "seen": 1792487697.9130712,
+    "ast_hash": "434e7758586ea83a465feb44ee50b8f2",
     "semantic_hash": ""
   },
   "docs/PERFORMANCE_BASELINE.md": {
@@ -2652,15 +2652,15 @@
     "semantic_hash": ""
   },
   "database/seeders/CustomerServiceDealmakerSeeder.php": {
-    "mtime": 1792376738.0084586,
-    "seen": 1792376874.5948997,
-    "ast_hash": "4179b7b6ea6dc6fc1c7c7da575d81e23",
+    "mtime": 1792487648.4428756,
+    "seen": 1792487697.9124517,
+    "ast_hash": "03ff4d99e4c69bfeeadc8807d19f3549",
     "semantic_hash": ""
   },
   "tests/Feature/CustomerServiceDealmakerSeederTest.php": {
-    "mtime": 1792376739.557935,
-    "seen": 1792376874.5953357,
-    "ast_hash": "6e5bafb43ab84bbc8ec076b0e762e09c",
+    "mtime": 1792487408.8000076,
+    "seen": 1792487697.9130023,
+    "ast_hash": "bb3414c8d1d554100683721345b19d54",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_19_000002_remove_retired_two_factor_and_passkey_storage.php": {
@@ -2721,6 +2721,12 @@
     "mtime": 1792463485.037852,
     "seen": 1792463767.4109087,
     "ast_hash": "ed3b5920db6f0aac1255563fce035262",
+    "semantic_hash": ""
+  },
+  "docs/ASSESSMENT_SEEDER_SOURCE_AUDIT.md": {
+    "mtime": 1792487320.487764,
+    "seen": 1792487697.9130673,
+    "ast_hash": "2c2df38f26ffc45c5a5fc81efb01dc67",
     "semantic_hash": ""
   }
 }

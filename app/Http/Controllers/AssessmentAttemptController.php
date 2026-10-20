@@ -36,7 +36,8 @@ class AssessmentAttemptController extends Controller
         return Inertia::render('learning/Assessment', [
             'course' => $course->only(['id', 'title']),
             'assessment' => [
-                ...$assessment->only(['id', 'type', 'attempt_limit', 'time_limit_minutes']),
+                ...$assessment->only(['id', 'type', 'time_limit_minutes']),
+                'attempt_limit' => $this->attemptLimit($assessment),
                 'attempts_used' => $attempts->count(),
                 'best_score' => $attempts->max('score'),
                 'attempt_number' => $activeAttempt->attempt_number,
@@ -165,7 +166,10 @@ class AssessmentAttemptController extends Controller
         return Inertia::render('learning/AssessmentResult', [
             'course' => $course->only(['id', 'title']),
             'enrollment_status' => $enrollment->status,
-            'assessment' => $assessment->only(['id', 'type', 'passing_grade', 'attempt_limit']),
+            'assessment' => [
+                ...$assessment->only(['id', 'type', 'passing_grade']),
+                'attempt_limit' => $this->attemptLimit($assessment),
+            ],
             'latest' => [...$latest->only(['attempt_number', 'score', 'passed', 'submitted_at']), 'duration_seconds' => $latest->started_at ? (int) $latest->started_at->diffInSeconds($latest->submitted_at) : null],
             'best_score' => $bestScore,
             'attempts_used' => $attempts->count(),
@@ -239,9 +243,15 @@ class AssessmentAttemptController extends Controller
                 ? 'Selesaikan modul sebelumnya sebelum membuka Pre-Test ini.'
                 : 'Selesaikan seluruh lesson wajib sebelum membuka Post-Test.']);
         }
-        if (! $activeAttempt && $assessment->attempts()->where('enrollment_id', $enrollment->id)->whereNotNull('submitted_at')->count() >= $assessment->attempt_limit) {
-            throw ValidationException::withMessages(['assessment' => "Batas maksimal {$assessment->attempt_limit} percobaan telah tercapai."]);
+        $attemptLimit = $this->attemptLimit($assessment);
+        if (! $activeAttempt && $assessment->attempts()->where('enrollment_id', $enrollment->id)->whereNotNull('submitted_at')->count() >= $attemptLimit) {
+            throw ValidationException::withMessages(['assessment' => "Batas maksimal {$attemptLimit} percobaan telah tercapai."]);
         }
+    }
+
+    private function attemptLimit(Assessment $assessment): int
+    {
+        return $assessment->type === 'pre_test' ? 1 : $assessment->attempt_limit;
     }
 
     /**

@@ -31,6 +31,9 @@ function successMessage(method: string, url: string): string {
               ? 'Soal berhasil dihapus.'
               : 'Soal berhasil diperbarui.';
     }
+    if (/\/courses\/\d+\/assessments\/\d+$/.test(url)) {
+        return 'Pengaturan assessment berhasil disimpan.';
+    }
 
     return method === 'post'
         ? 'Data berhasil ditambahkan.'
@@ -102,7 +105,8 @@ export function initializeFlashToast(): void {
 
     router.on('error', (event) => {
         if (event.detail.visitId && mutations.delete(event.detail.visitId)) {
-            const actionMessage = event.detail.errors.action;
+            const actionMessage =
+                event.detail.errors.action ?? event.detail.errors.status;
 
             toast.error(
                 actionMessage ??

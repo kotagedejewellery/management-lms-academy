@@ -62,7 +62,9 @@ dc=(docker compose --env-file .env.production -f compose.production.yml)
 "${dc[@]}" exec -T app php artisan db:seed --class='Database\Seeders\CustomerServiceDealmakerSeeder' --force
 ```
 
-Seeder hanya membuat course `CS-DEAL-001`, kategori `Layanan Pelanggan`, 10 modul, dan 20 lesson. Ia tidak membuat akun, struktur organisasi, assignment, atau enrollment. Seluruh record menggunakan `firstOrCreate`, sehingga menjalankan ulang tidak menduplikasi maupun menimpa perubahan Admin pada course tersebut.
+Seeder hanya membuat course `CS-DEAL-001`, kategori `Layanan Pelanggan`, 10 modul, dan 20 lesson. Ia tidak membuat akun, struktur organisasi, assignment, atau enrollment. Selain katalog, seeder membuat assessment native LMS untuk Modul 1–5 dan 7–10: lima soal Pre-Test (satu percobaan, tanpa nilai kelulusan) serta sepuluh soal Post-Test (tiga percobaan, nilai kelulusan 80). Modul 6 sengaja dilewati karena sumber soal belum tersedia.
+
+Assessment yang sudah ada selalu dilewati, termasuk assessment dengan riwayat pengerjaan. Karena itu perintah tersebut aman dijalankan ulang setelah deploy: tidak menduplikasi atau menimpa perubahan Admin maupun hasil learner. Seeder tetap dijalankan **secara eksplisit**, bukan pada setiap auto-deploy, agar data bisnis baru tidak muncul tanpa persetujuan.
 
 ## 3. Auto-deploy GitHub Actions
 

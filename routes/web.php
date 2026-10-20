@@ -66,6 +66,7 @@ Route::middleware(['auth', 'verified', 'active', 'audit'])->group(function () {
     Route::post('courses/{course}/assessments', [AssessmentController::class, 'store'])->name('courses.assessments.store');
     Route::patch('courses/{course}/assessments/{assessment}', [AssessmentController::class, 'update'])->name('courses.assessments.update');
     Route::post('courses/{course}/assessments/{assessment}/questions', [AssessmentController::class, 'storeQuestion'])->name('courses.assessments.questions.store');
+    Route::put('courses/{course}/assessments/{assessment}/questions/{question}', [AssessmentController::class, 'updateQuestion'])->name('courses.assessments.questions.update');
     Route::patch('courses/{course}/assessments/{assessment}/questions/{question}/move', [AssessmentController::class, 'moveQuestion'])->name('courses.assessments.questions.move');
     Route::delete('courses/{course}/assessments/{assessment}/questions/{question}', [AssessmentController::class, 'destroyQuestion'])->name('courses.assessments.questions.destroy');
     Route::post('courses/{course}/modules', [CourseContentController::class, 'storeModule'])->name('courses.modules.store');

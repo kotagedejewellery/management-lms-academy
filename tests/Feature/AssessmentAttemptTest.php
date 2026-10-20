@@ -35,6 +35,25 @@ class AssessmentAttemptTest extends TestCase
             ->assertRedirect();
     }
 
+    public function test_legacy_pre_test_is_limited_to_a_single_attempt(): void
+    {
+        $user = User::factory()->create();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-PRE-LEGACY-001', 'title' => 'Pengenalan', 'passing_grade' => 70, 'status' => 'published']);
+        $user->enrollments()->create(['course_id' => $course->id]);
+        $assessment = Assessment::query()->create(['course_id' => $course->id, 'type' => 'pre_test', 'passing_grade' => 0, 'attempt_limit' => 3, 'is_required' => true]);
+        $question = $assessment->questions()->create(['prompt' => 'Benar?', 'points' => 1, 'sequence' => 1]);
+        $correct = $question->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
+
+        $this->actingAs($user)->post(route('my-learning.assessments.submit', [$course, $assessment]), ['answers' => [$question->id => $correct->id]])
+            ->assertRedirect(route('my-learning.assessments.result', [$course, $assessment]));
+
+        $this->actingAs($user)->get(route('my-learning.assessments.show', [$course, $assessment]))
+            ->assertSessionHasErrors(['assessment' => 'Batas maksimal 1 percobaan telah tercapai.']);
+
+        $this->assertDatabaseCount('assessment_attempts', 1);
+    }
+
     public function test_post_test_requires_lessons_then_completes_course_when_passed(): void
     {
         $user = User::factory()->create();

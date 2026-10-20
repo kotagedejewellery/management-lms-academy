@@ -31,7 +31,7 @@ KGJ Academy adalah Learning Management System internal untuk onboarding, SOP, pr
 2. User, divisi, jabatan, cabang, manager, dan status akun.
 3. Course, module, lesson, resource, thumbnail, dan status Draft/Published/Archived.
 4. Learning path, prerequisite, enrollment, dan assignment dasar.
-5. Pre-Test dan Post-Test dengan question, answer, timer opsional, attempt, hasil, dan passing grade.
+5. Pre-Test baseline satu percobaan dan Post-Test dengan question, answer, timer opsional, 1â€“3 attempt, hasil, serta passing grade.
 6. Resume lesson, lesson/course progress, completion, dan status Not Passed.
 7. Learner dashboard, admin dashboard, dan laporan dasar dengan filter/ekspor.
 8. Audit activity untuk perubahan administratif serta assessment attempts.
@@ -64,12 +64,12 @@ Contoh path Customer Service: Brand Introduction → Product Knowledge → Mater
 - Pre-Test modul yang dibuat mengunci materi modul sampai disubmit; skor rendah tetap tidak menggagalkan course.
 - Post-Test modul yang dibuat baru terbuka setelah lesson mandatory modul selesai dan harus lulus sebelum modul berikutnya dapat dibuka.
 - Course dengan Post-Test selesai bila lesson mandatory selesai dan Post-Test lulus passing grade. Course tanpa Post-Test selesai saat lesson mandatory selesai.
-- Jumlah attempt dan retake diatur per assessment dalam rentang 1â€“3; kegagalan pada attempt terakhir memberi status `Not Passed`.
+- Pre-Test selalu satu attempt dan tidak memiliki passing grade; jumlah attempt Post-Test diatur per assessment dalam rentang 1â€“3. Kegagalan pada attempt Post-Test terakhir memberi status `Not Passed`.
 - Course wajib dalam learning path berjalan berurutan: course wajib sebelumnya harus selesai sebelum course wajib berikutnya dapat dibuka. Course baru ditambahkan di akhir path; Admin mengubah urutan dengan aksi Naik/Turun. Soal assessment juga ditambahkan otomatis di akhir dan dapat dipindahkan dengan aksi yang sama.
 - Simpan seluruh attempt, response, score, waktu, dan status untuk audit.
 - Improvement ditampilkan dalam poin: `post_test_score - pre_test_score`, bukan persen.
 - Laporan repeat Post-Test harus menyatakan kebijakan skor (pertama, terakhir, terbaik); default laporan menampilkan skor pertama dan terbaik.
-- Artikel wajib memiliki isi. Lesson PDF/video wajib memiliki satu sumber: file privat yang sesuai atau URL. Course tidak dapat diterbitkan bila ada sumber materi yang belum lengkap.
+- Artikel wajib memiliki isi. Lesson PDF/video wajib memiliki satu sumber: file privat yang sesuai atau URL. Course tidak dapat diterbitkan bila ada sumber materi yang belum lengkap, assessment aktif tanpa soal, atau soal yang tidak memiliki tepat satu jawaban benar. Course editor menampilkan checklist dan tautan perbaikan untuk setiap kegagalan publikasi.
 - Modul, lesson, dan sumber materi hanya dapat diubah ketika course berstatus Draft; course harus dikembalikan ke Draft sebelum materi Published diubah.
 - Sertifikat hanya diterbitkan bila fitur diaktifkan pada course/path terkait.
 

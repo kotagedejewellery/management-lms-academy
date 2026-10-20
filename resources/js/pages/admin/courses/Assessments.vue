@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { ChevronDown, ChevronUp, Plus, Trash2 } from '@lucide/vue';
+import { ChevronDown, ChevronUp, Pencil, Plus, Trash2 } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
 import FormErrorSummary from '@/components/FormErrorSummary.vue';
@@ -18,6 +18,9 @@ type Assessment = {
     passing_grade: number;
     attempt_limit: number;
     time_limit_minutes: number | null;
+    attempts_count: number;
+    editable: boolean;
+    lock_reason: string | null;
     questions: {
         id: number;
         prompt: string;
@@ -28,9 +31,15 @@ type Assessment = {
     }[];
 };
 const props = defineProps<{
-    course: { id: number; code: string; title: string };
+    course: {
+        id: number;
+        code: string;
+        title: string;
+        status: 'draft' | 'published' | 'archived';
+    };
     modules: { id: number; title: string; sequence: number }[];
     selected_module: { id: number; title: string } | null;
+    selected_question_id: number | null;
     assessments: Record<'pre_test' | 'post_test', Assessment | null>;
 }>();
 const selectedModuleId = ref(props.selected_module?.id.toString() ?? '');
@@ -78,6 +87,20 @@ const questionToDelete = ref<{
 } | null>(null);
 const deletingQuestion = ref(false);
 const movingQuestionId = ref<number | null>(null);
+const expandedQuestionIds = ref<number[]>(
+    props.selected_question_id ? [props.selected_question_id] : [],
+);
+const editingQuestion = ref<{
+    assessmentId: number;
+    questionId: number;
+} | null>(null);
+const editQuestionForm = useForm({
+    prompt: '',
+    explanation: '',
+    points: '1',
+    answers: [] as string[],
+    correct_answer: '0',
+});
 const leaveGuard = useUnsavedChangesGuard(
     () =>
         createForm.isDirty ||
@@ -88,11 +111,53 @@ const leaveGuard = useUnsavedChangesGuard(
 function create(type: 'pre_test' | 'post_test'): void {
     createForm.type = type;
     createForm.passing_grade = type === 'pre_test' ? '0' : '70';
+    createForm.attempt_limit = type === 'pre_test' ? '1' : '3';
     createForm.is_required = moduleScope.value;
     createForm.module_id = selectedModuleId.value;
     createForm.post(`/courses/${props.course.id}/assessments`, {
         onSuccess: () => createForm.reset(),
     });
+}
+function toggleQuestion(questionId: number): void {
+    expandedQuestionIds.value = expandedQuestionIds.value.includes(questionId)
+        ? expandedQuestionIds.value.filter((id) => id !== questionId)
+        : [...expandedQuestionIds.value, questionId];
+}
+function hasValidAnswerKey(question: Assessment['questions'][number]): boolean {
+    return question.answers.filter((answer) => answer.is_correct).length === 1;
+}
+function startEditingQuestion(
+    assessment: Assessment,
+    question: Assessment['questions'][number],
+): void {
+    editingQuestion.value = {
+        assessmentId: assessment.id,
+        questionId: question.id,
+    };
+    editQuestionForm.prompt = question.prompt;
+    editQuestionForm.explanation = question.explanation ?? '';
+    editQuestionForm.points = String(question.points);
+    editQuestionForm.answers = question.answers.map((answer) => answer.content);
+    editQuestionForm.correct_answer = String(
+        question.answers.findIndex((answer) => answer.is_correct),
+    );
+    editQuestionForm.clearErrors();
+    if (!expandedQuestionIds.value.includes(question.id)) {
+        expandedQuestionIds.value.push(question.id);
+    }
+}
+function cancelEditingQuestion(): void {
+    editingQuestion.value = null;
+    editQuestionForm.reset();
+    editQuestionForm.clearErrors();
+}
+function saveQuestion(): void {
+    if (!editingQuestion.value) return;
+
+    editQuestionForm.put(
+        `/courses/${props.course.id}/assessments/${editingQuestion.value.assessmentId}/questions/${editingQuestion.value.questionId}`,
+        { onSuccess: cancelEditingQuestion },
+    );
 }
 function changeScope(): void {
     router.get(
@@ -189,6 +254,9 @@ defineOptions({
                     Atur baseline, kelulusan, batas percobaan 1–3 kali, dan
                     batas waktu setiap assessment.
                 </p>
+                <p class="mt-3 text-sm font-medium text-foreground">
+                    Pre-Test → Materi wajib → Post-Test → Modul berikutnya
+                </p>
             </div>
             <Button variant="outline" as-child
                 ><Link :href="`/courses/${course.id}/content`"
@@ -240,14 +308,14 @@ defineOptions({
                     </p>
                 </div>
                 <form
-                    v-if="!assessments[type]"
+                    v-if="!assessments[type] && course.status === 'draft'"
                     class="mt-5 grid gap-4 border-t border-border pt-5"
                     @submit.prevent="create(type)"
                 >
                     <FormErrorSummary :errors="createForm.errors" />
-                    <div class="grid gap-2">
+                    <div v-if="type === 'post_test'" class="grid gap-2">
                         <Label :for="`${type}-passing-grade`"
-                            >Passing grade</Label
+                            >Nilai kelulusan</Label
                         ><Input
                             :id="`${type}-passing-grade`"
                             v-model="createForm.passing_grade"
@@ -257,7 +325,7 @@ defineOptions({
                             required
                         />
                     </div>
-                    <div class="grid gap-2">
+                    <div v-if="type === 'post_test'" class="grid gap-2">
                         <Label :for="`${type}-attempt-limit`"
                             >Maksimal percobaan</Label
                         ><Input
@@ -269,6 +337,14 @@ defineOptions({
                             required
                         />
                     </div>
+                    <p
+                        v-else
+                        class="rounded-lg border border-border bg-muted/40 p-3 text-sm text-muted-foreground"
+                    >
+                        Pre-Test mencatat baseline pengetahuan. Nilai tidak
+                        menentukan kelulusan dan hanya dapat dikerjakan satu
+                        kali.
+                    </p>
                     <label
                         v-if="type === 'pre_test' && !moduleScope"
                         class="flex items-start gap-3 rounded-lg border border-border p-3 text-sm"
@@ -309,8 +385,16 @@ defineOptions({
                         ><Plus /> Buat {{ title(type) }}</Button
                     >
                 </form>
+                <p
+                    v-else-if="!assessments[type]"
+                    class="mt-5 rounded-lg border border-dashed border-border bg-muted/40 p-3 text-sm text-muted-foreground"
+                >
+                    Assessment baru hanya dapat dibuat saat course masih
+                    berstatus Draf.
+                </p>
                 <template v-else>
                     <form
+                        v-if="assessments[type]?.editable"
                         class="mt-5 grid gap-4 border-t border-border pt-5 sm:grid-cols-2"
                         @submit.prevent="saveSettings(type)"
                     >
@@ -318,9 +402,16 @@ defineOptions({
                             class="sm:col-span-2"
                             :errors="settings[type].errors"
                         />
-                        <div class="grid gap-2">
+                        <p
+                            v-if="type === 'pre_test'"
+                            class="rounded-lg border border-border bg-muted/40 p-3 text-sm text-muted-foreground sm:col-span-2"
+                        >
+                            Pre-Test mencatat baseline pengetahuan dan hanya
+                            dapat dikerjakan satu kali.
+                        </p>
+                        <div v-if="type === 'post_test'" class="grid gap-2">
                             <Label :for="`${type}-edit-passing-grade`"
-                                >Passing grade</Label
+                                >Nilai kelulusan</Label
                             ><Input
                                 :id="`${type}-edit-passing-grade`"
                                 v-model="settings[type].passing_grade"
@@ -330,7 +421,7 @@ defineOptions({
                                 required
                             />
                         </div>
-                        <div class="grid gap-2">
+                        <div v-if="type === 'post_test'" class="grid gap-2">
                             <Label :for="`${type}-edit-attempt-limit`"
                                 >Maksimal percobaan</Label
                             ><Input
@@ -377,6 +468,12 @@ defineOptions({
                             >
                         </div>
                     </form>
+                    <p
+                        v-if="!assessments[type]?.editable"
+                        class="mt-5 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950"
+                    >
+                        {{ assessments[type]?.lock_reason }}
+                    </p>
                     <ol
                         v-if="assessments[type]?.questions.length"
                         class="mt-5 divide-y divide-border border-t border-border"
@@ -389,12 +486,57 @@ defineOptions({
                             class="py-4"
                         >
                             <div class="flex items-start justify-between gap-3">
-                                <p class="font-medium text-foreground">
-                                    {{ question.sequence }}.
-                                    {{ question.prompt }}
-                                </p>
+                                <div class="min-w-0">
+                                    <p class="font-medium text-foreground">
+                                        {{ question.sequence }}.
+                                        {{ question.prompt }}
+                                    </p>
+                                    <p
+                                        class="mt-1 text-xs text-muted-foreground"
+                                    >
+                                        {{ question.points }} poin ·
+                                        {{
+                                            hasValidAnswerKey(question)
+                                                ? 'Kunci jawaban siap'
+                                                : 'Kunci jawaban belum valid'
+                                        }}
+                                    </p>
+                                </div>
                                 <div class="flex shrink-0 items-center gap-1">
                                     <Button
+                                        v-if="assessments[type]?.editable"
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        :aria-label="`Edit soal ${question.sequence}`"
+                                        @click="
+                                            startEditingQuestion(
+                                                assessments[type]!,
+                                                question,
+                                            )
+                                        "
+                                        ><Pencil class="size-4"
+                                    /></Button>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        :aria-expanded="
+                                            expandedQuestionIds.includes(
+                                                question.id,
+                                            )
+                                        "
+                                        @click="toggleQuestion(question.id)"
+                                        >{{
+                                            expandedQuestionIds.includes(
+                                                question.id,
+                                            )
+                                                ? 'Sembunyikan'
+                                                : 'Detail'
+                                        }}</Button
+                                    >
+                                    <Button
+                                        v-if="assessments[type]?.editable"
                                         type="button"
                                         variant="ghost"
                                         size="icon"
@@ -413,6 +555,7 @@ defineOptions({
                                         ><ChevronUp class="size-4"
                                     /></Button>
                                     <Button
+                                        v-if="assessments[type]?.editable"
                                         type="button"
                                         variant="ghost"
                                         size="icon"
@@ -434,6 +577,7 @@ defineOptions({
                                         ><ChevronDown class="size-4"
                                     /></Button>
                                     <Button
+                                        v-if="assessments[type]?.editable"
                                         type="button"
                                         variant="ghost"
                                         size="icon"
@@ -449,20 +593,128 @@ defineOptions({
                                     /></Button>
                                 </div>
                             </div>
-                            <p
-                                v-for="answer in question.answers"
-                                :key="answer.id"
-                                :class="
-                                    answer.is_correct
-                                        ? 'mt-1 text-sm font-medium text-emerald-700'
-                                        : 'mt-1 text-sm text-muted-foreground'
+                            <form
+                                v-if="
+                                    editingQuestion?.assessmentId ===
+                                        assessments[type]?.id &&
+                                    editingQuestion?.questionId === question.id
                                 "
+                                class="mt-4 grid gap-3 rounded-lg border border-border bg-muted/30 p-4"
+                                @submit.prevent="saveQuestion"
                             >
-                                {{ answer.content
-                                }}<span v-if="answer.is_correct">
-                                    · Jawaban benar</span
+                                <FormErrorSummary
+                                    :errors="editQuestionForm.errors"
+                                />
+                                <div class="grid gap-2">
+                                    <Label :for="`edit-question-${question.id}`"
+                                        >Soal</Label
+                                    ><textarea
+                                        :id="`edit-question-${question.id}`"
+                                        v-model="editQuestionForm.prompt"
+                                        required
+                                        rows="3"
+                                        class="rounded-md border border-input bg-background px-3 py-2 text-sm"
+                                    />
+                                </div>
+                                <div class="grid gap-2">
+                                    <Label
+                                        :for="`edit-explanation-${question.id}`"
+                                        >Pembahasan (opsional)</Label
+                                    ><textarea
+                                        :id="`edit-explanation-${question.id}`"
+                                        v-model="editQuestionForm.explanation"
+                                        rows="3"
+                                        class="rounded-md border border-input bg-background px-3 py-2 text-sm"
+                                    />
+                                </div>
+                                <div class="grid gap-2">
+                                    <Label :for="`edit-points-${question.id}`"
+                                        >Poin</Label
+                                    ><Input
+                                        :id="`edit-points-${question.id}`"
+                                        v-model="editQuestionForm.points"
+                                        type="number"
+                                        min="1"
+                                        required
+                                    />
+                                </div>
+                                <fieldset
+                                    class="grid gap-3"
+                                    :aria-describedby="`edit-answer-help-${question.id}`"
                                 >
-                            </p>
+                                    <legend class="font-medium text-foreground">
+                                        Pilihan jawaban dan kunci
+                                    </legend>
+                                    <p
+                                        :id="`edit-answer-help-${question.id}`"
+                                        class="text-sm text-muted-foreground"
+                                    >
+                                        Pilih tepat satu jawaban benar.
+                                    </p>
+                                    <div
+                                        v-for="(
+                                            _, index
+                                        ) in editQuestionForm.answers"
+                                        :key="index"
+                                        class="flex items-center gap-2"
+                                    >
+                                        <input
+                                            v-model="
+                                                editQuestionForm.correct_answer
+                                            "
+                                            :value="String(index)"
+                                            :aria-label="`Jadikan pilihan ${index + 1} sebagai jawaban benar`"
+                                            type="radio"
+                                        /><Input
+                                            v-model="
+                                                editQuestionForm.answers[index]
+                                            "
+                                            :aria-label="`Pilihan ${index + 1}`"
+                                            required
+                                        />
+                                    </div>
+                                </fieldset>
+                                <div class="flex flex-wrap gap-2">
+                                    <Button
+                                        type="submit"
+                                        :disabled="editQuestionForm.processing"
+                                        >Simpan soal</Button
+                                    ><Button
+                                        type="button"
+                                        variant="outline"
+                                        :disabled="editQuestionForm.processing"
+                                        @click="cancelEditingQuestion"
+                                        >Batal</Button
+                                    >
+                                </div>
+                            </form>
+                            <div
+                                v-else-if="
+                                    expandedQuestionIds.includes(question.id)
+                                "
+                                class="mt-3"
+                            >
+                                <p
+                                    v-if="question.explanation"
+                                    class="mb-3 text-sm text-muted-foreground"
+                                >
+                                    Pembahasan: {{ question.explanation }}
+                                </p>
+                                <p
+                                    v-for="answer in question.answers"
+                                    :key="answer.id"
+                                    :class="
+                                        answer.is_correct
+                                            ? 'mt-1 text-sm font-medium text-emerald-700'
+                                            : 'mt-1 text-sm text-muted-foreground'
+                                    "
+                                >
+                                    {{ answer.content
+                                    }}<span v-if="answer.is_correct">
+                                        · Jawaban benar</span
+                                    >
+                                </p>
+                            </div>
                         </li>
                     </ol>
                     <p
@@ -474,10 +726,20 @@ defineOptions({
                         jawaban benar.
                     </p>
                     <form
+                        v-if="assessments[type]?.editable"
                         class="mt-5 grid gap-3 border-t border-border pt-5"
                         @submit.prevent="addQuestion(type)"
                     >
                         <FormErrorSummary :errors="questions[type].errors" />
+                        <div>
+                            <h3 class="font-medium text-foreground">
+                                Tambah soal {{ title(type) }}
+                            </h3>
+                            <p class="mt-1 text-sm text-muted-foreground">
+                                Pilih tepat satu jawaban benar. Soal tanpa kunci
+                                jawaban tidak dapat dipublikasikan.
+                            </p>
+                        </div>
                         <div class="grid gap-2">
                             <Label :for="`${type}-prompt`">Soal</Label
                             ><textarea
@@ -508,27 +770,41 @@ defineOptions({
                                 required
                             />
                         </div>
-                        <div
-                            v-for="(_, index) in questions[type].answers"
-                            :key="index"
-                            class="grid gap-2"
+                        <fieldset
+                            class="grid gap-3"
+                            :aria-describedby="`${type}-answer-help`"
                         >
-                            <Label :for="`${type}-answer-${index}`"
-                                >Pilihan {{ index + 1 }}</Label
+                            <legend class="font-medium text-foreground">
+                                Pilihan jawaban dan kunci
+                            </legend>
+                            <p
+                                :id="`${type}-answer-help`"
+                                class="text-sm text-muted-foreground"
                             >
-                            <div class="flex gap-2">
-                                <input
-                                    v-model="questions[type].correct_answer"
-                                    :value="String(index)"
-                                    :aria-label="`Jadikan pilihan ${index + 1} sebagai jawaban benar`"
-                                    type="radio"
-                                /><Input
-                                    :id="`${type}-answer-${index}`"
-                                    v-model="questions[type].answers[index]"
-                                    required
-                                />
+                                Pilih tepat satu jawaban benar.
+                            </p>
+                            <div
+                                v-for="(_, index) in questions[type].answers"
+                                :key="index"
+                                class="grid gap-2"
+                            >
+                                <Label :for="`${type}-answer-${index}`"
+                                    >Pilihan {{ index + 1 }}</Label
+                                >
+                                <div class="flex gap-2">
+                                    <input
+                                        v-model="questions[type].correct_answer"
+                                        :value="String(index)"
+                                        :aria-label="`Jadikan pilihan ${index + 1} sebagai jawaban benar`"
+                                        type="radio"
+                                    /><Input
+                                        :id="`${type}-answer-${index}`"
+                                        v-model="questions[type].answers[index]"
+                                        required
+                                    />
+                                </div>
                             </div>
-                        </div>
+                        </fieldset>
                         <Button
                             type="submit"
                             :disabled="questions[type].processing"
