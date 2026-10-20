@@ -345,6 +345,38 @@ class CourseManagementTest extends TestCase
             ->assertRedirect(route('courses.content', $course));
     }
 
+    public function test_course_cannot_be_published_with_an_incomplete_required_module_assessment(): void
+    {
+        $admin = $this->courseAdmin();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-MODULE-EVAL-001', 'title' => 'Evaluasi modul', 'passing_grade' => 70, 'status' => 'draft']);
+        $course->trainers()->attach($admin);
+        $module = $course->modules()->create(['title' => 'Modul', 'sequence' => 1]);
+        $module->lessons()->create(['title' => 'Lesson', 'type' => 'article', 'content' => 'Isi', 'is_required' => true, 'sequence' => 1]);
+        Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'post_test', 'is_required' => true, 'passing_grade' => 70, 'attempt_limit' => 3]);
+
+        $payload = $this->publishedCoursePayload($category, $course);
+        $payload['requires_post_test'] = false;
+
+        $this->actingAs($admin)->put(route('courses.update', $course), $payload)
+            ->assertSessionHasErrors('status');
+    }
+
+    public function test_course_cannot_be_published_with_an_incomplete_required_course_pre_test(): void
+    {
+        $admin = $this->courseAdmin();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-PRE-EVAL-001', 'title' => 'Pre-Test course', 'passing_grade' => 70, 'status' => 'draft']);
+        $course->trainers()->attach($admin);
+        $course->modules()->create(['title' => 'Modul', 'sequence' => 1])->lessons()->create(['title' => 'Lesson', 'type' => 'article', 'content' => 'Isi', 'is_required' => true, 'sequence' => 1]);
+        Assessment::query()->create(['course_id' => $course->id, 'type' => 'pre_test', 'is_required' => true, 'passing_grade' => 0, 'attempt_limit' => 3]);
+        $payload = $this->publishedCoursePayload($category, $course);
+        $payload['requires_post_test'] = false;
+
+        $this->actingAs($admin)->put(route('courses.update', $course), $payload)
+            ->assertSessionHasErrors('status');
+    }
+
     public function test_course_rejects_a_position_from_another_division(): void
     {
         $admin = $this->courseAdmin();

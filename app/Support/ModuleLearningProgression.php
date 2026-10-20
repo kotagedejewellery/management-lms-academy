@@ -57,7 +57,8 @@ class ModuleLearningProgression
     {
         if ($assessment->module_id === null) {
             return $assessment->type === 'pre_test'
-                || $this->requiredCourseLessonsCompleted($course, $enrollment);
+                || ($this->requiredCourseLessonsCompleted($course, $enrollment)
+                    && $this->courseModulesCompleted($course, $enrollment));
         }
 
         $state = $this->states($course, $enrollment)->get($assessment->module_id);

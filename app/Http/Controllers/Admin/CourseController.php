@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Assessment;
 use App\Models\Course;
 use App\Models\CourseCategory;
 use App\Models\Division;
@@ -101,8 +102,8 @@ class CourseController extends Controller
             if (! $this->contentReady($course)) {
                 throw ValidationException::withMessages(['status' => 'Lengkapi sumber untuk setiap materi video atau PDF sebelum menerbitkan course.']);
             }
-            if ($data['requires_post_test'] && ! $this->postTestReady($course)) {
-                throw ValidationException::withMessages(['status' => 'Tambahkan Post-Test beserta soal dan jawaban benar sebelum menerbitkan course evaluatif.']);
+            if ($message = $this->assessmentReadinessError($course, $data['requires_post_test'])) {
+                throw ValidationException::withMessages(['status' => $message]);
             }
         }
 
@@ -287,13 +288,34 @@ class CourseController extends Controller
         ];
     }
 
-    private function postTestReady(Course $course): bool
+    private function assessmentReadinessError(Course $course, bool $requiresCoursePostTest): ?string
     {
-        $postTest = $course->assessments()->whereNull('module_id')->where('type', 'post_test')->first();
+        $assessments = $course->assessments()
+            ->with(['module:id,title', 'questions.answers'])
+            ->where(function ($query): void {
+                $query->whereNotNull('module_id')
+                    ->orWhere('type', 'post_test')
+                    ->orWhere(fn ($query) => $query->where('type', 'pre_test')->where('is_required', true));
+            })
+            ->get();
 
-        return $postTest !== null
-            && $postTest->questions()->exists()
-            && ! $postTest->questions()->whereDoesntHave('answers', fn ($query) => $query->where('is_correct', true))->exists();
+        if ($requiresCoursePostTest && ! $assessments->contains(fn (Assessment $assessment): bool => $assessment->module_id === null && $assessment->type === 'post_test')) {
+            return 'Tambahkan Post-Test course beserta soal dan jawaban benar sebelum menerbitkan course evaluatif.';
+        }
+
+        foreach ($assessments as $assessment) {
+            $label = $assessment->module_id
+                ? ucfirst(str_replace('_', '-', $assessment->type)).' modul '.$assessment->module?->title
+                : ucfirst(str_replace('_', '-', $assessment->type)).' course';
+            if ($assessment->questions->isEmpty()) {
+                return "{$label} belum memiliki soal.";
+            }
+            if ($assessment->questions->contains(fn ($question): bool => $question->answers->where('is_correct', true)->count() !== 1)) {
+                return "Setiap soal pada {$label} harus memiliki tepat satu jawaban benar.";
+            }
+        }
+
+        return null;
     }
 
     private function contentReady(Course $course): bool

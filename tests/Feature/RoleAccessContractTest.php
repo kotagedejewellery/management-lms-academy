@@ -49,6 +49,14 @@ class RoleAccessContractTest extends TestCase
         }
     }
 
+    public function test_manager_role_uses_the_team_manager_label(): void
+    {
+        $this->assertSame(
+            'Manager Tim',
+            Role::query()->where('slug', 'manager')->sole()->name,
+        );
+    }
+
     public function test_role_has_the_expected_access_to_each_critical_module(): void
     {
         $modules = [
@@ -61,6 +69,7 @@ class RoleAccessContractTest extends TestCase
             'assignments' => ['enrollments.index', [], ['super-admin', 'lms-admin']],
             'announcements' => ['announcements.index', [], ['super-admin', 'lms-admin']],
             'reports' => ['reports.index', [], ['super-admin', 'lms-admin', 'management']],
+            'trainer progress' => ['trainer-progress.index', [], ['trainer']],
             'team progress' => ['team-progress.index', [], ['super-admin', 'manager']],
             'audit logs' => ['audit-logs.index', [], ['super-admin']],
             'my learning' => ['my-learning.index', [], self::ROLE_SLUGS],

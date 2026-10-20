@@ -43,8 +43,8 @@ Ditugaskan → Pre-Test (jika diwajibkan) → Materi → Post-Test → Hasil →
 | Role | Fokus utama | Modul inti |
 | --- | --- | --- |
 | Employee | Menyelesaikan pembelajaran pribadi | Dashboard, Pembelajaran saya, Jalur belajar saya, Katalog course, Progres saya, Sertifikat, Notifikasi |
-| Trainer / Mentor | Mengelola materi course yang ditugaskan | Semua modul Employee, Kelola course yang ditugaskan |
-| Manager | Memantau pembelajaran bawahan langsung | Semua modul Employee, Progres tim |
+| Trainer / Mentor | Mengelola materi dan memantau progres course yang ditugaskan | Semua modul Employee, Kelola course yang ditugaskan, Progres course |
+| Manager Tim | Memantau pembelajaran bawahan langsung | Semua modul Employee, Progres tim |
 | Management | Memantau hasil organisasi | Semua modul Employee, Laporan |
 | LMS Admin | Mengelola operasi pembelajaran | Pengguna, Organisasi, Course, Jalur belajar, Penugasan, Pengumuman, Laporan |
 | Super Admin | Mengelola operasi dan audit | Semua modul LMS Admin, Aktivitas audit, Progres tim |
@@ -76,6 +76,10 @@ Katalog menampilkan course terbit yang relevan dengan divisi atau jabatan Anda. 
 
 Trainer mengelola **hanya course yang ditugaskan** kepadanya. Trainer tidak dapat membuat course baru, mengubah trainer lain, mengatur kategori global, mengelola pengguna, atau membuat penugasan.
 
+### Memantau progres course
+
+Gunakan **Progres course** untuk melihat status pembelajaran, hasil Pre-Test/Post-Test tingkat course, peningkatan nilai, dan jumlah attempt peserta pada course yang ditugaskan kepada Anda. Jika sebuah modul memiliki evaluasi, bagian **Evaluasi per modul** menampilkan skor Pre-Test pertama serta skor terbaik, status, dan jumlah attempt Post-Test. Data course atau peserta di luar penugasan Trainer tidak ditampilkan dan tidak dapat dicari.
+
 ### Mengelola materi course
 
 1. Buka **Kelola course**, lalu pilih course yang ditugaskan.
@@ -92,7 +96,7 @@ Trainer mengelola **hanya course yang ditugaskan** kepadanya. Trainer tidak dapa
 
 Materi course yang sudah **Published** bersifat read-only. Minta LMS Admin atau Super Admin mengembalikannya ke Draft bila perlu revisi.
 
-## 6. Panduan Manager
+## 6. Panduan Manager Tim
 
 Gunakan **Progres tim** untuk melihat perkembangan **bawahan langsung** yang tercatat pada struktur organisasi. Anda dapat memantau status course, progres, dan hasil pembelajaran tim yang berada dalam lingkup tersebut.
 

@@ -1,0 +1,143 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Assessment;
+use App\Models\AssessmentAttempt;
+use App\Models\Enrollment;
+use App\Support\ReportEnrollmentQuery;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Validation\Rule;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class TrainerProgressController extends Controller
+{
+    public function index(Request $request): Response
+    {
+        abort_unless(
+            $request->user()->hasRole('trainer')
+            && $request->user()->hasPermission('manage-courses'),
+            403,
+        );
+
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'status' => ['nullable', Rule::in(['active', 'completed', 'not_passed'])],
+            'course_id' => ['nullable', 'integer'],
+        ]);
+        $courses = $request->user()->managedCourses()
+            ->orderBy('title')
+            ->get(['courses.id', 'courses.code', 'courses.title']);
+        $courseIds = $courses->pluck('id');
+        $filters = [
+            'search' => trim($filters['search'] ?? ''),
+            'status' => $filters['status'] ?? '',
+            'course_id' => isset($filters['course_id']) ? (int) $filters['course_id'] : null,
+        ];
+
+        abort_if($filters['course_id'] !== null && ! $courseIds->contains($filters['course_id']), 404);
+
+        $enrollments = ReportEnrollmentQuery::make($filters)
+            ->whereIn('course_id', $courseIds)
+            ->orderByDesc('created_at')
+            ->paginate(15)
+            ->withQueryString();
+        $moduleAssessments = $this->moduleAssessments($enrollments->getCollection());
+
+        $enrollments->through(fn (Enrollment $enrollment) => [
+            'id' => $enrollment->id,
+            'status' => $enrollment->status,
+            'due_at' => $enrollment->due_at?->toDateString(),
+            'completed_at' => $enrollment->completed_at?->toDateString(),
+            'pre_test_score' => $enrollment->pre_test_score === null ? null : (float) $enrollment->pre_test_score,
+            'best_post_score' => $enrollment->best_post_score === null ? null : (float) $enrollment->best_post_score,
+            'improvement' => $enrollment->pre_test_score === null || $enrollment->best_post_score === null ? null : round((float) $enrollment->best_post_score - (float) $enrollment->pre_test_score, 2),
+            'post_test_attempts' => (int) $enrollment->post_test_attempts,
+            'user' => $enrollment->user?->only(['employee_id', 'name']),
+            'course' => $enrollment->course?->only(['code', 'title']),
+            'module_assessments' => $moduleAssessments->get($enrollment->id, []),
+        ]);
+
+        return Inertia::render('trainer-progress/Index', [
+            'enrollments' => $enrollments,
+            'courses' => $courses,
+            'filters' => $filters,
+        ]);
+    }
+
+    /**
+     * @param  Collection<int, Enrollment>  $enrollments
+     * @return Collection<int, array<int, array{module: array{sequence: int<0, max>|null, title: string|null}, pre_test: array{score: float}|null, post_test: array{best_score: float, attempts: int, passed: bool}|null}>>
+     */
+    private function moduleAssessments(Collection $enrollments): Collection
+    {
+        if ($enrollments->isEmpty()) {
+            return collect();
+        }
+
+        $assessments = Assessment::query()
+            ->whereIn('course_id', $enrollments->pluck('course_id')->unique())
+            ->whereNotNull('module_id')
+            ->with('module:id,course_id,title,sequence')
+            ->get(['id', 'course_id', 'module_id', 'type']);
+        $attempts = AssessmentAttempt::query()
+            ->whereIn('enrollment_id', $enrollments->pluck('id'))
+            ->whereIn('assessment_id', $assessments->pluck('id'))
+            ->whereNotNull('submitted_at')
+            ->orderBy('attempt_number')
+            ->get(['assessment_id', 'enrollment_id', 'attempt_number', 'score', 'passed'])
+            ->groupBy(fn (AssessmentAttempt $attempt) => "{$attempt->enrollment_id}:{$attempt->assessment_id}");
+
+        return $enrollments->mapWithKeys(function (Enrollment $enrollment) use ($assessments, $attempts): array {
+            $modules = $assessments
+                ->where('course_id', $enrollment->course_id)
+                ->groupBy('module_id')
+                ->sortBy(fn (Collection $assessments) => $assessments->first()->module?->sequence)
+                ->map(function (Collection $assessments) use ($attempts, $enrollment): array {
+                    $preTest = $assessments->firstWhere('type', 'pre_test');
+                    $postTest = $assessments->firstWhere('type', 'post_test');
+                    $module = $assessments->first()->module;
+
+                    return [
+                        'module' => ['sequence' => $module?->sequence, 'title' => $module?->title],
+                        'pre_test' => $preTest === null ? null : $this->preTestSummary($attempts->get("{$enrollment->id}:{$preTest->id}", collect())),
+                        'post_test' => $postTest === null ? null : $this->postTestSummary($attempts->get("{$enrollment->id}:{$postTest->id}", collect())),
+                    ];
+                })
+                ->values()
+                ->all();
+
+            return [$enrollment->id => $modules];
+        });
+    }
+
+    /**
+     * @param  Collection<int, AssessmentAttempt>  $attempts
+     * @return array{score: float}|null
+     */
+    private function preTestSummary(Collection $attempts): ?array
+    {
+        $attempt = $attempts->first();
+
+        return $attempt === null ? null : ['score' => (float) $attempt->score];
+    }
+
+    /**
+     * @param  Collection<int, AssessmentAttempt>  $attempts
+     * @return array{best_score: float, attempts: int, passed: bool}|null
+     */
+    private function postTestSummary(Collection $attempts): ?array
+    {
+        if ($attempts->isEmpty()) {
+            return null;
+        }
+
+        return [
+            'best_score' => (float) $attempts->max('score'),
+            'attempts' => $attempts->count(),
+            'passed' => $attempts->contains('passed', true),
+        ];
+    }
+}

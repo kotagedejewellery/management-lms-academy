@@ -21,7 +21,7 @@ KGJ Academy adalah Learning Management System internal untuk onboarding, SOP, pr
 | Super Admin | Konfigurasi menyeluruh, user, materi, laporan, dan audit. |
 | LMS Admin / HR | User, struktur organisasi, course, path, enrollment, dan laporan. |
 | Trainer / Mentor | Course dan penilaian yang ditugaskan. |
-| Manager Divisi | Progres tim/cabang yang menjadi kewenangannya. |
+| Manager Tim | Progres bawahan langsung yang menjadi kewenangannya. |
 | Employee / Learner | Materi, Pre-Test, Post-Test, hasil, dan progres pribadi. |
 | Management / Owner | Dashboard agregat dan laporan eksekutif. |
 

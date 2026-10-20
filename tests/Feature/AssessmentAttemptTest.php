@@ -58,6 +58,34 @@ class AssessmentAttemptTest extends TestCase
         $this->actingAs($user)->get(route('my-learning.assessments.result', [$course, $assessment]))->assertOk()->assertInertia(fn (Assert $page) => $page->where('improvement', 40));
     }
 
+    public function test_course_post_test_requires_all_module_post_tests_to_be_passed(): void
+    {
+        $user = User::factory()->create();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-COMBINED-POST-001', 'title' => 'Evaluasi lengkap', 'passing_grade' => 70, 'requires_post_test' => true, 'status' => 'published']);
+        $module = $course->modules()->create(['title' => 'Modul', 'sequence' => 1]);
+        $lesson = $module->lessons()->create(['title' => 'Lesson', 'type' => 'article', 'content' => 'Isi', 'is_required' => true, 'sequence' => 1]);
+        $enrollment = $user->enrollments()->create(['course_id' => $course->id]);
+        $modulePostTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'post_test', 'is_required' => true, 'passing_grade' => 70, 'attempt_limit' => 3]);
+        $moduleQuestion = $modulePostTest->questions()->create(['prompt' => 'Modul selesai?', 'points' => 1, 'sequence' => 1]);
+        $moduleAnswer = $moduleQuestion->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
+        $coursePostTest = Assessment::query()->create(['course_id' => $course->id, 'type' => 'post_test', 'passing_grade' => 70, 'attempt_limit' => 3]);
+        $courseQuestion = $coursePostTest->questions()->create(['prompt' => 'Course selesai?', 'points' => 1, 'sequence' => 1]);
+        $courseAnswer = $courseQuestion->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
+        $enrollment->lessonProgress()->create(['lesson_id' => $lesson->id, 'status' => 'completed', 'completed_at' => now()]);
+
+        $this->actingAs($user)->post(route('my-learning.assessments.submit', [$course, $coursePostTest]), ['answers' => [$courseQuestion->id => $courseAnswer->id]])
+            ->assertSessionHasErrors('assessment');
+        $this->assertDatabaseMissing('assessment_attempts', ['assessment_id' => $coursePostTest->id, 'enrollment_id' => $enrollment->id]);
+
+        $this->actingAs($user)->post(route('my-learning.assessments.submit', [$course, $modulePostTest]), ['answers' => [$moduleQuestion->id => $moduleAnswer->id]])
+            ->assertRedirect(route('my-learning.assessments.result', [$course, $modulePostTest]));
+        $this->actingAs($user)->post(route('my-learning.assessments.submit', [$course, $coursePostTest]), ['answers' => [$courseQuestion->id => $courseAnswer->id]])
+            ->assertRedirect(route('my-learning.assessments.result', [$course, $coursePostTest]));
+
+        $this->assertDatabaseHas('enrollments', ['id' => $enrollment->id, 'status' => 'completed']);
+    }
+
     public function test_course_without_a_required_post_test_completes_after_required_lessons(): void
     {
         $user = User::factory()->create();

@@ -96,6 +96,7 @@ const expectedItems: Record<string, string[]> = {
     trainer: [
         'Dashboard',
         'Kelola course',
+        'Progres course',
         'Pembelajaran saya',
         'Jalur belajar saya',
         'Katalog course',

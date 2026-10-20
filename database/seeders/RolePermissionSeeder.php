@@ -26,7 +26,7 @@ class RolePermissionSeeder extends Seeder
             'super-admin' => 'Super Admin',
             'lms-admin' => 'LMS Admin / HR',
             'trainer' => 'Trainer / Mentor',
-            'manager' => 'Manager Divisi',
+            'manager' => 'Manager Tim',
             'employee' => 'Employee / Learner',
             'management' => 'Management / Owner',
         ])->mapWithKeys(fn (string $name, string $slug) => [

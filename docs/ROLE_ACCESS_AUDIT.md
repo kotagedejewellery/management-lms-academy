@@ -45,6 +45,7 @@ Matriks ini menggambarkan menu yang dirender di sidebar. Endpoint Pembelajaran s
 | Penugasan course / jalur | ✓ | ✓ | — | — | — | — |
 | Pengumuman | ✓ | ✓ | — | — | — | — |
 | Laporan | ✓ | ✓ | — | — | — | ✓ |
+| Progres course yang ditugaskan | — | — | ✓* | — | — | — |
 | Progres tim | ✓ | — | — | ✓* | — | — |
 | Aktivitas audit | ✓ | — | — | — | — | — |
 | Sertifikat | ✓* | ✓* | ✓ | ✓ | ✓ | ✓ |
@@ -85,10 +86,11 @@ Matriks ini menggambarkan menu yang dirender di sidebar. Endpoint Pembelajaran s
 | Course yang ditugaskan | Sesuai | Daftar course, materi, resource, thumbnail, dan assessment dibatasi oleh relasi `course_trainers`. Trainer tidak dapat mengubah trainer course. |
 | Course baru | Sesuai | Hanya LMS Admin/Super Admin (`manage-enrollments`) yang dapat membuka dan mengirim pembuatan course. Trainer mengelola course yang telah ditugaskan. |
 | Kategori course global | Sesuai | Hanya LMS Admin/Super Admin (`manage-enrollments`) yang dapat membuka, membuat, dan mengubah taxonomy kategori global. |
+| Progres course | Sesuai | Melihat status, ringkasan course, serta hasil Pre-Test/Post-Test per modul learner hanya untuk course yang ditugaskan melalui relasi `course_trainers`; tidak tersedia ekspor maupun filter divisi. |
 | Learner pribadi | Sesuai | Tetap dapat memakai Pembelajaran saya, Jalur belajar saya, katalog, progres, sertifikat, dan notifikasi. |
 | User, organisasi, penugasan, pengumuman, laporan, audit | Terbatas dengan benar | Tidak ditampilkan dan ditolak oleh otorisasi server. |
 
-### Manager
+### Manager Tim
 
 | Area | Status | Perilaku aktual |
 | --- | --- | --- |
@@ -125,15 +127,14 @@ Matriks ini menggambarkan menu yang dirender di sidebar. Endpoint Pembelajaran s
 | P1 | Trainer dapat membuat course sendiri | Ditutup. `courses.create` dan `courses.store` kini memerlukan `manage-enrollments`; CTA pembuatan juga tidak dirender untuk Trainer. |
 | P1 | Trainer dapat mengubah kategori course global | Ditutup. Seluruh endpoint kategori kini memerlukan `manage-enrollments`; tautan pengelolaan kategori disembunyikan dari Trainer. |
 
-## Gap dan keputusan yang masih terbuka
+## Batas produk yang disengaja
 
-| Prioritas | Temuan | Dampak | Rekomendasi |
-| --- | --- | --- | --- |
-| P2 | Role dan permission bersifat fixed | Tidak ada UI untuk membuat role/permission/custom role; perubahan harus melalui seeder/deployment. | Tegaskan kebijakan satu set role tetap, atau bangun modul RBAC jika HR membutuhkan role kustom. |
-| P2 | Data model mengizinkan multi-role, UI user hanya menetapkan satu role | Jika multi-role dibuat langsung di database, sidebar dapat gabungan dan dashboard memakai prioritas operasional > trainer > manager > management > learner. | Rekomendasi: tetapkan satu role operasional per akun sampai ada desain role switcher dan aturan dashboard multi-role. |
-| P2 | Cakupan Manager hanya direct report | Tidak ada roll-up divisi/cabang. | Pertahankan bila manager memang mengelola bawahan langsung; tambahkan scope organisasi eksplisit bila diperlukan. |
-| P3 | Super Admin memakai dashboard operasi | Tidak ada dashboard administratif/infrastruktur terpisah. | Tidak perlu untuk MVP; pertimbangkan bila operasi aplikasi membutuhkan pemantauan queue, health, atau konfigurasi. |
-| P3 | Management tidak melihat sertifikat semua orang | Owner hanya dapat melihat sertifikat sendiri meskipun dapat melihat laporan. | Tambahkan permission `view-certificates` hanya jika ada kebutuhan audit sertifikat. |
+Kebijakan yang sudah ditetapkan: Manager Tim hanya melihat bawahan langsung berdasarkan `manager_id`; Management melihat laporan agregat organisasi; dan akun yang dikelola melalui UI atau impor memiliki satu role operasional. Model data tetap mendukung multi-role untuk kompatibilitas teknis, tetapi role switcher bukan bagian dari produk.
+
+| Area | Keputusan | Alasan |
+| --- | --- | --- |
+| Dashboard infrastruktur Super Admin | Tidak tersedia pada MVP. | Health, queue, konfigurasi, dan secret dipantau melalui infrastruktur VPS, bukan aplikasi pembelajaran. |
+| Sertifikat organisasi untuk Management | Tidak tersedia. | Management menerima laporan agregat; sertifikat tetap privat sampai ada kebutuhan audit sertifikat yang eksplisit. |
 
 ## Bukti pemeriksaan
 

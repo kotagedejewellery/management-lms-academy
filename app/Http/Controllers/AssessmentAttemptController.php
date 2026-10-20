@@ -118,7 +118,7 @@ class AssessmentAttemptController extends Controller
             $attempt->update(['score' => $score, 'passed' => $passed, 'submitted_at' => now()]);
             $attempt->responses()->createMany($responses);
             $draft?->delete();
-            if ($assessment->module_id === null && $passed === true && $course->requires_post_test) {
+            if ($assessment->module_id === null && $passed === true && $course->requires_post_test && app(ModuleLearningProgression::class)->courseModulesCompleted($course, $enrollment)) {
                 $enrollment->update(['status' => 'completed', 'completed_at' => now()]);
             } elseif ($assessment->module_id !== null && $passed === true && ! $course->requires_post_test && app(ModuleLearningProgression::class)->courseModulesCompleted($course, $enrollment)) {
                 $enrollment->update(['status' => 'completed', 'completed_at' => now()]);

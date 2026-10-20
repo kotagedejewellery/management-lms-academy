@@ -24,6 +24,7 @@ use App\Http\Controllers\MyLearningPathController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TeamProgressController;
+use App\Http\Controllers\TrainerProgressController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => auth()->check()
@@ -41,6 +42,7 @@ Route::middleware(['auth', 'verified', 'active', 'audit'])->group(function () {
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('reports/courses', [ReportController::class, 'courses'])->name('reports.courses');
     Route::get('team-progress', [TeamProgressController::class, 'index'])->name('team-progress.index');
+    Route::get('trainer-progress', [TrainerProgressController::class, 'index'])->name('trainer-progress.index');
     Route::post('reports/exports', [ReportController::class, 'export'])->name('reports.exports.store');
     Route::get('reports/exports/{reportExport}', [ReportController::class, 'download'])->name('reports.exports.download');
     Route::get('my-learning', [LearningController::class, 'index'])->name('my-learning.index');

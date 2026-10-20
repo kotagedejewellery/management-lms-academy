@@ -42,6 +42,7 @@ class AssessmentController extends Controller
     public function store(Request $request, Course $course): RedirectResponse
     {
         $this->authorizeCourses($request);
+        $this->ensureEditable($course);
         $data = $request->validate([
             'type' => ['required', Rule::in(['pre_test', 'post_test'])],
             'passing_grade' => ['required', 'integer', 'min:0', 'max:100'],
@@ -81,6 +82,7 @@ class AssessmentController extends Controller
     {
         $this->authorizeCourses($request);
         abort_unless($assessment->course_id === $course->id, 404);
+        $this->ensureEditable($course, $assessment);
 
         $data = $request->validate([
             'passing_grade' => ['required', 'integer', 'min:0', 'max:100'],
@@ -101,6 +103,7 @@ class AssessmentController extends Controller
     {
         $this->authorizeCourses($request);
         abort_unless($assessment->course_id === $course->id, 404);
+        $this->ensureEditable($course, $assessment);
         $data = $request->validate([
             'prompt' => ['required', 'string', 'max:5000'],
             'explanation' => ['nullable', 'string', 'max:5000'],
@@ -131,7 +134,7 @@ class AssessmentController extends Controller
     {
         $this->authorizeCourses($request);
         abort_unless($assessment->course_id === $course->id && $question->assessment_id === $assessment->id, 404);
-        abort_if($assessment->attempts()->exists(), 422, 'Soal yang sudah memiliki riwayat pengerjaan tidak dapat dihapus.');
+        $this->ensureEditable($course, $assessment);
         DB::transaction(function () use ($assessment, $question): void {
             Assessment::query()->lockForUpdate()->findOrFail($assessment->id);
             $lockedQuestion = Question::query()->lockForUpdate()->findOrFail($question->id);
@@ -147,7 +150,7 @@ class AssessmentController extends Controller
     {
         $this->authorizeCourses($request);
         abort_unless($assessment->course_id === $course->id && $question->assessment_id === $assessment->id, 404);
-        abort_if($assessment->attempts()->exists(), 422, 'Soal yang sudah memiliki riwayat pengerjaan tidak dapat diubah urutannya.');
+        $this->ensureEditable($course, $assessment);
         $direction = $request->validate(['direction' => ['required', Rule::in(['up', 'down'])]])['direction'];
 
         DB::transaction(function () use ($assessment, $question, $direction): void {
@@ -182,6 +185,12 @@ class AssessmentController extends Controller
         if ($course instanceof Course) {
             abort_unless($user->canManageCourse($course), 403);
         }
+    }
+
+    private function ensureEditable(Course $course, ?Assessment $assessment = null): void
+    {
+        abort_if($course->status !== 'draft', 422, 'Assessment hanya dapat diubah saat course masih draft.');
+        abort_if($assessment?->attempts()->exists(), 422, 'Assessment yang sudah memiliki riwayat pengerjaan tidak dapat diubah.');
     }
 
     /** @return array<string, mixed>|null */

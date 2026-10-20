@@ -41,6 +41,15 @@ export function buildSidebarNavigation(
                   },
               ]
             : []),
+        ...(capabilities.manageCourses && !capabilities.manageEnrollments
+            ? [
+                  {
+                      title: 'Progres course',
+                      href: '/trainer-progress',
+                      icon: ListTree,
+                  },
+              ]
+            : []),
         ...(capabilities.manageLearningPaths
             ? [
                   {
