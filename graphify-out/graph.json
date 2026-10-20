@@ -212,19 +212,6 @@
       "source_location": "L20"
     },
     {
-      "id": "tests_feature_courselibrarytest_courselibrarytest",
-      "label": "CourseLibraryTest",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 121,
-      "community_name": "DashboardTest",
-      "file_type": "code",
-      "norm_label": "courselibrarytest",
-      "source_file": "tests/Feature/CourseLibraryTest.php",
-      "source_location": "L13"
-    },
-    {
       "id": "tests_feature_dashboardtest_dashboardtest",
       "label": "DashboardTest",
       "_callable": true,
@@ -236,19 +223,6 @@
       "norm_label": "dashboardtest",
       "source_file": "tests/Feature/DashboardTest.php",
       "source_location": "L16"
-    },
-    {
-      "id": "tests_feature_teamprogresstest_teamprogresstest",
-      "label": "TeamProgressTest",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 121,
-      "community_name": "DashboardTest",
-      "file_type": "code",
-      "norm_label": "teamprogresstest",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L14"
     },
     {
       "id": "app_concerns_profilevalidationrules_profilevalidationrules",
@@ -303,19 +277,6 @@
       "source_location": "L5"
     },
     {
-      "id": "database_seeders_rolepermissionseeder_rolepermissionseeder",
-      "label": "RolePermissionSeeder",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 131,
-      "community_name": "RoleAccessContractTest",
-      "file_type": "code",
-      "norm_label": "rolepermissionseeder",
-      "source_file": "database/seeders/RolePermissionSeeder.php",
-      "source_location": "L9"
-    },
-    {
       "id": "tests_feature_roleaccesscontracttest_roleaccesscontracttest",
       "label": "RoleAccessContractTest",
       "_callable": true,
@@ -355,6 +316,32 @@
       "source_location": "L8"
     },
     {
+      "id": "database_seeders_databaseseeder_databaseseeder",
+      "label": "DatabaseSeeder",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "Role",
+      "file_type": "code",
+      "norm_label": "databaseseeder",
+      "source_file": "database/seeders/DatabaseSeeder.php",
+      "source_location": "L11"
+    },
+    {
+      "id": "database_seeders_rolepermissionseeder_rolepermissionseeder",
+      "label": "RolePermissionSeeder",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "Role",
+      "file_type": "code",
+      "norm_label": "rolepermissionseeder",
+      "source_file": "database/seeders/RolePermissionSeeder.php",
+      "source_location": "L9"
+    },
+    {
       "id": "tests_feature_admin_organizationmanagementtest_organizationmanagementtest",
       "label": "OrganizationManagementTest",
       "_callable": true,
@@ -392,6 +379,19 @@
       "norm_label": "learningpathassignmenttest",
       "source_file": "tests/Feature/LearningPathAssignmentTest.php",
       "source_location": "L21"
+    },
+    {
+      "id": "tests_feature_teamprogresstest_teamprogresstest",
+      "label": "TeamProgressTest",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "Role",
+      "file_type": "code",
+      "norm_label": "teamprogresstest",
+      "source_file": "tests/Feature/TeamProgressTest.php",
+      "source_location": "L14"
     },
     {
       "id": "tests_feature_userimporttest_userimporttest",
@@ -2032,6 +2032,19 @@
       "source_location": "L13"
     },
     {
+      "id": "tests_feature_auth_passwordconfirmationtest_passwordconfirmationtest",
+      "label": "PasswordConfirmationTest",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "User",
+      "file_type": "code",
+      "norm_label": "passwordconfirmationtest",
+      "source_file": "tests/Feature/Auth/PasswordConfirmationTest.php",
+      "source_location": "L10"
+    },
+    {
       "id": "tests_feature_auth_passwordresettest_passwordresettest",
       "label": "PasswordResetTest",
       "_callable": true,
@@ -2043,19 +2056,6 @@
       "norm_label": "passwordresettest",
       "source_file": "tests/Feature/Auth/PasswordResetTest.php",
       "source_location": "L12"
-    },
-    {
-      "id": "tests_feature_localtestingseedertest_localtestingseedertest",
-      "label": "LocalTestingSeederTest",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "User",
-      "file_type": "code",
-      "norm_label": "localtestingseedertest",
-      "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L16"
     },
     {
       "id": "tests_feature_settings_profileupdatetest_profileupdatetest",
@@ -2331,16 +2331,16 @@
       "source_location": "L9"
     },
     {
-      "id": "tests_feature_auth_passwordconfirmationtest_passwordconfirmationtest",
-      "label": "PasswordConfirmationTest",
+      "id": "database_seeders_localcustomerservicedealmakerseeder_localcustomerservicedealmakerseeder",
+      "label": "LocalCustomerServiceDealmakerSeeder",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 6,
       "community_name": "TestCase",
       "file_type": "code",
-      "norm_label": "passwordconfirmationtest",
-      "source_file": "tests/Feature/Auth/PasswordConfirmationTest.php",
+      "norm_label": "localcustomerservicedealmakerseeder",
+      "source_file": "database/seeders/LocalCustomerServiceDealmakerSeeder.php",
       "source_location": "L10"
     },
     {
@@ -2383,6 +2383,19 @@
       "source_location": "L9"
     },
     {
+      "id": "tests_feature_courselibrarytest_courselibrarytest",
+      "label": "CourseLibraryTest",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "TestCase",
+      "file_type": "code",
+      "norm_label": "courselibrarytest",
+      "source_file": "tests/Feature/CourseLibraryTest.php",
+      "source_location": "L13"
+    },
+    {
       "id": "tests_feature_deadlineremindertest_deadlineremindertest",
       "label": "DeadlineReminderTest",
       "_callable": true,
@@ -2420,6 +2433,32 @@
       "norm_label": "learningprogresstest",
       "source_file": "tests/Feature/LearningProgressTest.php",
       "source_location": "L12"
+    },
+    {
+      "id": "tests_feature_localcustomerservicedealmakerseedertest_localcustomerservicedealmakerseedertest",
+      "label": "LocalCustomerServiceDealmakerSeederTest",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "TestCase",
+      "file_type": "code",
+      "norm_label": "localcustomerservicedealmakerseedertest",
+      "source_file": "tests/Feature/LocalCustomerServiceDealmakerSeederTest.php",
+      "source_location": "L14"
+    },
+    {
+      "id": "tests_feature_localtestingseedertest_localtestingseedertest",
+      "label": "LocalTestingSeederTest",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "TestCase",
+      "file_type": "code",
+      "norm_label": "localtestingseedertest",
+      "source_file": "tests/Feature/LocalTestingSeederTest.php",
+      "source_location": "L17"
     },
     {
       "id": "tests_testcase_testcase",
@@ -2792,50 +2831,11 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
+      "community_name": "CustomerServiceDealmakerSeeder",
       "file_type": "code",
       "norm_label": "customerservicedealmakerseeder",
       "source_file": "database/seeders/CustomerServiceDealmakerSeeder.php",
       "source_location": "L15"
-    },
-    {
-      "id": "database_seeders_databaseseeder_databaseseeder",
-      "label": "DatabaseSeeder",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
-      "file_type": "code",
-      "norm_label": "databaseseeder",
-      "source_file": "database/seeders/DatabaseSeeder.php",
-      "source_location": "L11"
-    },
-    {
-      "id": "database_seeders_localcustomerservicedealmakerseeder_localcustomerservicedealmakerseeder",
-      "label": "LocalCustomerServiceDealmakerSeeder",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
-      "file_type": "code",
-      "norm_label": "localcustomerservicedealmakerseeder",
-      "source_file": "database/seeders/LocalCustomerServiceDealmakerSeeder.php",
-      "source_location": "L10"
-    },
-    {
-      "id": "tests_feature_localcustomerservicedealmakerseedertest_localcustomerservicedealmakerseedertest",
-      "label": "LocalCustomerServiceDealmakerSeederTest",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
-      "file_type": "code",
-      "norm_label": "localcustomerservicedealmakerseedertest",
-      "source_file": "tests/Feature/LocalCustomerServiceDealmakerSeederTest.php",
-      "source_location": "L14"
     },
     {
       "id": "app_providers_appserviceprovider_appserviceprovider",
@@ -4782,6 +4782,18 @@
       "source_location": "L16"
     },
     {
+      "id": "tests_feature_localtestingseedertest_localtestingseedertest_test_it_seeds_connected_local_demo_data_without_duplication",
+      "label": ".test_it_seeds_connected_local_demo_data_without_duplication()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "Course",
+      "file_type": "code",
+      "norm_label": ".test_it_seeds_connected_local_demo_data_without_duplication()",
+      "source_file": "tests/Feature/LocalTestingSeederTest.php",
+      "source_location": "L21"
+    },
+    {
       "id": "tests_feature_reporttest_reporttest_reportadmin",
       "label": ".reportAdmin()",
       "_callable": true,
@@ -4998,30 +5010,6 @@
       "source_location": "L145"
     },
     {
-      "id": "tests_feature_teamprogresstest_closure_1",
-      "label": "{closure#1}()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 121,
-      "community_name": "DashboardTest",
-      "file_type": "code",
-      "norm_label": "{closure#1}()",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L34"
-    },
-    {
-      "id": "tests_feature_teamprogresstest_teamprogresstest_test_manager_can_only_see_direct_reports",
-      "label": ".test_manager_can_only_see_direct_reports()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 121,
-      "community_name": "DashboardTest",
-      "file_type": "code",
-      "norm_label": ".test_manager_can_only_see_direct_reports()",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L18"
-    },
-    {
       "id": "database_migrations_2026_10_09_000012_add_phone_to_users_table_closure_1",
       "label": "{closure#1}()",
       "_callable": true,
@@ -5190,18 +5178,6 @@
       "source_location": "L18"
     },
     {
-      "id": "database_seeders_rolepermissionseeder_rolepermissionseeder_run",
-      "label": ".run()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 131,
-      "community_name": "RoleAccessContractTest",
-      "file_type": "code",
-      "norm_label": ".run()",
-      "source_file": "database/seeders/RolePermissionSeeder.php",
-      "source_location": "L11"
-    },
-    {
       "id": "tests_feature_roleaccesscontracttest_closure_1",
       "label": "{closure#1}()",
       "_callable": true,
@@ -5274,16 +5250,16 @@
       "source_location": "L93"
     },
     {
-      "id": "app_console_commands_makesuperadmin_makesuperadmin_handle",
-      "label": ".handle()",
+      "id": "database_seeders_databaseseeder_databaseseeder_run",
+      "label": ".run()",
       "_callable": true,
       "_origin": "ast",
       "community": 14,
       "community_name": "Role",
       "file_type": "code",
-      "norm_label": ".handle()",
-      "source_file": "app/Console/Commands/MakeSuperAdmin.php",
-      "source_location": "L15"
+      "norm_label": ".run()",
+      "source_file": "database/seeders/DatabaseSeeder.php",
+      "source_location": "L18"
     },
     {
       "id": "database_seeders_rolepermissionseeder_closure_1",
@@ -5308,6 +5284,18 @@
       "norm_label": "{closure#2}()",
       "source_file": "database/seeders/RolePermissionSeeder.php",
       "source_location": "L32"
+    },
+    {
+      "id": "database_seeders_rolepermissionseeder_rolepermissionseeder_run",
+      "label": ".run()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "Role",
+      "file_type": "code",
+      "norm_label": ".run()",
+      "source_file": "database/seeders/RolePermissionSeeder.php",
+      "source_location": "L11"
     },
     {
       "id": "tests_feature_admin_organizationmanagementtest_organizationmanagementtest_organizationadmin",
@@ -5500,6 +5488,18 @@
       "norm_label": ".test_matching_rule_assigns_path_and_courses_when_an_employee_is_created()",
       "source_file": "tests/Feature/LearningPathAssignmentTest.php",
       "source_location": "L49"
+    },
+    {
+      "id": "tests_feature_teamprogresstest_teamprogresstest_test_manager_can_only_see_direct_reports",
+      "label": ".test_manager_can_only_see_direct_reports()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "Role",
+      "file_type": "code",
+      "norm_label": ".test_manager_can_only_see_direct_reports()",
+      "source_file": "tests/Feature/TeamProgressTest.php",
+      "source_location": "L18"
     },
     {
       "id": "tests_feature_userimporttest_userimporttest_test_admin_can_download_the_official_user_import_template",
@@ -9546,6 +9546,18 @@
       "source_location": "L236"
     },
     {
+      "id": "tests_feature_auth_passwordconfirmationtest_closure_1",
+      "label": "{closure#1}()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "Inertia\\Testing\\AssertableInertia",
+      "file_type": "code",
+      "norm_label": "{closure#1}()",
+      "source_file": "tests/Feature/Auth/PasswordConfirmationTest.php",
+      "source_location": "L22"
+    },
+    {
       "id": "tests_feature_courselibrarytest_closure_1",
       "label": "{closure#1}()",
       "_callable": true,
@@ -9772,6 +9784,18 @@
       "norm_label": "{closure#1}()",
       "source_file": "tests/Feature/Settings/SecurityTest.php",
       "source_location": "L23"
+    },
+    {
+      "id": "tests_feature_teamprogresstest_closure_1",
+      "label": "{closure#1}()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "Inertia\\Testing\\AssertableInertia",
+      "file_type": "code",
+      "norm_label": "{closure#1}()",
+      "source_file": "tests/Feature/TeamProgressTest.php",
+      "source_location": "L34"
     },
     {
       "id": "tests_feature_trainerprogresstest_closure_1",
@@ -10347,7 +10371,7 @@
       "file_type": "code",
       "norm_label": "{closure#6}()",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L387"
+      "source_location": "L386"
     },
     {
       "id": "database_seeders_localtestingseeder_closure_7",
@@ -10359,7 +10383,7 @@
       "file_type": "code",
       "norm_label": "{closure#7}()",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L409"
+      "source_location": "L408"
     },
     {
       "id": "resources_js_pages_admin_courses_index_applyfilters",
@@ -11430,6 +11454,30 @@
       "source_location": "L219"
     },
     {
+      "id": "app_console_commands_makesuperadmin_makesuperadmin_handle",
+      "label": ".handle()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "User",
+      "file_type": "code",
+      "norm_label": ".handle()",
+      "source_file": "app/Console/Commands/MakeSuperAdmin.php",
+      "source_location": "L15"
+    },
+    {
+      "id": "app_jobs_issuecertificate_issuecertificate_handle",
+      "label": ".handle()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "User",
+      "file_type": "code",
+      "norm_label": ".handle()",
+      "source_file": "app/Jobs/IssueCertificate.php",
+      "source_location": "L24"
+    },
+    {
       "id": "app_models_course_course_trainers",
       "label": ".trainers()",
       "_callable": true,
@@ -11766,6 +11814,42 @@
       "source_location": "L98"
     },
     {
+      "id": "tests_feature_auth_passwordconfirmationtest_passwordconfirmationtest_test_confirm_password_screen_can_be_rendered",
+      "label": ".test_confirm_password_screen_can_be_rendered()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "User",
+      "file_type": "code",
+      "norm_label": ".test_confirm_password_screen_can_be_rendered()",
+      "source_file": "tests/Feature/Auth/PasswordConfirmationTest.php",
+      "source_location": "L14"
+    },
+    {
+      "id": "tests_feature_auth_passwordconfirmationtest_passwordconfirmationtest_test_password_confirmation_requires_authentication",
+      "label": ".test_password_confirmation_requires_authentication()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "User",
+      "file_type": "code",
+      "norm_label": ".test_password_confirmation_requires_authentication()",
+      "source_file": "tests/Feature/Auth/PasswordConfirmationTest.php",
+      "source_location": "L27"
+    },
+    {
+      "id": "tests_feature_auth_passwordconfirmationtest_passwordconfirmationtest_test_user_can_confirm_their_password_without_an_identifier_column",
+      "label": ".test_user_can_confirm_their_password_without_an_identifier_column()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "User",
+      "file_type": "code",
+      "norm_label": ".test_user_can_confirm_their_password_without_an_identifier_column()",
+      "source_file": "tests/Feature/Auth/PasswordConfirmationTest.php",
+      "source_location": "L34"
+    },
+    {
       "id": "tests_feature_auth_passwordresettest_passwordresettest_setup",
       "label": ".setUp()",
       "_callable": true,
@@ -11836,42 +11920,6 @@
       "norm_label": ".test_reset_password_screen_can_be_rendered()",
       "source_file": "tests/Feature/Auth/PasswordResetTest.php",
       "source_location": "L41"
-    },
-    {
-      "id": "tests_feature_localtestingseedertest_localtestingseedertest_test_it_preserves_unrelated_local_data_when_demo_data_is_refreshed",
-      "label": ".test_it_preserves_unrelated_local_data_when_demo_data_is_refreshed()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "User",
-      "file_type": "code",
-      "norm_label": ".test_it_preserves_unrelated_local_data_when_demo_data_is_refreshed()",
-      "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L50"
-    },
-    {
-      "id": "tests_feature_localtestingseedertest_localtestingseedertest_test_it_seeds_connected_local_demo_data_without_duplication",
-      "label": ".test_it_seeds_connected_local_demo_data_without_duplication()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "User",
-      "file_type": "code",
-      "norm_label": ".test_it_seeds_connected_local_demo_data_without_duplication()",
-      "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L20"
-    },
-    {
-      "id": "tests_feature_localtestingseedertest_localtestingseedertest_test_seeded_data_loads_the_core_admin_manager_and_learner_pages",
-      "label": ".test_seeded_data_loads_the_core_admin_manager_and_learner_pages()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "User",
-      "file_type": "code",
-      "norm_label": ".test_seeded_data_loads_the_core_admin_manager_and_learner_pages()",
-      "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L60"
     },
     {
       "id": "tests_feature_settings_profileupdatetest_profileupdatetest_test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged",
@@ -12183,7 +12231,7 @@
       "file_type": "code",
       "norm_label": ".completelessons()",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L385"
+      "source_location": "L384"
     },
     {
       "id": "database_seeders_localtestingseeder_localtestingseeder_demopdf",
@@ -12195,7 +12243,7 @@
       "file_type": "code",
       "norm_label": ".demopdf()",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L452"
+      "source_location": "L451"
     },
     {
       "id": "database_seeders_localtestingseeder_localtestingseeder_run",
@@ -12231,7 +12279,7 @@
       "file_type": "code",
       "norm_label": ".seedactivity()",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L444"
+      "source_location": "L443"
     },
     {
       "id": "database_seeders_localtestingseeder_localtestingseeder_seedassessment",
@@ -12243,7 +12291,7 @@
       "file_type": "code",
       "norm_label": ".seedassessment()",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L341"
+      "source_location": "L340"
     },
     {
       "id": "database_seeders_localtestingseeder_localtestingseeder_seedattempt",
@@ -12255,7 +12303,7 @@
       "file_type": "code",
       "norm_label": ".seedattempt()",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L395"
+      "source_location": "L394"
     },
     {
       "id": "database_seeders_localtestingseeder_localtestingseeder_seedenrollment",
@@ -12267,7 +12315,7 @@
       "file_type": "code",
       "norm_label": ".seedenrollment()",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L376"
+      "source_location": "L375"
     },
     {
       "id": "database_seeders_localtestingseeder_localtestingseeder_seedlessons",
@@ -12279,7 +12327,7 @@
       "file_type": "code",
       "norm_label": ".seedlessons()",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L312"
+      "source_location": "L311"
     },
     {
       "id": "database_seeders_localtestingseeder_localtestingseeder_seednotifications",
@@ -12291,7 +12339,7 @@
       "file_type": "code",
       "norm_label": ".seednotifications()",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L421"
+      "source_location": "L420"
     },
     {
       "id": "database_seeders_localtestingseeder_localtestingseeder_seedpathcourses",
@@ -12303,7 +12351,7 @@
       "file_type": "code",
       "norm_label": ".seedpathcourses()",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L366"
+      "source_location": "L365"
     },
     {
       "id": "database_seeders_localtestingseeder_localtestingseeder_upsertcourse",
@@ -12315,7 +12363,7 @@
       "file_type": "code",
       "norm_label": ".upsertcourse()",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L303"
+      "source_location": "L302"
     },
     {
       "id": "database_seeders_localtestingseeder_localtestingseeder_upsertuser",
@@ -12327,7 +12375,7 @@
       "file_type": "code",
       "norm_label": ".upsertuser()",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L293"
+      "source_location": "L292"
     },
     {
       "id": "resources_js_components_assigneepicker_clearresults",
@@ -12522,52 +12570,16 @@
       "source_location": "L18"
     },
     {
-      "id": "tests_feature_auth_passwordconfirmationtest_closure_1",
-      "label": "{closure#1}()",
+      "id": "database_seeders_localcustomerservicedealmakerseeder_localcustomerservicedealmakerseeder_run",
+      "label": ".run()",
       "_callable": true,
       "_origin": "ast",
       "community": 6,
       "community_name": "TestCase",
       "file_type": "code",
-      "norm_label": "{closure#1}()",
-      "source_file": "tests/Feature/Auth/PasswordConfirmationTest.php",
-      "source_location": "L22"
-    },
-    {
-      "id": "tests_feature_auth_passwordconfirmationtest_passwordconfirmationtest_test_confirm_password_screen_can_be_rendered",
-      "label": ".test_confirm_password_screen_can_be_rendered()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "TestCase",
-      "file_type": "code",
-      "norm_label": ".test_confirm_password_screen_can_be_rendered()",
-      "source_file": "tests/Feature/Auth/PasswordConfirmationTest.php",
-      "source_location": "L14"
-    },
-    {
-      "id": "tests_feature_auth_passwordconfirmationtest_passwordconfirmationtest_test_password_confirmation_requires_authentication",
-      "label": ".test_password_confirmation_requires_authentication()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "TestCase",
-      "file_type": "code",
-      "norm_label": ".test_password_confirmation_requires_authentication()",
-      "source_file": "tests/Feature/Auth/PasswordConfirmationTest.php",
-      "source_location": "L27"
-    },
-    {
-      "id": "tests_feature_auth_passwordconfirmationtest_passwordconfirmationtest_test_user_can_confirm_their_password_without_an_identifier_column",
-      "label": ".test_user_can_confirm_their_password_without_an_identifier_column()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "TestCase",
-      "file_type": "code",
-      "norm_label": ".test_user_can_confirm_their_password_without_an_identifier_column()",
-      "source_file": "tests/Feature/Auth/PasswordConfirmationTest.php",
-      "source_location": "L34"
+      "norm_label": ".run()",
+      "source_file": "database/seeders/LocalCustomerServiceDealmakerSeeder.php",
+      "source_location": "L12"
     },
     {
       "id": "tests_feature_auth_passwordresettest_closure_1",
@@ -12748,6 +12760,42 @@
       "norm_label": "{closure#1}()",
       "source_file": "tests/Feature/LearningProgressTest.php",
       "source_location": "L27"
+    },
+    {
+      "id": "tests_feature_localcustomerservicedealmakerseedertest_localcustomerservicedealmakerseedertest_test_it_seeds_the_customer_service_course_without_duplication",
+      "label": ".test_it_seeds_the_customer_service_course_without_duplication()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "TestCase",
+      "file_type": "code",
+      "norm_label": ".test_it_seeds_the_customer_service_course_without_duplication()",
+      "source_file": "tests/Feature/LocalCustomerServiceDealmakerSeederTest.php",
+      "source_location": "L18"
+    },
+    {
+      "id": "tests_feature_localtestingseedertest_localtestingseedertest_test_it_preserves_unrelated_local_data_when_demo_data_is_refreshed",
+      "label": ".test_it_preserves_unrelated_local_data_when_demo_data_is_refreshed()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "TestCase",
+      "file_type": "code",
+      "norm_label": ".test_it_preserves_unrelated_local_data_when_demo_data_is_refreshed()",
+      "source_file": "tests/Feature/LocalTestingSeederTest.php",
+      "source_location": "L52"
+    },
+    {
+      "id": "tests_feature_localtestingseedertest_localtestingseedertest_test_seeded_data_loads_the_core_admin_manager_and_learner_pages",
+      "label": ".test_seeded_data_loads_the_core_admin_manager_and_learner_pages()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "TestCase",
+      "file_type": "code",
+      "norm_label": ".test_seeded_data_loads_the_core_admin_manager_and_learner_pages()",
+      "source_file": "tests/Feature/LocalTestingSeederTest.php",
+      "source_location": "L62"
     },
     {
       "id": "tests_testcase_testcase_createapplication",
@@ -13648,6 +13696,18 @@
       "norm_label": "up()",
       "source_file": "database/migrations/2026_10_09_000015_create_user_imports_table.php",
       "source_location": "L9"
+    },
+    {
+      "id": "resources_js_pages_admin_courses_assessments_create",
+      "label": "create()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "code",
+      "norm_label": "create()",
+      "source_file": "resources/js/pages/admin/courses/Assessments.vue",
+      "source_location": "L111"
     },
     {
       "id": "tests_feature_admin_coursemanagementtest_coursemanagementtest_courseadmin",
@@ -15222,18 +15282,6 @@
       "source_location": "L24"
     },
     {
-      "id": "app_jobs_issuecertificate_issuecertificate_handle",
-      "label": ".handle()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 83,
-      "community_name": "ActivityLog",
-      "file_type": "code",
-      "norm_label": ".handle()",
-      "source_file": "app/Jobs/IssueCertificate.php",
-      "source_location": "L24"
-    },
-    {
       "id": "app_models_activitylog_activitylog_actor",
       "label": ".actor()",
       "_callable": true,
@@ -15503,11 +15551,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
+      "community_name": "CustomerServiceDealmakerSeeder",
       "file_type": "code",
       "norm_label": ".assessmentquestions()",
       "source_file": "database/seeders/CustomerServiceDealmakerSeeder.php",
-      "source_location": "L121"
+      "source_location": "L119"
     },
     {
       "id": "database_seeders_customerservicedealmakerseeder_customerservicedealmakerseeder_modules",
@@ -15515,11 +15563,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
+      "community_name": "CustomerServiceDealmakerSeeder",
       "file_type": "code",
       "norm_label": ".modules()",
       "source_file": "database/seeders/CustomerServiceDealmakerSeeder.php",
-      "source_location": "L324"
+      "source_location": "L322"
     },
     {
       "id": "database_seeders_customerservicedealmakerseeder_customerservicedealmakerseeder_q",
@@ -15527,11 +15575,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
+      "community_name": "CustomerServiceDealmakerSeeder",
       "file_type": "code",
       "norm_label": ".q()",
       "source_file": "database/seeders/CustomerServiceDealmakerSeeder.php",
-      "source_location": "L318"
+      "source_location": "L316"
     },
     {
       "id": "database_seeders_customerservicedealmakerseeder_customerservicedealmakerseeder_run",
@@ -15539,7 +15587,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
+      "community_name": "CustomerServiceDealmakerSeeder",
       "file_type": "code",
       "norm_label": ".run()",
       "source_file": "database/seeders/CustomerServiceDealmakerSeeder.php",
@@ -15551,7 +15599,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
+      "community_name": "CustomerServiceDealmakerSeeder",
       "file_type": "code",
       "norm_label": ".seedcourse()",
       "source_file": "database/seeders/CustomerServiceDealmakerSeeder.php",
@@ -15563,47 +15611,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
+      "community_name": "CustomerServiceDealmakerSeeder",
       "file_type": "code",
       "norm_label": ".seedmoduleassessments()",
       "source_file": "database/seeders/CustomerServiceDealmakerSeeder.php",
       "source_location": "L80"
-    },
-    {
-      "id": "database_seeders_databaseseeder_databaseseeder_run",
-      "label": ".run()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
-      "file_type": "code",
-      "norm_label": ".run()",
-      "source_file": "database/seeders/DatabaseSeeder.php",
-      "source_location": "L18"
-    },
-    {
-      "id": "database_seeders_localcustomerservicedealmakerseeder_localcustomerservicedealmakerseeder_run",
-      "label": ".run()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
-      "file_type": "code",
-      "norm_label": ".run()",
-      "source_file": "database/seeders/LocalCustomerServiceDealmakerSeeder.php",
-      "source_location": "L12"
-    },
-    {
-      "id": "tests_feature_localcustomerservicedealmakerseedertest_localcustomerservicedealmakerseedertest_test_it_seeds_the_customer_service_course_without_duplication",
-      "label": ".test_it_seeds_the_customer_service_course_without_duplication()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
-      "file_type": "code",
-      "norm_label": ".test_it_seeds_the_customer_service_course_without_duplication()",
-      "source_file": "tests/Feature/LocalCustomerServiceDealmakerSeederTest.php",
-      "source_location": "L18"
     },
     {
       "id": "app_providers_appserviceprovider_appserviceprovider_boot",
@@ -16192,18 +16204,6 @@
       "norm_label": "up()",
       "source_file": "database/migrations/2026_10_13_000019_add_completion_rules_to_courses_and_assessments.php",
       "source_location": "L10"
-    },
-    {
-      "id": "resources_js_pages_admin_courses_assessments_create",
-      "label": "create()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "code",
-      "norm_label": "create()",
-      "source_file": "resources/js/pages/admin/courses/Assessments.vue",
-      "source_location": "L111"
     },
     {
       "id": "app_actions_fortify_createnewuser_createnewuser_create",
@@ -19099,29 +19099,6 @@
       "source_location": "L1"
     },
     {
-      "id": "tests_feature_teamprogresstest",
-      "label": "TeamProgressTest.php",
-      "_origin": "ast",
-      "community": 121,
-      "community_name": "DashboardTest",
-      "file_type": "code",
-      "norm_label": "teamprogresstest.php",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L1"
-    },
-    {
-      "id": "docs_role_access_audit_bukti_pemeriksaan",
-      "label": "Bukti pemeriksaan",
-      "_origin": "ast",
-      "community": 121,
-      "community_name": "DashboardTest",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "bukti pemeriksaan",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L139"
-    },
-    {
       "id": "database_migrations_2026_10_09_000012_add_phone_to_users_table",
       "label": "2026_10_09_000012_add_phone_to_users_table.php",
       "_origin": "ast",
@@ -20169,6 +20146,17 @@
       "source_location": "L1"
     },
     {
+      "id": "database_seeders_databaseseeder",
+      "label": "DatabaseSeeder.php",
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "Role",
+      "file_type": "code",
+      "norm_label": "databaseseeder.php",
+      "source_file": "database/seeders/DatabaseSeeder.php",
+      "source_location": "L1"
+    },
+    {
       "id": "database_seeders_rolepermissionseeder",
       "label": "RolePermissionSeeder.php",
       "_origin": "ast",
@@ -20180,13 +20168,24 @@
       "source_location": "L1"
     },
     {
-      "id": "illuminate_auth_notifications_verifyemail",
-      "label": "Illuminate\\Auth\\Notifications\\VerifyEmail",
+      "id": "illuminate_database_console_seeds_withoutmodelevents",
+      "label": "Illuminate\\Database\\Console\\Seeds\\WithoutModelEvents",
       "_origin": "ast",
       "community": 14,
       "community_name": "Role",
       "file_type": "code",
-      "norm_label": "illuminate\\auth\\notifications\\verifyemail",
+      "norm_label": "illuminate\\database\\console\\seeds\\withoutmodelevents",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_database_seeder",
+      "label": "Illuminate\\Database\\Seeder",
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "Role",
+      "file_type": "code",
+      "norm_label": "illuminate\\database\\seeder",
       "source_file": "",
       "source_location": ""
     },
@@ -20198,39 +20197,6 @@
       "community_name": "Role",
       "file_type": "code",
       "norm_label": "illuminate\\support\\facades\\queue",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "phpoffice_phpspreadsheet_spreadsheet",
-      "label": "PhpOffice\\PhpSpreadsheet\\Spreadsheet",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "Role",
-      "file_type": "code",
-      "norm_label": "phpoffice\\phpspreadsheet\\spreadsheet",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "phpoffice_phpspreadsheet_writer_xlsx",
-      "label": "PhpOffice\\PhpSpreadsheet\\Writer\\Xlsx",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "Role",
-      "file_type": "code",
-      "norm_label": "phpoffice\\phpspreadsheet\\writer\\xlsx",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "phpunit_framework_attributes_runtestsinseparateprocesses",
-      "label": "PHPUnit\\Framework\\Attributes\\RunTestsInSeparateProcesses",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "Role",
-      "file_type": "code",
-      "norm_label": "phpunit\\framework\\attributes\\runtestsinseparateprocesses",
       "source_file": "",
       "source_location": ""
     },
@@ -20257,17 +20223,6 @@
       "source_location": "L1"
     },
     {
-      "id": "tests_feature_admin_usermanagementtest",
-      "label": "UserManagementTest.php",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "Role",
-      "file_type": "code",
-      "norm_label": "usermanagementtest.php",
-      "source_file": "tests/Feature/Admin/UserManagementTest.php",
-      "source_location": "L1"
-    },
-    {
       "id": "tests_feature_announcementtest",
       "label": "AnnouncementTest.php",
       "_origin": "ast",
@@ -20290,14 +20245,14 @@
       "source_location": "L1"
     },
     {
-      "id": "tests_feature_userimporttest",
-      "label": "UserImportTest.php",
+      "id": "tests_feature_teamprogresstest",
+      "label": "TeamProgressTest.php",
       "_origin": "ast",
       "community": 14,
       "community_name": "Role",
       "file_type": "code",
-      "norm_label": "userimporttest.php",
-      "source_file": "tests/Feature/UserImportTest.php",
+      "norm_label": "teamprogresstest.php",
+      "source_file": "tests/Feature/TeamProgressTest.php",
       "source_location": "L1"
     },
     {
@@ -24559,17 +24514,6 @@
       "source_location": ""
     },
     {
-      "id": "illuminate_http_uploadedfile",
-      "label": "Illuminate\\Http\\UploadedFile",
-      "_origin": "ast",
-      "community": 34,
-      "community_name": "Inertia\\Testing\\AssertableInertia",
-      "file_type": "code",
-      "norm_label": "illuminate\\http\\uploadedfile",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
       "id": "illuminate_support_facades_storage",
       "label": "Illuminate\\Support\\Facades\\Storage",
       "_origin": "ast",
@@ -24625,14 +24569,14 @@
       "source_location": "L1"
     },
     {
-      "id": "tests_feature_courselibrarytest",
-      "label": "CourseLibraryTest.php",
+      "id": "tests_feature_auth_passwordconfirmationtest",
+      "label": "PasswordConfirmationTest.php",
       "_origin": "ast",
       "community": 34,
       "community_name": "Inertia\\Testing\\AssertableInertia",
       "file_type": "code",
-      "norm_label": "courselibrarytest.php",
-      "source_file": "tests/Feature/CourseLibraryTest.php",
+      "norm_label": "passwordconfirmationtest.php",
+      "source_file": "tests/Feature/Auth/PasswordConfirmationTest.php",
       "source_location": "L1"
     },
     {
@@ -24655,17 +24599,6 @@
       "file_type": "code",
       "norm_label": "learningflowtest.php",
       "source_file": "tests/Feature/LearningFlowTest.php",
-      "source_location": "L1"
-    },
-    {
-      "id": "tests_feature_localtestingseedertest",
-      "label": "LocalTestingSeederTest.php",
-      "_origin": "ast",
-      "community": 34,
-      "community_name": "Inertia\\Testing\\AssertableInertia",
-      "file_type": "code",
-      "norm_label": "localtestingseedertest.php",
-      "source_file": "tests/Feature/LocalTestingSeederTest.php",
       "source_location": "L1"
     },
     {
@@ -26396,6 +26329,39 @@
       "source_location": "L1"
     },
     {
+      "id": "illuminate_auth_events_verified",
+      "label": "Illuminate\\Auth\\Events\\Verified",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "User",
+      "file_type": "code",
+      "norm_label": "illuminate\\auth\\events\\verified",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_support_facades_event",
+      "label": "Illuminate\\Support\\Facades\\Event",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "User",
+      "file_type": "code",
+      "norm_label": "illuminate\\support\\facades\\event",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_support_facades_url",
+      "label": "Illuminate\\Support\\Facades\\URL",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "User",
+      "file_type": "code",
+      "norm_label": "illuminate\\support\\facades\\url",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
       "id": "tests_feature_auth_authenticationtest",
       "label": "AuthenticationTest.php",
       "_origin": "ast",
@@ -26404,6 +26370,17 @@
       "file_type": "code",
       "norm_label": "authenticationtest.php",
       "source_file": "tests/Feature/Auth/AuthenticationTest.php",
+      "source_location": "L1"
+    },
+    {
+      "id": "tests_feature_auth_emailverificationtest",
+      "label": "EmailVerificationTest.php",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "User",
+      "file_type": "code",
+      "norm_label": "emailverificationtest.php",
+      "source_file": "tests/Feature/Auth/EmailVerificationTest.php",
       "source_location": "L1"
     },
     {
@@ -27479,17 +27456,6 @@
       "source_location": "L1"
     },
     {
-      "id": "illuminate_auth_events_verified",
-      "label": "Illuminate\\Auth\\Events\\Verified",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "TestCase",
-      "file_type": "code",
-      "norm_label": "illuminate\\auth\\events\\verified",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
       "id": "illuminate_auth_notifications_resetpassword",
       "label": "Illuminate\\Auth\\Notifications\\ResetPassword",
       "_origin": "ast",
@@ -27497,6 +27463,17 @@
       "community_name": "TestCase",
       "file_type": "code",
       "norm_label": "illuminate\\auth\\notifications\\resetpassword",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_auth_notifications_verifyemail",
+      "label": "Illuminate\\Auth\\Notifications\\VerifyEmail",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "TestCase",
+      "file_type": "code",
+      "norm_label": "illuminate\\auth\\notifications\\verifyemail",
       "source_file": "",
       "source_location": ""
     },
@@ -27534,13 +27511,13 @@
       "source_location": ""
     },
     {
-      "id": "illuminate_support_facades_event",
-      "label": "Illuminate\\Support\\Facades\\Event",
+      "id": "illuminate_http_uploadedfile",
+      "label": "Illuminate\\Http\\UploadedFile",
       "_origin": "ast",
       "community": 6,
       "community_name": "TestCase",
       "file_type": "code",
-      "norm_label": "illuminate\\support\\facades\\event",
+      "norm_label": "illuminate\\http\\uploadedfile",
       "source_file": "",
       "source_location": ""
     },
@@ -27552,17 +27529,6 @@
       "community_name": "TestCase",
       "file_type": "code",
       "norm_label": "illuminate\\support\\facades\\notification",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "illuminate_support_facades_url",
-      "label": "Illuminate\\Support\\Facades\\URL",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "TestCase",
-      "file_type": "code",
-      "norm_label": "illuminate\\support\\facades\\url",
       "source_file": "",
       "source_location": ""
     },
@@ -27589,25 +27555,47 @@
       "source_location": ""
     },
     {
-      "id": "tests_feature_auth_emailverificationtest",
-      "label": "EmailVerificationTest.php",
+      "id": "phpoffice_phpspreadsheet_spreadsheet",
+      "label": "PhpOffice\\PhpSpreadsheet\\Spreadsheet",
       "_origin": "ast",
       "community": 6,
       "community_name": "TestCase",
       "file_type": "code",
-      "norm_label": "emailverificationtest.php",
-      "source_file": "tests/Feature/Auth/EmailVerificationTest.php",
-      "source_location": "L1"
+      "norm_label": "phpoffice\\phpspreadsheet\\spreadsheet",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "tests_feature_auth_passwordconfirmationtest",
-      "label": "PasswordConfirmationTest.php",
+      "id": "phpoffice_phpspreadsheet_writer_xlsx",
+      "label": "PhpOffice\\PhpSpreadsheet\\Writer\\Xlsx",
       "_origin": "ast",
       "community": 6,
       "community_name": "TestCase",
       "file_type": "code",
-      "norm_label": "passwordconfirmationtest.php",
-      "source_file": "tests/Feature/Auth/PasswordConfirmationTest.php",
+      "norm_label": "phpoffice\\phpspreadsheet\\writer\\xlsx",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "phpunit_framework_attributes_runtestsinseparateprocesses",
+      "label": "PHPUnit\\Framework\\Attributes\\RunTestsInSeparateProcesses",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "TestCase",
+      "file_type": "code",
+      "norm_label": "phpunit\\framework\\attributes\\runtestsinseparateprocesses",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "tests_feature_admin_usermanagementtest",
+      "label": "UserManagementTest.php",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "TestCase",
+      "file_type": "code",
+      "norm_label": "usermanagementtest.php",
+      "source_file": "tests/Feature/Admin/UserManagementTest.php",
       "source_location": "L1"
     },
     {
@@ -27655,6 +27643,17 @@
       "source_location": "L1"
     },
     {
+      "id": "tests_feature_courselibrarytest",
+      "label": "CourseLibraryTest.php",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "TestCase",
+      "file_type": "code",
+      "norm_label": "courselibrarytest.php",
+      "source_file": "tests/Feature/CourseLibraryTest.php",
+      "source_location": "L1"
+    },
+    {
       "id": "tests_feature_deadlineremindertest",
       "label": "DeadlineReminderTest.php",
       "_origin": "ast",
@@ -27685,6 +27684,39 @@
       "file_type": "code",
       "norm_label": "learningprogresstest.php",
       "source_file": "tests/Feature/LearningProgressTest.php",
+      "source_location": "L1"
+    },
+    {
+      "id": "tests_feature_localcustomerservicedealmakerseedertest",
+      "label": "LocalCustomerServiceDealmakerSeederTest.php",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "TestCase",
+      "file_type": "code",
+      "norm_label": "localcustomerservicedealmakerseedertest.php",
+      "source_file": "tests/Feature/LocalCustomerServiceDealmakerSeederTest.php",
+      "source_location": "L1"
+    },
+    {
+      "id": "tests_feature_localtestingseedertest",
+      "label": "LocalTestingSeederTest.php",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "TestCase",
+      "file_type": "code",
+      "norm_label": "localtestingseedertest.php",
+      "source_file": "tests/Feature/LocalTestingSeederTest.php",
+      "source_location": "L1"
+    },
+    {
+      "id": "tests_feature_userimporttest",
+      "label": "UserImportTest.php",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "TestCase",
+      "file_type": "code",
+      "norm_label": "userimporttest.php",
+      "source_file": "tests/Feature/UserImportTest.php",
       "source_location": "L1"
     },
     {
@@ -28238,6 +28270,198 @@
       "norm_label": "users",
       "source_file": "PRODUCT.md",
       "source_location": "L13"
+    },
+    {
+      "id": "docs_role_access_audit",
+      "label": "ROLE_ACCESS_AUDIT.md",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "role_access_audit.md",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_role_access_audit_audit_akses_role",
+      "label": "Audit akses role",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "audit akses role",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_role_access_audit_batas_audit",
+      "label": "Batas audit",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "batas audit",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L152"
+    },
+    {
+      "id": "docs_role_access_audit_batas_produk_yang_disengaja",
+      "label": "Batas produk yang disengaja",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "batas produk yang disengaja",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L130"
+    },
+    {
+      "id": "docs_role_access_audit_bukti_pemeriksaan",
+      "label": "Bukti pemeriksaan",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "bukti pemeriksaan",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L139"
+    },
+    {
+      "id": "docs_role_access_audit_employee",
+      "label": "Employee",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "employee",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L103"
+    },
+    {
+      "id": "docs_role_access_audit_fondasi_akses_yang_berlaku_untuk_semua_role",
+      "label": "Fondasi akses yang berlaku untuk semua role",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "fondasi akses yang berlaku untuk semua role",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L17"
+    },
+    {
+      "id": "docs_role_access_audit_kesimpulan_singkat",
+      "label": "Kesimpulan singkat",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "kesimpulan singkat",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L6"
+    },
+    {
+      "id": "docs_role_access_audit_lms_admin",
+      "label": "LMS Admin",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "lms admin",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L72"
+    },
+    {
+      "id": "docs_role_access_audit_management_owner",
+      "label": "Management / Owner",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "management / owner",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L113"
+    },
+    {
+      "id": "docs_role_access_audit_manager_tim",
+      "label": "Manager Tim",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "manager tim",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L93"
+    },
+    {
+      "id": "docs_role_access_audit_matriks_menu_dan_modul",
+      "label": "Matriks menu dan modul",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "matriks menu dan modul",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L28"
+    },
+    {
+      "id": "docs_role_access_audit_pemetaan_per_role",
+      "label": "Pemetaan per role",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "pemetaan per role",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L59"
+    },
+    {
+      "id": "docs_role_access_audit_perbaikan_yang_dituntaskan",
+      "label": "Perbaikan yang dituntaskan",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "perbaikan yang dituntaskan",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L123"
+    },
+    {
+      "id": "docs_role_access_audit_super_admin",
+      "label": "Super Admin",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "super admin",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L61"
+    },
+    {
+      "id": "docs_role_access_audit_trainer_mentor",
+      "label": "Trainer / Mentor",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "CourseManagementTest",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "trainer / mentor",
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L82"
     },
     {
       "id": "app_models_certificate",
@@ -30562,50 +30786,6 @@
       "source_location": "L67"
     },
     {
-      "id": "database_seeders_databaseseeder",
-      "label": "DatabaseSeeder.php",
-      "_origin": "ast",
-      "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
-      "file_type": "code",
-      "norm_label": "databaseseeder.php",
-      "source_file": "database/seeders/DatabaseSeeder.php",
-      "source_location": "L1"
-    },
-    {
-      "id": "illuminate_database_console_seeds_withoutmodelevents",
-      "label": "Illuminate\\Database\\Console\\Seeds\\WithoutModelEvents",
-      "_origin": "ast",
-      "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
-      "file_type": "code",
-      "norm_label": "illuminate\\database\\console\\seeds\\withoutmodelevents",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "illuminate_database_seeder",
-      "label": "Illuminate\\Database\\Seeder",
-      "_origin": "ast",
-      "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
-      "file_type": "code",
-      "norm_label": "illuminate\\database\\seeder",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "tests_feature_localcustomerservicedealmakerseedertest",
-      "label": "LocalCustomerServiceDealmakerSeederTest.php",
-      "_origin": "ast",
-      "community": 86,
-      "community_name": "Illuminate\\Database\\Seeder",
-      "file_type": "code",
-      "norm_label": "localcustomerservicedealmakerseedertest.php",
-      "source_file": "tests/Feature/LocalCustomerServiceDealmakerSeederTest.php",
-      "source_location": "L1"
-    },
-    {
       "id": "app_providers_appserviceprovider",
       "label": "AppServiceProvider.php",
       "_origin": "ast",
@@ -31042,186 +31222,6 @@
       "norm_label": "2026_10_13_000019_add_completion_rules_to_courses_and_assessments.php",
       "source_file": "database/migrations/2026_10_13_000019_add_completion_rules_to_courses_and_assessments.php",
       "source_location": "L1"
-    },
-    {
-      "id": "docs_role_access_audit",
-      "label": "ROLE_ACCESS_AUDIT.md",
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "role_access_audit.md",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L1"
-    },
-    {
-      "id": "docs_role_access_audit_audit_akses_role",
-      "label": "Audit akses role",
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "audit akses role",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L1"
-    },
-    {
-      "id": "docs_role_access_audit_batas_audit",
-      "label": "Batas audit",
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "batas audit",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L152"
-    },
-    {
-      "id": "docs_role_access_audit_batas_produk_yang_disengaja",
-      "label": "Batas produk yang disengaja",
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "batas produk yang disengaja",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L130"
-    },
-    {
-      "id": "docs_role_access_audit_employee",
-      "label": "Employee",
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "employee",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L103"
-    },
-    {
-      "id": "docs_role_access_audit_fondasi_akses_yang_berlaku_untuk_semua_role",
-      "label": "Fondasi akses yang berlaku untuk semua role",
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "fondasi akses yang berlaku untuk semua role",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L17"
-    },
-    {
-      "id": "docs_role_access_audit_kesimpulan_singkat",
-      "label": "Kesimpulan singkat",
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "kesimpulan singkat",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L6"
-    },
-    {
-      "id": "docs_role_access_audit_lms_admin",
-      "label": "LMS Admin",
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "lms admin",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L72"
-    },
-    {
-      "id": "docs_role_access_audit_management_owner",
-      "label": "Management / Owner",
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "management / owner",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L113"
-    },
-    {
-      "id": "docs_role_access_audit_manager_tim",
-      "label": "Manager Tim",
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "manager tim",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L93"
-    },
-    {
-      "id": "docs_role_access_audit_matriks_menu_dan_modul",
-      "label": "Matriks menu dan modul",
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "matriks menu dan modul",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L28"
-    },
-    {
-      "id": "docs_role_access_audit_pemetaan_per_role",
-      "label": "Pemetaan per role",
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "pemetaan per role",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L59"
-    },
-    {
-      "id": "docs_role_access_audit_perbaikan_yang_dituntaskan",
-      "label": "Perbaikan yang dituntaskan",
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "perbaikan yang dituntaskan",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L123"
-    },
-    {
-      "id": "docs_role_access_audit_super_admin",
-      "label": "Super Admin",
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "super admin",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L61"
-    },
-    {
-      "id": "docs_role_access_audit_trainer_mentor",
-      "label": "Trainer / Mentor",
-      "_origin": "ast",
-      "community": 91,
-      "community_name": "Audit akses role",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "trainer / mentor",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L82"
     },
     {
       "id": "artisan",
@@ -37043,7 +37043,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "database/seeders/CustomerServiceDealmakerSeeder.php",
-      "source_location": "L126",
+      "source_location": "L124",
       "weight": 1.0
     },
     {
@@ -37096,18 +37096,6 @@
     },
     {
       "source": "database_seeders_customerservicedealmakerseeder_customerservicedealmakerseeder_seedmoduleassessments",
-      "target": "app_models_question_question",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "database/seeders/CustomerServiceDealmakerSeeder.php",
-      "source_location": "L100",
-      "weight": 1.0
-    },
-    {
-      "source": "database_seeders_customerservicedealmakerseeder_customerservicedealmakerseeder_seedmoduleassessments",
       "target": "app_models_answer_answer",
       "relation": "calls",
       "_origin": "ast",
@@ -37115,7 +37103,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "database/seeders/CustomerServiceDealmakerSeeder.php",
-      "source_location": "L109",
+      "source_location": "L107",
       "weight": 1.0
     },
     {
@@ -37140,6 +37128,18 @@
       "context": "call",
       "source_file": "database/seeders/CustomerServiceDealmakerSeeder.php",
       "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "database_seeders_customerservicedealmakerseeder_customerservicedealmakerseeder_seedmoduleassessments",
+      "target": "app_models_question_question",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "database/seeders/CustomerServiceDealmakerSeeder.php",
+      "source_location": "L98",
       "weight": 1.0
     },
     {
@@ -37247,7 +37247,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L388",
+      "source_location": "L387",
       "weight": 1.0
     },
     {
@@ -37259,7 +37259,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L413",
+      "source_location": "L412",
       "weight": 1.0
     },
     {
@@ -37403,7 +37403,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L257",
+      "source_location": "L256",
       "weight": 1.0
     },
     {
@@ -37415,7 +37415,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L268",
+      "source_location": "L267",
       "weight": 1.0
     },
     {
@@ -37427,7 +37427,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L272",
+      "source_location": "L271",
       "weight": 1.0
     },
     {
@@ -37439,7 +37439,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L280",
+      "source_location": "L279",
       "weight": 1.0
     },
     {
@@ -37451,7 +37451,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L285",
+      "source_location": "L284",
       "weight": 1.0
     },
     {
@@ -37475,7 +37475,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L355",
+      "source_location": "L354",
       "weight": 1.0
     },
     {
@@ -37487,7 +37487,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L398",
+      "source_location": "L397",
       "weight": 1.0
     },
     {
@@ -37499,7 +37499,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L317",
+      "source_location": "L316",
       "weight": 1.0
     },
     {
@@ -37511,7 +37511,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L424",
+      "source_location": "L423",
       "weight": 1.0
     },
     {
@@ -37523,7 +37523,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L369",
+      "source_location": "L368",
       "weight": 1.0
     },
     {
@@ -41903,7 +41903,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L53",
+      "source_location": "L55",
       "weight": 1.0
     },
     {
@@ -41915,24 +41915,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L35",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
       "source": "tests_feature_localtestingseedertest_localtestingseedertest_test_it_seeds_connected_local_demo_data_without_duplication",
       "target": "app_models_user_user",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L35",
-      "weight": 1.0
-    },
-    {
-      "source": "tests_feature_localtestingseedertest_localtestingseedertest_test_it_seeds_connected_local_demo_data_without_duplication",
-      "target": "app_models_course_course",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -41944,6 +41932,30 @@
     },
     {
       "source": "tests_feature_localtestingseedertest_localtestingseedertest_test_it_seeds_connected_local_demo_data_without_duplication",
+      "target": "app_models_course_course",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "tests/Feature/LocalTestingSeederTest.php",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_feature_localtestingseedertest_localtestingseedertest_test_it_seeds_connected_local_demo_data_without_duplication",
+      "target": "app_models_assessment_assessment",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "tests/Feature/LocalTestingSeederTest.php",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_feature_localtestingseedertest_localtestingseedertest_test_it_seeds_connected_local_demo_data_without_duplication",
       "target": "app_models_enrollment_enrollment",
       "relation": "calls",
       "_origin": "ast",
@@ -41951,7 +41963,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L46",
+      "source_location": "L48",
       "weight": 1.0
     },
     {
@@ -41963,7 +41975,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L47",
+      "source_location": "L49",
       "weight": 1.0
     },
     {
@@ -41975,7 +41987,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L65",
+      "source_location": "L67",
       "weight": 1.0
     },
     {
@@ -41987,7 +41999,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L69",
+      "source_location": "L71",
       "weight": 1.0
     },
     {
@@ -41999,7 +42011,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L74",
+      "source_location": "L76",
       "weight": 1.0
     },
     {
@@ -60848,7 +60860,7 @@
     },
     {
       "source": "tests_feature_localtestingseedertest",
-      "target": "app_models_user_user",
+      "target": "app_models_role_role",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -60860,7 +60872,7 @@
     },
     {
       "source": "tests_feature_localtestingseedertest",
-      "target": "database_seeders_localtestingseeder_localtestingseeder",
+      "target": "app_models_user_user",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -60872,7 +60884,7 @@
     },
     {
       "source": "tests_feature_localtestingseedertest",
-      "target": "illuminate_foundation_testing_refreshdatabase",
+      "target": "database_seeders_localtestingseeder_localtestingseeder",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -60884,7 +60896,7 @@
     },
     {
       "source": "tests_feature_localtestingseedertest",
-      "target": "illuminate_support_facades_storage",
+      "target": "illuminate_foundation_testing_refreshdatabase",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -60896,7 +60908,7 @@
     },
     {
       "source": "tests_feature_localtestingseedertest",
-      "target": "tests_testcase_testcase",
+      "target": "illuminate_support_facades_storage",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -60908,7 +60920,19 @@
     },
     {
       "source": "tests_feature_localtestingseedertest",
-      "target": "app_models_course_course",
+      "target": "tests_testcase_testcase",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/Feature/LocalTestingSeederTest.php",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_feature_localtestingseedertest",
+      "target": "app_models_assessment_assessment",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -60920,7 +60944,7 @@
     },
     {
       "source": "tests_feature_localtestingseedertest",
-      "target": "app_models_enrollment_enrollment",
+      "target": "app_models_course_course",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -60932,7 +60956,7 @@
     },
     {
       "source": "tests_feature_localtestingseedertest",
-      "target": "app_models_learningpath_learningpath",
+      "target": "app_models_enrollment_enrollment",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -60944,7 +60968,7 @@
     },
     {
       "source": "tests_feature_localtestingseedertest",
-      "target": "app_models_learningpathrule_learningpathrule",
+      "target": "app_models_learningpath_learningpath",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -60956,7 +60980,7 @@
     },
     {
       "source": "tests_feature_localtestingseedertest",
-      "target": "app_models_role_role",
+      "target": "app_models_learningpathrule_learningpathrule",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -77178,7 +77202,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L387",
+      "source_location": "L386",
       "weight": 1.0
     },
     {
@@ -77190,7 +77214,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L409",
+      "source_location": "L408",
       "weight": 1.0
     },
     {
@@ -77202,7 +77226,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L385",
+      "source_location": "L384",
       "weight": 1.0
     },
     {
@@ -77214,7 +77238,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L385",
+      "source_location": "L384",
       "weight": 1.0
     },
     {
@@ -77226,7 +77250,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L385",
+      "source_location": "L384",
       "weight": 1.0
     },
     {
@@ -77238,7 +77262,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L444",
+      "source_location": "L443",
       "weight": 1.0
     },
     {
@@ -77250,7 +77274,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L444",
+      "source_location": "L443",
       "weight": 1.0
     },
     {
@@ -77262,7 +77286,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L444",
+      "source_location": "L443",
       "weight": 1.0
     },
     {
@@ -77274,7 +77298,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L341",
+      "source_location": "L340",
       "weight": 1.0
     },
     {
@@ -77286,7 +77310,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L395",
+      "source_location": "L394",
       "weight": 1.0
     },
     {
@@ -77298,7 +77322,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L395",
+      "source_location": "L394",
       "weight": 1.0
     },
     {
@@ -77310,7 +77334,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L395",
+      "source_location": "L394",
       "weight": 1.0
     },
     {
@@ -77322,7 +77346,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L376",
+      "source_location": "L375",
       "weight": 1.0
     },
     {
@@ -77334,7 +77358,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L376",
+      "source_location": "L375",
       "weight": 1.0
     },
     {
@@ -77346,7 +77370,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L376",
+      "source_location": "L375",
       "weight": 1.0
     },
     {
@@ -77358,7 +77382,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L312",
+      "source_location": "L311",
       "weight": 1.0
     },
     {
@@ -77370,7 +77394,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L421",
+      "source_location": "L420",
       "weight": 1.0
     },
     {
@@ -77382,7 +77406,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L421",
+      "source_location": "L420",
       "weight": 1.0
     },
     {
@@ -77394,7 +77418,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L366",
+      "source_location": "L365",
       "weight": 1.0
     },
     {
@@ -77406,7 +77430,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L303",
+      "source_location": "L302",
       "weight": 1.0
     },
     {
@@ -77418,7 +77442,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L293",
+      "source_location": "L292",
       "weight": 1.0
     },
     {
@@ -77430,7 +77454,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L293",
+      "source_location": "L292",
       "weight": 1.0
     },
     {
@@ -80178,7 +80202,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L341",
+      "source_location": "L340",
       "weight": 1.0
     },
     {
@@ -80190,7 +80214,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L376",
+      "source_location": "L375",
       "weight": 1.0
     },
     {
@@ -80202,7 +80226,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L312",
+      "source_location": "L311",
       "weight": 1.0
     },
     {
@@ -80214,7 +80238,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L303",
+      "source_location": "L302",
       "weight": 1.0
     },
     {
@@ -80226,7 +80250,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L293",
+      "source_location": "L292",
       "weight": 1.0
     },
     {
@@ -86249,7 +86273,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L387",
+      "source_location": "L386",
       "weight": 1.0
     },
     {
@@ -86271,7 +86295,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L409",
+      "source_location": "L408",
       "weight": 1.0
     },
     {
@@ -96732,7 +96756,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -98415,7 +98439,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -102364,7 +102388,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/CustomerServiceDealmakerSeeder.php",
-      "source_location": "L121",
+      "source_location": "L119",
       "weight": 1.0
     },
     {
@@ -102397,7 +102421,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/CustomerServiceDealmakerSeeder.php",
-      "source_location": "L318",
+      "source_location": "L316",
       "weight": 1.0
     },
     {
@@ -102408,7 +102432,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/CustomerServiceDealmakerSeeder.php",
-      "source_location": "L324",
+      "source_location": "L322",
       "weight": 1.0
     },
     {
@@ -102452,7 +102476,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L293",
+      "source_location": "L292",
       "weight": 1.0
     },
     {
@@ -102463,7 +102487,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L303",
+      "source_location": "L302",
       "weight": 1.0
     },
     {
@@ -102474,7 +102498,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L312",
+      "source_location": "L311",
       "weight": 1.0
     },
     {
@@ -102485,7 +102509,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L341",
+      "source_location": "L340",
       "weight": 1.0
     },
     {
@@ -102496,7 +102520,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L366",
+      "source_location": "L365",
       "weight": 1.0
     },
     {
@@ -102507,7 +102531,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L376",
+      "source_location": "L375",
       "weight": 1.0
     },
     {
@@ -102518,7 +102542,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L385",
+      "source_location": "L384",
       "weight": 1.0
     },
     {
@@ -102529,7 +102553,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L395",
+      "source_location": "L394",
       "weight": 1.0
     },
     {
@@ -102551,7 +102575,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L421",
+      "source_location": "L420",
       "weight": 1.0
     },
     {
@@ -102562,7 +102586,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L444",
+      "source_location": "L443",
       "weight": 1.0
     },
     {
@@ -102573,7 +102597,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/LocalTestingSeeder.php",
-      "source_location": "L452",
+      "source_location": "L451",
       "weight": 1.0
     },
     {
@@ -104311,7 +104335,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -104322,7 +104346,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L50",
+      "source_location": "L52",
       "weight": 1.0
     },
     {
@@ -104333,7 +104357,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L60",
+      "source_location": "L62",
       "weight": 1.0
     },
     {
@@ -105532,7 +105556,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -106190,5 +106214,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "16feb76eda25c74f3e79bc6edc5381ebe51b2d82"
+  "built_at_commit": "0166002a02193d6a10c527429ad3a60f45e6222b"
 }

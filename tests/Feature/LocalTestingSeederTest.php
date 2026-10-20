@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Assessment;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\LearningPath;
@@ -27,7 +28,7 @@ class LocalTestingSeederTest extends TestCase
         $this->assertDatabaseCount('courses', 5);
         $this->assertDatabaseCount('enrollments', 7);
         $this->assertDatabaseCount('assessments', 2);
-        $this->assertDatabaseCount('assessment_attempts', 7);
+        $this->assertDatabaseCount('assessment_attempts', 6);
         $this->assertDatabaseCount('learning_path_rules', 2);
         $this->assertDatabaseCount('announcements', 2);
         $this->assertDatabaseCount('activity_logs', 7);
@@ -39,6 +40,7 @@ class LocalTestingSeederTest extends TestCase
         Storage::disk('local')->assertExists('demo-resources/pedoman-etika-kerja.pdf');
         Storage::disk('local')->assertExists('exports/demo-progres-pembelajaran.csv');
         $this->assertDatabaseHas('certificates', ['user_id' => User::query()->where('email', 'anisa@kgj.test')->valueOrFail('id')]);
+        $this->assertSame(1, Assessment::query()->where('type', 'pre_test')->sole()->attempt_limit);
 
         $this->seed(LocalTestingSeeder::class);
 
@@ -84,11 +86,12 @@ class LocalTestingSeederTest extends TestCase
 
         foreach ([
             route('dashboard'), route('my-learning.index'), route('my-learning-paths.index'), route('course-library.index'), route('my-learning.show', $course),
-            route('my-learning.assessments.show', [$course, $preTest]), route('my-progress.index'), route('notifications.index'), route('certificates.index'),
+            route('my-progress.index'), route('notifications.index'), route('certificates.index'),
         ] as $url) {
             $this->actingAs($learner)->get($url)->assertOk();
         }
 
+        $this->actingAs($learner)->get(route('my-learning.assessments.result', [$course, $preTest]))->assertOk();
         $this->actingAs($completedLearner)->get(route('my-learning.assessments.result', [$course, $postTest]))->assertOk();
         $this->actingAs($manager)->get(route('team-progress.index'))->assertOk();
     }

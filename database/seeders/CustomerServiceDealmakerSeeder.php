@@ -91,8 +91,6 @@ class CustomerServiceDealmakerSeeder extends Seeder
             );
 
             if (! $assessment->wasRecentlyCreated) {
-                $this->command->warn("Assessment {$module->title} ({$type}) sudah ada dan dilewati agar data yang ada tetap aman.");
-
                 continue;
             }
 

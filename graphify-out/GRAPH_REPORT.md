@@ -1,17 +1,17 @@
 # Graph Report - KGJ-lms-academy  (2026-10-20)
 
 ## Corpus Check
-- 444 files · ~113,873 words
+- 444 files · ~113,865 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 28 file(s) not represented in the graph (top: (none) 18, .example 3, .conf 1)
 
 ## Summary
-- 2827 nodes · 6270 edges · 192 communities (131 shown, 61 thin omitted)
+- 2827 nodes · 6272 edges · 191 communities (128 shown, 63 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 37 edges (avg confidence: 0.89)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `16feb76e`
+- Built from commit: `0166002a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -102,12 +102,11 @@
 - ActivityLog
 - Assessments.vue
 - AppSidebar.vue
-- Illuminate\Database\Seeder
+- CustomerServiceDealmakerSeeder
 - AppServiceProvider.php
 - AssessmentResponse
 - Announcement
 - 2026_10_13_000019_add_completion_rules_to_courses_and_assessments.php
-- Audit akses role
 - artisan
 - PasswordValidationRules
 - LessonResourceTest
@@ -205,27 +204,27 @@
 4. `cn()` - 90 edges
 5. `TestCase` - 81 edges
 6. `Enrollment` - 80 edges
-7. `CourseCategory` - 76 edges
-8. `Assessment` - 74 edges
+7. `Assessment` - 76 edges
+8. `CourseCategory` - 76 edges
 9. `reka-ui` - 73 edges
 10. `Role` - 67 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Kesimpulan` --references--> `AssessmentAttempt`  [INFERRED]
   docs/QUILGO_ASSESSMENT_AUDIT.md → app/Models/AssessmentAttempt.php
-- `Bukti pemeriksaan` --references--> `CourseManagementTest`  [INFERRED]
-  docs/ROLE_ACCESS_AUDIT.md → tests/Feature/Admin/CourseManagementTest.php
 - `Bukti pemeriksaan` --references--> `UserManagementTest`  [INFERRED]
   docs/ROLE_ACCESS_AUDIT.md → tests/Feature/Admin/UserManagementTest.php
+- `Bukti pemeriksaan` --references--> `CourseLibraryTest`  [INFERRED]
+  docs/ROLE_ACCESS_AUDIT.md → tests/Feature/CourseLibraryTest.php
+- `Bukti pemeriksaan` --references--> `DashboardTest`  [INFERRED]
+  docs/ROLE_ACCESS_AUDIT.md → tests/Feature/DashboardTest.php
 - `Bukti pemeriksaan` --references--> `ReportTest`  [INFERRED]
   docs/ROLE_ACCESS_AUDIT.md → tests/Feature/ReportTest.php
-- `Bukti pemeriksaan` --references--> `RoleAccessContractTest`  [INFERRED]
-  docs/ROLE_ACCESS_AUDIT.md → tests/Feature/RoleAccessContractTest.php
 
 ## Import Cycles
 - None detected.
 
-## Communities (192 total, 61 thin omitted)
+## Communities (191 total, 63 thin omitted)
 
 ### Community 0 - "TooltipContent.vue"
 Cohesion: 0.14
@@ -249,11 +248,11 @@ Nodes (35): presentation, props, Status, resources_js_components_ui_button_index
 
 ### Community 5 - "User"
 Cohesion: 0.05
-Nodes (8): User, UserPolicy, AuthenticationTest, EmailVerificationTest, PasswordResetTest, LocalTestingSeederTest, ProfileUpdateTest, SecurityTest
+Nodes (11): User, UserPolicy, Illuminate\Auth\Events\Verified, Illuminate\Support\Facades\Event, Illuminate\Support\Facades\URL, AuthenticationTest, EmailVerificationTest, PasswordConfirmationTest (+3 more)
 
 ### Community 6 - "TestCase"
 Cohesion: 0.05
-Nodes (23): Illuminate\Auth\Events\Verified, Illuminate\Auth\Notifications\ResetPassword, Illuminate\Foundation\Http\Middleware\PreventRequestForgery, Illuminate\Foundation\Testing\RefreshDatabase, Illuminate\Foundation\Testing\TestCase, Illuminate\Support\Facades\Event, Illuminate\Support\Facades\Notification, Illuminate\Support\Facades\URL (+15 more)
+Nodes (27): LocalCustomerServiceDealmakerSeeder, Illuminate\Auth\Notifications\ResetPassword, Illuminate\Auth\Notifications\VerifyEmail, Illuminate\Foundation\Http\Middleware\PreventRequestForgery, Illuminate\Foundation\Testing\RefreshDatabase, Illuminate\Foundation\Testing\TestCase, Illuminate\Http\UploadedFile, Illuminate\Support\Facades\Notification (+19 more)
 
 ### Community 7 - "reka-ui"
 Cohesion: 0.04
@@ -281,7 +280,7 @@ Nodes (5): ProfileValidationRules, PasswordUpdateRequest, ProfileUpdateRequest, 
 
 ### Community 14 - "Role"
 Cohesion: 0.09
-Nodes (13): Permission, Role, {closure#1}(), {closure#2}(), Illuminate\Auth\Notifications\VerifyEmail, Illuminate\Support\Facades\Queue, PhpOffice\PhpSpreadsheet\Spreadsheet, PhpOffice\PhpSpreadsheet\Writer\Xlsx (+5 more)
+Nodes (14): Permission, Role, DatabaseSeeder, {closure#1}(), {closure#2}(), RolePermissionSeeder, Illuminate\Database\Console\Seeds\WithoutModelEvents, Illuminate\Database\Seeder (+6 more)
 
 ### Community 15 - "@vueuse/core"
 Cohesion: 0.05
@@ -353,7 +352,7 @@ Nodes (15): {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure
 
 ### Community 34 - "Inertia\Testing\AssertableInertia"
 Cohesion: 0.08
-Nodes (29): Illuminate\Http\UploadedFile, Illuminate\Support\Facades\Storage, Inertia\Testing\AssertableInertia, {closure#3}(), {closure#1}(), {closure#1}(), {closure#2}(), {closure#3}() (+21 more)
+Nodes (30): Illuminate\Support\Facades\Storage, Inertia\Testing\AssertableInertia, {closure#3}(), {closure#1}(), {closure#1}(), {closure#2}(), {closure#3}(), {closure#1}() (+22 more)
 
 ### Community 36 - "Illuminate\Http\RedirectResponse"
 Cohesion: 0.16
@@ -471,6 +470,10 @@ Nodes (13): scripts, ci:check, dev, lint, lint:check, post-autoload-dump, post-c
 Cohesion: 0.15
 Nodes (12): Accessibility & Inclusion, Brand Commitments, Capabilities and Constraints, Evidence on Hand, Operating Context, Platform, Positioning, Product (+4 more)
 
+### Community 68 - "CourseManagementTest"
+Cohesion: 0.07
+Nodes (17): Audit akses role, Batas audit, Batas produk yang disengaja, Bukti pemeriksaan, Employee, Fondasi akses yang berlaku untuk semua role, Kesimpulan singkat, LMS Admin (+9 more)
+
 ### Community 69 - "Illuminate\Database\Eloquent\Relations\BelongsTo"
 Cohesion: 0.07
 Nodes (9): {closure#1}(), {closure#2}(), {closure#1}(), {closure#2}(), Certificate, LearningPathAssignment, LearningPathCourse, LearningPathRule (+1 more)
@@ -520,7 +523,7 @@ Cohesion: 0.20
 Nodes (10): require-dev, fakerphp/faker, larastan/larastan, laravel/pail, laravel/pao, laravel/pint, laravel/sail, mockery/mockery (+2 more)
 
 ### Community 83 - "ActivityLog"
-Cohesion: 0.16
+Cohesion: 0.18
 Nodes (6): {closure#2}(), ActivityLog, self, AuditLogTest, {closure#1}(), {closure#2}()
 
 ### Community 84 - "Assessments.vue"
@@ -530,10 +533,6 @@ Nodes (16): Assessment, cancelEditingQuestion(), createForm, deletingQuestion, e
 ### Community 85 - "AppSidebar.vue"
 Cohesion: 0.09
 Nodes (24): ref_vitest, Props, mainNavGroups, page, Props, { isCurrentOrParentUrl }, NavGroup, resources_js_components_ui_sidebar_index_sidebar (+16 more)
-
-### Community 86 - "Illuminate\Database\Seeder"
-Cohesion: 0.16
-Nodes (6): CustomerServiceDealmakerSeeder, DatabaseSeeder, LocalCustomerServiceDealmakerSeeder, Illuminate\Database\Console\Seeds\WithoutModelEvents, Illuminate\Database\Seeder, LocalCustomerServiceDealmakerSeederTest
 
 ### Community 87 - "AppServiceProvider.php"
 Cohesion: 0.24
@@ -550,10 +549,6 @@ Nodes (5): {closure#1}(), PublishAnnouncement, Announcement, AnnouncementTest, {
 ### Community 90 - "2026_10_13_000019_add_completion_rules_to_courses_and_assessments.php"
 Cohesion: 0.25
 Nodes (4): {closure#1}(), {closure#2}(), {closure#4}(), {closure#5}()
-
-### Community 91 - "Audit akses role"
-Cohesion: 0.12
-Nodes (15): Audit akses role, Batas audit, Batas produk yang disengaja, Employee, Fondasi akses yang berlaku untuk semua role, Kesimpulan singkat, LMS Admin, Management / Owner (+7 more)
 
 ### Community 93 - "PasswordValidationRules"
 Cohesion: 0.24
@@ -639,10 +634,6 @@ Nodes (4): Monolog\Handler\NullHandler, Monolog\Handler\StreamHandler, Monolog\H
 Cohesion: 0.14
 Nodes (5): {closure#1}(), {closure#2}(), {closure#1}(), {closure#1}(), Illuminate\Support\Facades\Schema
 
-### Community 121 - "DashboardTest"
-Cohesion: 0.19
-Nodes (5): Bukti pemeriksaan, CourseLibraryTest, DashboardTest, {closure#1}(), TeamProgressTest
-
 ### Community 124 - "Performance Baseline"
 Cohesion: 0.40
 Nodes (4): Database, Frontend, Performance Baseline, Queue dan cache
@@ -670,10 +661,6 @@ Nodes (4): props, delegatedProps, props, props
 ### Community 130 - "SidebarMenuSkeleton.vue"
 Cohesion: 0.25
 Nodes (5): props, width, resources_js_components_ui_skeleton_index_skeleton, props, SkeletonProps
-
-### Community 131 - "RoleAccessContractTest"
-Cohesion: 0.24
-Nodes (3): RolePermissionSeeder, {closure#1}(), RoleAccessContractTest
 
 ### Community 132 - "dialog/index.ts"
 Cohesion: 0.06
@@ -754,14 +741,12 @@ Nodes (3): delegatedProps, props, props
 ## Knowledge Gaps
 - **776 isolated node(s):** `$schema`, `style`, `config`, `css`, `baseColor` (+771 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1278 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **61 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **63 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Audit akses role` connect `Audit akses role` to `DashboardTest`?**
-  _High betweenness centrality (0.412) - this node is a cross-community bridge._
-- **Why does `Bukti pemeriksaan` connect `DashboardTest` to `RoleAccessContractTest`, `CourseManagementTest`, `Course`, `Role`, `Audit akses role`?**
+- **Why does `Bukti pemeriksaan` connect `CourseManagementTest` to `RoleAccessContractTest`, `TestCase`, `Course`, `Role`, `DashboardTest`?**
   _High betweenness centrality (0.406) - this node is a cross-community bridge._
 - **What connects `$schema`, `style`, `config` to the rest of the system?**
   _776 weakly-connected nodes found - possible documentation gaps or missing edges._
@@ -773,3 +758,5 @@ _Questions this graph is uniquely positioned to answer:_
   _Cohesion score 0.09246088193456614 - nodes in this community are weakly interconnected._
 - **Should `button/index.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.055523085914669784 - nodes in this community are weakly interconnected._
+- **Should `User` be split into smaller, more focused modules?**
+  _Cohesion score 0.04560954816709292 - nodes in this community are weakly interconnected._

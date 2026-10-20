@@ -250,7 +250,6 @@ class LocalTestingSeeder extends Seeder
         $this->seedAttempt($preTest, $anisaOnboarding, 1, 1, true, $now->copy()->subDays(12));
         $this->seedAttempt($postTest, $anisaOnboarding, 1, 2, true, $now->copy()->subDays(6));
         $this->seedAttempt($preTest, $bimaOnboarding, 1, 1, true, $now->copy()->subDays(4));
-        $this->seedAttempt($preTest, $bimaOnboarding, 2, 2, true, $now->copy()->subDays(3));
         $this->seedAttempt($preTest, $citraOnboarding, 1, 1, true, $now->copy()->subDays(18));
         $this->seedAttempt($postTest, $citraOnboarding, 1, 1, false, $now->copy()->subDays(11));
         $this->seedAttempt($postTest, $citraOnboarding, 2, 2, true, $now->copy()->subDays(10));
@@ -342,7 +341,7 @@ class LocalTestingSeeder extends Seeder
     {
         $assessment = Assessment::query()->updateOrCreate(
             ['course_id' => $course->id, 'type' => $type],
-            ['passing_grade' => $passingGrade, 'attempt_limit' => 3, 'time_limit_minutes' => $timeLimit],
+            ['passing_grade' => $passingGrade, 'attempt_limit' => $type === 'pre_test' ? 1 : 3, 'time_limit_minutes' => $timeLimit],
         );
 
         foreach ($questions as $questionSequence => $questionData) {
