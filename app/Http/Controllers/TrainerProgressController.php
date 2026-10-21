@@ -118,7 +118,7 @@ class TrainerProgressController extends Controller
 
     /**
      * @param  Collection<int, Enrollment>  $enrollments
-     * @return Collection<int, array<int, array{id: int, label: string, status: 'available'|'pending'|'exhausted'}>>
+     * @return Collection<int, array<int, array{id: int, label: non-falsy-string, status: 'available'|'pending'|'exhausted'}>>
      */
     private function retakeAssessments(Collection $enrollments): Collection
     {
@@ -173,7 +173,7 @@ class TrainerProgressController extends Controller
                         'id' => $assessment->id,
                         'label' => $assessment->module_id === null
                             ? 'Post-Test course'
-                            : 'Post-Test modul '.($assessment->module?->title ?? 'tanpa nama'),
+                            : 'Post-Test modul '.$assessment->module->title,
                         'status' => $status,
                     ];
                 })
