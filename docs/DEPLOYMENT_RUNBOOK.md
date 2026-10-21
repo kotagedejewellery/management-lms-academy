@@ -68,6 +68,18 @@ Seeder tidak membuat, menghapus, atau mengubah akun pengguna, role, organisasi, 
 
 Seeder tetap dijalankan **secara eksplisit**, bukan pada setiap auto-deploy. Menjalankan perintah lebih dari sekali hanya relevan bila Anda memang ingin menyegarkan ulang katalog CS yang belum memiliki riwayat belajar peserta.
 
+#### Force refresh katalog CS
+
+Jika katalog perlu diganti sebelum go-live dan owner telah menyetujui penghapusan riwayat pembelajaran lama `CS-DEAL-001`, gunakan perintah berikut **satu kali**. Perintah ini menghapus progres lesson, draf/attempt/otorisasi ulang assessment, sertifikat, serta status mulai/selesai enrollment untuk course tersebut. Akun user, role, organisasi, enrollment, trainer course, learning path, dan data course lain tetap dipertahankan; enrollment `CS-DEAL-001` dikembalikan menjadi aktif.
+
+```sh
+cd /opt/apps/sistem-lms-academy/management-lms-academy
+dc=(docker compose --env-file .env.production -f compose.production.yml)
+"${dc[@]}" exec -T app php artisan db:seed --class='Database\Seeders\ProductionCustomerServiceDealmakerForceRefreshSeeder' --force
+```
+
+Jangan gunakan `migrate:fresh`, `docker compose down -v`, atau penghapusan volume untuk kebutuhan ini karena tindakan tersebut juga berisiko menghapus akun dan seluruh data aplikasi.
+
 ## 3. Auto-deploy GitHub Actions
 
 Workflow CI akan men-deploy otomatis hanya ketika seluruh quality check lulus pada push ke `main`. Deploy pertama akan dilewati dengan aman sampai repository dan `.env.production` tersedia di VPS; setelah konfigurasi awal selesai, jalankan ulang workflow tersebut dari GitHub Actions atau lakukan push berikutnya. Tambahkan repository secrets berikut:

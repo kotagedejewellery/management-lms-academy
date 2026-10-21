@@ -6,9 +6,11 @@ use App\Models\Assessment;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Lesson;
+use App\Models\LessonProgress;
 use App\Models\Question;
 use App\Models\User;
 use Database\Seeders\CustomerServiceDealmakerSeeder;
+use Database\Seeders\ProductionCustomerServiceDealmakerForceRefreshSeeder;
 use Database\Seeders\ProductionCustomerServiceDealmakerRefreshSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use RuntimeException;
@@ -69,5 +71,47 @@ class ProductionCustomerServiceDealmakerRefreshSeederTest extends TestCase
         $this->seed(ProductionCustomerServiceDealmakerRefreshSeeder::class);
 
         $this->assertSame(20, Lesson::query()->whereIn('module_id', $course->modules()->select('id'))->count());
+    }
+
+    public function test_it_force_refreshes_customer_service_content_without_deleting_the_user_or_enrollment(): void
+    {
+        $this->seed(CustomerServiceDealmakerSeeder::class);
+
+        $course = Course::query()->where('code', 'CS-DEAL-001')->sole();
+        $user = User::factory()->create();
+        $enrollment = Enrollment::query()->create([
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+            'status' => 'completed',
+            'started_at' => now(),
+            'completed_at' => now(),
+        ]);
+        $lesson = Lesson::query()->whereIn('module_id', $course->modules()->select('id'))->firstOrFail();
+        LessonProgress::query()->create(['enrollment_id' => $enrollment->id, 'lesson_id' => $lesson->id]);
+        $assessment = Assessment::query()->where('course_id', $course->id)->firstOrFail();
+        $assessment->attempts()->create([
+            'enrollment_id' => $enrollment->id,
+            'attempt_number' => 1,
+            'score' => 100,
+            'passed' => true,
+            'submitted_at' => now(),
+        ]);
+
+        $this->seed(ProductionCustomerServiceDealmakerForceRefreshSeeder::class);
+
+        $this->assertDatabaseHas('users', ['id' => $user->id]);
+        $this->assertDatabaseHas('enrollments', [
+            'id' => $enrollment->id,
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+            'status' => 'active',
+            'started_at' => null,
+            'completed_at' => null,
+        ]);
+        $this->assertDatabaseCount('lesson_progress', 0);
+        $this->assertDatabaseCount('assessment_attempts', 0);
+        $this->assertSame(10, Lesson::query()->whereIn('module_id', $course->modules()->select('id'))->count());
+        $this->assertSame(18, Assessment::query()->where('course_id', $course->id)->count());
+        $this->assertSame(135, Question::query()->count());
     }
 }
