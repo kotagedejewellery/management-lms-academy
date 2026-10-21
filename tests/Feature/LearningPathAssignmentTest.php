@@ -118,7 +118,7 @@ class LearningPathAssignmentTest extends TestCase
         $permission = Permission::query()->create(['slug' => 'manage-enrollments', 'name' => 'Kelola assignment']);
         $role = Role::query()->create(['slug' => 'lms-admin', 'name' => 'LMS Admin']);
         $role->permissions()->attach($permission);
-        $admin = User::factory()->create();
+        $admin = User::factory()->create(['name' => 'Admin Penguji', 'employee_id' => 'ADM-001']);
         $admin->roles()->attach($role);
         $match = User::factory()->create(['name' => 'Sari Kotagede', 'employee_id' => 'KGJ-008', 'status' => 'active']);
         User::factory()->create(['name' => 'Sari Tidak Aktif', 'employee_id' => 'KGJ-009', 'status' => 'inactive']);
