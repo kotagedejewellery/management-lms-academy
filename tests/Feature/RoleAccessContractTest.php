@@ -69,7 +69,7 @@ class RoleAccessContractTest extends TestCase
             'assignments' => ['enrollments.index', [], ['super-admin', 'lms-admin']],
             'announcements' => ['announcements.index', [], ['super-admin', 'lms-admin']],
             'reports' => ['reports.index', [], ['super-admin', 'lms-admin', 'management']],
-            'trainer progress' => ['trainer-progress.index', [], ['trainer']],
+            'trainer progress' => ['trainer-progress.index', [], ['super-admin', 'lms-admin', 'trainer', 'management']],
             'team progress' => ['team-progress.index', [], ['super-admin', 'manager']],
             'audit logs' => ['audit-logs.index', [], ['super-admin']],
             'my learning' => ['my-learning.index', [], self::ROLE_SLUGS],

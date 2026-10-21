@@ -91,8 +91,8 @@ class LocalTestingSeederTest extends TestCase
             $this->actingAs($learner)->get($url)->assertOk();
         }
 
-        $this->actingAs($learner)->get(route('my-learning.assessments.result', [$course, $preTest]))->assertOk();
-        $this->actingAs($completedLearner)->get(route('my-learning.assessments.result', [$course, $postTest]))->assertOk();
+        $this->actingAs($learner)->get(route('my-learning.assessments.receipt', [$course, $preTest]))->assertOk();
+        $this->actingAs($completedLearner)->get(route('my-learning.assessments.receipt', [$course, $postTest]))->assertOk();
         $this->actingAs($manager)->get(route('team-progress.index'))->assertOk();
     }
 }

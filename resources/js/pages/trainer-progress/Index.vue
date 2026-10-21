@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3';
-import { ClipboardList, Search, X } from '@lucide/vue';
+import { ref } from 'vue';
+import { ClipboardList, RotateCcw, Search, X } from '@lucide/vue';
 import EmptyState from '@/components/EmptyState.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import Pagination from '@/components/Pagination.vue';
@@ -16,6 +17,7 @@ type Enrollment = {
     improvement: number | null;
     post_test_attempts: number;
     module_assessments: ModuleAssessment[];
+    retake_assessments: RetakeAssessment[];
     user: { employee_id: string | null; name: string } | null;
     course: { code: string; title: string } | null;
 };
@@ -24,6 +26,11 @@ type ModuleAssessment = {
     module: { sequence: number; title: string };
     pre_test: { score: number } | null;
     post_test: { best_score: number; attempts: number; passed: boolean } | null;
+};
+type RetakeAssessment = {
+    id: number;
+    label: string;
+    status: 'available' | 'pending' | 'exhausted';
 };
 
 const props = defineProps<{
@@ -44,6 +51,8 @@ const filters = {
     status: props.filters.status,
     course_id: props.filters.course_id?.toString() ?? '',
 };
+const authorizingRetake = ref<string | null>(null);
+const cancellingRetake = ref<string | null>(null);
 
 function applyFilters(): void {
     router.get('/trainer-progress', filters, {
@@ -57,6 +66,45 @@ function clearFilters(): void {
     filters.status = '';
     filters.course_id = '';
     applyFilters();
+}
+
+function authorizeRetake(
+    enrollmentId: number,
+    assessment: RetakeAssessment,
+): void {
+    const key = `${enrollmentId}:${assessment.id}`;
+    router.post(
+        `/enrollments/${enrollmentId}/assessments/${assessment.id}/retakes`,
+        {},
+        {
+            preserveScroll: true,
+            onStart: () => (authorizingRetake.value = key),
+            onFinish: () => (authorizingRetake.value = null),
+        },
+    );
+}
+
+function cancelRetake(
+    enrollmentId: number,
+    assessment: RetakeAssessment,
+): void {
+    const key = `${enrollmentId}:${assessment.id}`;
+    router.delete(
+        `/enrollments/${enrollmentId}/assessments/${assessment.id}/retakes`,
+        {
+            preserveScroll: true,
+            onStart: () => (cancellingRetake.value = key),
+            onFinish: () => (cancellingRetake.value = null),
+        },
+    );
+}
+
+function retakeStatusLabel(status: RetakeAssessment['status']): string {
+    return {
+        available: 'Menunggu persetujuan internal',
+        pending: 'Kesempatan ulang sudah dibuka',
+        exhausted: 'Batas percobaan telah tercapai',
+    }[status];
 }
 
 function score(value: number | null): string {
@@ -287,6 +335,71 @@ defineOptions({
                                 </div>
                             </div>
                         </dl>
+                    </section>
+                    <section
+                        v-if="item.retake_assessments.length"
+                        class="mt-5 border-t border-border pt-4"
+                    >
+                        <h3 class="font-medium text-foreground">
+                            Tindak lanjut assessment
+                        </h3>
+                        <p class="mt-1 text-sm text-muted-foreground">
+                            Buka kesempatan ulang hanya setelah memberikan
+                            arahan kepada peserta.
+                        </p>
+                        <div class="mt-3 grid gap-3">
+                            <div
+                                v-for="assessment in item.retake_assessments"
+                                :key="assessment.id"
+                                class="flex flex-col gap-3 rounded-lg border border-border p-3 sm:flex-row sm:items-center sm:justify-between"
+                            >
+                                <div>
+                                    <p
+                                        class="text-sm font-medium text-foreground"
+                                    >
+                                        {{ assessment.label }}
+                                    </p>
+                                    <p
+                                        class="mt-1 text-xs text-muted-foreground"
+                                    >
+                                        {{
+                                            retakeStatusLabel(assessment.status)
+                                        }}
+                                    </p>
+                                </div>
+                                <Button
+                                    v-if="assessment.status === 'available'"
+                                    size="sm"
+                                    :disabled="authorizingRetake !== null"
+                                    @click="
+                                        authorizeRetake(item.id, assessment)
+                                    "
+                                >
+                                    <RotateCcw />
+                                    {{
+                                        authorizingRetake ===
+                                        `${item.id}:${assessment.id}`
+                                            ? 'Membuka...'
+                                            : 'Buka kesempatan ulang'
+                                    }}
+                                </Button>
+                                <Button
+                                    v-else-if="assessment.status === 'pending'"
+                                    size="sm"
+                                    variant="outline"
+                                    :disabled="cancellingRetake !== null"
+                                    @click="cancelRetake(item.id, assessment)"
+                                >
+                                    <RotateCcw />
+                                    {{
+                                        cancellingRetake ===
+                                        `${item.id}:${assessment.id}`
+                                            ? 'Membatalkan...'
+                                            : 'Batalkan kesempatan ulang'
+                                    }}
+                                </Button>
+                            </div>
+                        </div>
                     </section>
                 </article>
             </div>

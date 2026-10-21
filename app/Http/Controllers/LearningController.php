@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\IssueCertificate;
+use App\Models\AssessmentRetakeAuthorization;
 use App\Models\Course;
 use App\Models\CourseModule;
 use App\Models\Enrollment;
@@ -23,7 +24,7 @@ class LearningController extends Controller
     public function index(Request $request): Response
     {
         $filters = $request->validate([
-            'state' => ['nullable', Rule::in(['not_started', 'in_progress', 'completed', 'not_passed'])],
+            'state' => ['nullable', Rule::in(['not_started', 'in_progress', 'completed'])],
             'mandatory' => ['nullable', Rule::in(['mandatory', 'optional'])],
         ]);
 
@@ -58,7 +59,7 @@ class LearningController extends Controller
         );
         $enrollments->getCollection()->transform(fn (Enrollment $enrollment) => [
             'id' => $enrollment->id,
-            'status' => $enrollment->status,
+            'status' => $enrollment->status === 'not_passed' ? 'needs_guidance' : $enrollment->status,
             'due_at' => $enrollment->due_at?->toDateString(),
             'completed_lessons_count' => $enrollment->completed_lessons_count,
             'lessons_count' => $enrollment->lessons_count,
@@ -84,7 +85,6 @@ class LearningController extends Controller
                 ->with([
                     'attempts' => fn ($attempts) => $attempts
                         ->where('enrollment_id', $enrollment->id)
-                        ->whereNotNull('submitted_at')
                         ->orderByDesc('attempt_number'),
                 ]),
             'assessments' => fn ($query) => $query
@@ -94,7 +94,6 @@ class LearningController extends Controller
                 ->with([
                     'attempts' => fn ($attempts) => $attempts
                         ->where('enrollment_id', $enrollment->id)
-                        ->whereNotNull('submitted_at')
                         ->orderByDesc('attempt_number'),
                 ]),
         ]);
@@ -131,9 +130,18 @@ class LearningController extends Controller
         $playbackSeconds = $selectedLesson && $lessonProgress->has($selectedLesson->id)
             ? (int) $lessonProgress->get($selectedLesson->id)->playback_seconds
             : 0;
+        $assessmentIds = $course->assessments->pluck('id')
+            ->merge($course->modules->flatMap->assessments->pluck('id'));
+        $authorizedRetakeAssessmentIds = AssessmentRetakeAuthorization::query()
+            ->where('enrollment_id', $enrollment->id)
+            ->whereIn('assessment_id', $assessmentIds)
+            ->whereNull('used_at')
+            ->whereNull('cancelled_at')
+            ->pluck('assessment_id')
+            ->flip();
 
         return Inertia::render('learning/Show', [
-            'enrollment' => ['id' => $enrollment->id, 'status' => $enrollment->status, 'due_at' => $enrollment->due_at?->toDateString()],
+            'enrollment' => ['id' => $enrollment->id, 'course_completed' => $enrollment->status === 'completed', 'due_at' => $enrollment->due_at?->toDateString()],
             'course' => [
                 ...$course->only(['id', 'code', 'title', 'description', 'estimated_minutes', 'requires_post_test']),
                 'metadata' => [
@@ -147,21 +155,21 @@ class LearningController extends Controller
                     'completed_required_lessons' => $completedRequiredLessonCount,
                     'required_lessons' => count($requiredLessonIds),
                 ],
-                'assessments' => $course->assessments->map(function ($assessment) use ($postTestReady) {
-                    $attempts = $assessment->attempts;
-                    $latestAttempt = $attempts->first();
+                'assessments' => $course->assessments->map(function ($assessment) use ($postTestReady, $authorizedRetakeAssessmentIds) {
+                    $submittedAttempts = $assessment->attempts->whereNotNull('submitted_at');
+                    $hasActiveAttempt = $assessment->attempts->contains(fn ($attempt) => $attempt->submitted_at === null);
+                    $ready = $assessment->questions_count > 0 && ($assessment->type === 'pre_test' || $postTestReady);
 
                     return [
-                        ...$assessment->only(['id', 'type', 'is_required', 'attempt_limit']),
-                        'ready' => $assessment->questions_count > 0 && ($assessment->type === 'pre_test' || $postTestReady),
-                        'attempts_used' => $attempts->count(),
-                        'best_score' => $attempts->max('score'),
-                        'latest_attempt' => $latestAttempt?->only(['attempt_number', 'score', 'passed']),
+                        ...$assessment->only(['id', 'type', 'is_required']),
+                        'ready' => $ready,
+                        'submitted' => $submittedAttempts->isNotEmpty(),
+                        'can_start' => $ready && ($hasActiveAttempt || ($submittedAttempts->count() < ($assessment->type === 'pre_test' ? 1 : $assessment->attempt_limit) && ($assessment->type === 'pre_test' || $submittedAttempts->isEmpty() || $authorizedRetakeAssessmentIds->has($assessment->id)))),
                     ];
                 }),
                 'pre_test_required' => $requiredPreTest !== null,
                 'pre_test_completed' => $preTestCompleted,
-                'modules' => $course->modules->map(function ($module) use ($completed, $selectedSummary, $moduleStates, $preTestCompleted) {
+                'modules' => $course->modules->map(function ($module) use ($completed, $selectedSummary, $moduleStates, $preTestCompleted, $authorizedRetakeAssessmentIds) {
                     $state = $moduleStates->get($module->id);
                     $moduleCompleted = $state['completed'] ?? false;
                     $moduleInProgress = ! $moduleCompleted && ($module->lessons->contains(fn (Lesson $lesson) => in_array($lesson->id, $completed, true)) || $module->lessons->contains('id', $selectedSummary?->id));
@@ -175,16 +183,16 @@ class LearningController extends Controller
                         'lock_reason' => ! $preTestCompleted
                             ? 'Selesaikan Pre-Test course terlebih dahulu.'
                             : (! ($state['unlocked'] ?? false) ? 'Selesaikan Post-Test modul sebelumnya terlebih dahulu.' : 'Selesaikan Pre-Test modul ini terlebih dahulu.'),
-                        'assessments' => $module->assessments->map(function ($assessment) use ($modulePostReady, $state) {
-                            $attempts = $assessment->attempts;
-                            $latestAttempt = $attempts->first();
+                        'assessments' => $module->assessments->map(function ($assessment) use ($modulePostReady, $state, $authorizedRetakeAssessmentIds) {
+                            $submittedAttempts = $assessment->attempts->whereNotNull('submitted_at');
+                            $hasActiveAttempt = $assessment->attempts->contains(fn ($attempt) => $attempt->submitted_at === null);
+                            $ready = $assessment->questions_count > 0 && ($assessment->type === 'pre_test' ? ($state['unlocked'] ?? false) : ($state['post_available'] ?? $modulePostReady));
 
                             return [
-                                ...$assessment->only(['id', 'module_id', 'type', 'is_required', 'attempt_limit']),
-                                'ready' => $assessment->questions_count > 0 && ($assessment->type === 'pre_test' ? ($state['unlocked'] ?? false) : ($state['post_available'] ?? $modulePostReady)),
-                                'attempts_used' => $attempts->count(),
-                                'best_score' => $attempts->max('score'),
-                                'latest_attempt' => $latestAttempt?->only(['attempt_number', 'score', 'passed']),
+                                ...$assessment->only(['id', 'module_id', 'type', 'is_required']),
+                                'ready' => $ready,
+                                'submitted' => $submittedAttempts->isNotEmpty(),
+                                'can_start' => $ready && ($hasActiveAttempt || ($submittedAttempts->count() < ($assessment->type === 'pre_test' ? 1 : $assessment->attempt_limit) && ($assessment->type === 'pre_test' || $submittedAttempts->isEmpty() || $authorizedRetakeAssessmentIds->has($assessment->id)))),
                             ];
                         })->values(),
                         'lessons' => $module->lessons->map(fn (Lesson $lesson) => [

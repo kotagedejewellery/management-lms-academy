@@ -41,7 +41,9 @@ export function buildSidebarNavigation(
                   },
               ]
             : []),
-        ...(capabilities.manageCourses && !capabilities.manageEnrollments
+        ...(capabilities.manageCourses ||
+        capabilities.manageEnrollments ||
+        capabilities.viewReports
             ? [
                   {
                       title: 'Progres course',

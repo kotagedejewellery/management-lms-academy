@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Enrollment;
-use App\Support\ReportEnrollmentQuery;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -13,8 +12,10 @@ class LearningProgressController extends Controller
     public function index(Request $request): Response
     {
         $userId = $request->user()->id;
-        $enrollments = ReportEnrollmentQuery::make(['search' => '', 'status' => '', 'course_id' => null])
+        $enrollments = Enrollment::query()
             ->where('user_id', $userId)
+            ->whereIn('status', ['active', 'completed', 'not_passed'])
+            ->with('course:id,code,title')
             ->withCount([
                 'lessonProgress as completed_lessons_count' => fn ($query) => $query->where('status', 'completed'),
                 'course as lessons_count' => fn ($query) => $query->withCount('lessons'),
@@ -26,9 +27,8 @@ class LearningProgressController extends Controller
 
                 return [
                     'id' => $enrollment->id,
-                    'status' => $enrollment->status,
+                    'status' => $enrollment->status === 'not_passed' ? 'needs_guidance' : $enrollment->status,
                     'completed_at' => $enrollment->completed_at?->toDateString(),
-                    'best_post_score' => $enrollment->best_post_score === null ? null : (float) $enrollment->best_post_score,
                     'completed_lessons_count' => $enrollment->completed_lessons_count,
                     'lessons_count' => $enrollment->lessons_count,
                     'progress' => $progress,

@@ -23,11 +23,16 @@ class LearningProgressTest extends TestCase
         $enrollment = $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
         $enrollment->lessonProgress()->create(['lesson_id' => $lesson->id, 'status' => 'completed', 'completed_at' => now()]);
         $otherEmployee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
+        $followUpCourse = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-002', 'title' => 'Tindak lanjut', 'status' => 'published']);
+        $employee->enrollments()->create(['course_id' => $followUpCourse->id, 'status' => 'not_passed', 'best_post_score' => 50]);
 
         $this->actingAs($employee)->get(route('my-progress.index'))->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('learning/Progress')
             ->where('stats.active', 1)
-            ->has('enrollments.data', 1)
-            ->where('enrollments.data.0.progress', 100));
+            ->has('enrollments.data', 2)
+            ->where('enrollments.data.1.status', 'needs_guidance')
+            ->missing('enrollments.data.1.best_post_score'));
+        $this->actingAs($employee)->get(route('my-learning.index'))->assertOk()->assertInertia(fn (Assert $page) => $page
+            ->where('enrollments.data.1.status', 'needs_guidance'));
     }
 }

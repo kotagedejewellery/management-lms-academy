@@ -65,13 +65,8 @@ type Assessment = {
     type: 'pre_test' | 'post_test';
     is_required: boolean;
     ready: boolean;
-    attempt_limit: number;
-    attempts_used: number;
-    latest_attempt: {
-        attempt_number: number;
-        score: string;
-        passed: boolean | null;
-    } | null;
+    submitted: boolean;
+    can_start: boolean;
 };
 type CourseAction =
     | { kind: 'link'; href: string; label: string; description: string }
@@ -86,7 +81,7 @@ type CourseAction =
 const props = defineProps<{
     enrollment: {
         id: number;
-        status: 'active' | 'completed' | 'not_passed';
+        course_completed: boolean;
         due_at: string | null;
     };
     course: {
@@ -223,26 +218,6 @@ const embeddedVideoUrl = computed(() =>
 );
 const courseAction = computed<CourseAction>(() => {
     if (
-        props.enrollment.status === 'completed' &&
-        postTest.value?.latest_attempt
-    )
-        return {
-            kind: 'link',
-            href: resultHref(postTest.value),
-            label: 'Lihat hasil Post-Test',
-            description: 'Course ini telah selesai.',
-        };
-    if (
-        props.enrollment.status === 'not_passed' &&
-        postTest.value?.latest_attempt
-    )
-        return {
-            kind: 'link',
-            href: resultHref(postTest.value),
-            label: 'Lihat hasil Post-Test',
-            description: 'Batas percobaan Post-Test telah tercapai.',
-        };
-    if (
         props.course.pre_test_required &&
         !props.course.pre_test_completed &&
         preTest.value
@@ -256,11 +231,12 @@ const courseAction = computed<CourseAction>(() => {
                     'Pre-Test wajib diselesaikan sebelum materi dapat dibuka.',
             };
     }
-    if (props.enrollment.status === 'completed')
+    if (props.enrollment.course_completed)
         return {
             kind: 'none',
             label: 'Course selesai',
-            description: 'Seluruh persyaratan course telah terpenuhi.',
+            description:
+                'Periksa sertifikat Anda bila diterbitkan untuk course ini.',
         };
     if (firstIncompleteLesson.value)
         return {
@@ -319,9 +295,6 @@ function lessonTypeLabel(type: Lesson['type']): string {
 function assessmentHref(assessment: Assessment): string {
     return `/my-learning/${props.course.id}/assessments/${assessment.id}`;
 }
-function resultHref(assessment: Assessment): string {
-    return `${assessmentHref(assessment)}/result`;
-}
 function resourceDownloadHref(resource: { id: number }): string {
     return activeLesson.value
         ? `/courses/${props.course.id}/modules/${activeLesson.value.module_id}/lessons/${activeLesson.value.id}/resources/${resource.id}`
@@ -333,24 +306,19 @@ function resourcePreviewHref(resource: { id: number }): string {
 function assessmentAction(
     assessment: Assessment,
 ): { href: string; label: string } | null {
-    if (
-        props.enrollment.status === 'active' &&
-        assessment.ready &&
-        assessment.attempts_used < assessment.attempt_limit
-    )
+    if (!props.enrollment.course_completed && assessment.can_start)
         return {
             href: assessmentHref(assessment),
-            label:
-                assessment.attempts_used > 0
-                    ? `Ulangi ${assessmentTitle(assessment)}`
-                    : `Mulai ${assessmentTitle(assessment)}`,
+            label: `Buka ${assessmentTitle(assessment)}`,
         };
-    return assessment.latest_attempt
-        ? {
-              href: resultHref(assessment),
-              label: `Lihat hasil ${assessmentTitle(assessment)}`,
-          }
-        : null;
+    return null;
+}
+function assessmentStatusDescription(assessment: Assessment): string {
+    if (assessment.submitted && !assessment.can_start) {
+        return 'Assessment telah dikirim. Management akan memberikan arahan bila diperlukan.';
+    }
+
+    return assessmentDescription(assessment);
 }
 function selectLesson(lesson: LessonEntry, scrollToPlayer = false): void {
     lessonError.value = '';
@@ -606,13 +574,7 @@ defineOptions({
                         Status assignment
                     </dt>
                     <dd class="mt-1 text-lg font-semibold text-foreground">
-                        {{
-                            enrollment.status === 'completed'
-                                ? 'Selesai'
-                                : enrollment.status === 'not_passed'
-                                  ? 'Tidak lulus'
-                                  : 'Aktif'
-                        }}
+                        {{ enrollment.course_completed ? 'Selesai' : 'Aktif' }}
                     </dd>
                 </div>
             </dl>
@@ -659,11 +621,8 @@ defineOptions({
                         >
                             <div class="flex items-start gap-3">
                                 <CheckCircle2
-                                    v-if="
-                                        assessment.latest_attempt?.passed ===
-                                        true
-                                    "
-                                    class="mt-0.5 size-4 shrink-0 text-emerald-700"
+                                    v-if="assessment.submitted"
+                                    class="mt-0.5 size-4 shrink-0 text-primary"
                                 /><LockKeyhole
                                     v-else-if="!assessment.ready"
                                     class="mt-0.5 size-4 shrink-0 text-muted-foreground"
@@ -678,16 +637,11 @@ defineOptions({
                                     <p
                                         class="mt-1 text-xs leading-5 text-muted-foreground"
                                     >
-                                        {{ assessmentDescription(assessment) }}
-                                    </p>
-                                    <p
-                                        v-if="assessment.attempts_used"
-                                        class="mt-1 text-xs text-muted-foreground"
-                                    >
-                                        {{ assessment.attempts_used }}/{{
-                                            assessment.attempt_limit
+                                        {{
+                                            assessmentStatusDescription(
+                                                assessment,
+                                            )
                                         }}
-                                        percobaan digunakan
                                     </p>
                                     <Link
                                         v-if="assessmentAction(assessment)"
@@ -743,7 +697,11 @@ defineOptions({
                                     <p
                                         class="mt-1 text-xs leading-5 text-muted-foreground"
                                     >
-                                        {{ assessmentDescription(assessment) }}
+                                        {{
+                                            assessmentStatusDescription(
+                                                assessment,
+                                            )
+                                        }}
                                     </p>
                                     <Link
                                         v-if="assessmentAction(assessment)"
@@ -989,7 +947,7 @@ defineOptions({
                             <Check class="size-4" />Lesson selesai
                         </p>
                         <Button
-                            v-else-if="enrollment.status === 'active'"
+                            v-else-if="!enrollment.course_completed"
                             :disabled="completingLessonId !== null"
                             @click="complete(activeLesson)"
                             ><Check />{{

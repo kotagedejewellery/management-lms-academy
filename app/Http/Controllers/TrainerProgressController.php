@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Assessment;
 use App\Models\AssessmentAttempt;
+use App\Models\AssessmentRetakeAuthorization;
+use App\Models\Course;
 use App\Models\Enrollment;
 use App\Support\ReportEnrollmentQuery;
 use Illuminate\Http\Request;
@@ -16,18 +18,17 @@ class TrainerProgressController extends Controller
 {
     public function index(Request $request): Response
     {
-        abort_unless(
-            $request->user()->hasRole('trainer')
-            && $request->user()->hasPermission('manage-courses'),
-            403,
-        );
+        $user = $request->user();
+        $hasCentralAccess = $user->hasPermission('manage-enrollments') || $user->hasPermission('view-reports');
+        $isAssignedTrainer = $user->hasRole('trainer') && $user->hasPermission('manage-courses');
+        abort_unless($hasCentralAccess || $isAssignedTrainer, 403);
 
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
             'status' => ['nullable', Rule::in(['active', 'completed', 'not_passed'])],
             'course_id' => ['nullable', 'integer'],
         ]);
-        $courses = $request->user()->managedCourses()
+        $courses = ($hasCentralAccess ? Course::query() : $user->managedCourses())
             ->orderBy('title')
             ->get(['courses.id', 'courses.code', 'courses.title']);
         $courseIds = $courses->pluck('id');
@@ -45,6 +46,7 @@ class TrainerProgressController extends Controller
             ->paginate(15)
             ->withQueryString();
         $moduleAssessments = $this->moduleAssessments($enrollments->getCollection());
+        $retakeAssessments = $this->retakeAssessments($enrollments->getCollection());
 
         $enrollments->through(fn (Enrollment $enrollment) => [
             'id' => $enrollment->id,
@@ -58,6 +60,7 @@ class TrainerProgressController extends Controller
             'user' => $enrollment->user?->only(['employee_id', 'name']),
             'course' => $enrollment->course?->only(['code', 'title']),
             'module_assessments' => $moduleAssessments->get($enrollment->id, []),
+            'retake_assessments' => $retakeAssessments->get($enrollment->id, []),
         ]);
 
         return Inertia::render('trainer-progress/Index', [
@@ -110,6 +113,75 @@ class TrainerProgressController extends Controller
                 ->all();
 
             return [$enrollment->id => $modules];
+        });
+    }
+
+    /**
+     * @param  Collection<int, Enrollment>  $enrollments
+     * @return Collection<int, array<int, array{id: int, label: string, status: 'available'|'pending'|'exhausted'}>>
+     */
+    private function retakeAssessments(Collection $enrollments): Collection
+    {
+        if ($enrollments->isEmpty()) {
+            return collect();
+        }
+
+        $assessments = Assessment::query()
+            ->whereIn('course_id', $enrollments->pluck('course_id')->unique())
+            ->where('type', 'post_test')
+            ->with('module:id,title,sequence')
+            ->get(['id', 'course_id', 'module_id', 'attempt_limit']);
+        $assessmentIds = $assessments->pluck('id');
+        $attempts = AssessmentAttempt::query()
+            ->whereIn('enrollment_id', $enrollments->pluck('id'))
+            ->whereIn('assessment_id', $assessmentIds)
+            ->whereNotNull('submitted_at')
+            ->orderBy('attempt_number')
+            ->get(['assessment_id', 'enrollment_id', 'attempt_number', 'passed'])
+            ->groupBy(fn (AssessmentAttempt $attempt) => "{$attempt->enrollment_id}:{$attempt->assessment_id}");
+        $activeAttemptKeys = AssessmentAttempt::query()
+            ->whereIn('enrollment_id', $enrollments->pluck('id'))
+            ->whereIn('assessment_id', $assessmentIds)
+            ->whereNull('submitted_at')
+            ->get(['assessment_id', 'enrollment_id'])
+            ->mapWithKeys(fn (AssessmentAttempt $attempt) => ["{$attempt->enrollment_id}:{$attempt->assessment_id}" => true]);
+        $pendingAuthorizationKeys = AssessmentRetakeAuthorization::query()
+            ->whereIn('enrollment_id', $enrollments->pluck('id'))
+            ->whereIn('assessment_id', $assessmentIds)
+            ->whereNull('used_at')
+            ->whereNull('cancelled_at')
+            ->get(['assessment_id', 'enrollment_id'])
+            ->mapWithKeys(fn (AssessmentRetakeAuthorization $authorization) => ["{$authorization->enrollment_id}:{$authorization->assessment_id}" => true]);
+
+        return $enrollments->mapWithKeys(function (Enrollment $enrollment) use ($assessments, $attempts, $activeAttemptKeys, $pendingAuthorizationKeys): array {
+            $retakes = $assessments
+                ->where('course_id', $enrollment->course_id)
+                ->map(function (Assessment $assessment) use ($attempts, $enrollment, $activeAttemptKeys, $pendingAuthorizationKeys): ?array {
+                    $key = "{$enrollment->id}:{$assessment->id}";
+                    $assessmentAttempts = $attempts->get($key, collect());
+                    $latest = $assessmentAttempts->last();
+
+                    if ($latest === null || $latest->passed === true) {
+                        return null;
+                    }
+
+                    $status = $assessmentAttempts->count() >= $assessment->attempt_limit
+                        ? 'exhausted'
+                        : ($activeAttemptKeys->has($key) || $pendingAuthorizationKeys->has($key) ? 'pending' : 'available');
+
+                    return [
+                        'id' => $assessment->id,
+                        'label' => $assessment->module_id === null
+                            ? 'Post-Test course'
+                            : 'Post-Test modul '.($assessment->module?->title ?? 'tanpa nama'),
+                        'status' => $status,
+                    ];
+                })
+                ->filter()
+                ->values()
+                ->all();
+
+            return [$enrollment->id => $retakes];
         });
     }
 

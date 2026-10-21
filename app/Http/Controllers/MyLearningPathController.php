@@ -38,7 +38,7 @@ class MyLearningPathController extends Controller
                     'sequence' => $pathCourse->sequence,
                     'code' => $pathCourse->course?->code,
                     'title' => $pathCourse->course?->title,
-                    'enrollment_status' => $status,
+                    'enrollment_status' => $status === 'not_passed' ? 'needs_guidance' : $status,
                     'locked' => $lockedByPrerequisite || $lockedBySequence,
                     'lock_reason' => $lockedByPrerequisite
                         ? 'Selesaikan course prasyarat terlebih dahulu.'

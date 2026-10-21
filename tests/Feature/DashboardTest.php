@@ -33,7 +33,7 @@ class DashboardTest extends TestCase
             ->component('Dashboard')
             ->where('mode', 'learner')
             ->where('title', 'Pembelajaran saya')
-            ->has('stats', 4)
+            ->has('stats', 3)
             ->has('items', 0));
     }
 

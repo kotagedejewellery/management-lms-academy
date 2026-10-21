@@ -28,7 +28,7 @@ Laravel + Inertia + Vue
 | Organization | User, division, position, branch, manager | Menyediakan audience dan scope reporting. |
 | Learning Catalog | Course, module, lesson, resource, publication | Hanya published course dapat dipelajari. |
 | Learning Path & Enrollment | Path, course order, prerequisite, assignment | Menentukan course yang tersedia pada learner. |
-| Assessment | Pre/Post-Test, question, attempt, response, scoring | Attempt immutable setelah submitted. |
+| Assessment | Pre/Post-Test, question, attempt, response, scoring, retake authorization | Attempt immutable setelah submitted; setiap retake Post-Test membutuhkan otorisasi internal yang tercatat. |
 | Progress & Completion | Lesson progress, course progress, completion state | Menghitung state dari data terotorisasi. |
 | Reporting | Dashboard, filter, aggregate, export | Query minimal; export berjalan sebagai job. |
 | Activity & Operations | Audit log, notification job, failed job | Tidak mengubah alur belajar utama. |
@@ -45,10 +45,16 @@ Laravel + Inertia + Vue
 
 ### Submit assessment
 
-1. Server memvalidasi enrollment, prerequisite, timer, attempt limit, dan ownership.
+1. Server memvalidasi enrollment, prerequisite, timer, attempt limit, ownership, dan otorisasi retake bila Post-Test sudah pernah dikirim.
 2. Dalam transaksi: simpan responses, hitung score, kunci attempt sebagai submitted, dan perbarui course progress.
 3. Buat audit activity dan invalidasi cache progress/report yang relevan.
-4. Kembalikan hasil hanya milik learner tersebut. Tidak ada scoring di browser sebagai sumber kebenaran.
+4. Kembalikan konfirmasi pengiriman netral kepada learner. Score, outcome, jawaban, dan kunci jawaban hanya tersedia pada jalur laporan internal yang terotorisasi.
+
+### Otorisasi retake Post-Test
+
+1. Setelah Post-Test belum memenuhi standar, Employee tidak dapat memulai attempt berikutnya sendiri.
+2. Trainer yang ditugaskan pada course, atau role internal dengan izin enrollment/laporan, membuat satu otorisasi retake untuk enrollment dan assessment tersebut.
+3. Employee melihat halaman persiapan netral dan harus menekan tindakan mulai sebelum otorisasi dikonsumsi atomik serta attempt berikutnya dibuat. Otorisasi yang belum dipakai dapat dibatalkan secara soft-cancel oleh pihak berwenang dan tidak dapat melampaui attempt limit assessment.
 
 ### Pekerjaan berat
 

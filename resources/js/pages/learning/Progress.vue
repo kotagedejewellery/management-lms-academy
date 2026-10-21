@@ -8,9 +8,8 @@ import { Button } from '@/components/ui/button';
 
 type Enrollment = {
     id: number;
-    status: 'active' | 'completed';
+    status: 'active' | 'completed' | 'needs_guidance';
     completed_at: string | null;
-    best_post_score: number | null;
     completed_lessons_count: number;
     lessons_count: number;
     progress: number;
@@ -29,9 +28,6 @@ defineProps<{
     };
 }>();
 
-function score(value: number | null): string {
-    return value === null ? 'Belum ada' : value.toFixed(2);
-}
 defineOptions({
     layout: { breadcrumbs: [{ title: 'My Progress', href: '/my-progress' }] },
 });
@@ -43,7 +39,7 @@ defineOptions({
     <div class="app-page">
         <PageHeader
             title="Progres saya"
-            description="Lihat penyelesaian materi dan hasil Post-Test terbaik Anda."
+            description="Lihat penyelesaian materi dan progres pembelajaran Anda."
         />
 
         <dl
@@ -90,10 +86,10 @@ defineOptions({
                                 {{
                                     item.status === 'completed'
                                         ? `Selesai${item.completed_at ? ` · ${item.completed_at}` : ''}`
-                                        : 'Sedang dipelajari'
+                                        : item.status === 'needs_guidance'
+                                          ? 'Menunggu arahan Management'
+                                          : 'Sedang dipelajari'
                                 }}
-                                · Post-Test terbaik:
-                                {{ score(item.best_post_score) }}
                             </p>
                         </div>
                         <Button

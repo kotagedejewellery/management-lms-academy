@@ -33,7 +33,7 @@ Manager melihat subset menu/data sesuai policy. Navigation tidak menggantikan au
 | Course detail | Metadata, module, CTA lanjut, tab. | Konten satu kolom; CTA tetap jelas; tab dapat scroll. |
 | Lesson player | Daftar module/lesson di samping player. | Daftar menjadi drawer/accordion; player aspect-ratio stabil. |
 | Pre/Post-Test | Soal, timer, progress, navigasi jelas. | Satu soal fokus; tombol previous/next/submit selalu dapat dijangkau. |
-| Result | Score, status, attempt, improvement, tindakan berikutnya. | Status dan tindakan di atas; detail di bawah. |
+| Konfirmasi assessment Employee | Konfirmasi pengiriman netral dan CTA kembali ke materi. Tidak menampilkan skor, status lulus/gagal, percobaan, atau kunci jawaban. | Pesan dan CTA jelas di atas; tanpa detail evaluasi. |
 | Admin dashboard/report | Filter dan data table/card/graph. | Filter drawer; metric cards; tabel bergeser menjadi card summary atau horizontal scroll terkontrol. |
 
 Target desain diuji pada lebar 390px, 768px, 1024px, dan 1440px. Layout bersifat mobile-first; gunakan breakpoint hanya ketika struktur benar-benar berubah.
@@ -44,7 +44,7 @@ Target desain diuji pada lebar 390px, 768px, 1024px, dan 1440px. Layout bersifat
 
 Pada course builder, formulir lesson membedakan sumber `Unggah file` dan `Gunakan URL`; label wajib menyatakan tipe serta batas file. Modul, lesson, dan soal assessment baru ditempatkan otomatis di akhir daftar; ubah posisinya melalui aksi Naik/Turun yang berlabel dan nonaktif di batas daftar, bukan dengan input nomor manual. Presentasi Canva memakai tautan view-only atau embed dan menjelaskan bahwa tautan editor tidak dapat digunakan; learner mendapat preview serta tautan buka di Canva sebagai fallback. Thumbnail course dapat diganti atau dihapus sebelum disimpan; pesan validasinya menjelaskan tindakan pemulihan, bukan nama rule teknis. Pesan error form terhubung ke kontrol yang bermasalah, diumumkan kepada pembaca layar, dan memfokuskan error pertama. Pemilihan Trainer / Mentor menampilkan akun aktif ber-role tersebut sebagai control pilihan yang jelas; jika kosong, arahkan Admin ke pengelolaan pengguna. Lesson yang ada dapat diubah atau mengganti file dari aksi yang dapat diakses keyboard. Saat course bukan Draft, tampilkan status read-only beserta arahan untuk kembali ke Draft, bukan formulir yang tampak dapat disimpan.
 
-Setiap status memiliki teks dan icon/shape pendamping: Completed, In Progress, Not Started, Passed, Not Passed, Overdue, Locked. Warna saja tidak cukup. Assessment builder menyatakan bahwa Pre-Test adalah baseline satu percobaan, sedangkan nilai kelulusan dan percobaan ulang hanya berlaku untuk Post-Test. Setiap soal menampilkan status kunci jawaban, dapat diperluas untuk detail, dan dapat diubah hanya selama assessment masih aman diedit. Form course menampilkan checklist kesiapan publikasi yang menaut langsung ke materi atau soal yang belum siap. Setiap form panjang menampilkan ringkasan error yang dapat ditindaklanjuti, error inline yang terhubung ke field, lalu memusatkan viewport dan fokus keyboard ke error pertama. Tombol submit mengunci double-submit dan menyatakan objek yang sedang diproses; upload menampilkan nama file serta progres. Pesan aturan bisnis tampil sebagai penjelasan tindakan yang bisa dilakukan Admin, bukan error HTTP atau key validasi teknis.
+Setiap status internal memiliki teks dan icon/shape pendamping: Completed, In Progress, Not Started, Passed, Not Passed, Overdue, Locked. Warna saja tidak cukup. Hasil assessment Employee selalu berupa konfirmasi netral; outcome evaluasi, nilai, percobaan, dan kunci jawaban tidak dirender atau dikirim ke browser Employee. Assessment builder menyatakan bahwa Pre-Test adalah baseline satu percobaan, sedangkan nilai kelulusan dan percobaan ulang hanya berlaku untuk Post-Test. Employee dapat mengikuti attempt Post-Test pertama; Trainer atau role internal berwenang harus membuka setiap kesempatan ulang berikutnya. Setiap soal menampilkan status kunci jawaban, dapat diperluas untuk detail, dan dapat diubah hanya selama assessment masih aman diedit. Form course menampilkan checklist kesiapan publikasi yang menaut langsung ke materi atau soal yang belum siap. Setiap form panjang menampilkan ringkasan error yang dapat ditindaklanjuti, error inline yang terhubung ke field, lalu memusatkan viewport dan fokus keyboard ke error pertama. Tombol submit mengunci double-submit dan menyatakan objek yang sedang diproses; upload menampilkan nama file serta progres. Pesan aturan bisnis tampil sebagai penjelasan tindakan yang bisa dilakukan Admin, bukan error HTTP atau key validasi teknis.
 
 ## 5. Aksesibilitas dan interaksi
 
@@ -66,7 +66,9 @@ Setiap status memiliki teks dan icon/shape pendamping: Completed, In Progress, N
 
 ## 7. State yang wajib dirancang
 
-Loading, empty, offline/error, unauthorized, no assigned learning, lesson locked, deadline overdue, assessment in progress, time expired, attempt limit reached, passed, not passed/retake, export queued/ready/failed, dan file access denied.
+Employee-facing Dashboard, My Learning, My Progress, and Learning Path must not expose score, pass/fail, retry count, or retry limit. Use the neutral state “Menunggu arahan Management”. A pending retake opens a preparation screen; it begins only when Employee chooses “Mulai Post-Test”, and an authorized internal user may cancel it before it begins.
+
+Loading, empty, offline/error, unauthorized, no assigned learning, lesson locked, deadline overdue, assessment in progress, time expired, assessment submitted, menunggu arahan Management, kesempatan ulang dibuka, attempt limit reached (internal), passed/not passed (internal), export queued/ready/failed, dan file access denied.
 
 ## 8. Validasi implementasi
 

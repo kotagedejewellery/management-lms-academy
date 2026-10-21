@@ -22,7 +22,7 @@ KGJ Academy adalah Learning Management System internal untuk onboarding, SOP, pr
 | LMS Admin / HR | User, struktur organisasi, course, path, enrollment, dan laporan. |
 | Trainer / Mentor | Course dan penilaian yang ditugaskan. |
 | Manager Tim | Progres bawahan langsung yang menjadi kewenangannya. |
-| Employee / Learner | Materi, Pre-Test, Post-Test, hasil, dan progres pribadi. |
+| Employee / Learner | Materi, Pre-Test, Post-Test, konfirmasi pengiriman, dan progres pribadi tanpa nilai atau detail evaluasi. |
 | Management / Owner | Dashboard agregat dan laporan eksekutif. |
 
 ## 4. Scope MVP
@@ -51,7 +51,8 @@ Admin membuat/memperbarui user
   → Pre-Test bila mandatory
   → menyelesaikan lesson wajib
   → Post-Test
-  → Passed/Not Passed + course progress
+  → employee menerima konfirmasi pengiriman netral
+  → Trainer/Management menilai hasil dan, bila perlu, membuka kesempatan ulang
   → Manager/Admin melihat laporan sesuai otorisasi
 ```
 
@@ -65,8 +66,11 @@ Contoh path Customer Service: Brand Introduction → Product Knowledge → Mater
 - Post-Test modul yang dibuat baru terbuka setelah lesson mandatory modul selesai dan harus lulus sebelum modul berikutnya dapat dibuka.
 - Course dengan Post-Test selesai bila lesson mandatory selesai dan Post-Test lulus passing grade. Course tanpa Post-Test selesai saat lesson mandatory selesai.
 - Pre-Test selalu satu attempt dan tidak memiliki passing grade; jumlah attempt Post-Test diatur per assessment dalam rentang 1â€“3. Kegagalan pada attempt Post-Test terakhir memberi status `Not Passed`.
+- Setiap attempt Post-Test setelah attempt pertama harus dibuka satu kali oleh Trainer yang ditugaskan atau role internal yang memiliki wewenang laporan/enrollment. Otorisasi tidak dapat melampaui batas attempt yang dikonfigurasi.
 - Course wajib dalam learning path berjalan berurutan: course wajib sebelumnya harus selesai sebelum course wajib berikutnya dapat dibuka. Course baru ditambahkan di akhir path; Admin mengubah urutan dengan aksi Naik/Turun. Soal assessment juga ditambahkan otomatis di akhir dan dapat dipindahkan dengan aksi yang sama.
 - Simpan seluruh attempt, response, score, waktu, dan status untuk audit.
+- Employee tidak menerima skor, passing grade, status lulus/gagal, sisa kesempatan, riwayat jawaban, kunci jawaban, atau pembahasan pada Dashboard, My Learning, My Progress, maupun Learning Path. Halaman setelah submit hanya mengonfirmasi bahwa assessment telah dikirim. Trainer, LMS Admin, Super Admin, dan Management melihat hasil sesuai cakupan aksesnya; Manager Tim hanya menerima status tindak lanjut/progres tanpa nilai angka.
+- Otorisasi retake yang belum digunakan tidak memulai attempt saat halaman dibuka: Employee harus menekan tindakan mulai secara eksplisit. Trainer/Management dapat membatalkan otorisasi yang belum dipakai; pembatalan tetap tersimpan untuk audit.
 - Improvement ditampilkan dalam poin: `post_test_score - pre_test_score`, bukan persen.
 - Laporan repeat Post-Test harus menyatakan kebijakan skor (pertama, terakhir, terbaik); default laporan menampilkan skor pertama dan terbaik.
 - Artikel wajib memiliki isi. Lesson PDF/video wajib memiliki satu sumber: file privat yang sesuai atau URL. Course tidak dapat diterbitkan bila ada sumber materi yang belum lengkap, assessment aktif tanpa soal, atau soal yang tidak memiliki tepat satu jawaban benar. Course editor menampilkan checklist dan tautan perbaikan untuk setiap kegagalan publikasi.
@@ -77,7 +81,7 @@ Contoh path Customer Service: Brand Introduction → Product Knowledge → Mater
 
 ### Learner
 
-Login; dashboard; My Learning; Learning Path; Course Detail; lesson player video/article/PDF; resources; previous/next; resume progress; Pre-Test; Post-Test; result; profile; dan sertifikat course yang diaktifkan Admin.
+Login; dashboard; My Learning; Learning Path; Course Detail; lesson player video/article/PDF; resources; previous/next; resume progress; Pre-Test; Post-Test; konfirmasi pengiriman tanpa hasil evaluasi; profile; dan sertifikat course yang diaktifkan Admin.
 
 ### Admin dan Manager
 

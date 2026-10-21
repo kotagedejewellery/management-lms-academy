@@ -114,7 +114,6 @@ class DashboardResolver
             'stats' => [
                 ['label' => 'Sedang dipelajari', 'value' => $stats['active']],
                 ['label' => 'Course selesai', 'value' => $stats['completed']],
-                ['label' => 'Perlu diulang', 'value' => $stats['not_passed']],
                 ['label' => 'Tenggat terlewat', 'value' => $stats['overdue']],
             ],
             'learning_summary' => [

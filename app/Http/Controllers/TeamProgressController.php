@@ -23,13 +23,13 @@ class TeamProgressController extends Controller
             ->withQueryString()
             ->through(fn (Enrollment $enrollment) => [
                 'id' => $enrollment->id,
-                'status' => $enrollment->status,
+                'progress_state' => match ($enrollment->status) {
+                    'completed' => 'completed',
+                    'not_passed' => 'needs_follow_up',
+                    default => 'in_progress',
+                },
                 'due_at' => $enrollment->due_at?->toDateString(),
                 'completed_at' => $enrollment->completed_at?->toDateString(),
-                'pre_test_score' => $enrollment->pre_test_score === null ? null : (float) $enrollment->pre_test_score,
-                'best_post_score' => $enrollment->best_post_score === null ? null : (float) $enrollment->best_post_score,
-                'improvement' => $enrollment->pre_test_score === null || $enrollment->best_post_score === null ? null : round((float) $enrollment->best_post_score - (float) $enrollment->pre_test_score, 2),
-                'post_test_attempts' => (int) $enrollment->post_test_attempts,
                 'user' => $enrollment->user?->only(['employee_id', 'name']),
                 'course' => $enrollment->course?->only(['code', 'title']),
             ]);

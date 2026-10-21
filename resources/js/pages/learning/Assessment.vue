@@ -26,8 +26,6 @@ const props = defineProps<{
     assessment: {
         id: number;
         type: 'pre_test' | 'post_test';
-        attempt_limit: number;
-        attempt_number: number;
         expires_at: string | null;
         draft_answers: Record<string, number | string>;
         questions: Question[];
@@ -287,10 +285,6 @@ defineOptions({
                         />
                     </div>
                 </div>
-                <p class="text-sm text-muted-foreground">
-                    Percobaan {{ assessment.attempt_number }} dari
-                    {{ assessment.attempt_limit }}
-                </p>
             </div>
             <div
                 class="mt-3 flex items-center gap-2 text-sm"

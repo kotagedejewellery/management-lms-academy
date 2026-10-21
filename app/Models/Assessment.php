@@ -49,4 +49,10 @@ class Assessment extends Model
     {
         return $this->hasMany(AssessmentAttempt::class);
     }
+
+    /** @return HasMany<AssessmentRetakeAuthorization, $this> */
+    public function retakeAuthorizations(): HasMany
+    {
+        return $this->hasMany(AssessmentRetakeAuthorization::class);
+    }
 }

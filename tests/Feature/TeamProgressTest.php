@@ -34,6 +34,11 @@ class TeamProgressTest extends TestCase
         $this->actingAs($manager)->get(route('team-progress.index'))->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('team/Index')
             ->has('enrollments.data', 1)
-            ->where('enrollments.data.0.user.name', 'Dewi Anggraini'));
+            ->where('enrollments.data.0.user.name', 'Dewi Anggraini')
+            ->where('enrollments.data.0.progress_state', 'in_progress')
+            ->missing('enrollments.data.0.pre_test_score')
+            ->missing('enrollments.data.0.best_post_score')
+            ->missing('enrollments.data.0.improvement')
+            ->missing('enrollments.data.0.post_test_attempts'));
     }
 }

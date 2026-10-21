@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Jobs\SendWhatsappNotification;
+use App\Models\Assessment;
+use App\Models\AssessmentRetakeAuthorization;
 use App\Models\Enrollment;
 use App\Models\User;
 use App\Models\UserNotification;
@@ -33,6 +35,22 @@ class UserNotificationService
             $daysRemaining === 0 ? 'Deadline pembelajaran hari ini' : 'Deadline pembelajaran 3 hari lagi',
             "Selesaikan {$enrollment->course?->title} paling lambat {$dueDate}.",
             "deadline:{$enrollment->id}:{$enrollment->due_at->format('Ymd')}:{$daysRemaining}",
+        );
+    }
+
+    public function assessmentRetakeAuthorized(Enrollment $enrollment, Assessment $assessment, AssessmentRetakeAuthorization $authorization): void
+    {
+        $enrollment->loadMissing(['user:id,name', 'course:id,title']);
+        if (! $enrollment->user) {
+            return;
+        }
+
+        $label = $assessment->module_id === null ? 'Post-Test course' : 'Post-Test modul';
+        $this->send(
+            $enrollment->user,
+            'Kesempatan Post-Test tersedia',
+            "Management membuka kesempatan untuk mengerjakan {$label} pada course {$enrollment->course?->title}.",
+            "assessment-retake-authorized:{$authorization->id}",
         );
     }
 

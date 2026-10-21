@@ -8,7 +8,7 @@ import StatusBadge from '@/components/StatusBadge.vue';
 import { Button } from '@/components/ui/button';
 type Enrollment = {
     id: number;
-    status: 'active' | 'completed' | 'not_passed';
+    status: 'active' | 'completed' | 'needs_guidance';
     due_at: string | null;
     completed_lessons_count: number;
     lessons_count: number;
@@ -68,7 +68,6 @@ defineOptions({
                     <option value="not_started">Belum mulai</option>
                     <option value="in_progress">Sedang berjalan</option>
                     <option value="completed">Selesai</option>
-                    <option value="not_passed">Perlu diulang</option>
                 </select>
             </label>
             <label class="grid gap-1 text-sm font-medium text-foreground">
@@ -148,9 +147,7 @@ defineOptions({
                 </p>
                 <Button v-else class="mt-5" as-child
                     ><Link :href="`/my-learning/${item.course?.id}`">{{
-                        item.status === 'not_passed'
-                            ? 'Lihat hasil'
-                            : 'Buka course'
+                        'Buka course'
                     }}</Link></Button
                 >
             </article>

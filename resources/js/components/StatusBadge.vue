@@ -18,6 +18,7 @@ type Status =
     | 'locked'
     | 'completed'
     | 'not_passed'
+    | 'needs_guidance'
     | 'overdue'
     | 'in_progress';
 
@@ -65,6 +66,11 @@ const presentation = computed(
                 label: 'Perlu diulang',
                 icon: CirclePause,
                 class: 'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-300',
+            },
+            needs_guidance: {
+                label: 'Menunggu arahan',
+                icon: CirclePause,
+                class: 'border-border bg-muted text-muted-foreground',
             },
             overdue: {
                 label: 'Tenggat terlewat',

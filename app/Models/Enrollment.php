@@ -60,4 +60,10 @@ class Enrollment extends Model
     {
         return $this->hasMany(Certificate::class);
     }
+
+    /** @return HasMany<AssessmentRetakeAuthorization, $this> */
+    public function retakeAuthorizations(): HasMany
+    {
+        return $this->hasMany(AssessmentRetakeAuthorization::class);
+    }
 }

@@ -10,13 +10,9 @@ import { Label } from '@/components/ui/label';
 
 type Enrollment = {
     id: number;
-    status: 'active' | 'completed' | 'not_passed';
+    progress_state: 'in_progress' | 'completed' | 'needs_follow_up';
     due_at: string | null;
     completed_at: string | null;
-    pre_test_score: number | null;
-    best_post_score: number | null;
-    improvement: number | null;
-    post_test_attempts: number;
     user: { employee_id: string | null; name: string } | null;
     course: { code: string; title: string } | null;
 };
@@ -33,6 +29,7 @@ const props = defineProps<{
     filters: Filters;
 }>();
 const filters = { search: props.filters.search, status: props.filters.status };
+
 function applyFilters(): void {
     router.get('/team-progress', filters, {
         preserveState: true,
@@ -44,13 +41,12 @@ function resetFilters(): void {
     filters.status = '';
     applyFilters();
 }
-function score(value: number | null): string {
-    return value === null ? '—' : value.toFixed(2);
-}
-function statusLabel(status: Enrollment['status']): string {
-    return { active: 'Aktif', completed: 'Selesai', not_passed: 'Tidak lulus' }[
-        status
-    ];
+function statusLabel(status: Enrollment['progress_state']): string {
+    return {
+        in_progress: 'Berjalan',
+        completed: 'Selesai',
+        needs_follow_up: 'Perlu tindak lanjut',
+    }[status];
 }
 defineOptions({
     layout: { breadcrumbs: [{ title: 'Progres Tim', href: '/team-progress' }] },
@@ -62,35 +58,35 @@ defineOptions({
     <div class="app-page">
         <PageHeader
             title="Progres tim"
-            description="Pantau baseline, hasil evaluasi, dan peningkatan direct report Anda tanpa melihat tim lain."
+            description="Pantau status pembelajaran direct report Anda tanpa melihat nilai assessment."
         />
         <form
             class="grid gap-3 rounded-xl border border-border bg-card p-4 sm:grid-cols-[minmax(0,1fr)_11rem_auto_auto]"
             @submit.prevent="applyFilters"
         >
             <div class="grid gap-2">
-                <Label for="team-search">Cari</Label
-                ><Input
+                <Label for="team-search">Cari</Label>
+                <Input
                     id="team-search"
                     v-model="filters.search"
                     placeholder="Nama, ID, atau course"
                 />
             </div>
             <div class="grid gap-2">
-                <Label for="team-status">Status</Label
-                ><select
+                <Label for="team-status">Status</Label>
+                <select
                     id="team-status"
                     v-model="filters.status"
                     class="h-10 rounded-md border border-input bg-transparent px-3 text-sm"
                 >
                     <option value="">Semua status</option>
-                    <option value="active">Aktif</option>
+                    <option value="active">Berjalan</option>
                     <option value="completed">Selesai</option>
-                    <option value="not_passed">Tidak lulus</option>
+                    <option value="not_passed">Perlu tindak lanjut</option>
                 </select>
             </div>
-            <Button class="self-end" type="submit"><Search /> Terapkan</Button
-            ><Button
+            <Button class="self-end" type="submit"><Search /> Terapkan</Button>
+            <Button
                 class="self-end"
                 type="button"
                 variant="outline"
@@ -118,28 +114,16 @@ defineOptions({
                             {{ item.user?.employee_id ?? 'Tanpa ID karyawan' }}
                         </p>
                     </div>
-                    <div>
-                        <p class="font-medium text-foreground">
-                            {{ item.course?.title }}
-                        </p>
-                        <p class="mt-1 text-sm text-muted-foreground">
-                            Pre {{ score(item.pre_test_score) }} · Post
-                            {{ score(item.best_post_score) }} ·
-                            {{
-                                item.improvement === null
-                                    ? 'Improvement —'
-                                    : `Improvement ${item.improvement > 0 ? '+' : ''}${item.improvement}`
-                            }}
-                        </p>
-                    </div>
+                    <p class="font-medium text-foreground">
+                        {{ item.course?.title }}
+                    </p>
                     <p class="text-sm font-medium text-foreground">
-                        {{ statusLabel(item.status) }} ·
-                        {{ item.post_test_attempts }} attempt
+                        {{ statusLabel(item.progress_state) }}
                     </p>
                 </article>
             </div>
             <div class="hidden overflow-x-auto md:block">
-                <table class="w-full min-w-[860px] text-left text-sm">
+                <table class="w-full min-w-[640px] text-left text-sm">
                     <thead
                         class="border-b border-border bg-muted/40 text-muted-foreground"
                     >
@@ -147,18 +131,6 @@ defineOptions({
                             <th class="px-5 py-3 font-medium">Karyawan</th>
                             <th class="px-5 py-3 font-medium">Course</th>
                             <th class="px-5 py-3 font-medium">Status</th>
-                            <th class="px-5 py-3 text-right font-medium">
-                                Pre
-                            </th>
-                            <th class="px-5 py-3 text-right font-medium">
-                                Post terbaik
-                            </th>
-                            <th class="px-5 py-3 text-right font-medium">
-                                Improvement
-                            </th>
-                            <th class="px-5 py-3 text-right font-medium">
-                                Attempt
-                            </th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-border">
@@ -183,23 +155,7 @@ defineOptions({
                                 </p>
                             </td>
                             <td class="px-5 py-4 font-medium text-foreground">
-                                {{ statusLabel(item.status) }}
-                            </td>
-                            <td class="px-5 py-4 text-right tabular-nums">
-                                {{ score(item.pre_test_score) }}
-                            </td>
-                            <td class="px-5 py-4 text-right tabular-nums">
-                                {{ score(item.best_post_score) }}
-                            </td>
-                            <td class="px-5 py-4 text-right tabular-nums">
-                                {{
-                                    item.improvement === null
-                                        ? '—'
-                                        : `${item.improvement > 0 ? '+' : ''}${item.improvement}`
-                                }}
-                            </td>
-                            <td class="px-5 py-4 text-right tabular-nums">
-                                {{ item.post_test_attempts }}
+                                {{ statusLabel(item.progress_state) }}
                             </td>
                         </tr>
                     </tbody>
@@ -210,7 +166,8 @@ defineOptions({
                 :icon="UsersRound"
                 title="Belum ada data tim"
                 description="Direct report yang memiliki assignment akan tampil di sini."
-            /><Pagination
+            />
+            <Pagination
                 v-else
                 :from="enrollments.from"
                 :to="enrollments.to"

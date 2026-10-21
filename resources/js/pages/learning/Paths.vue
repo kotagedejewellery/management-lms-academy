@@ -81,6 +81,19 @@ defineOptions({
                             v-else-if="course.enrollment_status === 'completed'"
                             status="completed"
                         />
+                        <div
+                            v-else-if="
+                                course.enrollment_status === 'needs_guidance'
+                            "
+                            class="text-right"
+                        >
+                            <StatusBadge status="needs_guidance" />
+                            <p
+                                class="mt-1 max-w-48 text-xs text-muted-foreground"
+                            >
+                                Management akan memberikan arahan tindak lanjut.
+                            </p>
+                        </div>
                         <div v-else class="text-right">
                             <StatusBadge status="locked" />
                             <p

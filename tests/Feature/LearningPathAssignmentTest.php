@@ -44,6 +44,10 @@ class LearningPathAssignmentTest extends TestCase
         $this->assertDatabaseHas('enrollments', ['user_id' => $learner->id, 'course_id' => $course->id, 'status' => 'active']);
         $this->assertDatabaseHas('user_notifications', ['user_id' => $learner->id, 'title' => 'Course baru ditetapkan']);
         Queue::assertPushed(SendWhatsappNotification::class);
+
+        $learner->enrollments()->where('course_id', $course->id)->update(['status' => 'not_passed']);
+        $this->actingAs($learner)->get(route('my-learning-paths.index'))->assertOk()->assertInertia(fn (Assert $page) => $page
+            ->where('paths.data.0.courses.0.enrollment_status', 'needs_guidance'));
     }
 
     public function test_matching_rule_assigns_path_and_courses_when_an_employee_is_created(): void
