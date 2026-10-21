@@ -52,19 +52,21 @@ Jika konfigurasi environment mengharuskan pembuatan ulang `app`, buat ulang juga
 docker compose --env-file .env.production -f compose.production.yml up -d --force-recreate app web worker scheduler
 ```
 
-### Data katalog awal
+### Data katalog Customer Service
 
-Deploy otomatis tidak menjalankan seeder katalog agar setiap push tidak mengubah data bisnis. Untuk memasukkan materi awal Customer Service satu kali setelah release berhasil, jalankan secara eksplisit di VPS:
+Deploy otomatis tidak menjalankan seeder katalog agar setiap push tidak mengubah data bisnis. Untuk menyamakan katalog Customer Service production dengan katalog lokal setelah release berhasil, jalankan **satu kali secara eksplisit** di VPS:
 
 ```sh
 cd /opt/apps/sistem-lms-academy/management-lms-academy
 dc=(docker compose --env-file .env.production -f compose.production.yml)
-"${dc[@]}" exec -T app php artisan db:seed --class='Database\Seeders\CustomerServiceDealmakerSeeder' --force
+"${dc[@]}" exec -T app php artisan db:seed --class='Database\Seeders\ProductionCustomerServiceDealmakerRefreshSeeder' --force
 ```
 
-Seeder hanya membuat course `CS-DEAL-001`, kategori `Layanan Pelanggan`, 10 modul, dan 20 lesson. Ia tidak membuat akun, struktur organisasi, assignment, atau enrollment. Selain katalog, seeder membuat assessment native LMS untuk Modul 1–5 dan 7–10: lima soal Pre-Test (satu percobaan, tanpa nilai kelulusan) serta sepuluh soal Post-Test (tiga percobaan, nilai kelulusan 80). Modul 6 sengaja dilewati karena sumber soal belum tersedia.
+Perintah ini hanya mengganti materi dan assessment course `CS-DEAL-001`: 10 modul dengan satu video YouTube per modul, serta assessment native LMS pada Modul 1–5 dan 7–10. Setiap assessment memiliki lima soal Pre-Test (satu percobaan, tanpa nilai kelulusan) dan sepuluh soal Post-Test (tiga percobaan, nilai kelulusan 80). Modul 6 sengaja dilewati karena sumber soal belum tersedia.
 
-Assessment yang sudah ada selalu dilewati, termasuk assessment dengan riwayat pengerjaan. Karena itu perintah tersebut aman dijalankan ulang setelah deploy: tidak menduplikasi atau menimpa perubahan Admin maupun hasil learner. Seeder tetap dijalankan **secara eksplisit**, bukan pada setiap auto-deploy, agar data bisnis baru tidak muncul tanpa persetujuan.
+Seeder tidak membuat, menghapus, atau mengubah akun pengguna, role, organisasi, enrollment, trainer course, maupun learning path. Ia akan **membatalkan seluruh operasi** apabila course sudah memiliki progres lesson, attempt/draf/otorisasi ulang assessment, sertifikat, atau enrollment yang pernah dimulai/diselesaikan. Dalam keadaan itu, jangan memaksakan refresh; backup dan lakukan migrasi konten terencana agar riwayat learner tetap utuh.
+
+Seeder tetap dijalankan **secara eksplisit**, bukan pada setiap auto-deploy. Menjalankan perintah lebih dari sekali hanya relevan bila Anda memang ingin menyegarkan ulang katalog CS yang belum memiliki riwayat belajar peserta.
 
 ## 3. Auto-deploy GitHub Actions
 

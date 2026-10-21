@@ -118,7 +118,12 @@ const allLessons = computed<LessonEntry[]>(() =>
 );
 const activeLesson = computed(() => props.selected_lesson);
 const firstIncompleteLesson = computed(() =>
-    allLessons.value.find((lesson) => !lesson.completed),
+    allLessons.value.find((lesson) => !lesson.completed && !lesson.locked),
+);
+const nextModuleAssessment = computed(() =>
+    props.course.modules
+        .flatMap((module) => module.assessments)
+        .find((assessment) => assessment.can_start && !assessment.submitted),
 );
 const activeLessonIndex = computed(() =>
     allLessons.value.findIndex(
@@ -248,6 +253,15 @@ const courseAction = computed<CourseAction>(() => {
                     : 'Lanjutkan materi',
             description: requiredProgressLabel.value,
         };
+    if (nextModuleAssessment.value) {
+        const action = assessmentAction(nextModuleAssessment.value);
+        if (action)
+            return {
+                kind: 'link',
+                ...action,
+                description: assessmentDescription(nextModuleAssessment.value),
+            };
+    }
     if (postTest.value) {
         const action = assessmentAction(postTest.value);
         if (action)
@@ -981,32 +995,34 @@ defineOptions({
                     </div></template
                 >
                 <div v-else class="p-8 text-center sm:p-12">
-                    <LockKeyhole
-                        v-if="
-                            course.pre_test_required &&
-                            !course.pre_test_completed
-                        "
-                        class="mx-auto size-8 text-muted-foreground"
-                    /><BookOpen
-                        v-else
-                        class="mx-auto size-8 text-muted-foreground"
-                    />
-                    <h2 class="mt-4 text-lg font-semibold text-foreground">
-                        {{
-                            course.pre_test_required &&
-                            !course.pre_test_completed
-                                ? 'Materi masih terkunci'
-                                : 'Belum ada materi'
-                        }}
-                    </h2>
-                    <p class="mt-2 text-sm text-muted-foreground">
-                        {{
-                            course.pre_test_required &&
-                            !course.pre_test_completed
-                                ? 'Selesaikan Pre-Test wajib untuk membuka materi course.'
-                                : 'Course ini belum memiliki lesson yang dapat dipelajari.'
-                        }}
-                    </p>
+                    <template v-if="courseAction.kind === 'link'">
+                        <LockKeyhole
+                            class="mx-auto size-8 text-muted-foreground"
+                        />
+                        <h2 class="mt-4 text-lg font-semibold text-foreground">
+                            Evaluasi perlu diselesaikan
+                        </h2>
+                        <p class="mt-2 text-sm text-muted-foreground">
+                            {{ courseAction.description }}
+                        </p>
+                        <Button class="mt-5" as-child
+                            ><Link :href="courseAction.href">{{
+                                courseAction.label
+                            }}</Link></Button
+                        >
+                    </template>
+                    <template v-else>
+                        <BookOpen
+                            class="mx-auto size-8 text-muted-foreground"
+                        />
+                        <h2 class="mt-4 text-lg font-semibold text-foreground">
+                            Belum ada materi
+                        </h2>
+                        <p class="mt-2 text-sm text-muted-foreground">
+                            Course ini belum memiliki lesson yang dapat
+                            dipelajari.
+                        </p>
+                    </template>
                 </div>
             </section>
         </section>

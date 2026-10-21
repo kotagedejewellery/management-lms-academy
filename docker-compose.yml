@@ -125,6 +125,7 @@ services:
       - "${VITE_PORT:-5174}:5173"
     environment:
       VITE_PORT: ${VITE_PORT:-5174}
+      VITE_USE_POLLING: "true"
     volumes:
       - ./:/var/www/html
       - vendor:/var/www/html/vendor

@@ -71,7 +71,7 @@ class LearningController extends Controller
         return Inertia::render('learning/Index', ['enrollments' => $enrollments, 'filters' => $filters]);
     }
 
-    public function show(Request $request, Course $course): Response
+    public function show(Request $request, Course $course): Response|RedirectResponse
     {
         $enrollment = $this->enrollment($request, $course);
         $course->load([
@@ -112,7 +112,20 @@ class LearningController extends Controller
         $requestedLessonId = $request->integer('lesson');
         $selectedSummary = $requestedLessonId ? $lessons->firstWhere('id', $requestedLessonId) : null;
         abort_if($request->has('lesson') && ! $selectedSummary, 404);
-        abort_if($selectedSummary && ! $availableLessons->contains('id', $selectedSummary->id), 403);
+        if ($selectedSummary && ! $availableLessons->contains('id', $selectedSummary->id)) {
+            $lockedModule = $course->modules->firstWhere('id', $selectedSummary->module_id);
+            $lockedModuleState = $lockedModule ? $moduleStates->get($lockedModule->id) : null;
+            $lockedModulePreTest = $lockedModule?->assessments->firstWhere('type', 'pre_test');
+            $message = ! $preTestCompleted
+                ? 'Selesaikan Pre-Test course sebelum membuka materi.'
+                : (! ($lockedModuleState['unlocked'] ?? false)
+                    ? 'Selesaikan Post-Test modul sebelumnya sebelum membuka materi.'
+                    : ($lockedModulePreTest
+                        ? "Selesaikan Pre-Test Modul {$lockedModule->title} sebelum membuka materi."
+                        : 'Materi ini masih terkunci. Selesaikan evaluasi yang diwajibkan terlebih dahulu.'));
+
+            return to_route('my-learning.show', $course)->withErrors(['action' => $message]);
+        }
         $selectedSummary ??= $availableLessons->first(fn (Lesson $lesson) => ! in_array($lesson->id, $completed, true)) ?? $availableLessons->first();
         $selectedLesson = $selectedSummary
             ? Lesson::query()->with('resources:id,lesson_id,original_name,mime_type')->findOrFail($selectedSummary->id)

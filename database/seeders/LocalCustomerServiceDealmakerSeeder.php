@@ -24,7 +24,7 @@ class LocalCustomerServiceDealmakerSeeder extends Seeder
 
             $learner = User::query()->where('email', 'anisa@kgj.test')->first();
             if ($learner) {
-                Enrollment::query()->updateOrCreate(
+                Enrollment::query()->firstOrCreate(
                     ['user_id' => $learner->id, 'course_id' => $course->id],
                     ['status' => 'active', 'due_at' => now()->addDays(30), 'started_at' => null, 'completed_at' => null],
                 );

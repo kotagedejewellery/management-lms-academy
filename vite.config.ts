@@ -41,6 +41,8 @@ export default defineConfig({
             clientPort: vitePort,
         },
         watch: {
+            usePolling: process.env.VITE_USE_POLLING === 'true',
+            interval: 500,
             ignored: [
                 '**/.agents/**',
                 '**/.claude/**',

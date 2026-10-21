@@ -19,7 +19,7 @@ class CustomerServiceDealmakerSeeder extends Seeder
         DB::transaction(fn (): Course => $this->seedCourse());
     }
 
-    public function seedCourse(): Course
+    public function seedCourse(bool $includePresentations = true): Course
     {
         $category = CourseCategory::query()->firstOrCreate(
             ['name' => 'Layanan Pelanggan'],
@@ -48,19 +48,21 @@ class CustomerServiceDealmakerSeeder extends Seeder
                 ['title' => $moduleData['title']],
             );
 
+            if ($includePresentations) {
+                Lesson::query()->firstOrCreate(
+                    ['module_id' => $module->id, 'sequence' => 1],
+                    [
+                        'title' => 'Presentasi '.$moduleData['title'],
+                        'type' => 'presentation',
+                        'content' => null,
+                        'transcript' => null,
+                        'resource_url' => $moduleData['presentation_url'],
+                        'is_required' => true,
+                    ],
+                );
+            }
             Lesson::query()->firstOrCreate(
-                ['module_id' => $module->id, 'sequence' => 1],
-                [
-                    'title' => 'Presentasi '.$moduleData['title'],
-                    'type' => 'presentation',
-                    'content' => null,
-                    'transcript' => null,
-                    'resource_url' => $moduleData['presentation_url'],
-                    'is_required' => true,
-                ],
-            );
-            Lesson::query()->firstOrCreate(
-                ['module_id' => $module->id, 'sequence' => 2],
+                ['module_id' => $module->id, 'sequence' => $includePresentations ? 2 : 1],
                 [
                     'title' => 'Video '.$moduleData['title'],
                     'type' => 'video',

@@ -85,7 +85,25 @@ class LearningFlowTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page
                 ->where('selected_lesson', null)
                 ->where('course.modules.0.status', 'locked')
-                ->where('course.modules.0.lessons.0.locked', true));
+                ->where('course.modules.0.lessons.0.locked', true)
+                ->where('course.modules.0.assessments.0.ready', true)
+                ->where('course.modules.0.assessments.0.can_start', true));
+    }
+
+    public function test_employee_is_guided_to_the_module_pre_test_when_requesting_a_locked_lesson(): void
+    {
+        $employee = User::factory()->create();
+        $course = $this->publishedCourseWithLesson();
+        $module = $course->modules->first();
+        $lesson = $module->lessons->first();
+        $assessment = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'pre_test', 'is_required' => true, 'passing_grade' => 0, 'attempt_limit' => 1]);
+        $assessment->questions()->create(['prompt' => 'Siap?', 'points' => 1, 'sequence' => 1])->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
+        $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
+
+        $this->actingAs($employee)
+            ->get(route('my-learning.show', ['course' => $course, 'lesson' => $lesson]))
+            ->assertRedirect(route('my-learning.show', $course))
+            ->assertSessionHasErrors(['action' => 'Selesaikan Pre-Test Modul Mulai di KGJ sebelum membuka materi.']);
     }
 
     public function test_employee_cannot_access_another_employees_course(): void
