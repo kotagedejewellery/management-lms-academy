@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import CourseForm from './Form.vue';
 type Option = { id: number; name?: string; title?: string };
+type PublicationReadiness = {
+    ready: boolean;
+    checks: {
+        ready: boolean;
+        label: string;
+        message: string;
+        href: string | null;
+    }[];
+};
 type Course = {
     id: number;
     code: string;
@@ -26,6 +35,7 @@ const props = defineProps<{
     prerequisites: Option[];
     trainers: Option[];
     can_assign_trainers: boolean;
+    publication_readiness: PublicationReadiness;
 }>();
 defineOptions({
     layout: {

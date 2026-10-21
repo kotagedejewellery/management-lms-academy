@@ -9671,6 +9671,51 @@
       "_origin": "ast"
     },
     {
+      "id": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder",
+      "label": "ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "file_type": "code",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder",
+      "label": "ProductionCustomerServiceDealmakerForceRefreshSeeder",
+      "file_type": "code",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L14",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder_run",
+      "label": ".run()",
+      "file_type": "code",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L16",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_closure_1",
+      "label": "{closure#1}()",
+      "file_type": "code",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L22",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder_clearcourselearninghistory",
+      "label": ".clearCourseLearningHistory()",
+      "file_type": "code",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L34",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
       "id": "database_seeders_productioncustomerservicedealmakerrefreshseeder",
       "label": "ProductionCustomerServiceDealmakerRefreshSeeder.php",
       "file_type": "code",
@@ -20569,7 +20614,7 @@
       "label": "ProductionCustomerServiceDealmakerRefreshSeederTest",
       "file_type": "code",
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L17",
+      "source_location": "L19",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast"
@@ -20579,7 +20624,7 @@
       "label": ".test_it_replaces_only_the_customer_service_learning_content_without_changing_users_or_enrollments()",
       "file_type": "code",
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L21",
+      "source_location": "L23",
       "_callable": true,
       "_origin": "ast"
     },
@@ -20588,7 +20633,16 @@
       "label": ".test_it_refuses_to_replace_content_when_a_learner_has_assessment_history()",
       "file_type": "code",
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L51",
+      "source_location": "L53",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_feature_productioncustomerservicedealmakerrefreshseedertest_productioncustomerservicedealmakerrefreshseedertest_test_it_force_refreshes_customer_service_content_without_deleting_the_user_or_enrollment",
+      "label": ".test_it_force_refreshes_customer_service_content_without_deleting_the_user_or_enrollment()",
+      "file_type": "code",
+      "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
+      "source_location": "L76",
       "_callable": true,
       "_origin": "ast"
     },
@@ -22047,12 +22101,21 @@
       "_origin": "ast"
     },
     {
+      "id": "docs_deployment_runbook_force_refresh_katalog_cs",
+      "label": "Force refresh katalog CS",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
+      "source_location": "L71",
+      "_origin": "ast"
+    },
+    {
       "id": "docs_deployment_runbook_3_auto_deploy_github_actions",
       "label": "3. Auto-deploy GitHub Actions",
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L71",
+      "source_location": "L83",
       "_origin": "ast"
     },
     {
@@ -22061,7 +22124,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L86",
+      "source_location": "L98",
       "_origin": "ast"
     },
     {
@@ -22070,7 +22133,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L105",
+      "source_location": "L117",
       "_origin": "ast"
     },
     {
@@ -22079,7 +22142,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L112",
+      "source_location": "L124",
       "_origin": "ast"
     },
     {
@@ -55257,6 +55320,166 @@
       "_origin": "ast"
     },
     {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder",
+      "target": "app_models_assessment_assessment",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder",
+      "target": "app_models_course_course",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder",
+      "target": "app_models_coursemodule_coursemodule",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder",
+      "target": "app_models_enrollment_enrollment",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder",
+      "target": "app_models_lesson_lesson",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder",
+      "target": "illuminate_database_seeder",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder",
+      "target": "illuminate_support_facades_db",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder",
+      "target": "runtimeexception",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder",
+      "target": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder",
+      "target": "illuminate_database_seeder",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder",
+      "target": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder_run",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder",
+      "target": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_closure_1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder",
+      "target": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder_clearcourselearninghistory",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder_clearcourselearninghistory",
+      "target": "app_models_course_course",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L34",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_closure_1",
+      "target": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder_clearcourselearninghistory",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
       "source": "database_seeders_productioncustomerservicedealmakerrefreshseeder",
       "target": "app_models_assessment_assessment",
       "relation": "imports",
@@ -85716,7 +85939,7 @@
     },
     {
       "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest",
-      "target": "app_models_question_question",
+      "target": "app_models_lessonprogress_lessonprogress",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -85727,7 +85950,7 @@
     },
     {
       "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest",
-      "target": "app_models_user_user",
+      "target": "app_models_question_question",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -85738,7 +85961,7 @@
     },
     {
       "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest",
-      "target": "database_seeders_customerservicedealmakerseeder_customerservicedealmakerseeder",
+      "target": "app_models_user_user",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -85749,7 +85972,7 @@
     },
     {
       "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest",
-      "target": "database_seeders_productioncustomerservicedealmakerrefreshseeder_productioncustomerservicedealmakerrefreshseeder",
+      "target": "database_seeders_customerservicedealmakerseeder_customerservicedealmakerseeder",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -85760,7 +85983,7 @@
     },
     {
       "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest",
-      "target": "illuminate_foundation_testing_refreshdatabase",
+      "target": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -85771,7 +85994,7 @@
     },
     {
       "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest",
-      "target": "runtimeexception",
+      "target": "database_seeders_productioncustomerservicedealmakerrefreshseeder_productioncustomerservicedealmakerrefreshseeder",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -85782,7 +86005,7 @@
     },
     {
       "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest",
-      "target": "tests_testcase_testcase",
+      "target": "illuminate_foundation_testing_refreshdatabase",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -85793,11 +86016,33 @@
     },
     {
       "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest",
+      "target": "runtimeexception",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest",
+      "target": "tests_testcase_testcase",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest",
       "target": "tests_feature_productioncustomerservicedealmakerrefreshseedertest_productioncustomerservicedealmakerrefreshseedertest",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L17",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -85807,7 +86052,7 @@
       "relation": "inherits",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L17",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -85817,7 +86062,7 @@
       "relation": "mixes_in",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L19",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -85827,7 +86072,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L21",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -85837,7 +86082,17 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L51",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest_productioncustomerservicedealmakerrefreshseedertest",
+      "target": "tests_feature_productioncustomerservicedealmakerrefreshseedertest_productioncustomerservicedealmakerrefreshseedertest_test_it_force_refreshes_customer_service_content_without_deleting_the_user_or_enrollment",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
+      "source_location": "L76",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -88640,8 +88895,8 @@
       "_origin": "ast"
     },
     {
-      "source": "docs_deployment_runbook_production_deployment_runbook",
-      "target": "docs_deployment_runbook_3_auto_deploy_github_actions",
+      "source": "docs_deployment_runbook_data_katalog_customer_service",
+      "target": "docs_deployment_runbook_force_refresh_katalog_cs",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
@@ -88651,11 +88906,21 @@
     },
     {
       "source": "docs_deployment_runbook_production_deployment_runbook",
+      "target": "docs_deployment_runbook_3_auto_deploy_github_actions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_deployment_runbook_production_deployment_runbook",
       "target": "docs_deployment_runbook_3_backup_dan_restore_database",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L86",
+      "source_location": "L98",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -88665,7 +88930,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L105",
+      "source_location": "L117",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -88675,7 +88940,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L112",
+      "source_location": "L124",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92622,6 +92887,66 @@
       "_origin": "ast"
     },
     {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_closure_1",
+      "target": "app_models_coursemodule_coursemodule",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder_clearcourselearninghistory",
+      "target": "app_models_assessment_assessment",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder_clearcourselearninghistory",
+      "target": "app_models_lesson_lesson",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder_clearcourselearninghistory",
+      "target": "app_models_coursemodule_coursemodule",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_seeders_productioncustomerservicedealmakerforcerefreshseeder_productioncustomerservicedealmakerforcerefreshseeder_clearcourselearninghistory",
+      "target": "app_models_enrollment_enrollment",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php",
+      "source_location": "L49",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
       "source": "database_seeders_productioncustomerservicedealmakerrefreshseeder_closure_1",
       "target": "app_models_coursemodule_coursemodule",
       "relation": "calls",
@@ -95749,7 +96074,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L25",
+      "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -95761,7 +96086,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L26",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -95773,7 +96098,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L27",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -95785,7 +96110,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L44",
+      "source_location": "L46",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -95797,7 +96122,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L47",
+      "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -95809,7 +96134,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L48",
+      "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -95821,7 +96146,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L55",
+      "source_location": "L57",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -95833,7 +96158,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L56",
+      "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -95845,7 +96170,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L57",
+      "source_location": "L59",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -95857,7 +96182,91 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
-      "source_location": "L71",
+      "source_location": "L73",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest_productioncustomerservicedealmakerrefreshseedertest_test_it_force_refreshes_customer_service_content_without_deleting_the_user_or_enrollment",
+      "target": "app_models_course_course",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
+      "source_location": "L80",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest_productioncustomerservicedealmakerrefreshseedertest_test_it_force_refreshes_customer_service_content_without_deleting_the_user_or_enrollment",
+      "target": "app_models_user_user",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
+      "source_location": "L81",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest_productioncustomerservicedealmakerrefreshseedertest_test_it_force_refreshes_customer_service_content_without_deleting_the_user_or_enrollment",
+      "target": "app_models_enrollment_enrollment",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest_productioncustomerservicedealmakerrefreshseedertest_test_it_force_refreshes_customer_service_content_without_deleting_the_user_or_enrollment",
+      "target": "app_models_lesson_lesson",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
+      "source_location": "L89",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest_productioncustomerservicedealmakerrefreshseedertest_test_it_force_refreshes_customer_service_content_without_deleting_the_user_or_enrollment",
+      "target": "app_models_lessonprogress_lessonprogress",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
+      "source_location": "L90",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest_productioncustomerservicedealmakerrefreshseedertest_test_it_force_refreshes_customer_service_content_without_deleting_the_user_or_enrollment",
+      "target": "app_models_assessment_assessment",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
+      "source_location": "L91",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_productioncustomerservicedealmakerrefreshseedertest_productioncustomerservicedealmakerrefreshseedertest_test_it_force_refreshes_customer_service_content_without_deleting_the_user_or_enrollment",
+      "target": "app_models_question_question",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php",
+      "source_location": "L115",
       "weight": 1.0,
       "_origin": "ast"
     },
