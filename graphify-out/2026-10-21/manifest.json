@@ -1758,9 +1758,9 @@
     "semantic_hash": ""
   },
   "resources/js/pages/admin/courses/Edit.vue": {
-    "mtime": 1791967984.1381104,
-    "seen": 1791968506.5709743,
-    "ast_hash": "add9690ae583a73b61109157b4d805d2",
+    "mtime": 1792573146.8006444,
+    "seen": 1792573374.8208988,
+    "ast_hash": "ef4fd1d225c024f384dd0f148b8cd71c",
     "semantic_hash": ""
   },
   "resources/js/pages/admin/courses/Form.vue": {

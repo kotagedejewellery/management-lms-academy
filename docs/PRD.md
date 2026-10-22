@@ -63,10 +63,10 @@ Contoh path Customer Service: Brand Introduction → Product Knowledge → Mater
 - Pre-Test dan Post-Test adalah tipe assessment berbeda; record atau hasilnya tidak boleh saling menimpa.
 - Admin dapat memilih modul mana yang memiliki Pre-Test atau Post-Test; test tidak wajib dibuat untuk setiap modul.
 - Pre-Test modul yang dibuat mengunci materi modul sampai disubmit; skor rendah tetap tidak menggagalkan course.
-- Post-Test modul yang dibuat baru terbuka setelah lesson mandatory modul selesai dan harus lulus sebelum modul berikutnya dapat dibuka.
-- Course dengan Post-Test selesai bila lesson mandatory selesai dan Post-Test lulus passing grade. Course tanpa Post-Test selesai saat lesson mandatory selesai.
-- Pre-Test selalu satu attempt dan tidak memiliki passing grade; jumlah attempt Post-Test diatur per assessment dalam rentang 1â€“3. Kegagalan pada attempt Post-Test terakhir memberi status `Not Passed`.
-- Setiap attempt Post-Test setelah attempt pertama harus dibuka satu kali oleh Trainer yang ditugaskan atau role internal yang memiliki wewenang laporan/enrollment. Otorisasi tidak dapat melampaui batas attempt yang dikonfigurasi.
+- Post-Test modul yang dibuat baru terbuka setelah lesson mandatory modul selesai. Setelah dikirim, modul berikutnya dapat dibuka tanpa menampilkan nilai maupun status lulus kepada Employee.
+- Setelah seluruh lesson wajib dan assessment yang digunakan dikirim, course berstatus menunggu evaluasi akhir. Trainer yang ditugaskan atau Management berwenang menyetujui kelulusan atau membuka kesempatan ulang Post-Test; sertifikat hanya diterbitkan setelah persetujuan kelulusan.
+- Pre-Test selalu satu attempt dan tidak memiliki passing grade; jumlah attempt Post-Test diatur per assessment dalam rentang 1â€“3. Nilai Post-Test menjadi data evaluasi internal dan tidak otomatis mengubah status kelulusan Employee.
+- Setiap attempt Post-Test setelah attempt pertama hanya dapat dibuka satu kali oleh Trainer yang ditugaskan atau role internal yang memiliki wewenang laporan/enrollment saat course berstatus menunggu evaluasi akhir. Otorisasi tidak dapat melampaui batas attempt yang dikonfigurasi.
 - Course wajib dalam learning path berjalan berurutan: course wajib sebelumnya harus selesai sebelum course wajib berikutnya dapat dibuka. Course baru ditambahkan di akhir path; Admin mengubah urutan dengan aksi Naik/Turun. Soal assessment juga ditambahkan otomatis di akhir dan dapat dipindahkan dengan aksi yang sama.
 - Simpan seluruh attempt, response, score, waktu, dan status untuk audit.
 - Employee tidak menerima skor, passing grade, status lulus/gagal, sisa kesempatan, riwayat jawaban, kunci jawaban, atau pembahasan pada Dashboard, My Learning, My Progress, maupun Learning Path. Halaman setelah submit hanya mengonfirmasi bahwa assessment telah dikirim. Trainer, LMS Admin, Super Admin, dan Management melihat hasil sesuai cakupan aksesnya; Manager Tim hanya menerima status tindak lanjut/progres tanpa nilai angka.

@@ -14,7 +14,7 @@ class LearningProgressController extends Controller
         $userId = $request->user()->id;
         $enrollments = Enrollment::query()
             ->where('user_id', $userId)
-            ->whereIn('status', ['active', 'completed', 'not_passed'])
+            ->whereIn('status', ['active', 'pending_review', 'completed', 'not_passed'])
             ->with('course:id,code,title')
             ->withCount([
                 'lessonProgress as completed_lessons_count' => fn ($query) => $query->where('status', 'completed'),
@@ -27,7 +27,11 @@ class LearningProgressController extends Controller
 
                 return [
                     'id' => $enrollment->id,
-                    'status' => $enrollment->status === 'not_passed' ? 'needs_guidance' : $enrollment->status,
+                    'status' => match ($enrollment->status) {
+                        'not_passed' => 'needs_guidance',
+                        'pending_review' => 'pending_review',
+                        default => $enrollment->status,
+                    },
                     'completed_at' => $enrollment->completed_at?->toDateString(),
                     'completed_lessons_count' => $enrollment->completed_lessons_count,
                     'lessons_count' => $enrollment->lessons_count,

@@ -52,12 +52,12 @@ class AssessmentAttemptTest extends TestCase
             ->assertRedirect(route('my-learning.assessments.receipt', [$course, $assessment]));
 
         $this->actingAs($user)->get(route('my-learning.assessments.show', [$course, $assessment]))
-            ->assertSessionHasErrors(['assessment' => 'Assessment telah dikirim. Management akan memberikan arahan untuk tahap selanjutnya.']);
+            ->assertSessionHasErrors(['assessment' => 'Assessment telah ditutup. Management akan memberikan arahan bila diperlukan.']);
 
         $this->assertDatabaseCount('assessment_attempts', 1);
     }
 
-    public function test_post_test_requires_lessons_then_completes_course_when_passed(): void
+    public function test_post_test_requires_lessons_then_sends_course_for_final_review(): void
     {
         $user = User::factory()->create();
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
@@ -74,7 +74,7 @@ class AssessmentAttemptTest extends TestCase
         $this->actingAs($user)->post(route('my-learning.assessments.submit', [$course, $assessment]), ['answers' => [$question->id => $correct->id]])->assertRedirect(route('my-learning.assessments.receipt', [$course, $assessment]));
         $this->assertDatabaseHas('assessment_attempts', ['assessment_id' => $assessment->id, 'attempt_number' => 1, 'score' => 100, 'passed' => true]);
         $this->assertDatabaseHas('activity_logs', ['actor_id' => $user->id, 'event' => 'assessment.submitted']);
-        $this->assertDatabaseHas('enrollments', ['id' => $enrollment->id, 'status' => 'completed']);
+        $this->assertDatabaseHas('enrollments', ['id' => $enrollment->id, 'status' => 'pending_review']);
         $this->actingAs($user)->get(route('my-learning.assessments.receipt', [$course, $assessment]))->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('learning/AssessmentResult')
             ->missing('latest')
@@ -85,7 +85,7 @@ class AssessmentAttemptTest extends TestCase
             ->missing('review'));
     }
 
-    public function test_course_post_test_requires_all_module_post_tests_to_be_passed(): void
+    public function test_course_post_test_requires_all_module_post_tests_to_be_submitted(): void
     {
         $user = User::factory()->create();
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
@@ -110,10 +110,10 @@ class AssessmentAttemptTest extends TestCase
         $this->actingAs($user)->post(route('my-learning.assessments.submit', [$course, $coursePostTest]), ['answers' => [$courseQuestion->id => $courseAnswer->id]])
             ->assertRedirect(route('my-learning.assessments.receipt', [$course, $coursePostTest]));
 
-        $this->assertDatabaseHas('enrollments', ['id' => $enrollment->id, 'status' => 'completed']);
+        $this->assertDatabaseHas('enrollments', ['id' => $enrollment->id, 'status' => 'pending_review']);
     }
 
-    public function test_course_without_a_required_post_test_completes_after_required_lessons(): void
+    public function test_course_without_a_required_post_test_is_sent_for_final_review_after_required_lessons(): void
     {
         $user = User::factory()->create();
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
@@ -123,10 +123,10 @@ class AssessmentAttemptTest extends TestCase
 
         $this->actingAs($user)->post(route('my-learning.lessons.complete', [$course, $lesson]))->assertRedirect();
 
-        $this->assertDatabaseHas('enrollments', ['id' => $enrollment->id, 'status' => 'completed']);
+        $this->assertDatabaseHas('enrollments', ['id' => $enrollment->id, 'status' => 'pending_review']);
     }
 
-    public function test_module_pre_test_blocks_material_and_post_test_blocks_the_next_module(): void
+    public function test_module_pre_test_blocks_material_and_submitted_post_test_opens_the_next_module(): void
     {
         $user = User::factory()->create();
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
@@ -141,20 +141,21 @@ class AssessmentAttemptTest extends TestCase
         $preAnswer = $preQuestion->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
         $assessment = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'post_test', 'is_required' => true, 'passing_grade' => 70, 'attempt_limit' => 3]);
         $question = $assessment->questions()->create(['prompt' => 'Benar?', 'points' => 1, 'sequence' => 1]);
-        $correct = $question->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
+        $question->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
+        $incorrect = $question->answers()->create(['content' => 'Tidak', 'is_correct' => false, 'sequence' => 2]);
 
         $this->actingAs($user)->post(route('my-learning.lessons.complete', [$course, $lesson]))->assertSessionHasErrors('module');
         $this->actingAs($user)->post(route('my-learning.assessments.submit', [$course, $preTest]), ['answers' => [$preQuestion->id => $preAnswer->id]])
             ->assertRedirect(route('my-learning.assessments.receipt', [$course, $preTest]));
         $this->actingAs($user)->post(route('my-learning.lessons.complete', [$course, $lesson]))->assertRedirect();
         $this->actingAs($user)->post(route('my-learning.lessons.complete', [$course, $nextLesson]))->assertSessionHasErrors('module');
-        $this->actingAs($user)->post(route('my-learning.assessments.submit', [$course, $assessment]), ['answers' => [$question->id => $correct->id]])
+        $this->actingAs($user)->post(route('my-learning.assessments.submit', [$course, $assessment]), ['answers' => [$question->id => $incorrect->id]])
             ->assertRedirect(route('my-learning.assessments.receipt', [$course, $assessment]));
         $this->actingAs($user)->post(route('my-learning.lessons.complete', [$course, $nextLesson]))->assertRedirect();
-        $this->assertDatabaseHas('enrollments', ['id' => $enrollment->id, 'status' => 'completed']);
+        $this->assertDatabaseHas('enrollments', ['id' => $enrollment->id, 'status' => 'pending_review']);
     }
 
-    public function test_last_failed_post_test_attempt_marks_the_course_not_passed(): void
+    public function test_failed_post_test_attempt_sends_the_course_for_final_review(): void
     {
         $user = User::factory()->create();
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
@@ -170,7 +171,7 @@ class AssessmentAttemptTest extends TestCase
         $this->actingAs($user)->post(route('my-learning.assessments.submit', [$course, $assessment]), ['answers' => [$question->id => $incorrect->id]])
             ->assertRedirect(route('my-learning.assessments.receipt', [$course, $assessment]));
 
-        $this->assertDatabaseHas('enrollments', ['id' => $enrollment->id, 'status' => 'not_passed']);
+        $this->assertDatabaseHas('enrollments', ['id' => $enrollment->id, 'status' => 'pending_review']);
     }
 
     public function test_expired_timed_attempt_is_finalized_with_zero_score(): void
@@ -282,7 +283,7 @@ class AssessmentAttemptTest extends TestCase
         $this->actingAs($user)->post(route('my-learning.assessments.submit', [$course, $assessment]), ['answers' => [$question->id => $incorrect->id]])
             ->assertRedirect(route('my-learning.assessments.receipt', [$course, $assessment]));
         $this->actingAs($user)->get(route('my-learning.assessments.show', [$course, $assessment]))
-            ->assertSessionHasErrors(['assessment' => 'Assessment telah dikirim. Management akan memberikan arahan untuk tahap selanjutnya.']);
+            ->assertSessionHasErrors(['assessment' => 'Assessment telah ditutup. Management akan memberikan arahan bila diperlukan.']);
 
         $this->actingAs($trainer)
             ->withHeader('Referer', route('trainer-progress.index'))
@@ -308,9 +309,13 @@ class AssessmentAttemptTest extends TestCase
             ->delete(route('assessment-retakes.destroy', [$enrollment, $assessment]))
             ->assertRedirect(route('trainer-progress.index'));
         $this->assertNotNull(AssessmentRetakeAuthorization::query()->sole()->cancelled_at);
+        $this->assertDatabaseHas('enrollments', [
+            'id' => $enrollment->id,
+            'status' => 'pending_review',
+        ]);
 
         $this->actingAs($user)->get(route('my-learning.assessments.show', [$course, $assessment]))
-            ->assertSessionHasErrors(['assessment' => 'Assessment telah dikirim. Management akan memberikan arahan untuk tahap selanjutnya.']);
+            ->assertSessionHasErrors(['assessment' => 'Assessment telah ditutup. Management akan memberikan arahan bila diperlukan.']);
 
         $this->actingAs($trainer)
             ->withHeader('Referer', route('trainer-progress.index'))
@@ -320,6 +325,28 @@ class AssessmentAttemptTest extends TestCase
             ->post(route('my-learning.assessments.start', [$course, $assessment]))
             ->assertRedirect(route('my-learning.assessments.show', [$course, $assessment]));
         $this->assertNotNull(AssessmentRetakeAuthorization::query()->latest('id')->firstOrFail()->used_at);
+    }
+
+    public function test_completed_course_cannot_be_reopened_with_a_post_test_retake(): void
+    {
+        $learner = User::factory()->create();
+        $trainer = $this->trainer();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-COMPLETE-RETAKE-001', 'title' => 'Evaluasi selesai', 'passing_grade' => 70, 'status' => 'published']);
+        $course->trainers()->attach($trainer);
+        $enrollment = $learner->enrollments()->create(['course_id' => $course->id, 'status' => 'completed', 'completed_at' => now()]);
+        $assessment = Assessment::query()->create(['course_id' => $course->id, 'type' => 'post_test', 'passing_grade' => 80, 'attempt_limit' => 3]);
+        $assessment->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 50, 'passed' => false, 'submitted_at' => now()]);
+
+        $this->actingAs($trainer)
+            ->withHeader('Referer', route('trainer-progress.index'))
+            ->post(route('assessment-retakes.store', [$enrollment, $assessment]))
+            ->assertSessionHasErrors(['assessment' => 'Kesempatan ulang hanya dapat dibuka saat evaluasi akhir course.']);
+
+        $this->assertDatabaseHas('enrollments', [
+            'id' => $enrollment->id,
+            'status' => 'completed',
+        ]);
     }
 
     public function test_draft_rejects_an_answer_from_a_different_question(): void

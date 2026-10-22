@@ -10,7 +10,11 @@ import { Label } from '@/components/ui/label';
 
 type Enrollment = {
     id: number;
-    progress_state: 'in_progress' | 'completed' | 'needs_follow_up';
+    progress_state:
+        | 'in_progress'
+        | 'pending_review'
+        | 'completed'
+        | 'needs_follow_up';
     due_at: string | null;
     completed_at: string | null;
     user: { employee_id: string | null; name: string } | null;
@@ -44,6 +48,7 @@ function resetFilters(): void {
 function statusLabel(status: Enrollment['progress_state']): string {
     return {
         in_progress: 'Berjalan',
+        pending_review: 'Menunggu evaluasi akhir',
         completed: 'Selesai',
         needs_follow_up: 'Perlu tindak lanjut',
     }[status];
@@ -81,6 +86,9 @@ defineOptions({
                 >
                     <option value="">Semua status</option>
                     <option value="active">Berjalan</option>
+                    <option value="pending_review">
+                        Menunggu evaluasi akhir
+                    </option>
                     <option value="completed">Selesai</option>
                     <option value="not_passed">Perlu tindak lanjut</option>
                 </select>

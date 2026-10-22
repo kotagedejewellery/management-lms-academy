@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 
 type Enrollment = {
     id: number;
-    status: 'active' | 'completed' | 'needs_guidance';
+    status: 'active' | 'pending_review' | 'completed' | 'needs_guidance';
     completed_at: string | null;
     completed_lessons_count: number;
     lessons_count: number;
@@ -88,7 +88,9 @@ defineOptions({
                                         ? `Selesai${item.completed_at ? ` · ${item.completed_at}` : ''}`
                                         : item.status === 'needs_guidance'
                                           ? 'Menunggu arahan Management'
-                                          : 'Sedang dipelajari'
+                                          : item.status === 'pending_review'
+                                            ? 'Menunggu evaluasi akhir Management'
+                                            : 'Sedang dipelajari'
                                 }}
                             </p>
                         </div>

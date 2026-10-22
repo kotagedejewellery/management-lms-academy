@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\IssueCertificate;
+use App\Models\Assessment;
 use App\Models\AssessmentRetakeAuthorization;
 use App\Models\Course;
 use App\Models\CourseModule;
@@ -30,7 +30,7 @@ class LearningController extends Controller
 
         $enrollments = Enrollment::query()
             ->where('user_id', $request->user()->id)
-            ->whereIn('status', ['active', 'completed', 'not_passed'])
+            ->whereIn('status', ['active', 'pending_review', 'completed', 'not_passed'])
             ->whereHas('course', fn ($query) => $query->where('status', 'published'))
             ->with(['course:id,code,title,description,estimated_minutes,is_mandatory,prerequisite_course_id'])
             ->when($filters['mandatory'] ?? null, fn ($query, string $mandatory) => $query->whereHas('course', fn ($course) => $course->where('is_mandatory', $mandatory === 'mandatory')))
@@ -50,7 +50,7 @@ class LearningController extends Controller
             ->withQueryString();
         $allEnrollmentStatuses = Enrollment::query()
             ->where('user_id', $request->user()->id)
-            ->whereIn('status', ['active', 'completed', 'not_passed'])
+            ->whereIn('status', ['active', 'pending_review', 'completed', 'not_passed'])
             ->get(['course_id', 'status']);
         $availability = app(LearningAvailability::class)->for(
             $request->user(),
@@ -59,7 +59,11 @@ class LearningController extends Controller
         );
         $enrollments->getCollection()->transform(fn (Enrollment $enrollment) => [
             'id' => $enrollment->id,
-            'status' => $enrollment->status === 'not_passed' ? 'needs_guidance' : $enrollment->status,
+            'status' => match ($enrollment->status) {
+                'not_passed' => 'needs_guidance',
+                'pending_review' => 'pending_review',
+                default => $enrollment->status,
+            },
             'due_at' => $enrollment->due_at?->toDateString(),
             'completed_lessons_count' => $enrollment->completed_lessons_count,
             'lessons_count' => $enrollment->lessons_count,
@@ -152,6 +156,16 @@ class LearningController extends Controller
             ->whereNull('cancelled_at')
             ->pluck('assessment_id')
             ->flip();
+        $nextStep = $this->nextStep(
+            $course,
+            $enrollment,
+            $moduleStates,
+            $completed,
+            $requiredPreTest,
+            $preTestCompleted,
+            $postTestReady,
+            $authorizedRetakeAssessmentIds,
+        );
 
         return Inertia::render('learning/Show', [
             'enrollment' => ['id' => $enrollment->id, 'course_completed' => $enrollment->status === 'completed', 'due_at' => $enrollment->due_at?->toDateString()],
@@ -168,20 +182,20 @@ class LearningController extends Controller
                     'completed_required_lessons' => $completedRequiredLessonCount,
                     'required_lessons' => count($requiredLessonIds),
                 ],
-                'assessments' => $course->assessments->map(function ($assessment) use ($postTestReady, $authorizedRetakeAssessmentIds) {
+                'assessments' => $course->assessments->map(function (Assessment $assessment) use ($postTestReady, $authorizedRetakeAssessmentIds) {
                     $submittedAttempts = $assessment->attempts->whereNotNull('submitted_at');
-                    $hasActiveAttempt = $assessment->attempts->contains(fn ($attempt) => $attempt->submitted_at === null);
                     $ready = $assessment->questions_count > 0 && ($assessment->type === 'pre_test' || $postTestReady);
 
                     return [
                         ...$assessment->only(['id', 'type', 'is_required']),
                         'ready' => $ready,
                         'submitted' => $submittedAttempts->isNotEmpty(),
-                        'can_start' => $ready && ($hasActiveAttempt || ($submittedAttempts->count() < ($assessment->type === 'pre_test' ? 1 : $assessment->attempt_limit) && ($assessment->type === 'pre_test' || $submittedAttempts->isEmpty() || $authorizedRetakeAssessmentIds->has($assessment->id)))),
+                        'can_start' => $this->canStartAssessment($assessment, $ready, $authorizedRetakeAssessmentIds),
                     ];
                 }),
                 'pre_test_required' => $requiredPreTest !== null,
                 'pre_test_completed' => $preTestCompleted,
+                'next_step' => $nextStep,
                 'modules' => $course->modules->map(function ($module) use ($completed, $selectedSummary, $moduleStates, $preTestCompleted, $authorizedRetakeAssessmentIds) {
                     $state = $moduleStates->get($module->id);
                     $moduleCompleted = $state['completed'] ?? false;
@@ -196,16 +210,15 @@ class LearningController extends Controller
                         'lock_reason' => ! $preTestCompleted
                             ? 'Selesaikan Pre-Test course terlebih dahulu.'
                             : (! ($state['unlocked'] ?? false) ? 'Selesaikan Post-Test modul sebelumnya terlebih dahulu.' : 'Selesaikan Pre-Test modul ini terlebih dahulu.'),
-                        'assessments' => $module->assessments->map(function ($assessment) use ($modulePostReady, $state, $authorizedRetakeAssessmentIds) {
+                        'assessments' => $module->assessments->map(function (Assessment $assessment) use ($modulePostReady, $state, $authorizedRetakeAssessmentIds) {
                             $submittedAttempts = $assessment->attempts->whereNotNull('submitted_at');
-                            $hasActiveAttempt = $assessment->attempts->contains(fn ($attempt) => $attempt->submitted_at === null);
                             $ready = $assessment->questions_count > 0 && ($assessment->type === 'pre_test' ? ($state['unlocked'] ?? false) : ($state['post_available'] ?? $modulePostReady));
 
                             return [
                                 ...$assessment->only(['id', 'module_id', 'type', 'is_required']),
                                 'ready' => $ready,
                                 'submitted' => $submittedAttempts->isNotEmpty(),
-                                'can_start' => $ready && ($hasActiveAttempt || ($submittedAttempts->count() < ($assessment->type === 'pre_test' ? 1 : $assessment->attempt_limit) && ($assessment->type === 'pre_test' || $submittedAttempts->isEmpty() || $authorizedRetakeAssessmentIds->has($assessment->id)))),
+                                'can_start' => $this->canStartAssessment($assessment, $ready, $authorizedRetakeAssessmentIds),
                             ];
                         })->values(),
                         'lessons' => $module->lessons->map(fn (Lesson $lesson) => [
@@ -260,14 +273,151 @@ class LearningController extends Controller
         );
         $enrollment->update(['started_at' => $enrollment->started_at ?? now()]);
 
-        if (! $course->requires_post_test && app(ModuleLearningProgression::class)->courseModulesCompleted($course, $enrollment)) {
-            $enrollment->update(['status' => 'completed', 'completed_at' => now()]);
-            if ($course->certificate_enabled) {
-                IssueCertificate::dispatch($enrollment->id);
-            }
+        if (app(ModuleLearningProgression::class)->courseReadyForReview($course, $enrollment)) {
+            $enrollment->update(['status' => 'pending_review', 'completed_at' => null]);
         }
 
         return to_route('my-learning.show', ['course' => $course, 'lesson' => $lesson]);
+    }
+
+    /**
+     * @param  Collection<int, array{unlocked: bool, materials_unlocked: bool, post_available: bool, completed: bool}>  $moduleStates
+     * @param  array<int, int>  $completedLessonIds
+     * @param  Collection<int, int>  $authorizedRetakeAssessmentIds
+     * @return array{kind: 'assessment'|'completed'|'empty'|'lesson'|'waiting', label: string, description: string, assessment_id?: int, lesson_id?: int}
+     */
+    private function nextStep(
+        Course $course,
+        Enrollment $enrollment,
+        Collection $moduleStates,
+        array $completedLessonIds,
+        ?Assessment $requiredPreTest,
+        bool $preTestCompleted,
+        bool $postTestReady,
+        Collection $authorizedRetakeAssessmentIds,
+    ): array {
+        if ($enrollment->status === 'completed') {
+            return [
+                'kind' => 'completed',
+                'label' => 'Course selesai',
+                'description' => 'Periksa sertifikat Anda bila diterbitkan untuk course ini.',
+            ];
+        }
+
+        if ($enrollment->status === 'pending_review') {
+            return [
+                'kind' => 'waiting',
+                'label' => 'Menunggu evaluasi akhir',
+                'description' => 'Seluruh tahapan course telah dikirim. Tim pembelajaran sedang melakukan evaluasi akhir.',
+            ];
+        }
+
+        if (! $preTestCompleted && $requiredPreTest) {
+            return $this->assessmentNextStep(
+                $requiredPreTest,
+                $requiredPreTest->questions_count > 0,
+                $authorizedRetakeAssessmentIds,
+                'Pre-Test wajib diselesaikan sebelum materi dapat dibuka.',
+            ) ?? $this->waitingNextStep();
+        }
+
+        foreach ($course->modules->sortBy('sequence') as $module) {
+            $state = $moduleStates->get($module->id);
+            if (! ($state['unlocked'] ?? false)) {
+                return $this->waitingNextStep();
+            }
+
+            /** @var Assessment|null $preTest */
+            $preTest = $module->assessments->firstWhere('type', 'pre_test');
+            if ($preTest && $preTest->attempts->whereNotNull('submitted_at')->isEmpty()) {
+                return $this->assessmentNextStep(
+                    $preTest,
+                    $preTest->questions_count > 0,
+                    $authorizedRetakeAssessmentIds,
+                    'Pre-Test wajib diselesaikan sebelum materi modul dapat dibuka.',
+                ) ?? $this->waitingNextStep();
+            }
+
+            if (! $state['materials_unlocked']) {
+                return $this->waitingNextStep();
+            }
+
+            /** @var Lesson|null $nextLesson */
+            $nextLesson = $module->lessons->first(fn (Lesson $lesson) => ! in_array($lesson->id, $completedLessonIds, true));
+            if ($nextLesson) {
+                return [
+                    'kind' => 'lesson',
+                    'lesson_id' => $nextLesson->id,
+                    'label' => $completedLessonIds === [] ? 'Mulai belajar' : 'Lanjutkan materi',
+                    'description' => 'Lanjutkan materi yang tersedia pada tahap ini.',
+                ];
+            }
+
+            /** @var Assessment|null $postTest */
+            $postTest = $module->assessments->firstWhere('type', 'post_test');
+            if ($postTest && ! $state['completed']) {
+                return $this->assessmentNextStep(
+                    $postTest,
+                    $state['post_available'] && $postTest->questions_count > 0,
+                    $authorizedRetakeAssessmentIds,
+                    'Selesaikan Post-Test untuk melanjutkan ke modul berikutnya.',
+                ) ?? $this->waitingNextStep();
+            }
+        }
+
+        /** @var Assessment|null $coursePostTest */
+        $coursePostTest = $course->assessments->firstWhere('type', 'post_test');
+        if ($coursePostTest) {
+            return $this->assessmentNextStep(
+                $coursePostTest,
+                $postTestReady && $moduleStates->every(fn (array $state) => $state['completed']) && $coursePostTest->questions_count > 0,
+                $authorizedRetakeAssessmentIds,
+                'Selesaikan Post-Test untuk menyelesaikan course.',
+            ) ?? $this->waitingNextStep();
+        }
+
+        return [
+            'kind' => 'empty',
+            'label' => 'Materi belum tersedia',
+            'description' => 'Hubungi LMS Admin bila course ini seharusnya sudah memiliki materi.',
+        ];
+    }
+
+    /**
+     * @param  Collection<int, int>  $authorizedRetakeAssessmentIds
+     * @return array{kind: 'assessment', assessment_id: int, label: string, description: string}|null
+     */
+    private function assessmentNextStep(Assessment $assessment, bool $ready, Collection $authorizedRetakeAssessmentIds, string $description): ?array
+    {
+        if (! $this->canStartAssessment($assessment, $ready, $authorizedRetakeAssessmentIds)) {
+            return null;
+        }
+
+        return [
+            'kind' => 'assessment',
+            'assessment_id' => $assessment->id,
+            'label' => $assessment->type === 'pre_test' ? 'Buka Pre-Test' : 'Buka Post-Test',
+            'description' => $description,
+        ];
+    }
+
+    /** @param Collection<int, int> $authorizedRetakeAssessmentIds */
+    private function canStartAssessment(Assessment $assessment, bool $ready, Collection $authorizedRetakeAssessmentIds): bool
+    {
+        $submittedAttempts = $assessment->attempts->whereNotNull('submitted_at');
+        $hasActiveAttempt = $assessment->attempts->contains(fn ($attempt) => $attempt->submitted_at === null);
+
+        return $ready && ($hasActiveAttempt || ($submittedAttempts->count() < ($assessment->type === 'pre_test' ? 1 : $assessment->attempt_limit) && ($assessment->type === 'pre_test' || $submittedAttempts->isEmpty() || $authorizedRetakeAssessmentIds->has($assessment->id))));
+    }
+
+    /** @return array{kind: 'waiting', label: string, description: string} */
+    private function waitingNextStep(): array
+    {
+        return [
+            'kind' => 'waiting',
+            'label' => 'Menunggu arahan tim pembelajaran',
+            'description' => 'Evaluasi telah dikirim. Tahap berikutnya akan dibuka setelah tindak lanjut tim pembelajaran.',
+        ];
     }
 
     private function enrollment(Request $request, Course $course): Enrollment
@@ -275,7 +425,7 @@ class LearningController extends Controller
         $enrollment = Enrollment::query()
             ->where('user_id', $request->user()->id)
             ->where('course_id', $course->id)
-            ->whereIn('status', ['active', 'completed', 'not_passed'])
+            ->whereIn('status', ['active', 'pending_review', 'completed', 'not_passed'])
             ->whereHas('course', fn ($query) => $query->where('status', 'published'))
             ->firstOrFail();
 

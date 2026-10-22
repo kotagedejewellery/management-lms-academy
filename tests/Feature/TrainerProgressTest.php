@@ -73,6 +73,50 @@ class TrainerProgressTest extends TestCase
                 ]]));
     }
 
+    public function test_assigned_trainer_can_approve_a_course_ready_for_final_review(): void
+    {
+        $trainer = $this->trainer();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'CS-REVIEW-001', 'title' => 'Evaluasi akhir', 'status' => 'published', 'requires_post_test' => false]);
+        $course->trainers()->attach($trainer);
+        $enrollment = Enrollment::query()->create([
+            'user_id' => User::factory()->create()->id,
+            'course_id' => $course->id,
+            'status' => 'pending_review',
+        ]);
+
+        $this->actingAs($trainer)
+            ->post(route('trainer-progress.approve', $enrollment))
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('enrollments', [
+            'id' => $enrollment->id,
+            'status' => 'completed',
+        ]);
+        $this->assertDatabaseHas('activity_logs', [
+            'actor_id' => $trainer->id,
+            'event' => 'enrollment.final_review_approved',
+            'subject_type' => Enrollment::class,
+            'subject_id' => $enrollment->id,
+        ]);
+    }
+
+    public function test_trainer_sees_retake_actions_only_during_final_review(): void
+    {
+        $trainer = $this->trainer();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'CS-RETAKE-001', 'title' => 'Tindak lanjut', 'status' => 'published']);
+        $course->trainers()->attach($trainer);
+        $enrollment = Enrollment::query()->create(['user_id' => User::factory()->create()->id, 'course_id' => $course->id, 'status' => 'active']);
+        $postTest = Assessment::query()->create(['course_id' => $course->id, 'type' => 'post_test', 'passing_grade' => 80, 'attempt_limit' => 3]);
+        $postTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 50, 'passed' => false, 'submitted_at' => now()]);
+
+        $this->actingAs($trainer)->get(route('trainer-progress.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('enrollments.data.0.retake_assessments', []));
+    }
+
     private function trainer(): User
     {
         $permission = Permission::query()->firstOrCreate(['slug' => 'manage-courses'], ['name' => 'Kelola course']);

@@ -44,7 +44,7 @@ class ReportEnrollmentQuery
             ->selectSub($firstPreScore, 'pre_test_score')
             ->selectSub($postTestAttempts, 'post_test_attempts')
             ->with(['user:id,employee_id,name', 'course:id,code,title'])
-            ->when(in_array($filters['status'] ?? '', ['active', 'completed', 'not_passed'], true), fn (Builder $query) => $query->where('status', $filters['status'] ?? ''))
+            ->when(in_array($filters['status'] ?? '', ['active', 'pending_review', 'completed', 'not_passed'], true), fn (Builder $query) => $query->where('status', $filters['status'] ?? ''))
             ->when($filters['course_id'] ?? null, fn (Builder $query) => $query->where('course_id', $filters['course_id'] ?? null))
             ->when($filters['division_id'] ?? null, fn (Builder $query) => $query->whereHas('user', fn (Builder $query) => $query->where('division_id', $filters['division_id'] ?? null)))
             ->when(($filters['search'] ?? '') !== '', function (Builder $query) use ($filters): void {

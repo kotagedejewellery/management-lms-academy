@@ -8,7 +8,7 @@ import StatusBadge from '@/components/StatusBadge.vue';
 import { Button } from '@/components/ui/button';
 type Enrollment = {
     id: number;
-    status: 'active' | 'completed' | 'needs_guidance';
+    status: 'active' | 'pending_review' | 'completed' | 'needs_guidance';
     due_at: string | null;
     completed_lessons_count: number;
     lessons_count: number;

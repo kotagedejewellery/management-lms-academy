@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 
 type Enrollment = {
     id: number;
-    status: 'active' | 'completed' | 'not_passed';
+    status: 'active' | 'pending_review' | 'completed' | 'not_passed';
     due_at: string | null;
     completed_at: string | null;
     pre_test_score: number | null;
@@ -148,9 +148,12 @@ watch(hasPendingExport, (pending) => {
 onMounted(startExportPolling);
 onBeforeUnmount(stopExportPolling);
 function statusLabel(status: Enrollment['status']): string {
-    return { active: 'Aktif', completed: 'Selesai', not_passed: 'Tidak lulus' }[
-        status
-    ];
+    return {
+        active: 'Aktif',
+        pending_review: 'Menunggu evaluasi akhir',
+        completed: 'Selesai',
+        not_passed: 'Tidak lulus',
+    }[status];
 }
 defineOptions({
     layout: { breadcrumbs: [{ title: 'Reports', href: '/reports' }] },
@@ -202,6 +205,9 @@ defineOptions({
                 >
                     <option value="">Semua status</option>
                     <option value="active">Aktif</option>
+                    <option value="pending_review">
+                        Menunggu evaluasi akhir
+                    </option>
                     <option value="completed">Selesai</option>
                     <option value="not_passed">Tidak lulus</option>
                 </select>

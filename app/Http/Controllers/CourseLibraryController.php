@@ -18,7 +18,7 @@ class CourseLibraryController extends Controller
             ->selectRaw('1')
             ->whereColumn('enrollments.course_id', 'courses.id')
             ->where('user_id', $user->id)
-            ->whereIn('status', ['active', 'completed', 'not_passed'])
+            ->whereIn('status', ['active', 'pending_review', 'completed', 'not_passed'])
             ->limit(1);
 
         $courses = Course::query()

@@ -44,6 +44,7 @@ Route::middleware(['auth', 'verified', 'active', 'audit'])->group(function () {
     Route::get('reports/courses', [ReportController::class, 'courses'])->name('reports.courses');
     Route::get('team-progress', [TeamProgressController::class, 'index'])->name('team-progress.index');
     Route::get('trainer-progress', [TrainerProgressController::class, 'index'])->name('trainer-progress.index');
+    Route::post('trainer-progress/{enrollment}/approve', [TrainerProgressController::class, 'approve'])->name('trainer-progress.approve');
     Route::post('reports/exports', [ReportController::class, 'export'])->name('reports.exports.store');
     Route::get('reports/exports/{reportExport}', [ReportController::class, 'download'])->name('reports.exports.download');
     Route::get('my-learning', [LearningController::class, 'index'])->name('my-learning.index');

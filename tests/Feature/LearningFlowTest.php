@@ -106,6 +106,42 @@ class LearningFlowTest extends TestCase
             ->assertSessionHasErrors(['action' => 'Selesaikan Pre-Test Modul Mulai di KGJ sebelum membuka materi.']);
     }
 
+    public function test_employee_can_continue_to_the_next_module_after_submitting_a_module_post_test(): void
+    {
+        $employee = User::factory()->create();
+        $course = $this->publishedCourseWithLesson();
+        $module = $course->modules->first();
+        $lesson = $module->lessons->first();
+        $nextModule = $course->modules()->create(['title' => 'Tahap berikutnya', 'sequence' => 2]);
+        $nextModule->lessons()->create(['title' => 'Lesson berikutnya', 'type' => 'article', 'content' => 'Isi', 'is_required' => true, 'sequence' => 1]);
+        $preTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'pre_test', 'is_required' => true, 'passing_grade' => 0, 'attempt_limit' => 1]);
+        $preQuestion = $preTest->questions()->create(['prompt' => 'Siap?', 'points' => 1, 'sequence' => 1]);
+        $preAnswer = $preQuestion->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
+        $postTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'post_test', 'is_required' => true, 'passing_grade' => 100, 'attempt_limit' => 3]);
+        $postQuestion = $postTest->questions()->create(['prompt' => 'Benar?', 'points' => 1, 'sequence' => 1]);
+        $postQuestion->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
+        $incorrectAnswer = $postQuestion->answers()->create(['content' => 'Tidak', 'is_correct' => false, 'sequence' => 2]);
+        $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
+
+        $this->actingAs($employee)->post(route('my-learning.assessments.submit', [$course, $preTest]), ['answers' => [$preQuestion->id => $preAnswer->id]])
+            ->assertRedirect(route('my-learning.assessments.receipt', [$course, $preTest]));
+        $this->actingAs($employee)->post(route('my-learning.lessons.complete', [$course, $lesson]))->assertRedirect();
+        $this->actingAs($employee)->post(route('my-learning.assessments.submit', [$course, $postTest]), ['answers' => [$postQuestion->id => $incorrectAnswer->id]])
+            ->assertRedirect(route('my-learning.assessments.receipt', [$course, $postTest]));
+
+        $this->actingAs($employee)->get(route('my-learning.show', $course))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('course.next_step', [
+                    'kind' => 'lesson',
+                    'label' => 'Lanjutkan materi',
+                    'description' => 'Lanjutkan materi yang tersedia pada tahap ini.',
+                    'lesson_id' => $nextModule->lessons()->sole()->id,
+                ])
+                ->missing('course.next_step.score')
+                ->missing('course.next_step.passed'));
+    }
+
     public function test_employee_cannot_access_another_employees_course(): void
     {
         $course = $this->publishedCourseWithLesson();

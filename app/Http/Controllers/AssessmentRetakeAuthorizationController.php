@@ -22,6 +22,11 @@ class AssessmentRetakeAuthorizationController extends Controller
 
         $authorization = DB::transaction(function () use ($assessment, $enrollment, $request): AssessmentRetakeAuthorization {
             $enrollment = Enrollment::query()->whereKey($enrollment->id)->lockForUpdate()->firstOrFail();
+
+            if ($enrollment->status !== 'pending_review') {
+                throw ValidationException::withMessages(['assessment' => 'Kesempatan ulang hanya dapat dibuka saat evaluasi akhir course.']);
+            }
+
             $attempts = $assessment->attempts()
                 ->where('enrollment_id', $enrollment->id)
                 ->whereNotNull('submitted_at')
@@ -76,6 +81,7 @@ class AssessmentRetakeAuthorizationController extends Controller
         $this->authorizeAuthorization($request, $enrollment);
 
         DB::transaction(function () use ($assessment, $enrollment): void {
+            $enrollment = Enrollment::query()->whereKey($enrollment->id)->lockForUpdate()->firstOrFail();
             $authorization = AssessmentRetakeAuthorization::query()
                 ->where('assessment_id', $assessment->id)
                 ->where('enrollment_id', $enrollment->id)
@@ -89,6 +95,10 @@ class AssessmentRetakeAuthorizationController extends Controller
             }
 
             $authorization->update(['cancelled_at' => now()]);
+
+            if ($enrollment->status === 'active') {
+                $enrollment->update(['status' => 'pending_review', 'completed_at' => null]);
+            }
         });
 
         ActivityLog::record($request->user(), 'assessment.retake_cancelled', $assessment, [

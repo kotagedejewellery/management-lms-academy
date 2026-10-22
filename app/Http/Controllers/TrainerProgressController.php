@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\IssueCertificate;
+use App\Models\ActivityLog;
 use App\Models\Assessment;
 use App\Models\AssessmentAttempt;
 use App\Models\AssessmentRetakeAuthorization;
 use App\Models\Course;
 use App\Models\Enrollment;
+use App\Support\ModuleLearningProgression;
 use App\Support\ReportEnrollmentQuery;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -25,7 +30,7 @@ class TrainerProgressController extends Controller
 
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
-            'status' => ['nullable', Rule::in(['active', 'completed', 'not_passed'])],
+            'status' => ['nullable', Rule::in(['active', 'pending_review', 'completed', 'not_passed'])],
             'course_id' => ['nullable', 'integer'],
         ]);
         $courses = ($hasCentralAccess ? Course::query() : $user->managedCourses())
@@ -61,6 +66,7 @@ class TrainerProgressController extends Controller
             'course' => $enrollment->course?->only(['code', 'title']),
             'module_assessments' => $moduleAssessments->get($enrollment->id, []),
             'retake_assessments' => $retakeAssessments->get($enrollment->id, []),
+            'can_approve' => $enrollment->status === 'pending_review',
         ]);
 
         return Inertia::render('trainer-progress/Index', [
@@ -68,6 +74,39 @@ class TrainerProgressController extends Controller
             'courses' => $courses,
             'filters' => $filters,
         ]);
+    }
+
+    public function approve(Request $request, Enrollment $enrollment): RedirectResponse
+    {
+        $user = $request->user();
+        $hasCentralAccess = $user->hasPermission('manage-enrollments') || $user->hasPermission('view-reports');
+        $isAssignedTrainer = $user->hasRole('trainer') && $user->hasPermission('manage-courses')
+            && $user->managedCourses()->whereKey($enrollment->course_id)->exists();
+        abort_unless($hasCentralAccess || $isAssignedTrainer, 403);
+        $enrollment = DB::transaction(function () use ($enrollment): Enrollment {
+            $enrollment = Enrollment::query()
+                ->with('course')
+                ->whereKey($enrollment->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            abort_unless($enrollment->status === 'pending_review', 422, 'Course belum siap untuk evaluasi akhir.');
+            abort_unless(app(ModuleLearningProgression::class)->courseReadyForReview($enrollment->course, $enrollment), 422, 'Tahapan course belum lengkap.');
+
+            $enrollment->update(['status' => 'completed', 'completed_at' => now()]);
+
+            return $enrollment;
+        });
+
+        ActivityLog::record($user, 'enrollment.final_review_approved', $enrollment, [
+            'course_id' => $enrollment->course_id,
+        ]);
+
+        if ($enrollment->course->certificate_enabled) {
+            IssueCertificate::dispatch($enrollment->id)->afterCommit();
+        }
+
+        return back()->with('success', 'Kelulusan course berhasil disetujui.');
     }
 
     /**
@@ -154,6 +193,10 @@ class TrainerProgressController extends Controller
             ->mapWithKeys(fn (AssessmentRetakeAuthorization $authorization) => ["{$authorization->enrollment_id}:{$authorization->assessment_id}" => true]);
 
         return $enrollments->mapWithKeys(function (Enrollment $enrollment) use ($assessments, $attempts, $activeAttemptKeys, $pendingAuthorizationKeys): array {
+            if ($enrollment->status !== 'pending_review') {
+                return [$enrollment->id => []];
+            }
+
             $retakes = $assessments
                 ->where('course_id', $enrollment->course_id)
                 ->map(function (Assessment $assessment) use ($attempts, $enrollment, $activeAttemptKeys, $pendingAuthorizationKeys): ?array {

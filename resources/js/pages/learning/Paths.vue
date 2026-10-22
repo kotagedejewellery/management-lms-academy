@@ -83,6 +83,20 @@ defineOptions({
                         />
                         <div
                             v-else-if="
+                                course.enrollment_status === 'pending_review'
+                            "
+                            class="text-right"
+                        >
+                            <StatusBadge status="pending_review" />
+                            <p
+                                class="mt-1 max-w-48 text-xs text-muted-foreground"
+                            >
+                                Tim pembelajaran sedang melakukan evaluasi
+                                akhir.
+                            </p>
+                        </div>
+                        <div
+                            v-else-if="
                                 course.enrollment_status === 'needs_guidance'
                             "
                             class="text-right"

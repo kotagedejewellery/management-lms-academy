@@ -129,6 +129,22 @@ class ReportTest extends TestCase
             ->where('enrollments.data.0.post_test_attempts', 2));
     }
 
+    public function test_report_filters_enrollments_waiting_for_final_review(): void
+    {
+        $admin = $this->reportAdmin();
+        $employee = User::factory()->create(['name' => 'Ayu Wijaya']);
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-REVIEW-001', 'title' => 'Evaluasi akhir', 'status' => 'published']);
+        $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'pending_review']);
+
+        $this->actingAs($admin)->get(route('reports.index', ['status' => 'pending_review']))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.status', 'pending_review')
+                ->has('enrollments.data', 1)
+                ->where('enrollments.data.0.status', 'pending_review'));
+    }
+
     private function reportAdmin(): User
     {
         $permission = Permission::query()->create(['slug' => 'manage-enrollments', 'name' => 'Kelola assignment']);

@@ -31,9 +31,9 @@ class ModuleLearningProgression
             $preCompleted = ! $preTest || $attempts->contains('assessment_id', $preTest->id);
             $requiredLessons = $module->lessons->where('is_required', true);
             $lessonsCompleted = $requiredLessons->every(fn ($lesson) => $completedLessons->has($lesson->id));
-            $postPassed = ! $postTest || $attempts->where('assessment_id', $postTest->id)->contains('passed', true);
+            $postSubmitted = ! $postTest || $attempts->contains('assessment_id', $postTest->id);
             $materialsUnlocked = $previousCompleted && $preCompleted;
-            $completed = $materialsUnlocked && $lessonsCompleted && $postPassed;
+            $completed = $materialsUnlocked && $lessonsCompleted && $postSubmitted;
 
             $states->put($module->id, [
                 'unlocked' => $previousCompleted,
@@ -71,6 +71,27 @@ class ModuleLearningProgression
     public function courseModulesCompleted(Course $course, Enrollment $enrollment): bool
     {
         return $this->states($course, $enrollment)->every(fn (array $state) => $state['completed']);
+    }
+
+    public function courseReadyForReview(Course $course, Enrollment $enrollment): bool
+    {
+        if (! $this->courseModulesCompleted($course, $enrollment)) {
+            return false;
+        }
+
+        if (! $course->requires_post_test) {
+            return true;
+        }
+
+        $postTest = $course->assessments()
+            ->whereNull('module_id')
+            ->where('type', 'post_test')
+            ->first();
+
+        return $postTest !== null && $postTest->attempts()
+            ->where('enrollment_id', $enrollment->id)
+            ->whereNotNull('submitted_at')
+            ->exists();
     }
 
     private function coursePreTestCompleted(Course $course, Enrollment $enrollment): bool

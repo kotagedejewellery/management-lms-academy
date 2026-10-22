@@ -92,7 +92,7 @@ class ReportController extends Controller
     private function filters(Request $request): array
     {
         $this->authorizeReports($request);
-        $validated = $request->validate(['search' => ['nullable', 'string', 'max:100'], 'status' => ['nullable', Rule::in(['active', 'completed', 'not_passed'])], 'course_id' => ['nullable', 'integer', Rule::exists('courses', 'id')], 'division_id' => ['nullable', 'integer', Rule::exists('divisions', 'id')]]);
+        $validated = $request->validate(['search' => ['nullable', 'string', 'max:100'], 'status' => ['nullable', Rule::in(['active', 'pending_review', 'completed', 'not_passed'])], 'course_id' => ['nullable', 'integer', Rule::exists('courses', 'id')], 'division_id' => ['nullable', 'integer', Rule::exists('divisions', 'id')]]);
 
         return ['search' => trim($validated['search'] ?? ''), 'status' => $validated['status'] ?? '', 'course_id' => isset($validated['course_id']) ? (int) $validated['course_id'] : null, 'division_id' => isset($validated['division_id']) ? (int) $validated['division_id'] : null];
     }

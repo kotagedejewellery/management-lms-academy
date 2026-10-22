@@ -41,7 +41,7 @@ class DashboardResolver
     {
         $enrollments = Enrollment::query()
             ->where('user_id', $user->id)
-            ->whereIn('status', ['active', 'completed', 'not_passed']);
+            ->whereIn('status', ['active', 'pending_review', 'completed', 'not_passed']);
         $stats = $this->enrollmentStats($enrollments);
         $active = (clone $enrollments)
             ->where('status', 'active')
@@ -283,12 +283,13 @@ class DashboardResolver
 
     /**
      * @param  Builder<Enrollment>  $enrollments
-     * @return array{active: int, completed: int, not_passed: int, overdue: int}
+     * @return array{active: int, pending_review: int, completed: int, not_passed: int, overdue: int}
      */
     private function enrollmentStats(Builder $enrollments): array
     {
         return [
             'active' => (clone $enrollments)->where('status', 'active')->count(),
+            'pending_review' => (clone $enrollments)->where('status', 'pending_review')->count(),
             'completed' => (clone $enrollments)->where('status', 'completed')->count(),
             'not_passed' => (clone $enrollments)->where('status', 'not_passed')->count(),
             'overdue' => (clone $enrollments)->where('status', 'active')->where('due_at', '<', now())->count(),
@@ -308,6 +309,11 @@ class DashboardResolver
 
     private function enrollmentStatus(string $status): string
     {
-        return ['active' => 'Aktif', 'completed' => 'Selesai', 'not_passed' => 'Perlu diulang'][$status];
+        return [
+            'active' => 'Aktif',
+            'pending_review' => 'Menunggu evaluasi akhir',
+            'completed' => 'Selesai',
+            'not_passed' => 'Perlu diulang',
+        ][$status];
     }
 }

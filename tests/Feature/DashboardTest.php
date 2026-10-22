@@ -99,6 +99,22 @@ class DashboardTest extends TestCase
                 ->where('stats.2.value', 1));
     }
 
+    public function test_management_dashboard_labels_final_review_assignments_neutrally(): void
+    {
+        Cache::forget('dashboard:management');
+        $admin = $this->managementAdmin();
+        $employee = User::factory()->create();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-REVIEW-001', 'title' => 'Evaluasi akhir', 'status' => 'published']);
+        Enrollment::query()->create(['user_id' => $employee->id, 'course_id' => $course->id, 'status' => 'pending_review']);
+
+        $this->actingAs($admin)->get(route('dashboard'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('mode', 'operations')
+                ->where('items.0.meta', 'Menunggu evaluasi akhir'));
+    }
+
     public function test_trainer_sees_only_assigned_course_dashboard(): void
     {
         $trainer = $this->userWithPermission('manage-courses', 'trainer');

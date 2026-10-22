@@ -14,7 +14,6 @@ import {
     LockKeyhole,
     Play,
     PlayCircle,
-    RotateCcw,
     Trophy,
 } from '@lucide/vue';
 import LearningLessonNavigator from '@/components/LearningLessonNavigator.vue';
@@ -77,6 +76,20 @@ type CourseAction =
           description: string;
       }
     | { kind: 'none'; label: string; description: string };
+type NextStep =
+    | {
+          kind: 'assessment';
+          assessment_id: number;
+          label: string;
+          description: string;
+      }
+    | { kind: 'lesson'; lesson_id: number; label: string; description: string }
+    | {
+          kind: 'completed' | 'empty' | 'waiting';
+          label: string;
+          description: string;
+      };
+type LessonError = { message: string; retry_completion: boolean };
 
 const props = defineProps<{
     enrollment: {
@@ -100,6 +113,7 @@ const props = defineProps<{
             completed_required_lessons: number;
             required_lessons: number;
         };
+        next_step: NextStep;
         assessments: Assessment[];
         modules: Module[];
     };
@@ -117,14 +131,6 @@ const allLessons = computed<LessonEntry[]>(() =>
     ),
 );
 const activeLesson = computed(() => props.selected_lesson);
-const firstIncompleteLesson = computed(() =>
-    allLessons.value.find((lesson) => !lesson.completed && !lesson.locked),
-);
-const nextModuleAssessment = computed(() =>
-    props.course.modules
-        .flatMap((module) => module.assessments)
-        .find((assessment) => assessment.can_start && !assessment.submitted),
-);
 const activeLessonIndex = computed(() =>
     allLessons.value.findIndex(
         (lesson) => lesson.id === activeLesson.value?.id,
@@ -141,18 +147,8 @@ const nextLesson = computed(() =>
         ? allLessons.value[activeLessonIndex.value + 1]
         : null,
 );
-const preTest = computed(() =>
-    props.course.assessments.find(
-        (assessment) => assessment.type === 'pre_test',
-    ),
-);
-const postTest = computed(() =>
-    props.course.assessments.find(
-        (assessment) => assessment.type === 'post_test',
-    ),
-);
 const completingLessonId = ref<number | null>(null);
-const lessonError = ref('');
+const lessonError = ref<LessonError | null>(null);
 const lessonNavigatorOpen = ref(false);
 const videoPlayer = ref<HTMLVideoElement | null>(null);
 const lastPlaybackSaved = ref(0);
@@ -167,10 +163,9 @@ const progressPercentage = computed(() =>
                   100,
           ),
 );
-const requiredProgressLabel = computed(() =>
-    props.course.progress.required_lessons === 0
-        ? 'Tidak ada lesson wajib'
-        : `${props.course.progress.completed_required_lessons}/${props.course.progress.required_lessons} lesson wajib selesai`,
+const requiredProgressLabel = computed(
+    () =>
+        `${props.course.progress.completed_required_lessons}/${props.course.progress.required_lessons} lesson wajib selesai`,
 );
 const estimatedDuration = computed(() =>
     props.course.estimated_minutes
@@ -222,60 +217,33 @@ const embeddedVideoUrl = computed(() =>
         : null,
 );
 const courseAction = computed<CourseAction>(() => {
-    if (
-        props.course.pre_test_required &&
-        !props.course.pre_test_completed &&
-        preTest.value
-    ) {
-        const action = assessmentAction(preTest.value);
-        if (action)
-            return {
-                kind: 'link',
-                ...action,
-                description:
-                    'Pre-Test wajib diselesaikan sebelum materi dapat dibuka.',
-            };
-    }
-    if (props.enrollment.course_completed)
+    const nextStep = props.course.next_step;
+    if (nextStep.kind === 'assessment') {
         return {
-            kind: 'none',
-            label: 'Course selesai',
-            description:
-                'Periksa sertifikat Anda bila diterbitkan untuk course ini.',
+            kind: 'link',
+            href: `/my-learning/${props.course.id}/assessments/${nextStep.assessment_id}`,
+            label: nextStep.label,
+            description: nextStep.description,
         };
-    if (firstIncompleteLesson.value)
-        return {
-            kind: 'lesson',
-            lesson: firstIncompleteLesson.value,
-            label:
-                props.course.progress.completed_lessons === 0
-                    ? 'Mulai belajar'
-                    : 'Lanjutkan materi',
-            description: requiredProgressLabel.value,
-        };
-    if (nextModuleAssessment.value) {
-        const action = assessmentAction(nextModuleAssessment.value);
-        if (action)
+    }
+
+    if (nextStep.kind === 'lesson') {
+        const lesson = allLessons.value.find(
+            (item) => item.id === nextStep.lesson_id,
+        );
+        if (lesson)
             return {
-                kind: 'link',
-                ...action,
-                description: assessmentDescription(nextModuleAssessment.value),
+                kind: 'lesson',
+                lesson,
+                label: nextStep.label,
+                description: nextStep.description,
             };
     }
-    if (postTest.value) {
-        const action = assessmentAction(postTest.value);
-        if (action)
-            return {
-                kind: 'link',
-                ...action,
-                description: 'Seluruh lesson wajib telah selesai.',
-            };
-    }
+
     return {
         kind: 'none',
-        label: 'Materi belum tersedia',
-        description:
-            'Hubungi LMS Admin bila course ini seharusnya sudah memiliki materi.',
+        label: nextStep.label,
+        description: nextStep.description,
     };
 });
 
@@ -328,21 +296,30 @@ function assessmentAction(
     return null;
 }
 function assessmentStatusDescription(assessment: Assessment): string {
+    if (assessment.type === 'pre_test' && assessment.submitted) {
+        return 'Pre-Test telah dikirim. Materi modul dapat dipelajari.';
+    }
+
     if (assessment.submitted && !assessment.can_start) {
-        return 'Assessment telah dikirim. Management akan memberikan arahan bila diperlukan.';
+        return 'Post-Test telah dikirim. Management akan memberikan arahan bila diperlukan.';
     }
 
     return assessmentDescription(assessment);
 }
 function selectLesson(lesson: LessonEntry, scrollToPlayer = false): void {
-    lessonError.value = '';
+    lessonError.value = null;
     if (lesson.locked) {
-        lessonError.value =
-            'Materi ini masih terkunci. Selesaikan evaluasi yang diwajibkan terlebih dahulu.';
+        lessonError.value = {
+            message: props.course.next_step.description,
+            retry_completion: false,
+        };
         return;
     }
     if (props.course.pre_test_required && !props.course.pre_test_completed) {
-        lessonError.value = 'Selesaikan Pre-Test wajib sebelum membuka materi.';
+        lessonError.value = {
+            message: 'Selesaikan Pre-Test wajib sebelum membuka materi.',
+            retry_completion: false,
+        };
         return;
     }
     if (lesson.id === activeLesson.value?.id) {
@@ -367,8 +344,11 @@ function selectLesson(lesson: LessonEntry, scrollToPlayer = false): void {
                     });
             },
             onError: () => {
-                lessonError.value =
-                    'Materi tidak dapat dimuat. Periksa koneksi lalu coba lagi.';
+                lessonError.value = {
+                    message:
+                        'Materi tidak dapat dimuat. Periksa koneksi lalu coba lagi.',
+                    retry_completion: false,
+                };
             },
         },
     );
@@ -387,7 +367,7 @@ function selectLessonFromNavigator(
 }
 function complete(lesson: SelectedLesson): void {
     if (completingLessonId.value !== null) return;
-    lessonError.value = '';
+    lessonError.value = null;
     completingLessonId.value = lesson.id;
     router.post(
         `/my-learning/${props.course.id}/lessons/${lesson.id}/complete`,
@@ -395,8 +375,11 @@ function complete(lesson: SelectedLesson): void {
         {
             preserveScroll: true,
             onError: () => {
-                lessonError.value =
-                    'Lesson belum tersimpan sebagai selesai. Periksa koneksi lalu coba lagi.';
+                lessonError.value = {
+                    message:
+                        'Lesson belum tersimpan sebagai selesai. Periksa koneksi lalu coba lagi.',
+                    retry_completion: true,
+                };
             },
             onFinish: () => {
                 completingLessonId.value = null;
@@ -449,8 +432,11 @@ function persistPlayback(): void {
             lastPlaybackSaved.value = seconds;
         })
         .catch(() => {
-            lessonError.value =
-                'Posisi video belum tersimpan. Periksa koneksi lalu lanjutkan belajar.';
+            lessonError.value = {
+                message:
+                    'Posisi video belum tersimpan. Periksa koneksi lalu lanjutkan belajar.',
+                retry_completion: false,
+            };
         })
         .finally(() => {
             playbackSaving.value = false;
@@ -975,22 +961,33 @@ defineOptions({
                             >Course selesai</span
                         ><Button
                             variant="outline"
-                            :disabled="!nextLesson"
-                            @click="nextLesson && selectLesson(nextLesson)"
+                            :disabled="!nextLesson || nextLesson.locked"
+                            @click="
+                                nextLesson &&
+                                !nextLesson.locked &&
+                                selectLesson(nextLesson)
+                            "
                             >Berikutnya<ChevronRight
                         /></Button>
                     </div>
+                    <p
+                        v-if="nextLesson?.locked"
+                        class="border-t border-border px-5 py-3 text-sm leading-5 text-muted-foreground"
+                    >
+                        {{ course.next_step.description }}
+                    </p>
                     <div
                         v-if="lessonError"
                         class="flex flex-wrap items-center justify-between gap-3 border-t border-destructive/30 bg-destructive/5 px-5 py-3 text-sm text-destructive"
                         role="alert"
                     >
-                        <span>{{ lessonError }}</span
+                        <span>{{ lessonError.message }}</span
                         ><Button
+                            v-if="lessonError.retry_completion"
                             variant="outline"
                             size="sm"
                             @click="activeLesson && complete(activeLesson)"
-                            ><RotateCcw />Coba lagi</Button
+                            >Coba lagi</Button
                         >
                     </div></template
                 >
@@ -1016,11 +1013,10 @@ defineOptions({
                             class="mx-auto size-8 text-muted-foreground"
                         />
                         <h2 class="mt-4 text-lg font-semibold text-foreground">
-                            Belum ada materi
+                            {{ courseAction.label }}
                         </h2>
                         <p class="mt-2 text-sm text-muted-foreground">
-                            Course ini belum memiliki lesson yang dapat
-                            dipelajari.
+                            {{ courseAction.description }}
                         </p>
                     </template>
                 </div>

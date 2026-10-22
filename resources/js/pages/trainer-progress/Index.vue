@@ -11,13 +11,14 @@ import { Label } from '@/components/ui/label';
 
 type Enrollment = {
     id: number;
-    status: 'active' | 'completed' | 'not_passed';
+    status: 'active' | 'pending_review' | 'completed' | 'not_passed';
     pre_test_score: number | null;
     best_post_score: number | null;
     improvement: number | null;
     post_test_attempts: number;
     module_assessments: ModuleAssessment[];
     retake_assessments: RetakeAssessment[];
+    can_approve: boolean;
     user: { employee_id: string | null; name: string } | null;
     course: { code: string; title: string } | null;
 };
@@ -53,6 +54,7 @@ const filters = {
 };
 const authorizingRetake = ref<string | null>(null);
 const cancellingRetake = ref<string | null>(null);
+const approvingEnrollment = ref<number | null>(null);
 
 function applyFilters(): void {
     router.get('/trainer-progress', filters, {
@@ -99,6 +101,18 @@ function cancelRetake(
     );
 }
 
+function approve(enrollmentId: number): void {
+    router.post(
+        `/trainer-progress/${enrollmentId}/approve`,
+        {},
+        {
+            preserveScroll: true,
+            onStart: () => (approvingEnrollment.value = enrollmentId),
+            onFinish: () => (approvingEnrollment.value = null),
+        },
+    );
+}
+
 function retakeStatusLabel(status: RetakeAssessment['status']): string {
     return {
         available: 'Menunggu persetujuan internal',
@@ -112,9 +126,12 @@ function score(value: number | null): string {
 }
 
 function statusLabel(status: Enrollment['status']): string {
-    return { active: 'Aktif', completed: 'Selesai', not_passed: 'Tidak lulus' }[
-        status
-    ];
+    return {
+        active: 'Aktif',
+        pending_review: 'Menunggu evaluasi akhir',
+        completed: 'Selesai',
+        not_passed: 'Tidak lulus',
+    }[status];
 }
 
 function postTestStatusLabel(postTest: ModuleAssessment['post_test']): string {
@@ -162,6 +179,9 @@ defineOptions({
                 >
                     <option value="">Semua status</option>
                     <option value="active">Aktif</option>
+                    <option value="pending_review">
+                        Menunggu evaluasi akhir
+                    </option>
                     <option value="completed">Selesai</option>
                     <option value="not_passed">Tidak lulus</option>
                 </select>
@@ -256,6 +276,30 @@ defineOptions({
                             </dd>
                         </div>
                     </dl>
+                    <section
+                        v-if="item.can_approve"
+                        class="mt-5 rounded-lg border border-border bg-muted/30 p-4"
+                    >
+                        <h3 class="font-medium text-foreground">
+                            Evaluasi akhir
+                        </h3>
+                        <p class="mt-1 text-sm text-muted-foreground">
+                            Seluruh tahapan telah dikirim. Tinjau hasil
+                            assessment sebelum menyetujui kelulusan.
+                        </p>
+                        <Button
+                            class="mt-3"
+                            size="sm"
+                            :disabled="approvingEnrollment !== null"
+                            @click="approve(item.id)"
+                        >
+                            {{
+                                approvingEnrollment === item.id
+                                    ? 'Menyetujui...'
+                                    : 'Setujui kelulusan'
+                            }}
+                        </Button>
+                    </section>
                     <section
                         v-if="item.module_assessments.length"
                         class="mt-5 border-t border-border pt-4"

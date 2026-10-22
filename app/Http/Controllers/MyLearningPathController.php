@@ -14,7 +14,7 @@ class MyLearningPathController extends Controller
     {
         $assignments = LearningPathAssignment::query()->where('user_id', $request->user()->id)->with('learningPath.pathCourses.course:id,code,title,prerequisite_course_id,is_mandatory')->latest()->paginate(12);
         $courseIds = $assignments->getCollection()->flatMap(fn ($a) => $a->learningPath->pathCourses->pluck('course_id'))->unique();
-        $enrollments = Enrollment::query()->where('user_id', $request->user()->id)->whereIn('course_id', $courseIds)->whereIn('status', ['active', 'completed', 'not_passed'])->get()->keyBy('course_id');
+        $enrollments = Enrollment::query()->where('user_id', $request->user()->id)->whereIn('course_id', $courseIds)->whereIn('status', ['active', 'pending_review', 'completed', 'not_passed'])->get()->keyBy('course_id');
         $assignments->getCollection()->transform(function ($assignment) use ($enrollments): array {
             $completed = 0;
             $previousMandatoryIncomplete = false;
@@ -38,7 +38,11 @@ class MyLearningPathController extends Controller
                     'sequence' => $pathCourse->sequence,
                     'code' => $pathCourse->course?->code,
                     'title' => $pathCourse->course?->title,
-                    'enrollment_status' => $status === 'not_passed' ? 'needs_guidance' : $status,
+                    'enrollment_status' => match ($status) {
+                        'not_passed' => 'needs_guidance',
+                        'pending_review' => 'pending_review',
+                        default => $status,
+                    },
                     'locked' => $lockedByPrerequisite || $lockedBySequence,
                     'lock_reason' => $lockedByPrerequisite
                         ? 'Selesaikan course prasyarat terlebih dahulu.'

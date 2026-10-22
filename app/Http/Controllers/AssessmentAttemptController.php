@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\IssueCertificate;
 use App\Models\ActivityLog;
 use App\Models\Assessment;
 use App\Models\AssessmentAttempt;
@@ -30,7 +29,7 @@ class AssessmentAttemptController extends Controller
             ->whereNull('submitted_at')
             ->first();
         if ($activeAttempt?->expires_at?->isPast()) {
-            $this->expire($assessment, $activeAttempt);
+            $this->expire($course, $assessment, $activeAttempt);
             $activeAttempt = null;
         }
         if (! $activeAttempt && $this->requiresExplicitRetakeStart($assessment, $enrollment)) {
@@ -80,7 +79,7 @@ class AssessmentAttemptController extends Controller
             ->whereNull('submitted_at')
             ->first();
         if ($activeAttempt?->expires_at?->isPast()) {
-            $this->expire($assessment, $activeAttempt);
+            $this->expire($course, $assessment, $activeAttempt);
             throw ValidationException::withMessages(['assessment' => 'Waktu assessment telah habis.']);
         }
         $activeAttempt ??= $this->beginAttempt($assessment, $course, $enrollment);
@@ -116,7 +115,7 @@ class AssessmentAttemptController extends Controller
             $answers = array_replace(is_array($draft?->answers) ? $draft->answers : [], $submittedAnswers);
             $answers = $this->validAnswers($assessment, $answers);
             if ($activeAttempt?->expires_at?->isPast()) {
-                $this->expire($assessment, $activeAttempt);
+                $this->expire($course, $assessment, $activeAttempt);
 
                 return null;
             }
@@ -140,12 +139,8 @@ class AssessmentAttemptController extends Controller
             $attempt->update(['score' => $score, 'passed' => $passed, 'submitted_at' => now()]);
             $attempt->responses()->createMany($responses);
             $draft?->delete();
-            if ($assessment->module_id === null && $passed === true && $course->requires_post_test && app(ModuleLearningProgression::class)->courseModulesCompleted($course, $enrollment)) {
-                $enrollment->update(['status' => 'completed', 'completed_at' => now()]);
-            } elseif ($assessment->module_id !== null && $passed === true && ! $course->requires_post_test && app(ModuleLearningProgression::class)->courseModulesCompleted($course, $enrollment)) {
-                $enrollment->update(['status' => 'completed', 'completed_at' => now()]);
-            } elseif ($assessment->type === 'post_test' && $attempt->attempt_number >= $assessment->attempt_limit) {
-                $enrollment->update(['status' => 'not_passed', 'completed_at' => null]);
+            if (app(ModuleLearningProgression::class)->courseReadyForReview($course, $enrollment)) {
+                $enrollment->update(['status' => 'pending_review', 'completed_at' => null]);
             }
 
             return $attempt;
@@ -157,9 +152,6 @@ class AssessmentAttemptController extends Controller
                 'score' => $attempt->score,
                 'passed' => $attempt->passed,
             ]);
-            if ($assessment->type === 'post_test' && $attempt->passed === true && $course->certificate_enabled && $enrollment->fresh()->status === 'completed') {
-                IssueCertificate::dispatch($enrollment->id)->afterCommit();
-            }
         }
 
         return to_route('my-learning.assessments.receipt', [$course, $assessment]);
@@ -187,7 +179,7 @@ class AssessmentAttemptController extends Controller
 
     private function enrollment(Request $request, Course $course, bool $includeTerminal = false): Enrollment
     {
-        $statuses = $includeTerminal ? ['active', 'completed', 'not_passed'] : ['active', 'completed'];
+        $statuses = $includeTerminal ? ['active', 'pending_review', 'completed', 'not_passed'] : ['active', 'completed'];
         $enrollment = Enrollment::query()
             ->where('user_id', $request->user()->id)
             ->where('course_id', $course->id)
@@ -205,7 +197,7 @@ class AssessmentAttemptController extends Controller
             $enrollment = Enrollment::query()->whereKey($enrollment->id)->lockForUpdate()->firstOrFail();
             $activeAttempt = $assessment->attempts()->where('enrollment_id', $enrollment->id)->whereNull('submitted_at')->lockForUpdate()->first();
             if ($activeAttempt?->expires_at?->isPast()) {
-                $this->expire($assessment, $activeAttempt);
+                $this->expire($course, $assessment, $activeAttempt);
                 $activeAttempt = null;
             }
             $this->ensureAvailable($assessment, $course, $enrollment, $activeAttempt);
@@ -225,11 +217,12 @@ class AssessmentAttemptController extends Controller
         });
     }
 
-    private function expire(Assessment $assessment, AssessmentAttempt $attempt): void
+    private function expire(Course $course, Assessment $assessment, AssessmentAttempt $attempt): void
     {
         $attempt->update(['score' => 0, 'passed' => $assessment->type === 'post_test' ? false : null, 'submitted_at' => now()]);
-        if ($assessment->type === 'post_test' && $attempt->attempt_number >= $assessment->attempt_limit) {
-            Enrollment::query()->whereKey($attempt->enrollment_id)->update(['status' => 'not_passed', 'completed_at' => null]);
+        $enrollment = Enrollment::query()->find($attempt->enrollment_id);
+        if ($enrollment && app(ModuleLearningProgression::class)->courseReadyForReview($course, $enrollment)) {
+            $enrollment->update(['status' => 'pending_review', 'completed_at' => null]);
         }
         AssessmentDraft::query()
             ->where('assessment_id', $assessment->id)

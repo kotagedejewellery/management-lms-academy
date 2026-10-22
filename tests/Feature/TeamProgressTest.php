@@ -41,4 +41,24 @@ class TeamProgressTest extends TestCase
             ->missing('enrollments.data.0.improvement')
             ->missing('enrollments.data.0.post_test_attempts'));
     }
+
+    public function test_manager_sees_a_direct_report_waiting_for_final_review_without_scores(): void
+    {
+        $permission = Permission::query()->create(['slug' => 'view-team', 'name' => 'Lihat progres tim']);
+        $role = Role::query()->create(['slug' => 'manager', 'name' => 'Manager']);
+        $role->permissions()->attach($permission);
+        $manager = User::factory()->create();
+        $manager->roles()->attach($role);
+        $employee = User::factory()->create(['manager_id' => $manager->id]);
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-REVIEW-001', 'title' => 'Evaluasi akhir', 'status' => 'published']);
+        $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'pending_review']);
+
+        $this->actingAs($manager)->get(route('team-progress.index', ['status' => 'pending_review']))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.status', 'pending_review')
+                ->where('enrollments.data.0.progress_state', 'pending_review')
+                ->missing('enrollments.data.0.pre_test_score'));
+    }
 }
