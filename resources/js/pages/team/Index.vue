@@ -66,11 +66,8 @@ defineOptions({
             title="Progres tim"
             description="Pantau status pembelajaran direct report Anda tanpa melihat nilai assessment."
         />
-        <FilterBar
-            layout-class="sm:grid-cols-[minmax(0,1fr)_11rem_auto]"
-            @submit.prevent="applyFilters"
-        >
-            <div class="grid gap-2">
+        <FilterBar @submit.prevent="applyFilters">
+            <div class="grid w-full gap-2 xl:max-w-2xl xl:min-w-80 xl:flex-1">
                 <Label for="team-search">Cari</Label>
                 <Input
                     id="team-search"
@@ -78,7 +75,7 @@ defineOptions({
                     placeholder="Nama, ID, atau course"
                 />
             </div>
-            <div class="grid gap-2">
+            <div class="grid w-full shrink-0 gap-2 sm:w-52">
                 <Label for="team-status">Status</Label>
                 <select
                     id="team-status"
@@ -94,7 +91,7 @@ defineOptions({
                     <option value="not_passed">Perlu tindak lanjut</option>
                 </select>
             </div>
-            <div class="flex w-full gap-2 self-end sm:w-auto">
+            <div class="flex w-full shrink-0 gap-2 self-end sm:w-auto">
                 <Button class="flex-1 sm:flex-none" type="submit"
                     ><Search /> Terapkan</Button
                 >

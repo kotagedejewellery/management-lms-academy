@@ -58,11 +58,10 @@ defineOptions({
             title="Pembelajaran saya"
             description="Lanjutkan course yang telah ditugaskan dan pantau progres Anda."
         />
-        <FilterBar
-            layout-class="sm:max-w-md sm:grid-cols-2"
-            @change="applyFilters"
-        >
-            <label class="grid gap-1 text-sm font-medium text-foreground">
+        <FilterBar layout-class="sm:max-w-md" @change="applyFilters">
+            <label
+                class="grid w-full flex-1 gap-1 text-sm font-medium text-foreground sm:w-auto"
+            >
                 Status
                 <select
                     v-model="filters.state"
@@ -74,7 +73,9 @@ defineOptions({
                     <option value="completed">Selesai</option>
                 </select>
             </label>
-            <label class="grid gap-1 text-sm font-medium text-foreground">
+            <label
+                class="grid w-full flex-1 gap-1 text-sm font-medium text-foreground sm:w-auto"
+            >
                 Jenis
                 <select
                     v-model="filters.mandatory"

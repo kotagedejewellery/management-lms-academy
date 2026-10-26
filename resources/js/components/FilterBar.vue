@@ -4,7 +4,7 @@ const props = defineProps<{ layoutClass?: string }>();
 
 <template>
     <form
-        class="grid gap-3 rounded-2xl border border-border/85 bg-card p-4"
+        class="flex flex-wrap items-end gap-3 rounded-2xl border border-border/85 bg-card p-4"
         :class="props.layoutClass"
     >
         <slot />

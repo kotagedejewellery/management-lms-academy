@@ -130,10 +130,12 @@ defineOptions({
                                 <dt class="font-medium text-foreground">
                                     {{ fieldLabels[field] ?? field }}
                                 </dt>
-                                <dd class="mt-1 text-muted-foreground">
+                                <dd
+                                    class="mt-1 break-words text-muted-foreground"
+                                >
                                     Sebelum: {{ value(change.before) }}
                                 </dd>
-                                <dd class="text-muted-foreground">
+                                <dd class="break-words text-muted-foreground">
                                     Sesudah: {{ value(change.after) }}
                                 </dd>
                             </div>

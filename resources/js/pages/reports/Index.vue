@@ -66,6 +66,7 @@ const courseQuery = ref(
 const courseSearching = ref(false);
 const courseSearchError = ref('');
 const courseSelectionOpen = ref(false);
+const activeCourseIndex = ref(-1);
 let courseSearchTimer: ReturnType<typeof setTimeout> | undefined;
 let courseSearchRequest = 0;
 let exportPollTimer: ReturnType<typeof setInterval> | undefined;
@@ -85,6 +86,7 @@ function clearFilters(): void {
     courseQuery.value = '';
     courseOptions.value = [];
     courseSelectionOpen.value = false;
+    activeCourseIndex.value = -1;
     applyFilters();
 }
 function searchCourses(): void {
@@ -93,6 +95,7 @@ function searchCourses(): void {
     courseSearching.value = false;
     courseSearchError.value = '';
     courseSelectionOpen.value = true;
+    activeCourseIndex.value = -1;
     clearTimeout(courseSearchTimer);
 
     const query = courseQuery.value.trim();
@@ -125,6 +128,7 @@ function selectCourse(course: Course): void {
     courseOptions.value = [course];
     courseSearchError.value = '';
     courseSelectionOpen.value = false;
+    activeCourseIndex.value = -1;
 }
 function clearCourse(): void {
     filters.course_id = '';
@@ -132,6 +136,27 @@ function clearCourse(): void {
     courseOptions.value = [];
     courseSearchError.value = '';
     courseSelectionOpen.value = false;
+    activeCourseIndex.value = -1;
+}
+function moveCourseSelection(direction: 1 | -1): void {
+    if (!courseOptions.value.length) return;
+
+    courseSelectionOpen.value = true;
+    activeCourseIndex.value =
+        (activeCourseIndex.value + direction + courseOptions.value.length) %
+        courseOptions.value.length;
+}
+function selectActiveCourse(event: KeyboardEvent): void {
+    const course =
+        courseOptions.value[activeCourseIndex.value] ?? courseOptions.value[0];
+    if (!course) return;
+
+    event.preventDefault();
+    selectCourse(course);
+}
+function closeCourseSelection(): void {
+    courseSelectionOpen.value = false;
+    activeCourseIndex.value = -1;
 }
 function retryCourseSearch(): void {
     searchCourses();
@@ -202,11 +227,8 @@ defineOptions({
                 {{ exporting ? 'Menyiapkan ekspor' : 'Ekspor CSV' }}</Button
             >
         </header>
-        <FilterBar
-            layout-class="sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_11rem_minmax(18rem,1.4fr)_13rem_auto]"
-            @submit.prevent="applyFilters"
-        >
-            <div class="grid gap-2">
+        <FilterBar @submit.prevent="applyFilters">
+            <div class="grid w-full gap-2 2xl:w-[22rem]">
                 <Label for="report-search">Cari</Label
                 ><Input
                     id="report-search"
@@ -214,7 +236,7 @@ defineOptions({
                     placeholder="Nama, ID, atau course"
                 />
             </div>
-            <div class="grid gap-2">
+            <div class="grid w-full shrink-0 gap-2 sm:w-52">
                 <Label for="report-status">Status</Label
                 ><select
                     id="report-status"
@@ -230,22 +252,30 @@ defineOptions({
                     <option value="not_passed">Tidak lulus</option>
                 </select>
             </div>
-            <div class="grid gap-2">
+            <div class="grid w-full shrink-0 gap-2 sm:w-80">
                 <Label for="report-course-search">Course</Label>
                 <div class="relative">
                     <Input
                         id="report-course-search"
                         v-model="courseQuery"
                         class="pr-10"
-                        placeholder="Cari nama atau kode course"
+                        placeholder="Cari course (min. 2 karakter)"
                         autocomplete="off"
                         role="combobox"
                         aria-autocomplete="list"
                         aria-controls="report-course-options"
+                        :aria-activedescendant="
+                            activeCourseIndex >= 0
+                                ? `report-course-option-${courseOptions[activeCourseIndex]?.id}`
+                                : undefined
+                        "
                         :aria-expanded="courseSelectionOpen"
                         @focus="courseSelectionOpen = true"
                         @input="searchCourses"
-                        @keydown.esc="courseSelectionOpen = false"
+                        @keydown.down.prevent="moveCourseSelection(1)"
+                        @keydown.up.prevent="moveCourseSelection(-1)"
+                        @keydown.enter="selectActiveCourse"
+                        @keydown.esc="closeCourseSelection"
                     />
                     <button
                         v-if="filters.course_id"
@@ -291,17 +321,20 @@ defineOptions({
                             role="listbox"
                         >
                             <li
-                                v-for="course in courseOptions"
+                                v-for="(course, index) in courseOptions"
                                 :key="course.id"
+                                :id="`report-course-option-${course.id}`"
+                                role="option"
+                                :aria-selected="
+                                    filters.course_id === course.id.toString()
+                                "
                             >
                                 <button
                                     class="w-full px-3 py-2 text-left text-sm hover:bg-muted focus-visible:bg-muted focus-visible:outline-none"
+                                    :class="{
+                                        'bg-muted': activeCourseIndex === index,
+                                    }"
                                     type="button"
-                                    role="option"
-                                    :aria-selected="
-                                        filters.course_id ===
-                                        course.id.toString()
-                                    "
                                     @click="selectCourse(course)"
                                 >
                                     <span class="font-medium text-foreground">
@@ -323,15 +356,18 @@ defineOptions({
                         </p>
                     </div>
                 </div>
-                <p class="text-xs text-muted-foreground" aria-live="polite">
+                <p class="sr-only" aria-live="polite">
                     {{
-                        filters.course_id
-                            ? 'Course dipilih untuk filter laporan.'
-                            : 'Ketik minimal 2 karakter, lalu pilih course.'
+                        courseSearching
+                            ? 'Mencari course...'
+                            : courseSearchError ||
+                              (filters.course_id
+                                  ? 'Course dipilih untuk filter laporan.'
+                                  : 'Ketik minimal 2 karakter, lalu pilih course.')
                     }}
                 </p>
             </div>
-            <div class="grid gap-2">
+            <div class="grid w-full shrink-0 gap-2 sm:w-52">
                 <Label for="report-division">Divisi</Label
                 ><select
                     id="report-division"
@@ -348,7 +384,7 @@ defineOptions({
                     </option>
                 </select>
             </div>
-            <div class="flex w-full gap-2 self-end sm:w-auto">
+            <div class="flex w-full shrink-0 gap-2 self-end sm:w-auto">
                 <Button class="flex-1 sm:flex-none" type="submit"
                     ><Search /> Terapkan</Button
                 >
