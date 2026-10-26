@@ -8,10 +8,12 @@ use App\Models\Enrollment;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
 use App\Models\Question;
+use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\CustomerServiceDealmakerSeeder;
 use Database\Seeders\ProductionCustomerServiceDealmakerForceRefreshSeeder;
 use Database\Seeders\ProductionCustomerServiceDealmakerRefreshSeeder;
+use Database\Seeders\ProductionOperationalDataResetSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use RuntimeException;
 use Tests\TestCase;
@@ -47,7 +49,7 @@ class ProductionCustomerServiceDealmakerRefreshSeederTest extends TestCase
         $this->assertSame(10, Lesson::query()->where('type', 'video')->count());
         $this->assertSame(0, Lesson::query()->where('type', 'presentation')->count());
         $this->assertSame(18, Assessment::query()->where('course_id', $refreshedCourse->id)->count());
-        $this->assertSame(135, Question::query()->count());
+        $this->assertSame(180, Question::query()->count());
     }
 
     public function test_it_refuses_to_replace_content_when_a_learner_has_assessment_history(): void
@@ -112,6 +114,25 @@ class ProductionCustomerServiceDealmakerRefreshSeederTest extends TestCase
         $this->assertDatabaseCount('assessment_attempts', 0);
         $this->assertSame(10, Lesson::query()->whereIn('module_id', $course->modules()->select('id'))->count());
         $this->assertSame(18, Assessment::query()->where('course_id', $course->id)->count());
-        $this->assertSame(135, Question::query()->count());
+        $this->assertSame(180, Question::query()->count());
+    }
+
+    public function test_it_resets_operational_data_without_deleting_users_or_their_roles(): void
+    {
+        $this->seed(CustomerServiceDealmakerSeeder::class);
+
+        $user = User::factory()->create();
+        $role = Role::query()->create(['name' => 'Custom Role', 'slug' => 'custom-role']);
+        $user->roles()->attach($role);
+        $course = Course::query()->where('code', 'CS-DEAL-001')->sole();
+        Enrollment::query()->create(['user_id' => $user->id, 'course_id' => $course->id]);
+
+        $this->seed(ProductionOperationalDataResetSeeder::class);
+
+        $this->assertDatabaseHas('users', ['id' => $user->id]);
+        $this->assertDatabaseHas('user_roles', ['user_id' => $user->id, 'role_id' => $role->id]);
+        $this->assertDatabaseCount('enrollments', 0);
+        $this->assertSame(1, Course::query()->count());
+        $this->assertSame(180, Question::query()->count());
     }
 }

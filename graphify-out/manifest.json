@@ -30,9 +30,9 @@
     "semantic_hash": ""
   },
   "docs/SYSTEM_ARCHITECTURE.md": {
-    "mtime": 1792553263.50277,
-    "seen": 1792553976.7205167,
-    "ast_hash": "57cb8c1a70b963d99e0a6c4f7b6a74e0",
+    "mtime": 1792979502.355831,
+    "seen": 1792979533.697415,
+    "ast_hash": "6613bab745d148cd564ab6c40b6f486c",
     "semantic_hash": ""
   },
   "docs/TECH_STACK.md": {
@@ -2652,15 +2652,15 @@
     "semantic_hash": ""
   },
   "database/seeders/CustomerServiceDealmakerSeeder.php": {
-    "mtime": 1792557555.1232245,
-    "seen": 1792557756.5561259,
-    "ast_hash": "5b937c1d12dec5cb3d5c7ff4b9fe8352",
+    "mtime": 1792978816.8891242,
+    "seen": 1792979533.6961286,
+    "ast_hash": "92d9829c96df84ba64c16dff16d8c9ab",
     "semantic_hash": ""
   },
   "tests/Feature/CustomerServiceDealmakerSeederTest.php": {
-    "mtime": 1792487408.8000076,
-    "seen": 1792487697.9130023,
-    "ast_hash": "bb3414c8d1d554100683721345b19d54",
+    "mtime": 1792978667.4852617,
+    "seen": 1792979533.6972346,
+    "ast_hash": "88b55dace0b5372f993592db5c92645f",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_19_000002_remove_retired_two_factor_and_passkey_storage.php": {
@@ -2724,9 +2724,9 @@
     "semantic_hash": ""
   },
   "docs/ASSESSMENT_SEEDER_SOURCE_AUDIT.md": {
-    "mtime": 1792487320.487764,
-    "seen": 1792487697.9130673,
-    "ast_hash": "2c2df38f26ffc45c5a5fc81efb01dc67",
+    "mtime": 1792979503.216826,
+    "seen": 1792979533.6973696,
+    "ast_hash": "4ff86d920017640329698892412fba9a",
     "semantic_hash": ""
   },
   "app/Http/Controllers/AssessmentRetakeAuthorizationController.php": {
@@ -2760,15 +2760,15 @@
     "semantic_hash": ""
   },
   "database/seeders/LocalLearningCatalogResetSeeder.php": {
-    "mtime": 1792563927.023935,
-    "seen": 1792563945.8198748,
-    "ast_hash": "2121def8691e4dc25ba6cce5a2e5007f",
+    "mtime": 1792978932.1185396,
+    "seen": 1792979533.6961417,
+    "ast_hash": "1cfb811cebf7f005d1f94df41fd8dda8",
     "semantic_hash": ""
   },
   "tests/Feature/LocalLearningCatalogResetSeederTest.php": {
-    "mtime": 1792557513.4146266,
-    "seen": 1792557756.557247,
-    "ast_hash": "cf3e76f4d16ed11f609ce7e501654333",
+    "mtime": 1792979188.1564357,
+    "seen": 1792979533.6972678,
+    "ast_hash": "61f1674420a89885795adf3f7a121964",
     "semantic_hash": ""
   },
   "database/seeders/ProductionCustomerServiceDealmakerRefreshSeeder.php": {
@@ -2778,15 +2778,33 @@
     "semantic_hash": ""
   },
   "tests/Feature/ProductionCustomerServiceDealmakerRefreshSeederTest.php": {
-    "mtime": 1792569765.2276382,
-    "seen": 1792569972.6030333,
-    "ast_hash": "89d26fa63fca741de6987cc18ecf65bc",
+    "mtime": 1792979188.9283035,
+    "seen": 1792979533.6972756,
+    "ast_hash": "a0e0a67e284e75ab33a7d8f859cc219e",
     "semantic_hash": ""
   },
   "database/seeders/ProductionCustomerServiceDealmakerForceRefreshSeeder.php": {
     "mtime": 1792569839.1745183,
     "seen": 1792569972.6012425,
     "ast_hash": "81d1becbbe4eba7a64cd535469070cad",
+    "semantic_hash": ""
+  },
+  "database/seeders/LocalUserRoleSeeder.php": {
+    "mtime": 1792979347.9267218,
+    "seen": 1792979533.6961498,
+    "ast_hash": "9ada9e4d732af5e3e027356db7404f1e",
+    "semantic_hash": ""
+  },
+  "database/seeders/ProductionOperationalDataResetSeeder.php": {
+    "mtime": 1792978932.7672088,
+    "seen": 1792979533.6961608,
+    "ast_hash": "074bbc3c9c1f3f7c6318ecb3c000ddca",
+    "semantic_hash": ""
+  },
+  "database/seeders/ResetsOperationalData.php": {
+    "mtime": 1792979717.5886128,
+    "seen": 1792979864.0884511,
+    "ast_hash": "88579682abf4831846fb2bde008f519e",
     "semantic_hash": ""
   }
 }

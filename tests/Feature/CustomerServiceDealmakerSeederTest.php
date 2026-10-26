@@ -55,7 +55,7 @@ class CustomerServiceDealmakerSeederTest extends TestCase
 
             $this->assertSame(1, $preTest->attempt_limit);
             $this->assertSame(0, $preTest->passing_grade);
-            $this->assertSame(5, $preTest->questions()->count());
+            $this->assertSame(10, $preTest->questions()->count());
             $this->assertSame(10, $postTest->questions()->count());
             $this->assertSame(80, $postTest->passing_grade);
             $this->assertSame(3, $postTest->attempt_limit);
@@ -65,6 +65,11 @@ class CustomerServiceDealmakerSeederTest extends TestCase
                     $this->assertSame(1, $question->answers->where('is_correct', true)->count());
                 }
             }
+
+            $this->assertCount(
+                0,
+                $preTest->questions()->pluck('prompt')->intersect($postTest->questions()->pluck('prompt')),
+            );
         }
     }
 
