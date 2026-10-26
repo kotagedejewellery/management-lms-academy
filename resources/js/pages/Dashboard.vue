@@ -38,6 +38,7 @@ const props = defineProps<{
     description: string;
     stats: Stat[];
     primary_action: Action | null;
+    secondary_action?: Action | null;
     items_title: string;
     empty_title: string;
     empty_description: string;
@@ -94,15 +95,27 @@ defineOptions({
     <div class="app-page flex-1">
         <PageHeader :title="props.title" :description="props.description">
             <template #actions>
-                <Button
-                    v-if="props.primary_action"
-                    as-child
-                    class="w-full sm:w-auto"
-                >
-                    <Link :href="props.primary_action.href"
-                        >{{ props.primary_action.label }} <ArrowRight
-                    /></Link>
-                </Button>
+                <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+                    <Button
+                        v-if="props.primary_action"
+                        as-child
+                        class="w-full sm:w-auto"
+                    >
+                        <Link :href="props.primary_action.href"
+                            >{{ props.primary_action.label }} <ArrowRight
+                        /></Link>
+                    </Button>
+                    <Button
+                        v-if="props.secondary_action"
+                        as-child
+                        class="w-full sm:w-auto"
+                        variant="outline"
+                    >
+                        <Link :href="props.secondary_action.href">
+                            {{ props.secondary_action.label }}
+                        </Link>
+                    </Button>
+                </div>
             </template>
         </PageHeader>
 

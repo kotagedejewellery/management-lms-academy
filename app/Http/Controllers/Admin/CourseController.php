@@ -49,6 +49,7 @@ class CourseController extends Controller
             'courses' => $courses,
             'filters' => $filters,
             'can_create_course' => $request->user()->hasPermission('manage-enrollments'),
+            'is_trainer' => $request->user()->hasRole('trainer') && ! $request->user()->hasPermission('manage-enrollments'),
         ]);
     }
 

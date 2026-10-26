@@ -30,6 +30,7 @@ const props = defineProps<{
     };
     filters: { search?: string; status?: string };
     can_create_course: boolean;
+    is_trainer: boolean;
 }>();
 const search = ref(props.filters.search ?? '');
 const status = ref(props.filters.status ?? '');
@@ -58,11 +59,14 @@ defineOptions({
                 <h1
                     class="text-2xl font-semibold tracking-tight text-foreground"
                 >
-                    Courses
+                    {{ is_trainer ? 'Course binaan' : 'Courses' }}
                 </h1>
                 <p class="mt-2 text-sm leading-6 text-muted-foreground">
-                    Bangun materi, modul, dan lesson sebelum menerbitkan course
-                    untuk learner.
+                    {{
+                        is_trainer
+                            ? 'Kelola materi dan assessment pada course yang ditugaskan kepada Anda.'
+                            : 'Bangun materi, modul, dan lesson sebelum menerbitkan course untuk learner.'
+                    }}
                 </p>
             </div>
             <Button v-if="can_create_course" as-child
@@ -212,7 +216,9 @@ defineOptions({
                 :description="
                     can_create_course
                         ? 'Tambahkan course pertama atau ubah filter pencarian.'
-                        : 'Course yang ditugaskan kepada Anda akan muncul di sini.'
+                        : is_trainer
+                          ? 'Belum ada course binaan. Hubungi LMS Admin untuk menetapkan Anda sebagai Trainer / Mentor.'
+                          : 'Course yang ditugaskan kepada Anda akan muncul di sini.'
                 "
                 ><Button v-if="can_create_course" as-child
                     ><Link href="/courses/create">Tambah course</Link></Button

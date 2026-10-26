@@ -128,6 +128,7 @@ class DashboardTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page
                 ->where('mode', 'trainer')
                 ->where('stats.0.value', 1)
+                ->where('primary_action.label', 'Course binaan')
                 ->has('items', 1)
                 ->where('items.0.title', $assigned->title));
 
@@ -139,18 +140,31 @@ class DashboardTest extends TestCase
     {
         $manager = $this->userWithPermission('view-team', 'manager');
         User::factory()->create(['manager_id' => $manager->id]);
+        $category = CourseCategory::query()->create(['name' => 'Pengembangan', 'is_active' => true]);
+        $personalCourse = Course::query()->create(['category_id' => $category->id, 'code' => 'MGR-001', 'title' => 'Pembelajaran Manager', 'status' => 'published']);
+        $manager->enrollments()->create(['course_id' => $personalCourse->id, 'status' => 'active']);
         $executive = $this->userWithPermission('view-reports', 'management');
+        Enrollment::query()->create([
+            'user_id' => User::factory()->create()->id,
+            'course_id' => $personalCourse->id,
+            'status' => 'pending_review',
+        ]);
 
         $this->actingAs($manager)->get(route('dashboard'))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('mode', 'manager')
-                ->where('stats.0.value', 1));
+                ->where('stats.0.value', 1)
+                ->where('secondary_action.label', 'Pembelajaran saya')
+                ->where('secondary_action.href', '/my-learning'));
         $this->actingAs($executive)->get(route('dashboard'))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('mode', 'executive')
-                ->where('primary_action.href', '/reports'));
+                ->where('stats.2.label', 'Menunggu evaluasi akhir')
+                ->where('stats.2.value', 1)
+                ->where('primary_action.label', 'Evaluasi peserta')
+                ->where('primary_action.href', '/trainer-progress'));
     }
 
     private function managementAdmin(): User

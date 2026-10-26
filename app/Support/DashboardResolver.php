@@ -163,7 +163,7 @@ class DashboardResolver
                 ['label' => 'Diterbitkan', 'value' => $user->managedCourses()->where('courses.status', 'published')->count()],
                 ['label' => 'Tanpa modul', 'value' => $user->managedCourses()->doesntHave('modules')->count()],
             ],
-            'primary_action' => ['label' => 'Kelola course', 'href' => '/courses'],
+            'primary_action' => ['label' => 'Course binaan', 'href' => '/courses'],
             'items_title' => 'Course yang membutuhkan perhatian',
             'empty_title' => 'Belum ada course yang ditugaskan',
             'empty_description' => 'LMS Admin dapat menugaskan course kepada Anda dari pengaturan course.',
@@ -182,6 +182,10 @@ class DashboardResolver
     {
         $team = $user->directReports()->where('status', 'active');
         $teamIds = $team->select('id');
+        $hasActiveLearning = Enrollment::query()
+            ->where('user_id', $user->id)
+            ->where('status', 'active')
+            ->exists();
         $enrollments = Enrollment::query()
             ->whereIn('user_id', $teamIds);
         $stats = $this->enrollmentStats($enrollments);
@@ -204,6 +208,7 @@ class DashboardResolver
                 ['label' => 'Course selesai', 'value' => $stats['completed']],
             ],
             'primary_action' => ['label' => 'Lihat progres tim', 'href' => '/team-progress'],
+            'secondary_action' => $hasActiveLearning ? ['label' => 'Pembelajaran saya', 'href' => '/my-learning'] : null,
             'items_title' => 'Perlu perhatian',
             'empty_title' => 'Belum ada assignment pada tim',
             'empty_description' => 'Assignment anggota tim akan muncul di sini.',
@@ -256,6 +261,7 @@ class DashboardResolver
     private function executive(): array
     {
         $enrollments = Enrollment::query()->with(['user:id,name', 'course:id,code,title'])->latest()->limit(5)->get();
+        $pendingReview = Enrollment::query()->where('status', 'pending_review')->count();
 
         return [
             'mode' => 'executive',
@@ -264,10 +270,12 @@ class DashboardResolver
             'stats' => [
                 ['label' => 'Karyawan aktif', 'value' => User::query()->where('status', 'active')->count()],
                 ['label' => 'Assignment aktif', 'value' => Enrollment::query()->where('status', 'active')->count()],
+                ['label' => 'Menunggu evaluasi akhir', 'value' => $pendingReview],
                 ['label' => 'Course selesai', 'value' => Enrollment::query()->where('status', 'completed')->count()],
-                ['label' => 'Tenggat terlewat', 'value' => Enrollment::query()->where('status', 'active')->whereDate('due_at', '<', today())->count()],
             ],
-            'primary_action' => ['label' => 'Buka laporan', 'href' => '/reports'],
+            'primary_action' => $pendingReview > 0
+                ? ['label' => 'Evaluasi peserta', 'href' => '/trainer-progress']
+                : ['label' => 'Buka laporan', 'href' => '/reports'],
             'items_title' => 'Aktivitas pembelajaran terbaru',
             'empty_title' => 'Belum ada aktivitas pembelajaran',
             'empty_description' => 'Aktivitas assignment akan muncul setelah program pembelajaran berjalan.',

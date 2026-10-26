@@ -68,7 +68,7 @@ web:8080 → app:9000 → db:5432
 node:5173 ────────→ mounted source / Vite HMR
 ```
 
-Docker Compose adalah lingkungan developer. Phase 1 menggunakan filesystem lokal karena belum ada resource course. Production menggunakan image terbangun, reverse proxy/TLS, database terkelola atau ter-backup, Redis terkelola bila diperlukan, dan S3-compatible object storage; bind mount lokal tidak digunakan di production. Reset data operasional tidak pernah berjalan saat deploy: reset production hanya dapat dipanggil manual dengan konfirmasi satu kali, mempertahankan user, role, permission, relasi user-role, dan struktur organisasi.
+Docker Compose adalah lingkungan developer. Phase 1 menggunakan filesystem lokal karena belum ada resource course. Production menggunakan image terbangun, reverse proxy/TLS, database terkelola atau ter-backup, Redis terkelola bila diperlukan, dan S3-compatible object storage; bind mount lokal tidak digunakan di production. Nginx production meresolusikan PHP-FPM melalui DNS Docker dinamis agar pembuatan ulang container `app` tidak meninggalkan alamat FastCGI lama. Reset data operasional tidak pernah berjalan saat deploy: reset production hanya dapat dipanggil manual dengan konfirmasi satu kali, mempertahankan user, role, permission, relasi user-role, dan struktur organisasi.
 
 ## 5. Keamanan dan ketahanan
 

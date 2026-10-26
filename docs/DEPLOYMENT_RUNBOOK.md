@@ -46,10 +46,10 @@ docker compose --env-file .env.production -f compose.production.yml exec -T web 
 
 PHP-FPM (`app`), `worker`, dan `scheduler` juga terhubung ke network Docker `outbound` tanpa port publik. Network ini hanya menyediakan akses keluar yang diperlukan untuk layanan eksternal seperti SMTP; PostgreSQL dan Redis tetap berada hanya pada network `internal`.
 
-Jika konfigurasi environment mengharuskan pembuatan ulang `app`, buat ulang juga `web` dalam perintah yang sama. Nginx pada `web` menyimpan target PHP-FPM saat mulai berjalan; membuat ulang `app` saja dapat membuat `web` tetap menunjuk ke container lama dan menghasilkan `502`.
+Deploy selalu membangun dan membuat ulang `app` serta `web` dalam perintah yang sama agar asset frontend dan konfigurasi Nginx terbaru aktif. Nginx meresolusikan PHP-FPM lewat DNS Docker dinamis, sehingga perubahan IP `app` saat dibuat ulang tidak meninggalkan target FastCGI lama.
 
 ```sh
-docker compose --env-file .env.production -f compose.production.yml up -d --force-recreate app web worker scheduler
+docker compose --env-file .env.production -f compose.production.yml up -d --build --force-recreate app web worker scheduler
 ```
 
 ### Data katalog Customer Service

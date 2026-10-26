@@ -43,6 +43,8 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $user?->only(['id', 'name', 'email', 'employee_id', 'status', 'email_verified_at']),
                 'isSuperAdmin' => $user?->hasRole('super-admin') ?? false,
+                'isTrainer' => auth()->check() && $user->hasRole('trainer') && ! $user->hasPermission('manage-enrollments'),
+                'isManagement' => auth()->check() && $user->hasRole('management') && ! $user->hasPermission('manage-enrollments'),
                 'can' => [
                     'manageUsers' => $user?->hasPermission('manage-users') ?? false,
                     'manageOrganization' => $user?->hasPermission('manage-organization') ?? false,

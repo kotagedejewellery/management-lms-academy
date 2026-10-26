@@ -20,10 +20,10 @@ KGJ Academy adalah Learning Management System internal untuk onboarding, SOP, pr
 |---|---|
 | Super Admin | Konfigurasi menyeluruh, user, materi, laporan, dan audit. |
 | LMS Admin / HR | User, struktur organisasi, course, path, enrollment, dan laporan. |
-| Trainer / Mentor | Course dan penilaian yang ditugaskan. |
-| Manager Tim | Progres bawahan langsung yang menjadi kewenangannya. |
+| Trainer / Mentor | Course dan penilaian yang ditugaskan melalui area operasional; tidak mengakses alur learner. |
+| Manager Tim | Progres bawahan langsung yang menjadi kewenangannya, serta pembelajaran pribadi bila ditugaskan. |
 | Employee / Learner | Materi, Pre-Test, Post-Test, konfirmasi pengiriman, dan progres pribadi tanpa nilai atau detail evaluasi. |
-| Management / Owner | Dashboard agregat dan laporan eksekutif. |
+| Management / Owner | Dashboard agregat, laporan eksekutif, dan evaluasi akhir internal; tidak mengakses alur learner. |
 
 ## 4. Scope MVP
 
@@ -76,6 +76,8 @@ Contoh path Customer Service: Brand Introduction → Product Knowledge → Mater
 - Artikel wajib memiliki isi. Lesson PDF/video wajib memiliki satu sumber: file privat yang sesuai atau URL. Course tidak dapat diterbitkan bila ada sumber materi yang belum lengkap, assessment aktif tanpa soal, atau soal yang tidak memiliki tepat satu jawaban benar. Course editor menampilkan checklist dan tautan perbaikan untuk setiap kegagalan publikasi.
 - Modul, lesson, dan sumber materi hanya dapat diubah ketika course berstatus Draft; course harus dikembalikan ke Draft sebelum materi Published diubah.
 - Sertifikat hanya diterbitkan bila fitur diaktifkan pada course/path terkait.
+- Akun Trainer / Mentor adalah akun operasional: hanya mengakses Dashboard, Course binaan, Progres peserta, dan Notifikasi. Pengujian atau pembelajaran sebagai peserta menggunakan akun Employee terpisah.
+- Management / Owner mengakses Dashboard, Progres peserta, Laporan, dan Notifikasi untuk evaluasi internal. Management / Owner tidak mengakses alur learner, katalog, progres pribadi, atau sertifikat.
 
 ## 7. Kebutuhan fungsional per area
 

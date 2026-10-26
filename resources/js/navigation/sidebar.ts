@@ -21,6 +21,8 @@ export type SidebarCapabilities = {
     viewReports: boolean;
     viewTeam: boolean;
     isSuperAdmin: boolean;
+    isTrainer: boolean;
+    isManagement: boolean;
 };
 
 type NavigationGroup = {
@@ -35,18 +37,18 @@ export function buildSidebarNavigation(
         ...(capabilities.manageCourses
             ? [
                   {
-                      title: 'Kelola course',
+                      title: capabilities.isTrainer
+                          ? 'Course binaan'
+                          : 'Kelola course',
                       href: '/courses',
                       icon: GraduationCap,
                   },
               ]
             : []),
-        ...(capabilities.manageCourses ||
-        capabilities.manageEnrollments ||
-        capabilities.viewReports
+        ...(capabilities.isTrainer
             ? [
                   {
-                      title: 'Progres course',
+                      title: 'Progres peserta',
                       href: '/trainer-progress',
                       icon: ListTree,
                   },
@@ -61,7 +63,9 @@ export function buildSidebarNavigation(
                   },
               ]
             : []),
-        ...(!capabilities.manageEnrollments
+        ...(!capabilities.manageEnrollments &&
+        !capabilities.isTrainer &&
+        !capabilities.isManagement
             ? [
                   {
                       title: 'Pembelajaran saya',
@@ -80,7 +84,9 @@ export function buildSidebarNavigation(
                   },
               ]
             : []),
-        { title: 'Sertifikat', href: '/certificates', icon: Award },
+        ...(!capabilities.isTrainer && !capabilities.isManagement
+            ? [{ title: 'Sertifikat', href: '/certificates', icon: Award }]
+            : []),
     ];
     const management: NavItem[] = [
         ...(capabilities.manageUsers
@@ -107,7 +113,9 @@ export function buildSidebarNavigation(
             : []),
     ];
     const monitoring: NavItem[] = [
-        ...(!capabilities.manageEnrollments
+        ...(!capabilities.manageEnrollments &&
+        !capabilities.isTrainer &&
+        !capabilities.isManagement
             ? [
                   {
                       title: 'Progres saya',
@@ -122,6 +130,15 @@ export function buildSidebarNavigation(
                       title: 'Pengumuman',
                       href: '/announcements',
                       icon: Bell,
+                  },
+              ]
+            : []),
+        ...(capabilities.manageEnrollments || capabilities.viewReports
+            ? [
+                  {
+                      title: 'Progres peserta',
+                      href: '/trainer-progress',
+                      icon: ListTree,
                   },
               ]
             : []),

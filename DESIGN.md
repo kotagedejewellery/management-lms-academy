@@ -18,11 +18,19 @@ Mock data pada board hanya contoh. Tidak boleh menyalin nama employee, skor, ata
 
 Dashboard; My Learning; Learning Paths; Course Library; Pre-Test & Post-Test; My Progress; Certificates; Announcements; Profile.
 
+### Trainer / Mentor
+
+Dashboard; Course binaan; Progres peserta; Notifikasi. Trainer menggunakan akun operasional terpisah dari akun Employee/Learner.
+
+### Management / Owner
+
+Dashboard; Progres peserta; Laporan; Notifikasi. Management menggunakan area evaluasi internal dan tidak melihat navigasi learner.
+
 ### Admin/Manager
 
 Dashboard; Users; Divisions; Positions; Branches; Courses; Modules & Lessons; Learning Path Builder; Pre-Test Builder; Post-Test Builder; Enrollment; Reports; Notifications; Settings.
 
-Manager melihat subset menu/data sesuai policy. Navigation tidak menggantikan authorization server-side.
+Manager melihat subset menu/data sesuai policy, termasuk CTA pembelajaran pribadi pada Dashboard bila memiliki assignment aktif. Navigation tidak menggantikan authorization server-side.
 
 ## 3. Layar minimum dan responsif
 

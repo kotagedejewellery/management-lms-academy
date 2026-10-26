@@ -20,7 +20,7 @@ Laravel Policies menjadi sumber otorisasi resource. Tidak ada API gateway, micro
 
 | Service | Port lokal default | Tanggung jawab |
 |---|---:|---|
-| `web` | 8080 | Nginx, hanya mengekspos `public/`. |
+| `web` | 8080 | Nginx, hanya mengekspos `public/`; di production meresolusikan PHP-FPM melalui DNS Docker dinamis. |
 | `app` | internal | PHP-FPM dan Laravel. |
 | `node` | 5174 (host) | Vite dev server pada port internal 5173; memakai image aplikasi agar Wayfinder dapat menjalankan Artisan. |
 | `db` | 5433 (host) | PostgreSQL memakai port internal 5432 untuk aplikasi. |

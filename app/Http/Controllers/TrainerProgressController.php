@@ -70,6 +70,7 @@ class TrainerProgressController extends Controller
         ]);
 
         return Inertia::render('trainer-progress/Index', [
+            'scope' => $isAssignedTrainer && ! $hasCentralAccess ? 'assigned' : 'organization',
             'enrollments' => $enrollments,
             'courses' => $courses,
             'filters' => $filters,

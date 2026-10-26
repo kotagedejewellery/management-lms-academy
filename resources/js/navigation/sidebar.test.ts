@@ -11,6 +11,8 @@ const capabilityProfiles: Record<string, SidebarCapabilities> = {
         viewReports: true,
         viewTeam: true,
         isSuperAdmin: true,
+        isTrainer: false,
+        isManagement: false,
     },
     'lms-admin': {
         manageCourses: true,
@@ -21,6 +23,8 @@ const capabilityProfiles: Record<string, SidebarCapabilities> = {
         viewReports: false,
         viewTeam: false,
         isSuperAdmin: false,
+        isTrainer: false,
+        isManagement: false,
     },
     trainer: {
         manageCourses: true,
@@ -31,6 +35,8 @@ const capabilityProfiles: Record<string, SidebarCapabilities> = {
         viewReports: false,
         viewTeam: false,
         isSuperAdmin: false,
+        isTrainer: true,
+        isManagement: false,
     },
     manager: {
         manageCourses: false,
@@ -41,6 +47,8 @@ const capabilityProfiles: Record<string, SidebarCapabilities> = {
         viewReports: false,
         viewTeam: true,
         isSuperAdmin: false,
+        isTrainer: false,
+        isManagement: false,
     },
     employee: {
         manageCourses: false,
@@ -51,6 +59,8 @@ const capabilityProfiles: Record<string, SidebarCapabilities> = {
         viewReports: false,
         viewTeam: false,
         isSuperAdmin: false,
+        isTrainer: false,
+        isManagement: false,
     },
     management: {
         manageCourses: false,
@@ -61,6 +71,8 @@ const capabilityProfiles: Record<string, SidebarCapabilities> = {
         viewReports: true,
         viewTeam: false,
         isSuperAdmin: false,
+        isTrainer: false,
+        isManagement: true,
     },
 };
 
@@ -75,6 +87,7 @@ const expectedItems: Record<string, string[]> = {
         'Penugasan',
         'Penugasan jalur',
         'Pengumuman',
+        'Progres peserta',
         'Notifikasi',
         'Laporan',
         'Progres tim',
@@ -90,20 +103,11 @@ const expectedItems: Record<string, string[]> = {
         'Penugasan',
         'Penugasan jalur',
         'Pengumuman',
+        'Progres peserta',
         'Notifikasi',
         'Laporan',
     ],
-    trainer: [
-        'Dashboard',
-        'Kelola course',
-        'Progres course',
-        'Pembelajaran saya',
-        'Jalur belajar saya',
-        'Katalog course',
-        'Sertifikat',
-        'Progres saya',
-        'Notifikasi',
-    ],
+    trainer: ['Dashboard', 'Course binaan', 'Progres peserta', 'Notifikasi'],
     manager: [
         'Dashboard',
         'Pembelajaran saya',
@@ -123,16 +127,7 @@ const expectedItems: Record<string, string[]> = {
         'Progres saya',
         'Notifikasi',
     ],
-    management: [
-        'Dashboard',
-        'Pembelajaran saya',
-        'Jalur belajar saya',
-        'Katalog course',
-        'Sertifikat',
-        'Progres saya',
-        'Notifikasi',
-        'Laporan',
-    ],
+    management: ['Dashboard', 'Progres peserta', 'Notifikasi', 'Laporan'],
 };
 
 describe('sidebar navigation', () => {

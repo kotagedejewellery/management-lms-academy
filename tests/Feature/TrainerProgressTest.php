@@ -34,12 +34,28 @@ class TrainerProgressTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('trainer-progress/Index')
+                ->where('scope', 'assigned')
                 ->where('enrollments.total', 1)
                 ->where('enrollments.data.0.course.code', 'CS-001'));
 
         $this->actingAs($trainer)
             ->get(route('trainer-progress.index', ['course_id' => $otherCourse->id]))
             ->assertNotFound();
+    }
+
+    public function test_management_views_organization_wide_progress_scope(): void
+    {
+        $management = $this->management();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'CS-001', 'title' => 'CS Dealmaker Mastery', 'status' => 'published']);
+        Enrollment::query()->create(['user_id' => User::factory()->create()->id, 'course_id' => $course->id, 'status' => 'active']);
+
+        $this->actingAs($management)->get(route('trainer-progress.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('scope', 'organization')
+                ->where('courses.0.code', 'CS-001')
+                ->where('enrollments.total', 1));
     }
 
     public function test_user_without_course_management_permission_cannot_view_trainer_progress(): void
@@ -121,6 +137,17 @@ class TrainerProgressTest extends TestCase
     {
         $permission = Permission::query()->firstOrCreate(['slug' => 'manage-courses'], ['name' => 'Kelola course']);
         $role = Role::query()->firstOrCreate(['slug' => 'trainer', 'name' => 'Trainer / Mentor']);
+        $role->permissions()->syncWithoutDetaching([$permission->id]);
+        $user = User::factory()->create();
+        $user->roles()->attach($role);
+
+        return $user;
+    }
+
+    private function management(): User
+    {
+        $permission = Permission::query()->firstOrCreate(['slug' => 'view-reports'], ['name' => 'Lihat laporan']);
+        $role = Role::query()->firstOrCreate(['slug' => 'management', 'name' => 'Management']);
         $role->permissions()->syncWithoutDetaching([$permission->id]);
         $user = User::factory()->create();
         $user->roles()->attach($role);

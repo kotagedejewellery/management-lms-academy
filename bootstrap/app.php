@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureActiveAccount;
+use App\Http\Middleware\EnsureOperationalRoleDoesNotAccessLearnerArea;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\RecordAuditActivity;
@@ -20,7 +21,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
-        $middleware->alias(['active' => EnsureActiveAccount::class, 'audit' => RecordAuditActivity::class]);
+        $middleware->alias([
+            'active' => EnsureActiveAccount::class,
+            'audit' => RecordAuditActivity::class,
+            'not-learner-role' => EnsureOperationalRoleDoesNotAccessLearnerArea::class,
+        ]);
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
         $middleware->web(append: [

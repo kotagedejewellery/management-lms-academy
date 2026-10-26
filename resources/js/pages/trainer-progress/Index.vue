@@ -35,6 +35,7 @@ type RetakeAssessment = {
 };
 
 const props = defineProps<{
+    scope: 'assigned' | 'organization';
     enrollments: {
         data: Enrollment[];
         from: number | null;
@@ -144,18 +145,22 @@ function postTestStatusLabel(postTest: ModuleAssessment['post_test']): string {
 
 defineOptions({
     layout: {
-        breadcrumbs: [{ title: 'Progres course', href: '/trainer-progress' }],
+        breadcrumbs: [{ title: 'Progres peserta', href: '/trainer-progress' }],
     },
 });
 </script>
 
 <template>
-    <Head title="Progres course" />
+    <Head title="Progres peserta" />
 
     <div class="app-page">
         <PageHeader
-            title="Progres course"
-            description="Pantau progres dan hasil assessment pada course yang ditugaskan kepada Anda."
+            title="Progres peserta"
+            :description="
+                props.scope === 'assigned'
+                    ? 'Pantau progres dan hasil assessment pada course yang ditugaskan kepada Anda.'
+                    : 'Pantau progres dan hasil assessment di seluruh course organisasi.'
+            "
         />
 
         <form
@@ -193,7 +198,13 @@ defineOptions({
                     v-model="filters.course_id"
                     class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
                 >
-                    <option value="">Semua course yang ditugaskan</option>
+                    <option value="">
+                        {{
+                            props.scope === 'assigned'
+                                ? 'Semua course yang ditugaskan'
+                                : 'Semua course organisasi'
+                        }}
+                    </option>
                     <option
                         v-for="course in courses"
                         :key="course.id"

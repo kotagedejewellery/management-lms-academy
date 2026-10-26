@@ -14,6 +14,8 @@ export type User = {
 export type Auth = {
     user: User | null;
     isSuperAdmin: boolean;
+    isTrainer: boolean;
+    isManagement: boolean;
     can: {
         manageUsers: boolean;
         manageOrganization: boolean;

@@ -20,6 +20,8 @@ const mainNavGroups = computed(() =>
     buildSidebarNavigation({
         ...page.props.auth.can,
         isSuperAdmin: page.props.auth.isSuperAdmin,
+        isTrainer: page.props.auth.isTrainer,
+        isManagement: page.props.auth.isManagement,
     }),
 );
 </script>

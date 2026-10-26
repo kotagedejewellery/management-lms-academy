@@ -12,7 +12,7 @@ Delegated and accepted: Laravel 13 with PHP 8.4+, Inertia.js 3, Vue 3 with TypeS
 
 ## Users
 
-Employees learn assigned material and complete Pre-Test and Post-Test. LMS Admin/HR manages people, content, paths, assignments, and reports. Trainers manage assigned courses, assessments, and read-only learner progress for those courses. Managers monitor only their direct reports. Management views aggregate organization reports. Each account has one operational role in supported administration flows.
+Employees learn assigned material and complete Pre-Test and Post-Test. LMS Admin/HR manages people, content, paths, assignments, and reports. Trainers manage assigned courses, assessments, and read-only learner progress for those courses. Managers monitor their direct reports and may complete learning assigned to themselves. Management views organization reports and performs final internal evaluation; it does not access learner flows. Each account has one operational role in supported administration flows; Trainer accounts use the operational area and do not access learner flows.
 
 ## Product Purpose
 

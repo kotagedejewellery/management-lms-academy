@@ -37,8 +37,10 @@ Route::middleware(['auth', 'verified', 'active', 'audit'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
     Route::get('audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::get('certificates', [CertificateController::class, 'index'])->name('certificates.index');
-    Route::get('certificates/{certificate}', [CertificateController::class, 'download'])->name('certificates.download');
+    Route::middleware('not-learner-role')->group(function (): void {
+        Route::get('certificates', [CertificateController::class, 'index'])->name('certificates.index');
+        Route::get('certificates/{certificate}', [CertificateController::class, 'download'])->name('certificates.download');
+    });
     Route::post('notifications/{userNotification}/read', [NotificationController::class, 'read'])->name('notifications.read');
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('reports/courses', [ReportController::class, 'courses'])->name('reports.courses');
@@ -47,19 +49,21 @@ Route::middleware(['auth', 'verified', 'active', 'audit'])->group(function () {
     Route::post('trainer-progress/{enrollment}/approve', [TrainerProgressController::class, 'approve'])->name('trainer-progress.approve');
     Route::post('reports/exports', [ReportController::class, 'export'])->name('reports.exports.store');
     Route::get('reports/exports/{reportExport}', [ReportController::class, 'download'])->name('reports.exports.download');
-    Route::get('my-learning', [LearningController::class, 'index'])->name('my-learning.index');
-    Route::get('my-learning-paths', [MyLearningPathController::class, 'index'])->name('my-learning-paths.index');
-    Route::get('course-library', [CourseLibraryController::class, 'index'])->name('course-library.index');
-    Route::get('my-progress', [LearningProgressController::class, 'index'])->name('my-progress.index');
-    Route::get('my-learning/{course}', [LearningController::class, 'show'])->name('my-learning.show');
-    Route::post('my-learning/{course}/lessons/{lesson}/complete', [LearningController::class, 'completeLesson'])->name('my-learning.lessons.complete');
-    Route::put('my-learning/{course}/lessons/{lesson}/playback', [LearningController::class, 'savePlayback'])->name('my-learning.lessons.playback');
-    Route::put('my-learning/{course}/assessments/{assessment}/draft', [AssessmentAttemptController::class, 'saveDraft'])->name('my-learning.assessments.draft');
-    Route::post('my-learning/{course}/assessments/{assessment}/start', [AssessmentAttemptController::class, 'start'])->name('my-learning.assessments.start');
-    Route::post('my-learning/{course}/assessments/{assessment}/submit', [AssessmentAttemptController::class, 'submit'])->name('my-learning.assessments.submit');
-    Route::get('my-learning/{course}/assessments/{assessment}', [AssessmentAttemptController::class, 'show'])->name('my-learning.assessments.show');
-    Route::get('my-learning/{course}/assessments/{assessment}/receipt', [AssessmentAttemptController::class, 'receipt'])->name('my-learning.assessments.receipt');
-    Route::get('my-learning/{course}/assessments/{assessment}/result', [AssessmentAttemptController::class, 'result'])->name('my-learning.assessments.result');
+    Route::middleware('not-learner-role')->group(function (): void {
+        Route::get('my-learning', [LearningController::class, 'index'])->name('my-learning.index');
+        Route::get('my-learning-paths', [MyLearningPathController::class, 'index'])->name('my-learning-paths.index');
+        Route::get('course-library', [CourseLibraryController::class, 'index'])->name('course-library.index');
+        Route::get('my-progress', [LearningProgressController::class, 'index'])->name('my-progress.index');
+        Route::get('my-learning/{course}', [LearningController::class, 'show'])->name('my-learning.show');
+        Route::post('my-learning/{course}/lessons/{lesson}/complete', [LearningController::class, 'completeLesson'])->name('my-learning.lessons.complete');
+        Route::put('my-learning/{course}/lessons/{lesson}/playback', [LearningController::class, 'savePlayback'])->name('my-learning.lessons.playback');
+        Route::put('my-learning/{course}/assessments/{assessment}/draft', [AssessmentAttemptController::class, 'saveDraft'])->name('my-learning.assessments.draft');
+        Route::post('my-learning/{course}/assessments/{assessment}/start', [AssessmentAttemptController::class, 'start'])->name('my-learning.assessments.start');
+        Route::post('my-learning/{course}/assessments/{assessment}/submit', [AssessmentAttemptController::class, 'submit'])->name('my-learning.assessments.submit');
+        Route::get('my-learning/{course}/assessments/{assessment}', [AssessmentAttemptController::class, 'show'])->name('my-learning.assessments.show');
+        Route::get('my-learning/{course}/assessments/{assessment}/receipt', [AssessmentAttemptController::class, 'receipt'])->name('my-learning.assessments.receipt');
+        Route::get('my-learning/{course}/assessments/{assessment}/result', [AssessmentAttemptController::class, 'result'])->name('my-learning.assessments.result');
+    });
     Route::post('enrollments/{enrollment}/assessments/{assessment}/retakes', [AssessmentRetakeAuthorizationController::class, 'store'])->name('assessment-retakes.store');
     Route::delete('enrollments/{enrollment}/assessments/{assessment}/retakes', [AssessmentRetakeAuthorizationController::class, 'destroy'])->name('assessment-retakes.destroy');
     Route::get('course-categories', [CourseCategoryController::class, 'index'])->name('course-categories.index');
