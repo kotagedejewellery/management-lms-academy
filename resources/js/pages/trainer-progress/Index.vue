@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { ClipboardList, RotateCcw, Search, X } from '@lucide/vue';
 import EmptyState from '@/components/EmptyState.vue';
+import FilterBar from '@/components/FilterBar.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import Pagination from '@/components/Pagination.vue';
 import { Button } from '@/components/ui/button';
@@ -163,8 +164,8 @@ defineOptions({
             "
         />
 
-        <form
-            class="grid gap-3 rounded-2xl border border-border/85 bg-card p-4 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_11rem_15rem_auto_auto]"
+        <FilterBar
+            layout-class="sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_11rem_15rem_auto]"
             @submit.prevent="applyFilters"
         >
             <div class="grid gap-2">
@@ -180,7 +181,7 @@ defineOptions({
                 <select
                     id="trainer-progress-status"
                     v-model="filters.status"
-                    class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+                    class="h-10 rounded-lg border border-input bg-transparent px-3 text-sm"
                 >
                     <option value="">Semua status</option>
                     <option value="active">Aktif</option>
@@ -196,7 +197,7 @@ defineOptions({
                 <select
                     id="trainer-progress-course"
                     v-model="filters.course_id"
-                    class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+                    class="h-10 rounded-lg border border-input bg-transparent px-3 text-sm"
                 >
                     <option value="">
                         {{
@@ -214,15 +215,19 @@ defineOptions({
                     </option>
                 </select>
             </div>
-            <Button class="self-end" type="submit"><Search /> Terapkan</Button>
-            <Button
-                class="self-end"
-                type="button"
-                variant="outline"
-                @click="clearFilters"
-                ><X /> Reset</Button
-            >
-        </form>
+            <div class="flex w-full gap-2 self-end sm:w-auto">
+                <Button class="flex-1 sm:flex-none" type="submit"
+                    ><Search /> Terapkan</Button
+                >
+                <Button
+                    class="flex-1 sm:flex-none"
+                    type="button"
+                    variant="outline"
+                    @click="clearFilters"
+                    ><X /> Reset</Button
+                >
+            </div>
+        </FilterBar>
 
         <section
             class="overflow-hidden rounded-2xl border border-border/85 bg-card"

@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/vue3';
 import { ClipboardList, Download, FileDown, Search, X } from '@lucide/vue';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import EmptyState from '@/components/EmptyState.vue';
+import FilterBar from '@/components/FilterBar.vue';
 import Pagination from '@/components/Pagination.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -64,6 +65,7 @@ const courseQuery = ref(
 );
 const courseSearching = ref(false);
 const courseSearchError = ref('');
+const courseSelectionOpen = ref(false);
 let courseSearchTimer: ReturnType<typeof setTimeout> | undefined;
 let courseSearchRequest = 0;
 let exportPollTimer: ReturnType<typeof setInterval> | undefined;
@@ -82,6 +84,7 @@ function clearFilters(): void {
     filters.division_id = '';
     courseQuery.value = '';
     courseOptions.value = [];
+    courseSelectionOpen.value = false;
     applyFilters();
 }
 function searchCourses(): void {
@@ -89,6 +92,7 @@ function searchCourses(): void {
     courseOptions.value = [];
     courseSearching.value = false;
     courseSearchError.value = '';
+    courseSelectionOpen.value = true;
     clearTimeout(courseSearchTimer);
 
     const query = courseQuery.value.trim();
@@ -114,6 +118,20 @@ function searchCourses(): void {
             if (request === courseSearchRequest) courseSearching.value = false;
         }
     }, 250);
+}
+function selectCourse(course: Course): void {
+    filters.course_id = course.id.toString();
+    courseQuery.value = `${course.code} - ${course.title}`;
+    courseOptions.value = [course];
+    courseSearchError.value = '';
+    courseSelectionOpen.value = false;
+}
+function clearCourse(): void {
+    filters.course_id = '';
+    courseQuery.value = '';
+    courseOptions.value = [];
+    courseSearchError.value = '';
+    courseSelectionOpen.value = false;
 }
 function retryCourseSearch(): void {
     searchCourses();
@@ -184,8 +202,8 @@ defineOptions({
                 {{ exporting ? 'Menyiapkan ekspor' : 'Ekspor CSV' }}</Button
             >
         </header>
-        <form
-            class="grid gap-3 rounded-2xl border border-border/85 bg-card p-4 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_11rem_15rem_13rem_auto_auto]"
+        <FilterBar
+            layout-class="sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_11rem_minmax(18rem,1.4fr)_13rem_auto]"
             @submit.prevent="applyFilters"
         >
             <div class="grid gap-2">
@@ -201,7 +219,7 @@ defineOptions({
                 ><select
                     id="report-status"
                     v-model="filters.status"
-                    class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+                    class="h-10 rounded-lg border border-input bg-transparent px-3 text-sm"
                 >
                     <option value="">Semua status</option>
                     <option value="active">Aktif</option>
@@ -214,50 +232,111 @@ defineOptions({
             </div>
             <div class="grid gap-2">
                 <Label for="report-course-search">Course</Label>
-                <Input
-                    id="report-course-search"
-                    v-model="courseQuery"
-                    placeholder="Cari nama atau kode course"
-                    autocomplete="off"
-                    @input="searchCourses"
-                />
-                <select
-                    id="report-course"
-                    v-model="filters.course_id"
-                    class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
-                >
-                    <option value="">Semua course</option>
-                    <option
-                        v-for="course in courseOptions"
-                        :key="course.id"
-                        :value="course.id"
+                <div class="relative">
+                    <Input
+                        id="report-course-search"
+                        v-model="courseQuery"
+                        class="pr-10"
+                        placeholder="Cari nama atau kode course"
+                        autocomplete="off"
+                        role="combobox"
+                        aria-autocomplete="list"
+                        aria-controls="report-course-options"
+                        :aria-expanded="courseSelectionOpen"
+                        @focus="courseSelectionOpen = true"
+                        @input="searchCourses"
+                        @keydown.esc="courseSelectionOpen = false"
+                    />
+                    <button
+                        v-if="filters.course_id"
+                        class="absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                        type="button"
+                        aria-label="Hapus filter course"
+                        @click="clearCourse"
                     >
-                        {{ course.code }} - {{ course.title }}
-                    </option>
-                </select>
+                        <X class="size-4" />
+                    </button>
+                    <div
+                        v-if="
+                            courseSelectionOpen &&
+                            courseQuery.trim().length >= 2
+                        "
+                        id="report-course-options"
+                        class="absolute z-20 mt-2 w-full overflow-hidden rounded-lg border border-border bg-popover shadow-lg"
+                    >
+                        <p
+                            v-if="courseSearching"
+                            class="px-3 py-2 text-sm text-muted-foreground"
+                        >
+                            Mencari course...
+                        </p>
+                        <div
+                            v-else-if="courseSearchError"
+                            class="flex items-center justify-between gap-2 px-3 py-2"
+                        >
+                            <p class="text-sm text-destructive">
+                                {{ courseSearchError }}
+                            </p>
+                            <Button
+                                size="sm"
+                                type="button"
+                                variant="outline"
+                                @click="retryCourseSearch"
+                                >Coba lagi</Button
+                            >
+                        </div>
+                        <ul
+                            v-else-if="courseOptions.length"
+                            class="max-h-52 overflow-y-auto py-1"
+                            role="listbox"
+                        >
+                            <li
+                                v-for="course in courseOptions"
+                                :key="course.id"
+                            >
+                                <button
+                                    class="w-full px-3 py-2 text-left text-sm hover:bg-muted focus-visible:bg-muted focus-visible:outline-none"
+                                    type="button"
+                                    role="option"
+                                    :aria-selected="
+                                        filters.course_id ===
+                                        course.id.toString()
+                                    "
+                                    @click="selectCourse(course)"
+                                >
+                                    <span class="font-medium text-foreground">
+                                        {{ course.title }}
+                                    </span>
+                                    <span
+                                        class="ml-2 text-xs text-muted-foreground"
+                                    >
+                                        {{ course.code }}
+                                    </span>
+                                </button>
+                            </li>
+                        </ul>
+                        <p
+                            v-else
+                            class="px-3 py-2 text-sm text-muted-foreground"
+                        >
+                            Course tidak ditemukan.
+                        </p>
+                    </div>
+                </div>
                 <p class="text-xs text-muted-foreground" aria-live="polite">
                     {{
-                        courseSearching
-                            ? 'Mencari course...'
-                            : courseSearchError ||
-                              'Ketik minimal 2 karakter, lalu pilih course.'
+                        filters.course_id
+                            ? 'Course dipilih untuk filter laporan.'
+                            : 'Ketik minimal 2 karakter, lalu pilih course.'
                     }}
                 </p>
-                <Button
-                    v-if="courseSearchError"
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    @click="retryCourseSearch"
-                    >Coba lagi</Button
-                >
             </div>
             <div class="grid gap-2">
                 <Label for="report-division">Divisi</Label
                 ><select
                     id="report-division"
                     v-model="filters.division_id"
-                    class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+                    class="h-10 rounded-lg border border-input bg-transparent px-3 text-sm"
                 >
                     <option value="">Semua divisi</option>
                     <option
@@ -269,15 +348,19 @@ defineOptions({
                     </option>
                 </select>
             </div>
-            <Button class="self-end" type="submit"><Search /> Terapkan</Button
-            ><Button
-                class="self-end"
-                type="button"
-                variant="outline"
-                @click="clearFilters"
-                ><X /> Reset</Button
-            >
-        </form>
+            <div class="flex w-full gap-2 self-end sm:w-auto">
+                <Button class="flex-1 sm:flex-none" type="submit"
+                    ><Search /> Terapkan</Button
+                >
+                <Button
+                    class="flex-1 sm:flex-none"
+                    type="button"
+                    variant="outline"
+                    @click="clearFilters"
+                    ><X /> Reset</Button
+                >
+            </div>
+        </FilterBar>
         <section
             class="overflow-hidden rounded-2xl border border-border/85 bg-card"
         >

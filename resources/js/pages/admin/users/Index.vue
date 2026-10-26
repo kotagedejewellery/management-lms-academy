@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import { FileUp, Plus, Search, UserRound } from '@lucide/vue';
+import { FileUp, Plus, Search, UserRound, X } from '@lucide/vue';
 import EmptyState from '@/components/EmptyState.vue';
+import FilterBar from '@/components/FilterBar.vue';
 import Pagination from '@/components/Pagination.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 type Person = {
     id: number;
@@ -60,6 +62,11 @@ function applyFilters(): void {
         },
     );
 }
+function resetFilters(): void {
+    search.value = '';
+    status.value = '';
+    applyFilters();
+}
 </script>
 
 <template>
@@ -93,32 +100,49 @@ function applyFilters(): void {
             </div>
         </div>
 
-        <form
-            class="grid gap-3 rounded-2xl border border-border/85 bg-card p-4 sm:grid-cols-[minmax(0,1fr)_11rem_auto]"
+        <FilterBar
+            layout-class="sm:grid-cols-[minmax(0,1fr)_11rem_auto]"
             @submit.prevent="applyFilters"
         >
-            <div class="relative">
-                <Search
-                    class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
-                />
-                <Input
-                    v-model="search"
-                    aria-label="Cari user"
-                    class="pl-9"
-                    placeholder="Cari nama, email, atau Employee ID"
-                />
+            <div class="grid gap-2">
+                <Label for="user-search">Cari</Label>
+                <div class="relative">
+                    <Search
+                        class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+                    />
+                    <Input
+                        id="user-search"
+                        v-model="search"
+                        class="pl-9"
+                        placeholder="Cari nama, email, atau Employee ID"
+                    />
+                </div>
             </div>
-            <select
-                v-model="status"
-                aria-label="Filter status akun"
-                class="h-9 rounded-md border border-input bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
-            >
-                <option value="">Semua status</option>
-                <option value="active">Aktif</option>
-                <option value="inactive">Tidak aktif</option>
-            </select>
-            <Button type="submit">Terapkan</Button>
-        </form>
+            <div class="grid gap-2">
+                <Label for="user-status">Status</Label>
+                <select
+                    id="user-status"
+                    v-model="status"
+                    class="h-10 rounded-lg border border-input bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
+                >
+                    <option value="">Semua status</option>
+                    <option value="active">Aktif</option>
+                    <option value="inactive">Tidak aktif</option>
+                </select>
+            </div>
+            <div class="flex w-full gap-2 self-end sm:w-auto">
+                <Button class="flex-1 sm:flex-none" type="submit"
+                    ><Search /> Terapkan</Button
+                >
+                <Button
+                    class="flex-1 sm:flex-none"
+                    type="button"
+                    variant="outline"
+                    @click="resetFilters"
+                    ><X /> Reset</Button
+                >
+            </div>
+        </FilterBar>
 
         <div
             v-if="users.data.length"

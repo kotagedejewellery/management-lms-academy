@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import { BookOpen, Plus, Search } from '@lucide/vue';
+import { BookOpen, Plus, Search, X } from '@lucide/vue';
 import EmptyState from '@/components/EmptyState.vue';
+import FilterBar from '@/components/FilterBar.vue';
 import Pagination from '@/components/Pagination.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 type Course = {
     id: number;
@@ -44,6 +46,11 @@ function applyFilters(): void {
         { preserveState: true, replace: true },
     );
 }
+function resetFilters(): void {
+    search.value = '';
+    status.value = '';
+    applyFilters();
+}
 defineOptions({
     layout: { breadcrumbs: [{ title: 'Courses', href: '/courses' }] },
 });
@@ -75,31 +82,50 @@ defineOptions({
                 ></Button
             >
         </div>
-        <form
-            class="grid gap-3 rounded-xl bg-card p-4 shadow-sm ring-1 ring-border sm:grid-cols-[minmax(0,1fr)_11rem_auto]"
+        <FilterBar
+            layout-class="sm:grid-cols-[minmax(0,1fr)_11rem_auto]"
             @submit.prevent="applyFilters"
         >
-            <div class="relative">
-                <Search
-                    class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
-                /><Input
-                    v-model="search"
-                    class="pl-9"
-                    aria-label="Cari course"
-                    placeholder="Cari judul atau course code"
-                />
+            <div class="grid gap-2">
+                <Label for="course-search">Cari</Label>
+                <div class="relative">
+                    <Search
+                        class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+                    />
+                    <Input
+                        id="course-search"
+                        v-model="search"
+                        class="pl-9"
+                        placeholder="Cari judul atau course code"
+                    />
+                </div>
             </div>
-            <select
-                v-model="status"
-                aria-label="Filter status course"
-                class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
-            >
-                <option value="">Semua status</option>
-                <option value="draft">Draf</option>
-                <option value="published">Dipublikasikan</option>
-                <option value="archived">Diarsipkan</option></select
-            ><Button type="submit">Terapkan</Button>
-        </form>
+            <div class="grid gap-2">
+                <Label for="course-status">Status</Label>
+                <select
+                    id="course-status"
+                    v-model="status"
+                    class="h-10 rounded-lg border border-input bg-transparent px-3 text-sm"
+                >
+                    <option value="">Semua status</option>
+                    <option value="draft">Draf</option>
+                    <option value="published">Dipublikasikan</option>
+                    <option value="archived">Diarsipkan</option>
+                </select>
+            </div>
+            <div class="flex w-full gap-2 self-end sm:w-auto">
+                <Button class="flex-1 sm:flex-none" type="submit"
+                    ><Search /> Terapkan</Button
+                >
+                <Button
+                    class="flex-1 sm:flex-none"
+                    type="button"
+                    variant="outline"
+                    @click="resetFilters"
+                    ><X /> Reset</Button
+                >
+            </div>
+        </FilterBar>
         <section
             v-if="courses.data.length"
             class="overflow-hidden rounded-xl bg-card shadow-sm ring-1 ring-border"

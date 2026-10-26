@@ -326,6 +326,52 @@ class CourseManagementTest extends TestCase
         $this->assertTrue($course->fresh()->trainers->contains($trainer));
     }
 
+    public function test_assigned_trainer_can_update_a_course_when_the_form_submits_a_false_trainer_marker(): void
+    {
+        $trainer = $this->trainer();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-TRAINER-EDIT', 'title' => 'Course trainer', 'passing_grade' => 70, 'status' => 'draft']);
+        $course->trainers()->attach($trainer);
+
+        $this->actingAs($trainer)->put(route('courses.update', $course), [
+            'category_id' => $category->id,
+            'code' => $course->code,
+            'title' => 'Course trainer diperbarui',
+            'is_mandatory' => true,
+            'requires_post_test' => false,
+            'passing_grade' => 70,
+            'status' => 'draft',
+            'trainer_ids_submitted' => '0',
+        ])->assertRedirect(route('courses.content', $course));
+
+        $this->assertDatabaseHas('courses', ['id' => $course->id, 'title' => 'Course trainer diperbarui']);
+        $this->assertTrue($course->fresh()->trainers->contains($trainer));
+    }
+
+    public function test_admin_can_remove_the_last_trainer_from_a_published_course(): void
+    {
+        $admin = $this->courseAdmin();
+        $trainer = User::factory()->create();
+        $trainer->roles()->attach(Role::query()->create(['slug' => 'trainer', 'name' => 'Trainer / Mentor']));
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-TRAINER-REMOVE', 'title' => 'Mentor course terbit', 'passing_grade' => 70, 'status' => 'published']);
+        $course->trainers()->attach($trainer);
+        $course->modules()->create(['title' => 'Modul', 'sequence' => 1])->lessons()->create(['title' => 'Lesson', 'type' => 'article', 'content' => 'Isi', 'is_required' => true, 'sequence' => 1]);
+
+        $this->actingAs($admin)->put(route('courses.update', $course), [
+            'category_id' => $category->id,
+            'code' => $course->code,
+            'title' => $course->title,
+            'is_mandatory' => true,
+            'requires_post_test' => false,
+            'passing_grade' => 70,
+            'status' => 'published',
+            'trainer_ids_submitted' => true,
+        ])->assertRedirect(route('courses.content', $course));
+
+        $this->assertCount(0, $course->fresh()->trainers);
+    }
+
     public function test_course_requiring_post_test_needs_a_complete_post_test_before_publish(): void
     {
         $admin = $this->courseAdmin();

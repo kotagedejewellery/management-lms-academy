@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
-import { ListTree, Plus } from '@lucide/vue';
+import { ListTree, Plus, Search, X } from '@lucide/vue';
 import { ref } from 'vue';
 import EmptyState from '@/components/EmptyState.vue';
+import FilterBar from '@/components/FilterBar.vue';
 import Pagination from '@/components/Pagination.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,10 @@ function applyFilters(): void {
         { status: status.value || undefined },
         { preserveState: true, replace: true },
     );
+}
+function resetFilters(): void {
+    status.value = '';
+    applyFilters();
 }
 defineOptions({
     layout: {
@@ -63,11 +68,11 @@ defineOptions({
                 ></Button
             >
         </div>
-        <form
-            class="flex flex-col gap-3 rounded-xl bg-card p-4 shadow-sm ring-1 ring-border sm:flex-row sm:items-end"
+        <FilterBar
+            layout-class="sm:grid-cols-[13rem_auto] sm:justify-start"
             @submit.prevent="applyFilters"
         >
-            <div class="grid gap-2 sm:w-52">
+            <div class="grid gap-2">
                 <label
                     for="path-status"
                     class="text-sm font-medium text-foreground"
@@ -75,7 +80,7 @@ defineOptions({
                 ><select
                     id="path-status"
                     v-model="status"
-                    class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+                    class="h-10 rounded-lg border border-input bg-transparent px-3 text-sm"
                 >
                     <option value="">Semua status</option>
                     <option value="draft">Draf</option>
@@ -83,8 +88,19 @@ defineOptions({
                     <option value="archived">Diarsipkan</option>
                 </select>
             </div>
-            <Button type="submit">Terapkan</Button>
-        </form>
+            <div class="flex w-full gap-2 self-end sm:w-auto">
+                <Button class="flex-1 sm:flex-none" type="submit"
+                    ><Search /> Terapkan</Button
+                >
+                <Button
+                    class="flex-1 sm:flex-none"
+                    type="button"
+                    variant="outline"
+                    @click="resetFilters"
+                    ><X /> Reset</Button
+                >
+            </div>
+        </FilterBar>
         <section
             v-if="paths.data.length"
             class="overflow-hidden rounded-xl bg-card shadow-sm ring-1 ring-border"

@@ -65,6 +65,7 @@ class CourseController extends Controller
         $this->authorizeCourses($request, requiresEnrollmentPermission: true);
         $data = $this->validatedData($request);
         $trainerIds = Arr::pull($data, 'trainer_ids');
+        Arr::pull($data, 'trainer_ids_submitted');
         $thumbnail = Arr::pull($data, 'thumbnail');
         Arr::pull($data, 'remove_thumbnail');
         $this->ensureOrganizationTarget($data);
@@ -92,6 +93,8 @@ class CourseController extends Controller
         $this->authorizeCourses($request);
         $data = $this->validatedData($request, $course);
         $trainerIds = Arr::pull($data, 'trainer_ids');
+        Arr::pull($data, 'trainer_ids_submitted');
+        $trainerIdsSubmitted = $request->boolean('trainer_ids_submitted');
         $thumbnail = Arr::pull($data, 'thumbnail');
         $removeThumbnail = (bool) Arr::pull($data, 'remove_thumbnail');
         $this->ensureOrganizationTarget($data);
@@ -110,7 +113,11 @@ class CourseController extends Controller
         } elseif ($removeThumbnail) {
             $this->removeThumbnail($course);
         }
-        $this->syncTrainers($request, $course, $trainerIds);
+        $this->syncTrainers(
+            $request,
+            $course,
+            $trainerIdsSubmitted && $trainerIds === null ? [] : $trainerIds,
+        );
 
         Inertia::flash('toast', [
             'type' => 'success',
@@ -237,6 +244,7 @@ class CourseController extends Controller
             'status' => ['required', Rule::in(['draft', 'published', 'archived'])],
             'trainer_ids' => ['nullable', 'array'],
             'trainer_ids.*' => ['integer', Rule::exists('users', 'id')],
+            'trainer_ids_submitted' => ['nullable', 'boolean'],
         ], [
             'thumbnail.image' => 'Pilih file gambar untuk thumbnail course.',
             'thumbnail.mimes' => 'Gunakan gambar berformat JPG, PNG, WebP, atau AVIF.',

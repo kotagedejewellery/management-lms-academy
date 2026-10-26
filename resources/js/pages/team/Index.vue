@@ -2,6 +2,7 @@
 import { Head, router } from '@inertiajs/vue3';
 import { Search, UsersRound, X } from '@lucide/vue';
 import EmptyState from '@/components/EmptyState.vue';
+import FilterBar from '@/components/FilterBar.vue';
 import Pagination from '@/components/Pagination.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import { Button } from '@/components/ui/button';
@@ -65,8 +66,8 @@ defineOptions({
             title="Progres tim"
             description="Pantau status pembelajaran direct report Anda tanpa melihat nilai assessment."
         />
-        <form
-            class="grid gap-3 rounded-xl border border-border bg-card p-4 sm:grid-cols-[minmax(0,1fr)_11rem_auto_auto]"
+        <FilterBar
+            layout-class="sm:grid-cols-[minmax(0,1fr)_11rem_auto]"
             @submit.prevent="applyFilters"
         >
             <div class="grid gap-2">
@@ -82,7 +83,7 @@ defineOptions({
                 <select
                     id="team-status"
                     v-model="filters.status"
-                    class="h-10 rounded-md border border-input bg-transparent px-3 text-sm"
+                    class="h-10 rounded-lg border border-input bg-transparent px-3 text-sm"
                 >
                     <option value="">Semua status</option>
                     <option value="active">Berjalan</option>
@@ -93,15 +94,19 @@ defineOptions({
                     <option value="not_passed">Perlu tindak lanjut</option>
                 </select>
             </div>
-            <Button class="self-end" type="submit"><Search /> Terapkan</Button>
-            <Button
-                class="self-end"
-                type="button"
-                variant="outline"
-                @click="resetFilters"
-                ><X /> Reset</Button
-            >
-        </form>
+            <div class="flex w-full gap-2 self-end sm:w-auto">
+                <Button class="flex-1 sm:flex-none" type="submit"
+                    ><Search /> Terapkan</Button
+                >
+                <Button
+                    class="flex-1 sm:flex-none"
+                    type="button"
+                    variant="outline"
+                    @click="resetFilters"
+                    ><X /> Reset</Button
+                >
+            </div>
+        </FilterBar>
         <section
             class="overflow-hidden rounded-xl border border-border bg-card"
         >

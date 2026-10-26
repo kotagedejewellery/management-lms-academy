@@ -62,6 +62,7 @@ const form = useForm({
     passing_grade: props.course?.passing_grade?.toString() ?? '70',
     status: props.course?.status ?? 'draft',
     trainer_ids: props.course?.trainer_ids ?? [],
+    trainer_ids_submitted: props.can_assign_trainers,
     thumbnail: null as File | null,
     remove_thumbnail: false,
 });
@@ -281,10 +282,10 @@ function setTrainerSelection(trainerId: number, selected: boolean): void {
                             >
                                 <Checkbox
                                     :id="`trainer-${trainer.id}`"
-                                    :checked="
+                                    :model-value="
                                         form.trainer_ids.includes(trainer.id)
                                     "
-                                    @update:checked="
+                                    @update:model-value="
                                         setTrainerSelection(
                                             trainer.id,
                                             $event === true,

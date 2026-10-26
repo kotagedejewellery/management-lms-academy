@@ -2,6 +2,7 @@
 import { Head, Link, router } from '@inertiajs/vue3';
 import { BookOpen } from '@lucide/vue';
 import EmptyState from '@/components/EmptyState.vue';
+import FilterBar from '@/components/FilterBar.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import Pagination from '@/components/Pagination.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
@@ -57,12 +58,15 @@ defineOptions({
             title="Pembelajaran saya"
             description="Lanjutkan course yang telah ditugaskan dan pantau progres Anda."
         />
-        <form class="flex flex-col gap-3 sm:flex-row" @change="applyFilters">
+        <FilterBar
+            layout-class="sm:max-w-md sm:grid-cols-2"
+            @change="applyFilters"
+        >
             <label class="grid gap-1 text-sm font-medium text-foreground">
                 Status
                 <select
                     v-model="filters.state"
-                    class="h-9 rounded-md border border-input bg-background px-3 text-sm"
+                    class="h-10 rounded-lg border border-input bg-background px-3 text-sm"
                 >
                     <option value="">Semua status</option>
                     <option value="not_started">Belum mulai</option>
@@ -74,14 +78,14 @@ defineOptions({
                 Jenis
                 <select
                     v-model="filters.mandatory"
-                    class="h-9 rounded-md border border-input bg-background px-3 text-sm"
+                    class="h-10 rounded-lg border border-input bg-background px-3 text-sm"
                 >
                     <option value="">Wajib dan opsional</option>
                     <option value="mandatory">Wajib</option>
                     <option value="optional">Opsional</option>
                 </select>
             </label>
-        </form>
+        </FilterBar>
         <section
             v-if="enrollments.data.length"
             class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
