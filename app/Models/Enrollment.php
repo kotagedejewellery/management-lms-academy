@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Cache;
  * @property-read float|null $pre_test_score
  * @property-read float|null $best_post_score
  * @property-read int $post_test_attempts
+ * @property-read int $course_assessment_count
  */
 class Enrollment extends Model
 {

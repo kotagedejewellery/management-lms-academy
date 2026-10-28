@@ -1,22 +1,24 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import { ClipboardList, RotateCcw, Search, X } from '@lucide/vue';
+import { ChevronDown, ClipboardList, RotateCcw, Search, X } from '@lucide/vue';
 import EmptyState from '@/components/EmptyState.vue';
 import FilterBar from '@/components/FilterBar.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import Pagination from '@/components/Pagination.vue';
 import { Button } from '@/components/ui/button';
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 type Enrollment = {
     id: number;
     status: 'active' | 'pending_review' | 'completed' | 'not_passed';
-    pre_test_score: number | null;
-    best_post_score: number | null;
-    improvement: number | null;
-    post_test_attempts: number;
+    assessment_summary: AssessmentSummary;
     module_assessments: ModuleAssessment[];
     retake_assessments: RetakeAssessment[];
     can_approve: boolean;
@@ -28,6 +30,12 @@ type ModuleAssessment = {
     module: { sequence: number; title: string };
     pre_test: { score: number } | null;
     post_test: { best_score: number; attempts: number; passed: boolean } | null;
+};
+type AssessmentSummary = {
+    score: number | null;
+    completed_modules: number;
+    total_modules: number;
+    is_final: boolean;
 };
 type RetakeAssessment = {
     id: number;
@@ -57,6 +65,10 @@ const filters = {
 const authorizingRetake = ref<string | null>(null);
 const cancellingRetake = ref<string | null>(null);
 const approvingEnrollment = ref<number | null>(null);
+const scoreFormatter = new Intl.NumberFormat('id-ID', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+});
 
 function applyFilters(): void {
     router.get('/trainer-progress', filters, {
@@ -124,7 +136,20 @@ function retakeStatusLabel(status: RetakeAssessment['status']): string {
 }
 
 function score(value: number | null): string {
-    return value === null ? '—' : value.toFixed(2);
+    return value === null ? '—' : scoreFormatter.format(value);
+}
+
+function assessmentSummaryLabel(summary: AssessmentSummary): string {
+    return summary.is_final ? 'Nilai akhir course' : 'Rata-rata berjalan';
+}
+
+function needsFinalReviewFollowUp(item: Enrollment): boolean {
+    return (
+        item.status === 'active' &&
+        item.module_assessments.some(
+            (assessment) => assessment.post_test?.passed === false,
+        )
+    );
 }
 
 function statusLabel(status: Enrollment['status']): string {
@@ -141,7 +166,9 @@ function postTestStatusLabel(postTest: ModuleAssessment['post_test']): string {
         return 'Belum dikerjakan';
     }
 
-    return postTest.passed ? 'Lulus' : 'Belum lulus';
+    return postTest.passed
+        ? 'Memenuhi nilai Post-Test'
+        : 'Belum memenuhi nilai Post-Test';
 }
 
 defineOptions({
@@ -251,44 +278,48 @@ defineOptions({
                                 {{ item.course?.title }}
                             </p>
                         </div>
-                        <p class="text-sm font-medium text-foreground">
-                            {{ statusLabel(item.status) }}
-                        </p>
+                        <div class="text-sm">
+                            <p class="text-muted-foreground">Status course</p>
+                            <p class="mt-1 font-medium text-foreground">
+                                {{ statusLabel(item.status) }}
+                            </p>
+                        </div>
                     </div>
-                    <dl class="mt-4 grid gap-3 text-sm sm:grid-cols-4">
-                        <div>
-                            <dt class="text-muted-foreground">Pre-Test</dt>
-                            <dd class="mt-1 font-medium text-foreground">
-                                {{ score(item.pre_test_score) }}
-                            </dd>
-                        </div>
+                    <dl
+                        v-if="item.assessment_summary.total_modules > 0"
+                        class="mt-4 grid gap-3 border-t border-border pt-4 text-sm sm:grid-cols-2"
+                    >
                         <div>
                             <dt class="text-muted-foreground">
-                                Post-Test terbaik
-                            </dt>
-                            <dd class="mt-1 font-medium text-foreground">
-                                {{ score(item.best_post_score) }}
-                            </dd>
-                        </div>
-                        <div>
-                            <dt class="text-muted-foreground">Peningkatan</dt>
-                            <dd class="mt-1 font-medium text-foreground">
                                 {{
-                                    item.improvement === null
-                                        ? '—'
-                                        : `${item.improvement > 0 ? '+' : ''}${item.improvement}`
+                                    assessmentSummaryLabel(
+                                        item.assessment_summary,
+                                    )
                                 }}
+                            </dt>
+                            <dd class="mt-1 font-semibold text-foreground">
+                                {{ score(item.assessment_summary.score) }}
                             </dd>
                         </div>
                         <div>
                             <dt class="text-muted-foreground">
-                                Attempt Post-Test
+                                Modul evaluatif selesai
                             </dt>
                             <dd class="mt-1 font-medium text-foreground">
-                                {{ item.post_test_attempts }}
+                                {{ item.assessment_summary.completed_modules }}
+                                dari
+                                {{ item.assessment_summary.total_modules }}
                             </dd>
                         </div>
                     </dl>
+                    <p
+                        v-if="needsFinalReviewFollowUp(item)"
+                        class="mt-3 text-sm text-muted-foreground"
+                    >
+                        Peserta dapat melanjutkan tahapan pembelajaran yang
+                        masih tersedia. Tindak lanjut Post-Test dilakukan pada
+                        evaluasi akhir.
+                    </p>
                     <section
                         v-if="item.can_approve"
                         class="mt-5 rounded-lg border border-border bg-muted/30 p-4"
@@ -313,86 +344,106 @@ defineOptions({
                             }}
                         </Button>
                     </section>
-                    <section
+                    <Collapsible
                         v-if="item.module_assessments.length"
                         class="mt-5 border-t border-border pt-4"
                     >
                         <div
-                            class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between"
+                            class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
                         >
-                            <h3 class="font-medium text-foreground">
-                                Evaluasi per modul
-                            </h3>
-                            <p class="text-sm text-muted-foreground">
-                                Pre-Test pertama dan skor terbaik Post-Test
-                            </p>
-                        </div>
-                        <dl class="mt-3 divide-y divide-border text-sm">
-                            <div
-                                v-for="assessment in item.module_assessments"
-                                :key="assessment.module.sequence"
-                                class="grid gap-3 py-3 first:pt-0 sm:grid-cols-[minmax(12rem,1fr)_10rem_14rem] sm:items-center"
-                            >
-                                <div>
-                                    <dt class="font-medium text-foreground">
-                                        Modul {{ assessment.module.sequence }}:
-                                        {{ assessment.module.title }}
-                                    </dt>
-                                </div>
-                                <div v-if="assessment.pre_test">
-                                    <dt class="text-muted-foreground">
-                                        Pre-Test
-                                    </dt>
-                                    <dd
-                                        class="mt-1 font-medium text-foreground"
-                                    >
-                                        {{ score(assessment.pre_test.score) }}
-                                    </dd>
-                                </div>
-                                <div v-else>
-                                    <dt class="text-muted-foreground">
-                                        Pre-Test
-                                    </dt>
-                                    <dd
-                                        class="mt-1 font-medium text-muted-foreground"
-                                    >
-                                        Belum dikerjakan
-                                    </dd>
-                                </div>
-                                <div v-if="assessment.post_test">
-                                    <dt class="text-muted-foreground">
-                                        Post-Test
-                                    </dt>
-                                    <dd
-                                        class="mt-1 font-medium text-foreground"
-                                    >
-                                        {{
-                                            postTestStatusLabel(
-                                                assessment.post_test,
-                                            )
-                                        }}
-                                        · terbaik
-                                        {{
-                                            score(
-                                                assessment.post_test.best_score,
-                                            )
-                                        }}
-                                        · {{ assessment.post_test.attempts }}x
-                                    </dd>
-                                </div>
-                                <div v-else>
-                                    <dt class="text-muted-foreground">
-                                        Post-Test
-                                    </dt>
-                                    <dd
-                                        class="mt-1 font-medium text-muted-foreground"
-                                    >
-                                        Belum dikerjakan
-                                    </dd>
-                                </div>
+                            <div>
+                                <h3 class="font-medium text-foreground">
+                                    Evaluasi per modul
+                                </h3>
+                                <p class="mt-1 text-sm text-muted-foreground">
+                                    Nilai Pre-Test pertama dan nilai terbaik
+                                    Post-Test per modul.
+                                </p>
                             </div>
-                        </dl>
-                    </section>
+                            <CollapsibleTrigger
+                                class="inline-flex h-9 items-center justify-center gap-2 self-start rounded-lg border border-input px-3 text-sm font-medium text-foreground hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:self-auto"
+                            >
+                                Lihat detail modul
+                                <ChevronDown
+                                    class="size-4"
+                                    aria-hidden="true"
+                                />
+                            </CollapsibleTrigger>
+                        </div>
+                        <CollapsibleContent>
+                            <dl class="mt-4 divide-y divide-border text-sm">
+                                <div
+                                    v-for="assessment in item.module_assessments"
+                                    :key="assessment.module.sequence"
+                                    class="grid gap-3 py-3 first:pt-0 sm:grid-cols-[minmax(12rem,1fr)_10rem_14rem] sm:items-center"
+                                >
+                                    <div>
+                                        <dt class="font-medium text-foreground">
+                                            Modul
+                                            {{ assessment.module.sequence }}:
+                                            {{ assessment.module.title }}
+                                        </dt>
+                                    </div>
+                                    <div v-if="assessment.pre_test">
+                                        <dt class="text-muted-foreground">
+                                            Pre-Test
+                                        </dt>
+                                        <dd
+                                            class="mt-1 font-medium text-foreground"
+                                        >
+                                            {{
+                                                score(assessment.pre_test.score)
+                                            }}
+                                        </dd>
+                                    </div>
+                                    <div v-else>
+                                        <dt class="text-muted-foreground">
+                                            Pre-Test
+                                        </dt>
+                                        <dd
+                                            class="mt-1 font-medium text-muted-foreground"
+                                        >
+                                            Belum dikerjakan
+                                        </dd>
+                                    </div>
+                                    <div v-if="assessment.post_test">
+                                        <dt class="text-muted-foreground">
+                                            Post-Test
+                                        </dt>
+                                        <dd
+                                            class="mt-1 font-medium text-foreground"
+                                        >
+                                            {{
+                                                postTestStatusLabel(
+                                                    assessment.post_test,
+                                                )
+                                            }}
+                                            · nilai terbaik
+                                            {{
+                                                score(
+                                                    assessment.post_test
+                                                        .best_score,
+                                                )
+                                            }}
+                                            ·
+                                            {{ assessment.post_test.attempts }}
+                                            percobaan
+                                        </dd>
+                                    </div>
+                                    <div v-else>
+                                        <dt class="text-muted-foreground">
+                                            Post-Test
+                                        </dt>
+                                        <dd
+                                            class="mt-1 font-medium text-muted-foreground"
+                                        >
+                                            Belum dikerjakan
+                                        </dd>
+                                    </div>
+                                </div>
+                            </dl>
+                        </CollapsibleContent>
+                    </Collapsible>
                     <section
                         v-if="item.retake_assessments.length"
                         class="mt-5 border-t border-border pt-4"

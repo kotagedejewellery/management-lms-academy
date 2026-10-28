@@ -112,6 +112,11 @@ class DashboardTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('mode', 'operations')
+                ->where('stats.3.label', 'Menunggu evaluasi akhir')
+                ->where('stats.3.value', 1)
+                ->where('primary_action.label', 'Evaluasi peserta')
+                ->where('primary_action.href', '/trainer-progress?status=pending_review')
+                ->where('secondary_action.label', 'Kelola penugasan')
                 ->where('items.0.meta', 'Menunggu evaluasi akhir'));
     }
 
@@ -134,6 +139,37 @@ class DashboardTest extends TestCase
 
         $this->assertSame(2, Course::query()->count());
         $this->assertTrue($other->exists);
+    }
+
+    public function test_trainer_dashboard_prioritizes_final_reviews_for_assigned_courses_only(): void
+    {
+        $trainer = $this->userWithPermission('manage-courses', 'trainer');
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $assigned = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-TRAINER-REVIEW', 'title' => 'Course Trainer', 'status' => 'published']);
+        $other = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-OTHER-REVIEW', 'title' => 'Course Lain', 'status' => 'published']);
+        $assigned->trainers()->attach($trainer);
+
+        Enrollment::query()->create([
+            'user_id' => User::factory()->create()->id,
+            'course_id' => $assigned->id,
+            'status' => 'pending_review',
+        ]);
+        Enrollment::query()->create([
+            'user_id' => User::factory()->create()->id,
+            'course_id' => $other->id,
+            'status' => 'pending_review',
+        ]);
+
+        $this->actingAs($trainer)->get(route('dashboard'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('mode', 'trainer')
+                ->where('stats.3.label', 'Menunggu evaluasi akhir')
+                ->where('stats.3.value', 1)
+                ->where('primary_action.label', 'Evaluasi peserta')
+                ->where('primary_action.href', '/trainer-progress?status=pending_review')
+                ->where('secondary_action.label', 'Course binaan')
+                ->where('secondary_action.href', '/courses'));
     }
 
     public function test_manager_and_executive_receive_their_own_dashboard_contexts(): void
@@ -164,7 +200,7 @@ class DashboardTest extends TestCase
                 ->where('stats.2.label', 'Menunggu evaluasi akhir')
                 ->where('stats.2.value', 1)
                 ->where('primary_action.label', 'Evaluasi peserta')
-                ->where('primary_action.href', '/trainer-progress'));
+                ->where('primary_action.href', '/trainer-progress?status=pending_review'));
     }
 
     private function managementAdmin(): User

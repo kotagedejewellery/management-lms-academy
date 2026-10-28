@@ -9,6 +9,7 @@ use App\Models\AssessmentAttempt;
 use App\Models\AssessmentRetakeAuthorization;
 use App\Models\Course;
 use App\Models\Enrollment;
+use App\Support\CourseAssessmentProgress;
 use App\Support\ModuleLearningProgression;
 use App\Support\ReportEnrollmentQuery;
 use Illuminate\Http\RedirectResponse;
@@ -50,7 +51,7 @@ class TrainerProgressController extends Controller
             ->orderByDesc('created_at')
             ->paginate(15)
             ->withQueryString();
-        $moduleAssessments = $this->moduleAssessments($enrollments->getCollection());
+        $assessmentProgress = app(CourseAssessmentProgress::class)->for($enrollments->getCollection());
         $retakeAssessments = $this->retakeAssessments($enrollments->getCollection());
 
         $enrollments->through(fn (Enrollment $enrollment) => [
@@ -64,7 +65,13 @@ class TrainerProgressController extends Controller
             'post_test_attempts' => (int) $enrollment->post_test_attempts,
             'user' => $enrollment->user?->only(['employee_id', 'name']),
             'course' => $enrollment->course?->only(['code', 'title']),
-            'module_assessments' => $moduleAssessments->get($enrollment->id, []),
+            'module_assessments' => $assessmentProgress->get($enrollment->id)['modules'] ?? [],
+            'assessment_summary' => $assessmentProgress->get($enrollment->id)['summary'] ?? [
+                'score' => null,
+                'completed_modules' => 0,
+                'total_modules' => 0,
+                'is_final' => false,
+            ],
             'retake_assessments' => $retakeAssessments->get($enrollment->id, []),
             'can_approve' => $enrollment->status === 'pending_review',
         ]);
@@ -108,52 +115,6 @@ class TrainerProgressController extends Controller
         }
 
         return back()->with('success', 'Kelulusan course berhasil disetujui.');
-    }
-
-    /**
-     * @param  Collection<int, Enrollment>  $enrollments
-     * @return Collection<int, array<int, array{module: array{sequence: int<0, max>|null, title: string|null}, pre_test: array{score: float}|null, post_test: array{best_score: float, attempts: int, passed: bool}|null}>>
-     */
-    private function moduleAssessments(Collection $enrollments): Collection
-    {
-        if ($enrollments->isEmpty()) {
-            return collect();
-        }
-
-        $assessments = Assessment::query()
-            ->whereIn('course_id', $enrollments->pluck('course_id')->unique())
-            ->whereNotNull('module_id')
-            ->with('module:id,course_id,title,sequence')
-            ->get(['id', 'course_id', 'module_id', 'type']);
-        $attempts = AssessmentAttempt::query()
-            ->whereIn('enrollment_id', $enrollments->pluck('id'))
-            ->whereIn('assessment_id', $assessments->pluck('id'))
-            ->whereNotNull('submitted_at')
-            ->orderBy('attempt_number')
-            ->get(['assessment_id', 'enrollment_id', 'attempt_number', 'score', 'passed'])
-            ->groupBy(fn (AssessmentAttempt $attempt) => "{$attempt->enrollment_id}:{$attempt->assessment_id}");
-
-        return $enrollments->mapWithKeys(function (Enrollment $enrollment) use ($assessments, $attempts): array {
-            $modules = $assessments
-                ->where('course_id', $enrollment->course_id)
-                ->groupBy('module_id')
-                ->sortBy(fn (Collection $assessments) => $assessments->first()->module?->sequence)
-                ->map(function (Collection $assessments) use ($attempts, $enrollment): array {
-                    $preTest = $assessments->firstWhere('type', 'pre_test');
-                    $postTest = $assessments->firstWhere('type', 'post_test');
-                    $module = $assessments->first()->module;
-
-                    return [
-                        'module' => ['sequence' => $module?->sequence, 'title' => $module?->title],
-                        'pre_test' => $preTest === null ? null : $this->preTestSummary($attempts->get("{$enrollment->id}:{$preTest->id}", collect())),
-                        'post_test' => $postTest === null ? null : $this->postTestSummary($attempts->get("{$enrollment->id}:{$postTest->id}", collect())),
-                    ];
-                })
-                ->values()
-                ->all();
-
-            return [$enrollment->id => $modules];
-        });
     }
 
     /**
@@ -227,33 +188,5 @@ class TrainerProgressController extends Controller
 
             return [$enrollment->id => $retakes];
         });
-    }
-
-    /**
-     * @param  Collection<int, AssessmentAttempt>  $attempts
-     * @return array{score: float}|null
-     */
-    private function preTestSummary(Collection $attempts): ?array
-    {
-        $attempt = $attempts->first();
-
-        return $attempt === null ? null : ['score' => (float) $attempt->score];
-    }
-
-    /**
-     * @param  Collection<int, AssessmentAttempt>  $attempts
-     * @return array{best_score: float, attempts: int, passed: bool}|null
-     */
-    private function postTestSummary(Collection $attempts): ?array
-    {
-        if ($attempts->isEmpty()) {
-            return null;
-        }
-
-        return [
-            'best_score' => (float) $attempts->max('score'),
-            'attempts' => $attempts->count(),
-            'passed' => $attempts->contains('passed', true),
-        ];
     }
 }

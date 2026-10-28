@@ -129,6 +129,57 @@ class ReportTest extends TestCase
             ->where('enrollments.data.0.post_test_attempts', 2));
     }
 
+    public function test_report_marks_course_level_evaluation_as_unused_when_assessments_only_exist_per_module(): void
+    {
+        $admin = $this->reportAdmin();
+        $employee = User::factory()->create(['name' => 'Ayu Wijaya']);
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-MODULE-001', 'title' => 'Evaluasi Modul', 'status' => 'published']);
+        $enrollment = $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
+        $module = $course->modules()->create(['title' => 'Dasar penjualan', 'sequence' => 1]);
+        $preTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'pre_test', 'passing_grade' => 0, 'attempt_limit' => 1]);
+        $postTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'post_test', 'passing_grade' => 80, 'attempt_limit' => 3]);
+        $preTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 40, 'submitted_at' => now()]);
+        $postTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 60, 'passed' => false, 'submitted_at' => now()]);
+
+        $this->actingAs($admin)->get(route('reports.index'))->assertOk()->assertInertia(fn (Assert $page) => $page
+            ->where('enrollments.data.0.has_course_assessment', false)
+            ->where('enrollments.data.0.pre_test_score', null)
+            ->where('enrollments.data.0.best_post_score', null)
+            ->where('enrollments.data.0.post_test_attempts', 0)
+            ->where('enrollments.data.0.assessment_summary', [
+                'score' => 50,
+                'completed_modules' => 1,
+                'total_modules' => 1,
+                'is_final' => true,
+            ]));
+    }
+
+    public function test_export_marks_course_level_evaluation_as_unused_when_assessments_only_exist_per_module(): void
+    {
+        Storage::fake('s3');
+        config(['filesystems.default' => 's3']);
+        $admin = $this->reportAdmin();
+        $employee = User::factory()->create(['employee_id' => 'KGJ-005']);
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-MODULE-002', 'title' => 'Evaluasi per modul', 'status' => 'published']);
+        $enrollment = $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
+        $module = $course->modules()->create(['title' => 'Dasar penjualan', 'sequence' => 1]);
+        $preTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'pre_test', 'passing_grade' => 0, 'attempt_limit' => 1]);
+        $postTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'post_test', 'passing_grade' => 80, 'attempt_limit' => 3]);
+        $preTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 40, 'submitted_at' => now()]);
+        $postTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 60, 'passed' => false, 'submitted_at' => now()]);
+        $export = $admin->reportExports()->create(['filters' => [], 'status' => 'queued']);
+
+        (new GenerateReportExport($export->id))->handle();
+
+        $contents = Storage::disk('s3')->get($export->fresh()->path);
+        $this->assertStringContainsString('Nilai course modul', $contents);
+        $this->assertStringContainsString('Nilai akhir', $contents);
+        $this->assertStringContainsString('Skor Pre-Test course', $contents);
+        $this->assertStringContainsString('Tidak digunakan', $contents);
+    }
+
     public function test_report_filters_enrollments_waiting_for_final_review(): void
     {
         $admin = $this->reportAdmin();

@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Enrollment;
 use App\Models\ReportExport;
+use App\Support\CourseAssessmentProgress;
 use App\Support\ReportEnrollmentQuery;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -31,19 +32,37 @@ class GenerateReportExport implements ShouldQueue
 
         try {
             fwrite($stream, "\xEF\xBB\xBF");
-            fputcsv($stream, ['ID Karyawan', 'Nama Karyawan', 'Kode Course', 'Course', 'Status', 'Skor Pre-Test', 'Skor Post-Test Terbaik', 'Improvement', 'Attempt Post-Test', 'Tenggat', 'Selesai']);
+            fputcsv($stream, ['ID Karyawan', 'Nama Karyawan', 'Kode Course', 'Course', 'Status', 'Nilai course modul', 'Status nilai course', 'Modul evaluatif selesai', 'Skor Pre-Test course', 'Skor Post-Test course terbaik', 'Peningkatan course', 'Percobaan Post-Test course', 'Tenggat', 'Selesai']);
             ReportEnrollmentQuery::make($export->filters)->reorder()->chunkById(500, function ($enrollments) use ($stream): void {
-                $enrollments->each(function (Enrollment $enrollment) use ($stream): void {
+                $assessmentProgress = app(CourseAssessmentProgress::class)->for($enrollments);
+
+                $enrollments->each(function (Enrollment $enrollment) use ($stream, $assessmentProgress): void {
+                    $hasCourseAssessment = (int) $enrollment->course_assessment_count > 0;
+                    $assessmentSummary = $assessmentProgress->get($enrollment->id)['summary'] ?? [
+                        'score' => null,
+                        'completed_modules' => 0,
+                        'total_modules' => 0,
+                        'is_final' => false,
+                    ];
+                    $improvement = ! $hasCourseAssessment
+                        ? 'Tidak digunakan'
+                        : ($enrollment->pre_test_score === null || $enrollment->best_post_score === null
+                            ? null
+                            : (float) $enrollment->best_post_score - (float) $enrollment->pre_test_score);
+
                     fputcsv($stream, array_map(fn (mixed $value) => $this->csvValue($value), [
                         $enrollment->user?->employee_id,
                         $enrollment->user?->name,
                         $enrollment->course?->code,
                         $enrollment->course?->title,
                         $enrollment->status,
-                        $enrollment->pre_test_score,
-                        $enrollment->best_post_score,
-                        $enrollment->pre_test_score === null || $enrollment->best_post_score === null ? null : (float) $enrollment->best_post_score - (float) $enrollment->pre_test_score,
-                        $enrollment->post_test_attempts,
+                        $assessmentSummary['total_modules'] === 0 ? 'Tidak digunakan' : $assessmentSummary['score'],
+                        $assessmentSummary['total_modules'] === 0 ? 'Tidak digunakan' : ($assessmentSummary['is_final'] ? 'Nilai akhir' : 'Rata-rata berjalan'),
+                        $assessmentSummary['total_modules'] === 0 ? 'Tidak digunakan' : "{$assessmentSummary['completed_modules']} dari {$assessmentSummary['total_modules']}",
+                        $hasCourseAssessment ? $enrollment->pre_test_score : 'Tidak digunakan',
+                        $hasCourseAssessment ? $enrollment->best_post_score : 'Tidak digunakan',
+                        $improvement,
+                        $hasCourseAssessment ? $enrollment->post_test_attempts : 'Tidak digunakan',
                         $enrollment->due_at?->toDateString(),
                         $enrollment->completed_at?->toDateString(),
                     ]));

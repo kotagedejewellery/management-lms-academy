@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\Assessment;
 use App\Models\AssessmentAttempt;
 use App\Models\Enrollment;
 use Illuminate\Database\Eloquent\Builder;
@@ -37,12 +38,17 @@ class ReportEnrollmentQuery
             ->where('assessments.type', 'post_test')
             ->whereNull('assessments.module_id')
             ->whereNotNull('assessment_attempts.submitted_at');
+        $courseAssessmentCount = Assessment::query()
+            ->selectRaw('count(*)')
+            ->whereColumn('assessments.course_id', 'enrollments.course_id')
+            ->whereNull('assessments.module_id');
 
         return Enrollment::query()
             ->select(['id', 'user_id', 'course_id', 'status', 'due_at', 'completed_at'])
             ->selectSub($bestPostScore, 'best_post_score')
             ->selectSub($firstPreScore, 'pre_test_score')
             ->selectSub($postTestAttempts, 'post_test_attempts')
+            ->selectSub($courseAssessmentCount, 'course_assessment_count')
             ->with(['user:id,employee_id,name', 'course:id,code,title'])
             ->when(in_array($filters['status'] ?? '', ['active', 'pending_review', 'completed', 'not_passed'], true), fn (Builder $query) => $query->where('status', $filters['status'] ?? ''))
             ->when($filters['course_id'] ?? null, fn (Builder $query) => $query->where('course_id', $filters['course_id'] ?? null))

@@ -152,6 +152,10 @@ class DashboardResolver
             ->orderByDesc('updated_at')
             ->limit(5)
             ->get(['courses.id', 'courses.code', 'courses.title', 'courses.status']);
+        $pendingReview = Enrollment::query()
+            ->whereIn('course_id', $user->managedCourses()->select('courses.id'))
+            ->where('status', 'pending_review')
+            ->count();
 
         return [
             'mode' => 'trainer',
@@ -161,9 +165,14 @@ class DashboardResolver
                 ['label' => 'Course ditugaskan', 'value' => $user->managedCourses()->count()],
                 ['label' => 'Draf', 'value' => $user->managedCourses()->where('courses.status', 'draft')->count()],
                 ['label' => 'Diterbitkan', 'value' => $user->managedCourses()->where('courses.status', 'published')->count()],
-                ['label' => 'Tanpa modul', 'value' => $user->managedCourses()->doesntHave('modules')->count()],
+                ['label' => 'Menunggu evaluasi akhir', 'value' => $pendingReview],
             ],
-            'primary_action' => ['label' => 'Course binaan', 'href' => '/courses'],
+            'primary_action' => $pendingReview > 0
+                ? ['label' => 'Evaluasi peserta', 'href' => '/trainer-progress?status=pending_review']
+                : ['label' => 'Course binaan', 'href' => '/courses'],
+            'secondary_action' => $pendingReview > 0
+                ? ['label' => 'Course binaan', 'href' => '/courses']
+                : null,
             'items_title' => 'Course yang membutuhkan perhatian',
             'empty_title' => 'Belum ada course yang ditugaskan',
             'empty_description' => 'LMS Admin dapat menugaskan course kepada Anda dari pengaturan course.',
@@ -231,6 +240,7 @@ class DashboardResolver
                 ->latest()
                 ->limit(5)
                 ->get();
+            $pendingReview = Enrollment::query()->where('status', 'pending_review')->count();
 
             return [
                 'mode' => 'operations',
@@ -240,9 +250,14 @@ class DashboardResolver
                     ['label' => 'Karyawan aktif', 'value' => User::query()->where('status', 'active')->count()],
                     ['label' => 'Course diterbitkan', 'value' => Course::query()->where('status', 'published')->count()],
                     ['label' => 'Assignment aktif', 'value' => Enrollment::query()->where('status', 'active')->count()],
-                    ['label' => 'Course selesai', 'value' => Enrollment::query()->where('status', 'completed')->count()],
+                    ['label' => 'Menunggu evaluasi akhir', 'value' => $pendingReview],
                 ],
-                'primary_action' => ['label' => 'Kelola penugasan', 'href' => '/enrollments'],
+                'primary_action' => $pendingReview > 0
+                    ? ['label' => 'Evaluasi peserta', 'href' => '/trainer-progress?status=pending_review']
+                    : ['label' => 'Kelola penugasan', 'href' => '/enrollments'],
+                'secondary_action' => $pendingReview > 0
+                    ? ['label' => 'Kelola penugasan', 'href' => '/enrollments']
+                    : null,
                 'items_title' => 'Assignment terbaru',
                 'empty_title' => 'Belum ada assignment',
                 'empty_description' => 'Tetapkan course kepada karyawan untuk mulai memantau progres.',
@@ -274,7 +289,7 @@ class DashboardResolver
                 ['label' => 'Course selesai', 'value' => Enrollment::query()->where('status', 'completed')->count()],
             ],
             'primary_action' => $pendingReview > 0
-                ? ['label' => 'Evaluasi peserta', 'href' => '/trainer-progress']
+                ? ['label' => 'Evaluasi peserta', 'href' => '/trainer-progress?status=pending_review']
                 : ['label' => 'Buka laporan', 'href' => '/reports'],
             'items_title' => 'Aktivitas pembelajaran terbaru',
             'empty_title' => 'Belum ada aktivitas pembelajaran',

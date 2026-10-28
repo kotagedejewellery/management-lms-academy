@@ -18,6 +18,13 @@ type Enrollment = {
     best_post_score: number | null;
     improvement: number | null;
     post_test_attempts: number;
+    has_course_assessment: boolean;
+    assessment_summary: {
+        score: number | null;
+        completed_modules: number;
+        total_modules: number;
+        is_final: boolean;
+    };
     user: { employee_id: string | null; name: string } | null;
     course: { code: string; title: string } | null;
 };
@@ -171,6 +178,37 @@ function exportCsv(): void {
 function score(value: number | null): string {
     return value === null ? '—' : value.toFixed(2);
 }
+function courseAssessmentValue(item: Enrollment, value: number | null): string {
+    return item.has_course_assessment ? score(value) : 'Tidak digunakan';
+}
+function courseImprovement(item: Enrollment): string {
+    if (!item.has_course_assessment) return 'Tidak digunakan';
+
+    return item.improvement === null
+        ? '—'
+        : `${item.improvement > 0 ? '+' : ''}${item.improvement}`;
+}
+function moduleCourseScore(item: Enrollment): string {
+    return item.assessment_summary.total_modules === 0
+        ? 'Tidak digunakan'
+        : score(item.assessment_summary.score);
+}
+function moduleCourseScoreLabel(item: Enrollment): string {
+    if (item.assessment_summary.total_modules === 0) {
+        return 'Tidak digunakan';
+    }
+
+    return item.assessment_summary.is_final
+        ? 'Nilai akhir'
+        : 'Rata-rata berjalan';
+}
+function moduleCompletion(item: Enrollment): string {
+    if (item.assessment_summary.total_modules === 0) {
+        return 'Tidak digunakan';
+    }
+
+    return `${item.assessment_summary.completed_modules} dari ${item.assessment_summary.total_modules}`;
+}
 function startExportPolling(): void {
     if (exportPollTimer || !hasPendingExport.value) return;
 
@@ -218,8 +256,8 @@ defineOptions({
                 <p
                     class="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground"
                 >
-                    Pantau baseline, skor terbaik, improvement, attempt, dan
-                    status course per karyawan.
+                    Pantau nilai course per modul, baseline, skor terbaik,
+                    improvement, attempt, dan status course per karyawan.
                 </p>
             </div>
             <Button :disabled="exporting" @click="exportCsv"
@@ -422,23 +460,36 @@ defineOptions({
                             {{ item.course?.title }}
                         </p>
                         <p class="mt-1 text-sm text-muted-foreground">
-                            Pre {{ score(item.pre_test_score) }} · Post terbaik
-                            {{ score(item.best_post_score) }} ·
-                            {{
-                                item.improvement === null
-                                    ? 'Improvement —'
-                                    : `Improvement ${item.improvement > 0 ? '+' : ''}${item.improvement}`
-                            }}
+                            {{ moduleCourseScoreLabel(item) }}:
+                            {{ moduleCourseScore(item) }}
+                            <template
+                                v-if="item.assessment_summary.total_modules > 0"
+                            >
+                                · {{ moduleCompletion(item) }} modul evaluatif
+                                selesai
+                            </template>
+                        </p>
+                        <p
+                            v-if="item.has_course_assessment"
+                            class="mt-1 text-sm text-muted-foreground"
+                        >
+                            Pre-Test course
+                            {{ score(item.pre_test_score) }} · Post-Test course
+                            terbaik {{ score(item.best_post_score) }} ·
+                            Peningkatan course {{ courseImprovement(item) }}
                         </p>
                     </div>
                     <p class="text-sm font-medium text-foreground">
-                        {{ statusLabel(item.status) }} ·
-                        {{ item.post_test_attempts }} attempt Post-Test
+                        {{ statusLabel(item.status) }}
+                        <template v-if="item.has_course_assessment">
+                            · {{ item.post_test_attempts }} percobaan Post-Test
+                            course
+                        </template>
                     </p>
                 </article>
             </div>
             <div class="hidden overflow-x-auto md:block">
-                <table class="w-full min-w-[920px] text-left text-sm">
+                <table class="w-full min-w-[1160px] text-left text-sm">
                     <thead
                         class="border-b border-border bg-muted/40 text-muted-foreground"
                     >
@@ -447,16 +498,22 @@ defineOptions({
                             <th class="px-5 py-3 font-medium">Course</th>
                             <th class="px-5 py-3 font-medium">Status</th>
                             <th class="px-5 py-3 text-right font-medium">
-                                Pre-Test
+                                Nilai course
                             </th>
                             <th class="px-5 py-3 text-right font-medium">
-                                Post terbaik
+                                Modul evaluatif selesai
                             </th>
                             <th class="px-5 py-3 text-right font-medium">
-                                Improvement
+                                Pre-Test course
                             </th>
                             <th class="px-5 py-3 text-right font-medium">
-                                Attempt
+                                Post-Test course terbaik
+                            </th>
+                            <th class="px-5 py-3 text-right font-medium">
+                                Peningkatan course
+                            </th>
+                            <th class="px-5 py-3 text-right font-medium">
+                                Percobaan Post-Test course
                             </th>
                         </tr>
                     </thead>
@@ -484,23 +541,50 @@ defineOptions({
                             <td class="px-5 py-4 font-medium text-foreground">
                                 {{ statusLabel(item.status) }}
                             </td>
+                            <td
+                                class="px-5 py-4 text-right font-medium text-foreground tabular-nums"
+                            >
+                                {{ moduleCourseScore(item) }}
+                                <span
+                                    v-if="
+                                        item.assessment_summary.total_modules >
+                                        0
+                                    "
+                                    class="mt-1 block text-xs font-normal text-muted-foreground"
+                                >
+                                    {{ moduleCourseScoreLabel(item) }}
+                                </span>
+                            </td>
                             <td class="px-5 py-4 text-right tabular-nums">
-                                {{ score(item.pre_test_score) }}
+                                {{ moduleCompletion(item) }}
+                            </td>
+                            <td class="px-5 py-4 text-right tabular-nums">
+                                {{
+                                    courseAssessmentValue(
+                                        item,
+                                        item.pre_test_score,
+                                    )
+                                }}
                             </td>
                             <td
                                 class="px-5 py-4 text-right font-medium text-foreground tabular-nums"
                             >
-                                {{ score(item.best_post_score) }}
-                            </td>
-                            <td class="px-5 py-4 text-right tabular-nums">
                                 {{
-                                    item.improvement === null
-                                        ? '—'
-                                        : `${item.improvement > 0 ? '+' : ''}${item.improvement}`
+                                    courseAssessmentValue(
+                                        item,
+                                        item.best_post_score,
+                                    )
                                 }}
                             </td>
                             <td class="px-5 py-4 text-right tabular-nums">
-                                {{ item.post_test_attempts }}
+                                {{ courseImprovement(item) }}
+                            </td>
+                            <td class="px-5 py-4 text-right tabular-nums">
+                                {{
+                                    item.has_course_assessment
+                                        ? item.post_test_attempts
+                                        : 'Tidak digunakan'
+                                }}
                             </td>
                         </tr>
                     </tbody>

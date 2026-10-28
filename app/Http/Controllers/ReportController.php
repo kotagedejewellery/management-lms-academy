@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\Division;
 use App\Models\Enrollment;
 use App\Models\ReportExport;
+use App\Support\CourseAssessmentProgress;
 use App\Support\ReportEnrollmentQuery;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -26,19 +27,27 @@ class ReportController extends Controller
         $enrollments = ReportEnrollmentQuery::make($filters)
             ->orderByDesc('created_at')
             ->paginate(15)
-            ->withQueryString()
-            ->through(fn (Enrollment $enrollment) => [
-                'id' => $enrollment->id,
-                'status' => $enrollment->status,
-                'due_at' => $enrollment->due_at?->toDateString(),
-                'completed_at' => $enrollment->completed_at?->toDateString(),
-                'pre_test_score' => $enrollment->pre_test_score === null ? null : (float) $enrollment->pre_test_score,
-                'best_post_score' => $enrollment->best_post_score === null ? null : (float) $enrollment->best_post_score,
-                'improvement' => $enrollment->pre_test_score === null || $enrollment->best_post_score === null ? null : round((float) $enrollment->best_post_score - (float) $enrollment->pre_test_score, 2),
-                'post_test_attempts' => (int) $enrollment->post_test_attempts,
-                'user' => $enrollment->user?->only(['employee_id', 'name']),
-                'course' => $enrollment->course?->only(['code', 'title']),
-            ]);
+            ->withQueryString();
+        $assessmentProgress = app(CourseAssessmentProgress::class)->for($enrollments->getCollection());
+        $enrollments->through(fn (Enrollment $enrollment) => [
+            'id' => $enrollment->id,
+            'status' => $enrollment->status,
+            'due_at' => $enrollment->due_at?->toDateString(),
+            'completed_at' => $enrollment->completed_at?->toDateString(),
+            'pre_test_score' => $enrollment->pre_test_score === null ? null : (float) $enrollment->pre_test_score,
+            'best_post_score' => $enrollment->best_post_score === null ? null : (float) $enrollment->best_post_score,
+            'improvement' => $enrollment->pre_test_score === null || $enrollment->best_post_score === null ? null : round((float) $enrollment->best_post_score - (float) $enrollment->pre_test_score, 2),
+            'post_test_attempts' => (int) $enrollment->post_test_attempts,
+            'has_course_assessment' => (int) $enrollment->course_assessment_count > 0,
+            'assessment_summary' => $assessmentProgress->get($enrollment->id)['summary'] ?? [
+                'score' => null,
+                'completed_modules' => 0,
+                'total_modules' => 0,
+                'is_final' => false,
+            ],
+            'user' => $enrollment->user?->only(['employee_id', 'name']),
+            'course' => $enrollment->course?->only(['code', 'title']),
+        ]);
 
         return Inertia::render('reports/Index', [
             'enrollments' => $enrollments,

@@ -1,163 +1,233 @@
 # Panduan Pengguna KGJ Academy
 
-Panduan ini menjelaskan fitur inti KGJ Academy berdasarkan role akun Anda. Menu yang terlihat dapat berbeda karena akses ditentukan oleh tanggung jawab kerja.
+> Panduan MVP ini menjelaskan alur dan menu yang tersedia pada versi sistem saat ini. Menu serta data yang dapat dibuka mengikuti role akun Anda.
+
+## Daftar isi
+
+1. [Memulai](#1-memulai)
+2. [Matriks akses role](#2-matriks-akses-role)
+3. [Alur pembelajaran Employee](#3-alur-pembelajaran-employee)
+4. [Panduan per role](#4-panduan-per-role)
+5. [Bantuan cepat](#5-bantuan-cepat)
 
 ## 1. Memulai
 
+### Persyaratan akses
+
+Sebelum menggunakan KGJ Academy, pastikan akun Anda:
+
+- berstatus aktif;
+- menggunakan email kerja yang telah diverifikasi; dan
+- memiliki role yang ditetapkan oleh LMS Admin.
+
+### Langkah masuk
+
 1. Buka alamat KGJ Academy yang diberikan LMS Admin.
 2. Masuk menggunakan **email kerja atau Employee ID** dan kata sandi.
-3. Jika sistem meminta verifikasi email, buka tautan yang dikirim ke alamat email terdaftar. Hubungi LMS Admin bila email tidak diterima atau akun tidak dapat diakses.
-4. Gunakan menu profil untuk memperbarui data pribadi, kata sandi, dan pengaturan keamanan akun.
+3. Selesaikan verifikasi email apabila sistem meminta verifikasi.
+4. Gunakan menu profil untuk memperbarui data pribadi atau kata sandi.
+5. Gunakan **Lupa kata sandi** pada halaman masuk apabila tidak dapat mengakses akun.
 
-Semua pengguna dapat membuka **Notifikasi**. Sertifikat, progres, dan data pembelajaran pribadi hanya dapat dilihat oleh pemilik akun, kecuali role pengelola yang memang diberi akses organisasi.
+Semua pengguna dapat membuka **Notifikasi**. Jangan membagikan akun atau kata sandi kepada orang lain.
 
-## 2. Alur pembelajaran karyawan
+## 2. Matriks akses role
 
-Alur utama pembelajaran adalah:
+| Role | Fokus utama | Menu inti MVP |
+| --- | --- | --- |
+| Employee / Learner | Menyelesaikan pembelajaran pribadi | Dashboard, Pembelajaran saya, Jalur belajar saya, Katalog course, Progres saya, Sertifikat, Notifikasi |
+| Manager Tim | Memantau bawahan langsung serta belajar sebagai peserta | Semua menu Employee, Progres tim |
+| Trainer / Mentor | Mengelola course binaan dan evaluasi pesertanya | Dashboard, Course binaan, Progres peserta, Notifikasi |
+| Management / Owner | Meninjau hasil organisasi dan evaluasi akhir | Dashboard, Progres peserta, Laporan, Notifikasi |
+| LMS Admin / HR | Menjalankan operasi pembelajaran | Dashboard, Kelola course, Kelola jalur belajar, Sertifikat, Pengguna, Organisasi, Penugasan, Penugasan jalur, Pengumuman, Progres peserta, Laporan, Notifikasi |
+| Super Admin | Mengelola operasi penuh dan audit | Semua area LMS Admin, Progres tim, Aktivitas audit |
+
+> Akses selalu diperiksa oleh server. Membuka URL secara langsung tidak memberi akses di luar role atau cakupan data akun Anda.
+
+## 3. Alur pembelajaran Employee
+
+Pre-Test dan Post-Test hanya muncul pada modul yang memang dikonfigurasi memiliki assessment.
 
 ```text
-Ditugaskan → Pre-Test (jika diwajibkan) → Materi → Post-Test → Hasil → Sertifikat (jika diaktifkan)
+Course ditugaskan
+  → Pre-Test modul (bila ada)
+  → materi wajib modul
+  → Post-Test modul (bila ada)
+  → modul berikutnya
+  → evaluasi akhir internal
+  → disetujui / kesempatan ulang bila diperlukan
+  → sertifikat (bila diaktifkan)
 ```
 
-1. Buka **Pembelajaran saya** untuk melihat course yang ditugaskan.
-2. Pilih course, lalu baca ringkasan, progres, materi wajib, batas waktu, serta status assessment.
-3. Kerjakan **Pre-Test** bila diminta. Nilainya menjadi baseline pengetahuan dan tidak menentukan kelulusan course.
-4. Selesaikan seluruh lesson wajib. Materi dapat berupa artikel, video, PDF, atau resource unduhan sesuai course.
-5. Klik **Tandai selesai** pada lesson setelah mempelajarinya. Sistem menyimpan progres dan posisi pembelajaran yang tersedia.
-6. Kerjakan **Post-Test** setelah seluruh lesson wajib selesai. Kelulusan mengikuti passing grade dan batas percobaan yang ditetapkan pada course.
-7. Buka hasil assessment untuk melihat skor, status lulus/tidak lulus, nilai terbaik, dan sisa percobaan bila tersedia.
-8. Jika course mengaktifkan sertifikat dan Anda lulus, buka **Sertifikat** untuk mengunduh PDF.
+### Langkah pembelajaran
 
-### Status yang perlu dipahami
+1. Buka **Pembelajaran saya**, lalu pilih course yang berstatus aktif.
+2. Kerjakan **Pre-Test** jika tersedia. Pre-Test menjadi baseline, hanya satu kali percobaan, dan tidak menentukan kelulusan.
+3. Pelajari semua lesson wajib pada modul. Tandai lesson selesai setelah dipelajari.
+4. Kerjakan **Post-Test** jika tersedia setelah lesson wajib modul selesai.
+5. Setelah Post-Test dikirim, modul berikutnya dapat dibuka tanpa menunggu penilaian internal.
+6. Setelah semua materi dan assessment wajib selesai, course berstatus **Menunggu evaluasi akhir**.
 
-| Status | Arti |
-| --- | --- |
-| Belum dimulai | Course sudah ditugaskan tetapi belum ada progres. |
-| Berlangsung | Ada lesson atau assessment yang sedang dikerjakan. |
-| Terkunci | Ada prerequisite course atau lesson wajib yang belum selesai. |
-| Selesai | Semua syarat course terpenuhi. |
-| Tidak lulus | Post-Test belum mencapai passing grade; retake mengikuti batas percobaan course. |
+### Kerahasiaan hasil penilaian
 
-## 3. Akses menurut role
+Employee hanya menerima konfirmasi bahwa assessment telah dikirim. Employee tidak dapat melihat:
 
-| Role | Fokus utama | Modul inti |
+- skor atau nilai kelulusan;
+- status lulus/gagal;
+- sisa atau riwayat percobaan;
+- kunci jawaban; dan
+- pembahasan jawaban.
+
+Hasil dikelola secara internal. Sertifikat menjadi pemberitahuan positif apabila course disetujui dan penerbitan sertifikat diaktifkan.
+
+### Arti status course
+
+| Status | Arti | Tindakan Employee |
 | --- | --- | --- |
-| Employee | Menyelesaikan pembelajaran pribadi | Dashboard, Pembelajaran saya, Jalur belajar saya, Katalog course, Progres saya, Sertifikat, Notifikasi |
-| Trainer / Mentor | Mengelola materi dan memantau progres course yang ditugaskan | Semua modul Employee, Kelola course yang ditugaskan, Progres course |
-| Manager Tim | Memantau pembelajaran bawahan langsung | Semua modul Employee, Progres tim |
-| Management | Memantau hasil organisasi | Semua modul Employee, Laporan |
-| LMS Admin | Mengelola operasi pembelajaran | Pengguna, Organisasi, Course, Jalur belajar, Penugasan, Pengumuman, Laporan |
-| Super Admin | Mengelola operasi dan audit | Semua modul LMS Admin, Aktivitas audit, Progres tim |
+| Aktif | Course masih dapat dikerjakan. | Lanjutkan tahap yang terbuka. |
+| Terkunci | Ada prerequisite atau tahap wajib sebelumnya. | Selesaikan syarat yang disebutkan sistem. |
+| Menunggu evaluasi akhir | Seluruh tahap wajib telah dikirim. | Tunggu arahan pihak internal. |
+| Selesai | Course telah disetujui. | Buka Sertifikat bila tersedia. |
+| Perlu diulang | Evaluasi internal memerlukan tindak lanjut. | Ikuti arahan Trainer, Management, atau LMS Admin. |
 
-## 4. Panduan Employee
+### Menu pembelajaran pribadi
 
-### Dashboard
+| Menu | Kegunaan |
+| --- | --- |
+| Pembelajaran saya | Membuka dan melanjutkan course yang ditugaskan. |
+| Jalur belajar saya | Melihat urutan course dan prerequisite. |
+| Katalog course | Melihat course terbit yang relevan; course tetap harus ditugaskan agar dapat dipelajari. |
+| Progres saya | Melihat progres pribadi tanpa nilai assessment. |
+| Sertifikat | Mengunduh sertifikat pribadi yang telah diterbitkan. |
 
-Gunakan Dashboard untuk melihat course aktif, progres keseluruhan, deadline, assessment yang perlu dikerjakan, dan aksi **Lanjutkan pembelajaran**.
+## 4. Panduan per role
 
-### Pembelajaran saya dan Jalur belajar saya
+### 4.1 Employee / Learner
 
-- Gunakan filter untuk membedakan course wajib, belum dimulai, berlangsung, atau selesai.
-- Buka **Jalur belajar saya** untuk melihat urutan course dan prerequisite.
-- Course lanjutan tidak dapat dibuka sebelum prerequisite yang diwajibkan selesai.
+Gunakan alur pada [bagian 3](#3-alur-pembelajaran-employee) untuk menyelesaikan course.
 
-### Katalog course
+- Gunakan filter pada **Pembelajaran saya** untuk menemukan course aktif, belum dimulai, atau selesai.
+- Ikuti urutan pada **Jalur belajar saya** untuk course wajib.
+- Jangan menutup halaman ketika assessment sedang dikirim.
+- Hubungi pihak internal bila course menunggu evaluasi akhir atau perlu kesempatan ulang Post-Test.
 
-Katalog menampilkan course terbit yang relevan dengan divisi atau jabatan Anda. Katalog bukan berarti course otomatis dapat dipelajari; course tetap harus ditugaskan terlebih dahulu.
+Employee tidak dapat mengelola user, organisasi, materi, penugasan, laporan organisasi, maupun aktivitas audit.
 
-### Assessment
+### 4.2 Manager Tim
 
-- Simpan jawaban sebelum berpindah soal atau meninggalkan halaman.
-- Timer hanya muncul jika assessment memiliki batas waktu.
-- Jangan menutup halaman ketika submit sedang diproses.
-- Bila Post-Test belum lulus, baca informasi sisa percobaan dan gunakan retake hanya ketika diizinkan sistem.
+Manager memiliki seluruh fitur Employee untuk dirinya sendiri, serta akses ke **Progres tim**.
 
-## 5. Panduan Trainer / Mentor
+1. Buka **Progres tim**.
+2. Gunakan pencarian atau filter status untuk menemukan assignment bawahan langsung.
+3. Pantau progres, status course, dan tenggat yang memerlukan perhatian.
+4. Berikan arahan operasional kepada anggota tim bila diperlukan.
 
-Trainer mengelola **hanya course yang ditugaskan** kepadanya. Trainer tidak dapat membuat course baru, mengubah trainer lain, mengatur kategori global, mengelola pengguna, atau membuat penugasan.
+Manager hanya dapat melihat bawahan langsung yang tercatat pada struktur organisasi. Manager tidak melihat skor angka atau jawaban assessment, serta tidak dapat mengubah materi atau membuat penugasan.
 
-### Memantau progres course
+### 4.3 Trainer / Mentor
 
-Gunakan **Progres course** untuk melihat status pembelajaran, hasil Pre-Test/Post-Test tingkat course, peningkatan nilai, dan jumlah attempt peserta pada course yang ditugaskan kepada Anda. Jika sebuah modul memiliki evaluasi, bagian **Evaluasi per modul** menampilkan skor Pre-Test pertama serta skor terbaik, status, dan jumlah attempt Post-Test. Data course atau peserta di luar penugasan Trainer tidak ditampilkan dan tidak dapat dicari.
+Trainer adalah akun operasional dan hanya dapat mengakses course yang ditugaskan sebagai **Course binaan**.
 
-### Mengelola materi course
+Dashboard Trainer menampilkan jumlah peserta pada course binaan yang **Menunggu evaluasi akhir**. Gunakan tombol **Evaluasi peserta** untuk langsung meninjau mereka; nilai detail tetap berada di halaman **Progres peserta**.
 
-1. Buka **Kelola course**, lalu pilih course yang ditugaskan.
-2. Pastikan course berstatus **Draft** sebelum mengubah struktur atau materi.
-3. Tambahkan module untuk mengelompokkan materi.
-4. Tambahkan lesson pada module dengan tipe yang sesuai:
-   - **Artikel**: isi materi ditulis di editor lesson.
-   - **PDF**: unggah dokumen atau gunakan sumber yang valid sesuai form.
-   - **Video**: unggah file video atau gunakan tautan video yang valid sesuai form.
-   - **Resource**: tambahkan file pendukung bila diperlukan.
-5. Lesson baru ditempatkan otomatis di akhir modul. Gunakan tombol Naik atau Turun untuk mengubah urutannya, lalu tandai lesson wajib bila menjadi syarat kelulusan.
-6. Buat atau perbarui Pre-Test/Post-Test serta pertanyaan sesuai kebutuhan course.
-7. Gunakan preview untuk memeriksa materi sebelum dipublikasikan oleh pihak yang berwenang.
+#### Mengelola materi
 
-Materi course yang sudah **Published** bersifat read-only. Minta LMS Admin atau Super Admin mengembalikannya ke Draft bila perlu revisi.
+1. Buka **Course binaan**, lalu pilih course yang ditugaskan.
+2. Tambahkan atau perbarui modul, lesson, resource, serta Pre-Test/Post-Test sesuai materi.
+3. Pastikan setiap assessment yang digunakan memiliki soal.
+4. Pastikan setiap soal memiliki **tepat satu jawaban benar**.
+5. Gunakan pratinjau untuk memeriksa susunan materi.
 
-## 6. Panduan Manager Tim
+Struktur materi dan assessment hanya dapat diubah saat course berstatus **Draf**. Trainer tidak membuat course baru, tidak mengelola kategori global, user, organisasi, jalur belajar, atau penugasan.
 
-Gunakan **Progres tim** untuk melihat perkembangan **bawahan langsung** yang tercatat pada struktur organisasi. Anda dapat memantau status course, progres, dan hasil pembelajaran tim yang berada dalam lingkup tersebut.
+#### Meninjau peserta
 
-Manager tidak dapat melihat data employee lain di luar rantai pelaporannya, tidak dapat membuat penugasan, dan tidak memiliki akses laporan organisasi penuh.
+1. Buka **Progres peserta**.
+2. Cari course binaan atau peserta yang perlu ditinjau.
+3. Tinjau nilai Pre-Test/Post-Test per modul, serta rata-rata berjalan atau nilai akhir course. Setiap modul evaluatif berbobot sama: nilai Pre-Test pertama dan nilai terbaik Post-Test masing-masing berkontribusi 50%.
+4. Saat course berstatus **Menunggu evaluasi akhir**, pilih tindakan yang sesuai:
+   - setujui kelulusan; atau
+   - buka atau batalkan kesempatan ulang Post-Test.
 
-## 7. Panduan Management
+Trainer hanya dapat meninjau peserta pada course binaannya. Pengujian alur Employee dilakukan dengan akun Employee terpisah.
 
-Gunakan **Laporan** untuk melihat ringkasan pembelajaran organisasi. Terapkan filter yang tersedia sebelum melakukan pencarian atau membuat export.
+### 4.4 Management / Owner
 
-- Export dibuat di background; tunggu statusnya siap sebelum mengunduh file.
-- File export bersifat privat dan hanya dapat diunduh oleh akun yang membuatnya.
-- Management tetap dapat mengerjakan pembelajaran pribadi melalui menu learner.
+Management berfokus pada evaluasi internal organisasi dan tidak memiliki alur pembelajaran pribadi.
 
-Management tidak dapat mengubah user, organisasi, course, jalur belajar, atau penugasan.
+Dashboard Management menampilkan jumlah assignment yang **Menunggu evaluasi akhir** dan menaut langsung ke **Progres peserta**. Nilai detail tetap ditinjau per peserta dan per course.
 
-## 8. Panduan LMS Admin
+#### Evaluasi akhir
 
-LMS Admin mengelola operasi pembelajaran sehari-hari.
+1. Buka **Progres peserta**.
+2. Gunakan filter course atau status untuk menemukan peserta yang memerlukan evaluasi.
+3. Tinjau hasil assessment, peningkatan, dan riwayat percobaan sesuai kebutuhan evaluasi.
+4. Untuk course berstatus **Menunggu evaluasi akhir**, setujui kelulusan atau kelola kesempatan ulang Post-Test.
 
-### Pengguna dan organisasi
+#### Laporan
 
-1. Siapkan struktur **Divisi**, **Jabatan**, dan **Cabang** pada menu Organisasi.
-2. Tambahkan user satu per satu atau gunakan impor CSV/XLSX sesuai template resmi.
-3. Lengkapi identitas employee, termasuk manager, divisi, jabatan, cabang, tanggal masuk, status akun, dan role.
-4. LMS Admin tidak dapat membuat atau menetapkan role Super Admin.
+1. Buka **Laporan**.
+2. Gunakan filter pencarian, status, course, dan divisi.
+3. Tinjau **Nilai akhir** atau **Rata-rata berjalan** course beserta jumlah modul evaluatif yang telah selesai. Nilai ini memakai rata-rata setara dari Pre-Test pertama dan Post-Test terbaik pada setiap modul yang memiliki keduanya.
+4. Pilih **Ekspor CSV** apabila diperlukan.
+5. Tunggu status ekspor siap, lalu unduh file dari daftar ekspor Anda.
 
-### Course dan jalur belajar
+File ekspor bersifat privat dan hanya dapat diunduh oleh akun yang membuatnya. Management tidak mengelola user, organisasi, materi, penugasan, sertifikat, atau audit log.
 
-1. Buat kategori course bila diperlukan.
-2. Buat course dalam status Draft, isi informasi dasar, thumbnail, target audience, trainer, passing grade, dan pengaturan assessment.
-3. Tambahkan module, lesson, resource, serta Pre-Test/Post-Test.
-4. Preview lalu publish course ketika isi dan aturan kelulusan siap.
-5. Buat jalur belajar; course baru ditempatkan otomatis di akhir path dan dapat dipindahkan dengan tombol Naik atau Turun. Atur prerequisite yang diperlukan.
+### 4.5 LMS Admin / HR
 
-### Penugasan dan komunikasi
+LMS Admin menjalankan operasi pembelajaran sehari-hari.
 
-- Gunakan **Penugasan** untuk menugaskan course kepada employee tertentu.
-- Gunakan **Penugasan jalur** untuk penugasan path manual atau rule otomatis berdasarkan organisasi.
-- Gunakan **Pengumuman** untuk menyampaikan informasi kepada pengguna aktif.
-- Gunakan **Laporan** untuk memantau progres dan membuat export.
+Jika terdapat assignment **Menunggu evaluasi akhir**, Dashboard LMS Admin memprioritaskan tombol **Evaluasi peserta**; bila tidak ada, tombol utama tetap menuju **Kelola penugasan**.
 
-## 9. Panduan Super Admin
+#### Mengelola organisasi dan user
 
-Super Admin memiliki seluruh kemampuan LMS Admin, termasuk pengelolaan role Super Admin. Gunakan **Aktivitas audit** untuk meninjau jejak perubahan dan aktivitas penting.
+1. Pada **Organisasi**, kelola divisi, jabatan, dan cabang terlebih dahulu.
+2. Pada **Pengguna**, tambahkan atau perbarui data employee: manager, struktur organisasi, status akun, dan role.
+3. Gunakan impor user bila data sudah mengikuti template sistem.
 
-Aktivitas audit digunakan untuk penelusuran operasional; jangan membagikan informasi audit, export, atau data employee kepada pihak yang tidak berwenang.
+LMS Admin tidak dapat membuat atau menetapkan role Super Admin.
 
-## 10. Bantuan cepat
+#### Membuat dan menerbitkan course
+
+1. Buat course sebagai **Draf** dan lengkapi informasi dasarnya.
+2. Tentukan audience, trainer, durasi, dan aturan penyelesaian.
+3. Tambahkan modul dan lesson. Artikel wajib memiliki isi; PDF/video wajib memiliki satu sumber yang valid.
+4. Tambahkan assessment hanya bila diperlukan:
+   - Pre-Test adalah baseline satu kali tanpa nilai kelulusan.
+   - Post-Test memiliki nilai kelulusan dan batas percobaan.
+5. Periksa **Kesiapan publikasi**, perbaiki semua item yang ditandai, lalu gunakan pratinjau.
+6. Pilih **Publikasikan course** setelah seluruh persyaratan terpenuhi.
+
+Setelah terbit, struktur materi dan assessment bersifat read-only. Kembalikan course ke status Draf sebelum merevisi struktur atau materi.
+
+#### Penugasan dan pemantauan
+
+- **Penugasan**: menugaskan course kepada employee tertentu.
+- **Penugasan jalur**: menugaskan learning path secara manual atau berdasarkan aturan organisasi.
+- **Pengumuman**: menyampaikan informasi kepada pengguna aktif.
+- **Progres peserta** dan **Laporan**: memantau hasil, menyetujui evaluasi akhir, atau mengelola kesempatan ulang Post-Test.
+- **Sertifikat**: melihat dan mengunduh sertifikat yang telah diterbitkan.
+
+### 4.6 Super Admin
+
+Super Admin memiliki semua kemampuan LMS Admin, termasuk pengelolaan role Super Admin.
+
+- Gunakan **Aktivitas audit** untuk menelusuri perubahan administratif dan aktivitas penting.
+- Gunakan **Progres tim** untuk memantau bawahan langsung apabila struktur pelaporan tersedia.
+- Gunakan hak akses penuh hanya untuk kebutuhan operasional yang sah.
+
+Audit log, ekspor, sertifikat, dan data employee adalah informasi internal. Jangan membagikannya kepada pihak yang tidak berwenang.
+
+## 5. Bantuan cepat
 
 | Situasi | Tindakan |
 | --- | --- |
-| Tidak dapat login | Pastikan email/Employee ID dan kata sandi benar. Bila akun belum aktif atau email belum terverifikasi, hubungi LMS Admin. |
-| Course tidak dapat dibuka | Periksa apakah course sudah ditugaskan dan prerequisite telah selesai. |
-| Post-Test terkunci | Selesaikan seluruh lesson wajib terlebih dahulu. |
-| Tidak dapat mengubah materi | Pastikan Anda Trainer yang ditugaskan dan course masih Draft. |
-| File atau export belum tersedia | Tunggu proses background selesai, lalu refresh halaman terkait. |
-| Akses ditolak | Role Anda tidak memiliki akses ke modul tersebut; hubungi LMS Admin bila akses diperlukan untuk tugas kerja. |
-
-## 11. Batas akses penting
-
-- Jangan berbagi akun atau kata sandi.
-- Jangan mengunggah materi yang tidak memiliki izin penggunaan.
-- Jangan menonaktifkan atau mengubah data employee tanpa kewenangan HR/LMS Admin.
-- Hak akses diperiksa oleh sistem pada server; tampilan menu bukan satu-satunya kontrol akses.
+| Tidak dapat masuk | Periksa email/Employee ID dan kata sandi; gunakan Lupa kata sandi atau hubungi LMS Admin. |
+| Email belum diverifikasi | Buka tautan pada email kerja atau minta LMS Admin memeriksa data akun. |
+| Course tidak terlihat | Pastikan course telah ditugaskan, diterbitkan, dan prerequisite dipenuhi. |
+| Materi atau Post-Test terkunci | Selesaikan tahap wajib sebelumnya pada modul atau course tersebut. |
+| Assessment sudah dikirim | Tunggu evaluasi internal; skor tidak ditampilkan pada akun Employee. |
+| Perlu mengulang Post-Test | Hubungi Trainer, Management, atau LMS Admin yang menangani evaluasi. |
+| Tidak dapat mengubah materi | Pastikan Anda Trainer yang ditugaskan atau LMS Admin, dan course berstatus Draf. |
+| Ekspor belum dapat diunduh | Tunggu pemrosesan background selesai, lalu buka kembali Laporan. |
+| Menerima akses ditolak | Role atau cakupan data Anda tidak mengizinkan tindakan tersebut; hubungi LMS Admin bila akses diperlukan. |

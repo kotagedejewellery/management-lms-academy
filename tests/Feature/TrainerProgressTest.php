@@ -89,6 +89,67 @@ class TrainerProgressTest extends TestCase
                 ]]));
     }
 
+    public function test_trainer_sees_equal_weight_course_score_from_module_pre_and_post_tests(): void
+    {
+        $trainer = $this->trainer();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'CS-SCORE-001', 'title' => 'Evaluasi course', 'status' => 'published']);
+        $course->trainers()->attach($trainer);
+        $enrollment = Enrollment::query()->create(['user_id' => User::factory()->create()->id, 'course_id' => $course->id, 'status' => 'active']);
+        $firstModule = $course->modules()->create(['title' => 'Modul pertama', 'sequence' => 1]);
+        $secondModule = $course->modules()->create(['title' => 'Modul kedua', 'sequence' => 2]);
+        $firstPreTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $firstModule->id, 'type' => 'pre_test', 'passing_grade' => 0, 'attempt_limit' => 1]);
+        $firstPostTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $firstModule->id, 'type' => 'post_test', 'passing_grade' => 70, 'attempt_limit' => 3]);
+        $secondPreTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $secondModule->id, 'type' => 'pre_test', 'passing_grade' => 0, 'attempt_limit' => 1]);
+        $secondPostTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $secondModule->id, 'type' => 'post_test', 'passing_grade' => 70, 'attempt_limit' => 3]);
+        $firstPreTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 40, 'submitted_at' => now()]);
+        $firstPostTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 70, 'passed' => true, 'submitted_at' => now()]);
+        $firstPostTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 2, 'score' => 80, 'passed' => true, 'submitted_at' => now()]);
+        $secondPreTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 60, 'submitted_at' => now()]);
+        $secondPostTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 100, 'passed' => true, 'submitted_at' => now()]);
+
+        $this->actingAs($trainer)->get(route('trainer-progress.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('enrollments.data.0.assessment_summary', [
+                    'score' => 70,
+                    'completed_modules' => 2,
+                    'total_modules' => 2,
+                    'is_final' => true,
+                ]));
+    }
+
+    public function test_course_score_is_running_until_every_paired_module_is_completed(): void
+    {
+        $trainer = $this->trainer();
+        $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
+        $course = Course::query()->create(['category_id' => $category->id, 'code' => 'CS-RUNNING-001', 'title' => 'Evaluasi bertahap', 'status' => 'published']);
+        $course->trainers()->attach($trainer);
+        $enrollment = Enrollment::query()->create(['user_id' => User::factory()->create()->id, 'course_id' => $course->id, 'status' => 'active']);
+        $completedModule = $course->modules()->create(['title' => 'Modul selesai', 'sequence' => 1]);
+        $waitingModule = $course->modules()->create(['title' => 'Modul menunggu', 'sequence' => 2]);
+        $unpairedModule = $course->modules()->create(['title' => 'Modul tanpa pasangan', 'sequence' => 3]);
+        $completedPreTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $completedModule->id, 'type' => 'pre_test', 'passing_grade' => 0, 'attempt_limit' => 1]);
+        $completedPostTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $completedModule->id, 'type' => 'post_test', 'passing_grade' => 70, 'attempt_limit' => 3]);
+        $waitingPreTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $waitingModule->id, 'type' => 'pre_test', 'passing_grade' => 0, 'attempt_limit' => 1]);
+        Assessment::query()->create(['course_id' => $course->id, 'module_id' => $waitingModule->id, 'type' => 'post_test', 'passing_grade' => 70, 'attempt_limit' => 3]);
+        $unpairedPreTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $unpairedModule->id, 'type' => 'pre_test', 'passing_grade' => 0, 'attempt_limit' => 1]);
+        $completedPreTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 40, 'submitted_at' => now()]);
+        $completedPostTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 60, 'passed' => false, 'submitted_at' => now()]);
+        $waitingPreTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 80, 'submitted_at' => now()]);
+        $unpairedPreTest->attempts()->create(['enrollment_id' => $enrollment->id, 'attempt_number' => 1, 'score' => 100, 'submitted_at' => now()]);
+
+        $this->actingAs($trainer)->get(route('trainer-progress.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('enrollments.data.0.assessment_summary', [
+                    'score' => 50,
+                    'completed_modules' => 1,
+                    'total_modules' => 2,
+                    'is_final' => false,
+                ]));
+    }
+
     public function test_assigned_trainer_can_approve_a_course_ready_for_final_review(): void
     {
         $trainer = $this->trainer();
