@@ -265,8 +265,12 @@ defineOptions({
                 {{ exporting ? 'Menyiapkan ekspor' : 'Ekspor CSV' }}</Button
             >
         </header>
-        <FilterBar @submit.prevent="applyFilters">
-            <div class="grid w-full gap-2 2xl:w-[22rem]">
+        <FilterBar
+            layout="grid"
+            layout-class="grid-cols-1 md:grid-cols-2 xl:grid-cols-[minmax(0,1.4fr)_13rem_minmax(18rem,1.1fr)_13rem_auto]"
+            @submit.prevent="applyFilters"
+        >
+            <div class="grid min-w-0 gap-2">
                 <Label for="report-search">Cari</Label
                 ><Input
                     id="report-search"
@@ -274,7 +278,7 @@ defineOptions({
                     placeholder="Nama, ID, atau course"
                 />
             </div>
-            <div class="grid w-full shrink-0 gap-2 sm:w-52">
+            <div class="grid gap-2">
                 <Label for="report-status">Status</Label
                 ><select
                     id="report-status"
@@ -290,7 +294,7 @@ defineOptions({
                     <option value="not_passed">Tidak lulus</option>
                 </select>
             </div>
-            <div class="grid w-full shrink-0 gap-2 sm:w-80">
+            <div class="grid min-w-0 gap-2">
                 <Label for="report-course-search">Course</Label>
                 <div class="relative">
                     <Input
@@ -405,7 +409,7 @@ defineOptions({
                     }}
                 </p>
             </div>
-            <div class="grid w-full shrink-0 gap-2 sm:w-52">
+            <div class="grid gap-2">
                 <Label for="report-division">Divisi</Label
                 ><select
                     id="report-division"
@@ -422,12 +426,14 @@ defineOptions({
                     </option>
                 </select>
             </div>
-            <div class="flex w-full shrink-0 gap-2 self-end sm:w-auto">
-                <Button class="flex-1 sm:flex-none" type="submit"
+            <div
+                class="flex w-full gap-2 self-end md:col-span-2 xl:col-span-1 xl:w-auto"
+            >
+                <Button class="flex-1 xl:flex-none" type="submit"
                     ><Search /> Terapkan</Button
                 >
                 <Button
-                    class="flex-1 sm:flex-none"
+                    class="flex-1 xl:flex-none"
                     type="button"
                     variant="outline"
                     @click="clearFilters"

@@ -191,8 +191,12 @@ defineOptions({
             "
         />
 
-        <FilterBar @submit.prevent="applyFilters">
-            <div class="grid w-full gap-2 xl:max-w-xl xl:min-w-80 xl:flex-1">
+        <FilterBar
+            layout="grid"
+            layout-class="grid-cols-1 md:grid-cols-2 xl:grid-cols-[minmax(0,1.6fr)_13rem_minmax(18rem,1fr)_auto]"
+            @submit.prevent="applyFilters"
+        >
+            <div class="grid min-w-0 gap-2">
                 <Label for="trainer-progress-search">Cari</Label>
                 <Input
                     id="trainer-progress-search"
@@ -200,7 +204,7 @@ defineOptions({
                     placeholder="Nama atau ID karyawan"
                 />
             </div>
-            <div class="grid w-full shrink-0 gap-2 sm:w-52">
+            <div class="grid gap-2">
                 <Label for="trainer-progress-status">Status</Label>
                 <select
                     id="trainer-progress-status"
@@ -216,7 +220,7 @@ defineOptions({
                     <option value="not_passed">Tidak lulus</option>
                 </select>
             </div>
-            <div class="grid w-full shrink-0 gap-2 sm:w-72">
+            <div class="grid min-w-0 gap-2 md:col-span-2 xl:col-span-1">
                 <Label for="trainer-progress-course">Course</Label>
                 <select
                     id="trainer-progress-course"
@@ -239,12 +243,14 @@ defineOptions({
                     </option>
                 </select>
             </div>
-            <div class="flex w-full shrink-0 gap-2 self-end sm:w-auto">
-                <Button class="flex-1 sm:flex-none" type="submit"
+            <div
+                class="flex w-full gap-2 self-end md:col-span-2 xl:col-span-1 xl:w-auto"
+            >
+                <Button class="flex-1 xl:flex-none" type="submit"
                     ><Search /> Terapkan</Button
                 >
                 <Button
-                    class="flex-1 sm:flex-none"
+                    class="flex-1 xl:flex-none"
                     type="button"
                     variant="outline"
                     @click="clearFilters"

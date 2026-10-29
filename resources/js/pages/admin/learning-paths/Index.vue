@@ -68,8 +68,12 @@ defineOptions({
                 ></Button
             >
         </div>
-        <FilterBar @submit.prevent="applyFilters">
-            <div class="grid w-full shrink-0 gap-2 sm:w-52">
+        <FilterBar
+            layout="grid"
+            layout-class="grid-cols-1 sm:grid-cols-[13rem_auto] sm:justify-start"
+            @submit.prevent="applyFilters"
+        >
+            <div class="grid gap-2">
                 <label
                     for="path-status"
                     class="text-sm font-medium text-foreground"
@@ -85,7 +89,7 @@ defineOptions({
                     <option value="archived">Diarsipkan</option>
                 </select>
             </div>
-            <div class="flex w-full shrink-0 gap-2 self-end sm:w-auto">
+            <div class="flex w-full gap-2 self-end sm:w-auto">
                 <Button class="flex-1 sm:flex-none" type="submit"
                     ><Search /> Terapkan</Button
                 >

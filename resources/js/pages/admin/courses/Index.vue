@@ -82,8 +82,12 @@ defineOptions({
                 ></Button
             >
         </div>
-        <FilterBar @submit.prevent="applyFilters">
-            <div class="grid w-full gap-2 xl:max-w-2xl xl:min-w-80 xl:flex-1">
+        <FilterBar
+            layout="grid"
+            layout-class="grid-cols-1 md:grid-cols-[minmax(0,1fr)_13rem_auto]"
+            @submit.prevent="applyFilters"
+        >
+            <div class="grid min-w-0 gap-2">
                 <Label for="course-search">Cari</Label>
                 <div class="relative">
                     <Search
@@ -97,7 +101,7 @@ defineOptions({
                     />
                 </div>
             </div>
-            <div class="grid w-full shrink-0 gap-2 sm:w-52">
+            <div class="grid gap-2">
                 <Label for="course-status">Status</Label>
                 <select
                     id="course-status"
@@ -110,12 +114,12 @@ defineOptions({
                     <option value="archived">Diarsipkan</option>
                 </select>
             </div>
-            <div class="flex w-full shrink-0 gap-2 self-end sm:w-auto">
-                <Button class="flex-1 sm:flex-none" type="submit"
+            <div class="flex w-full gap-2 self-end md:w-auto">
+                <Button class="flex-1 md:flex-none" type="submit"
                     ><Search /> Terapkan</Button
                 >
                 <Button
-                    class="flex-1 sm:flex-none"
+                    class="flex-1 md:flex-none"
                     type="button"
                     variant="outline"
                     @click="resetFilters"
