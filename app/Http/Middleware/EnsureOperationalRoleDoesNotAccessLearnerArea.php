@@ -13,8 +13,7 @@ class EnsureOperationalRoleDoesNotAccessLearnerArea
         $user = $request->user();
 
         abort_if(
-            ($user?->hasRole('management') && ! $user->hasPermission('manage-enrollments'))
-                || ($user?->hasRole('trainer') && ! $user->hasPermission('manage-enrollments')),
+            $user?->hasRole('trainer') || $user?->hasPermission('manage-enrollments'),
             403,
         );
 

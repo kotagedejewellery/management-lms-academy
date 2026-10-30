@@ -32,6 +32,8 @@ Progress course dihitung dari `lesson_progress` milik sebuah `enrollment`; statu
 | Assessment | `assessments`, `questions`, `answers`, `assessment_attempts`, `assessment_responses`, `assessment_drafts` |
 | Operations | `announcements`, `user_notifications`, `certificates`, `activity_logs`, `report_exports`, `user_imports` |
 
+Role operasional yang didukung adalah `super-admin`, `lms-admin`, `trainer`, dan `employee`. Migration pensiun role lama bersifat forward-only: ia memetakan `manager` ke `employee` dan `management` ke `lms-admin` secara atomik, tanpa menghapus user atau data pembelajaran.
+
 `assessments.type` dibatasi ke `PRE_TEST` atau `POST_TEST`. Satu course dapat memiliki keduanya sebagai record berbeda. `assessments.is_required` berlaku untuk Pre-Test; ketika aktif, materi hanya dapat dibuka setelah Pre-Test disubmit. `attempt_limit` dikonfigurasi 1â€“3 per assessment. `assessment_attempts` menyimpan score, waktu mulai/kirim, pass status, attempt number, dan snapshot nilai yang diperlukan untuk audit.
 
 ## 3. Constraint penting
@@ -85,7 +87,7 @@ Tambahkan index laporan gabungan hanya setelah `EXPLAIN (ANALYZE, BUFFERS)` menu
 |---|---|---|
 | Course catalog published/filter taxonomy | Redis | Publish/archive/edit course/category. |
 | Learner dashboard summary | Redis, key per user + version | Lesson progress, enrollment, attempt submit. |
-| Manager/Admin aggregate report | Redis, key per permitted scope + filter + period | Progress/attempt/enrollment yang berada dalam scope. |
+| Admin aggregate report | Redis, key per permitted scope + filter + period | Progress/attempt/enrollment yang berada dalam scope. |
 | Authorization/resource access | Tidak di-cache lintas request sebagai source of truth | Periksa Policy pada request. |
 
 Cache harus selalu dapat dibangun ulang dari PostgreSQL; tidak ada state kelulusan yang hanya hidup di Redis.

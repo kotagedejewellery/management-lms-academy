@@ -43,14 +43,14 @@ class TrainerProgressTest extends TestCase
             ->assertNotFound();
     }
 
-    public function test_management_views_organization_wide_progress_scope(): void
+    public function test_lms_admin_views_organization_wide_progress_scope(): void
     {
-        $management = $this->management();
+        $lmsAdmin = $this->lmsAdmin();
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
         $course = Course::query()->create(['category_id' => $category->id, 'code' => 'CS-001', 'title' => 'CS Dealmaker Mastery', 'status' => 'published']);
         Enrollment::query()->create(['user_id' => User::factory()->create()->id, 'course_id' => $course->id, 'status' => 'active']);
 
-        $this->actingAs($management)->get(route('trainer-progress.index'))
+        $this->actingAs($lmsAdmin)->get(route('trainer-progress.index'))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('scope', 'organization')
@@ -205,10 +205,10 @@ class TrainerProgressTest extends TestCase
         return $user;
     }
 
-    private function management(): User
+    private function lmsAdmin(): User
     {
-        $permission = Permission::query()->firstOrCreate(['slug' => 'view-reports'], ['name' => 'Lihat laporan']);
-        $role = Role::query()->firstOrCreate(['slug' => 'management', 'name' => 'Management']);
+        $permission = Permission::query()->firstOrCreate(['slug' => 'manage-enrollments'], ['name' => 'Kelola assignment belajar']);
+        $role = Role::query()->firstOrCreate(['slug' => 'lms-admin', 'name' => 'LMS Admin / HR']);
         $role->permissions()->syncWithoutDetaching([$permission->id]);
         $user = User::factory()->create();
         $user->roles()->attach($role);

@@ -59,7 +59,7 @@ class LocalTestingSeederTest extends TestCase
         $this->assertDatabaseHas('users', ['id' => $customUser->id, 'email' => 'custom.local@example.test']);
     }
 
-    public function test_seeded_data_loads_the_core_admin_manager_and_learner_pages(): void
+    public function test_seeded_data_loads_the_core_admin_and_learner_pages(): void
     {
         Storage::fake('local');
         $this->seed(LocalTestingSeeder::class);
@@ -67,7 +67,6 @@ class LocalTestingSeederTest extends TestCase
         $admin = User::query()->where('email', 'admin@kgj.test')->sole();
         $learner = User::query()->where('email', 'bima@kgj.test')->sole();
         $completedLearner = User::query()->where('email', 'citra@kgj.test')->sole();
-        $manager = User::query()->where('email', 'manager@kgj.test')->sole();
         $course = Course::query()->where('code', 'ONB-001')->sole();
         $module = $course->modules()->firstOrFail();
         $lesson = $module->lessons()->firstOrFail();
@@ -93,6 +92,5 @@ class LocalTestingSeederTest extends TestCase
 
         $this->actingAs($learner)->get(route('my-learning.assessments.receipt', [$course, $preTest]))->assertOk();
         $this->actingAs($completedLearner)->get(route('my-learning.assessments.receipt', [$course, $postTest]))->assertOk();
-        $this->actingAs($manager)->get(route('team-progress.index'))->assertOk();
     }
 }

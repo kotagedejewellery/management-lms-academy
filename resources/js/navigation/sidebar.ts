@@ -18,11 +18,8 @@ export type SidebarCapabilities = {
     manageEnrollments: boolean;
     manageUsers: boolean;
     manageOrganization: boolean;
-    viewReports: boolean;
-    viewTeam: boolean;
     isSuperAdmin: boolean;
     isTrainer: boolean;
-    isManagement: boolean;
 };
 
 type NavigationGroup = {
@@ -63,9 +60,7 @@ export function buildSidebarNavigation(
                   },
               ]
             : []),
-        ...(!capabilities.manageEnrollments &&
-        !capabilities.isTrainer &&
-        !capabilities.isManagement
+        ...(!capabilities.manageEnrollments && !capabilities.isTrainer
             ? [
                   {
                       title: 'Pembelajaran saya',
@@ -84,7 +79,7 @@ export function buildSidebarNavigation(
                   },
               ]
             : []),
-        ...(!capabilities.isTrainer && !capabilities.isManagement
+        ...(!capabilities.isTrainer
             ? [{ title: 'Sertifikat', href: '/certificates', icon: Award }]
             : []),
     ];
@@ -113,9 +108,7 @@ export function buildSidebarNavigation(
             : []),
     ];
     const monitoring: NavItem[] = [
-        ...(!capabilities.manageEnrollments &&
-        !capabilities.isTrainer &&
-        !capabilities.isManagement
+        ...(!capabilities.manageEnrollments && !capabilities.isTrainer
             ? [
                   {
                       title: 'Progres saya',
@@ -133,7 +126,7 @@ export function buildSidebarNavigation(
                   },
               ]
             : []),
-        ...(capabilities.manageEnrollments || capabilities.viewReports
+        ...(capabilities.manageEnrollments
             ? [
                   {
                       title: 'Progres peserta',
@@ -143,11 +136,8 @@ export function buildSidebarNavigation(
               ]
             : []),
         { title: 'Notifikasi', href: '/notifications', icon: Bell },
-        ...(capabilities.manageEnrollments || capabilities.viewReports
+        ...(capabilities.manageEnrollments
             ? [{ title: 'Laporan', href: '/reports', icon: BookOpen }]
-            : []),
-        ...(capabilities.viewTeam
-            ? [{ title: 'Progres tim', href: '/team-progress', icon: Users }]
             : []),
         ...(capabilities.isSuperAdmin
             ? [

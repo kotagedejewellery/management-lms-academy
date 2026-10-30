@@ -18,8 +18,7 @@ class UserPolicy
 
     public function view(User $actor, User $user): bool
     {
-        return $actor->hasPermission('manage-users')
-            || ($actor->hasPermission('view-team') && $user->manager_id === $actor->id);
+        return $actor->hasPermission('manage-users');
     }
 
     public function create(User $actor): bool

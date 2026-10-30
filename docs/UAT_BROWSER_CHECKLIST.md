@@ -20,7 +20,7 @@ Lakukan alur inti pada Chrome desktop 1440 px dan 1024 px, lalu browser mobile/e
 | Area | Skenario penerimaan | Desktop | Mobile | Catatan/bukti |
 |---|---|---|---|---|
 | Login | Email/Employee ID, password, lupa password, pesan gagal, dan logout | [x] Lulus | [x] Lulus | Dikonfirmasi penguji |
-| Role | Employee, Manager, Trainer, LMS Admin, dan Super Admin hanya melihat menu serta data yang diizinkan | [x] Lulus | [x] Lulus | Dikonfirmasi penguji |
+| Role | Employee, Trainer, LMS Admin, dan Super Admin hanya melihat menu serta data yang diizinkan | [x] Lulus | [x] Lulus | Dikonfirmasi penguji |
 | Navigasi | Sidebar/drawer, menu aktif, focus keyboard, dan tombol kembali bekerja | [x] Lulus | [x] Lulus | Dikonfirmasi penguji |
 | Dashboard | Statistik, CTA, course terkunci, empty/loading/error state tidak menyesatkan | [x] Lulus | [x] Lulus | Dikonfirmasi penguji |
 | Learning | Pre-Test, player video/PDF/article, resource privat, previous/next, resume, dan Post-Test | [x] Lulus | [x] Lulus | Dikonfirmasi penguji |

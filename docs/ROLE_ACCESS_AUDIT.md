@@ -1,154 +1,39 @@
 # Audit akses role
 
-Tanggal audit: 16 Oktober 2026  
-Ruang lingkup: role, permission, route server, dashboard, sidebar, dan batas data yang dirender. Dokumen ini menggambarkan implementasi saat ini, bukan target baru.
+Tanggal pembaruan: 30 Oktober 2026
+Ruang lingkup: role operasional, dashboard, sidebar, route server, dan cakupan data.
 
-## Kesimpulan singkat
+## Keputusan akses
 
-Enam role aktif sudah memiliki pemisahan akses yang kuat pada server, bukan hanya pada sidebar. Seluruh halaman aplikasi utama mensyaratkan akun yang aktif dan email terverifikasi; endpoint pembelajaran juga memeriksa enrollment, status course, serta prerequisite di server.
+KGJ Academy mendukung empat role operasional. Akses selalu diperiksa server-side; menyembunyikan menu bukan pengamanan utama.
 
-| Status | Arti |
-| --- | --- |
-| Sesuai | Sesuai dengan mandat role dan dibatasi di server. |
-| Terbatas dengan benar | Tidak tersedia bagi role karena memang bukan tanggung jawabnya. |
-| Perlu keputusan | Sistem aman, tetapi kebijakan produk belum dinyatakan eksplisit. |
-| Gap | Perilaku saat ini terlalu luas atau belum memenuhi ruang lingkup role yang disepakati. |
-
-## Fondasi akses yang berlaku untuk semua role
-
-| Kontrol | Status | Implementasi saat ini |
+| Role | Dashboard | Cakupan utama |
 | --- | --- | --- |
-| Login, akun aktif, dan email terverifikasi | Sesuai | Halaman aplikasi utama berada di middleware `auth`, `verified`, `active`, dan `audit`. |
-| Profil, keamanan akun, dan tampilan | Sesuai | Semua pengguna aktif dapat mengelola profilnya sendiri; pengaturan keamanan tetap memerlukan verifikasi email. |
-| Notifikasi | Sesuai | Hanya notifikasi milik pengguna yang sedang masuk yang dapat dibaca. |
-| Sertifikat | Sesuai | Learner hanya melihat sertifikatnya sendiri; pengelola penugasan dapat melihat sertifikat organisasi. Unduhan tetap memakai otorisasi server. |
-| Resource course | Sesuai | Resource privat hanya dapat diakses pengelola course atau learner dengan enrollment yang sah. |
-| Katalog course | Sesuai | Hanya course terbit yang generik atau cocok dengan divisi/jabatan pengguna yang muncul. Course tanpa penugasan tidak dapat dipelajari. |
+| Employee / Learner | Pembelajaran saya | Course, progres, jalur belajar, sertifikat, dan notifikasi pribadi tanpa nilai assessment. |
+| Trainer / Mentor | Course yang saya kelola | Course binaan dan Progres peserta untuk course yang ditugaskan. |
+| LMS Admin / HR | Ringkasan operasional | Pengguna, organisasi, course, jalur belajar, penugasan, progres peserta, laporan, serta evaluasi akhir. |
+| Super Admin | Ringkasan operasional | Semua kemampuan LMS Admin, termasuk pengelolaan role Super Admin dan aktivitas audit. |
 
-## Matriks menu dan modul
+Role **Manager Tim** dan **Management / Owner** telah dipensiunkan. Relasi atasan organisasi (`manager_id`) tetap ada untuk data organisasi, tetapi tidak memberikan akses aplikasi maupun dashboard Progres tim.
 
-Legenda: ✓ tersedia; — tidak tersedia karena bukan mandat; `✓*` tersedia dengan batas khusus.
+## Batas akses utama
 
-Matriks ini menggambarkan menu yang dirender di sidebar. Endpoint Pembelajaran saya, Jalur belajar saya, Katalog course, dan Progres saya tetap aman digunakan lewat URL langsung oleh semua akun aktif; endpoint tersebut hanya mengembalikan data akun sendiri. Role operasional tidak melihat menu tersebut agar navigasi tetap fokus pada pekerjaan administrasi.
+| Area | Employee | Trainer | LMS Admin | Super Admin |
+| --- | --- | --- | --- | --- |
+| Pembelajaran pribadi | Ya | Tidak | Tidak | Tidak |
+| Course binaan | Tidak | Hanya course ditugaskan | Semua | Semua |
+| Progres peserta dan evaluasi akhir | Tidak | Hanya course ditugaskan | Semua | Semua |
+| Laporan dan ekspor | Tidak | Tidak | Semua | Semua |
+| Pengguna, organisasi, dan penugasan | Tidak | Tidak | Ya | Ya |
+| Aktivitas audit | Tidak | Tidak | Tidak | Ya |
 
-| Menu / modul | Super Admin | LMS Admin | Trainer | Manager | Employee | Management |
-| --- | --- | --- | --- | --- | --- | --- |
-| Dashboard sesuai peran | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Pembelajaran saya | — | — | ✓ | ✓ | ✓ | ✓ |
-| Jalur belajar saya | — | — | ✓ | ✓ | ✓ | ✓ |
-| Katalog course | — | — | ✓ | ✓ | ✓ | ✓ |
-| Progres saya | — | — | ✓ | ✓ | ✓ | ✓ |
-| Kelola course dan materi | ✓ | ✓ | ✓* | — | — | — |
-| Kelola jalur belajar | ✓ | ✓ | — | — | — | — |
-| Pengguna | ✓ | ✓* | — | — | — | — |
-| Organisasi | ✓ | ✓ | — | — | — | — |
-| Penugasan course / jalur | ✓ | ✓ | — | — | — | — |
-| Pengumuman | ✓ | ✓ | — | — | — | — |
-| Laporan | ✓ | ✓ | — | — | — | ✓ |
-| Progres course yang ditugaskan | — | — | ✓* | — | — | — |
-| Progres tim | ✓ | — | — | ✓* | — | — |
-| Aktivitas audit | ✓ | — | — | — | — | — |
-| Sertifikat | ✓* | ✓* | ✓ | ✓ | ✓ | ✓ |
-| Notifikasi dan pengaturan akun | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+## Bukti regresi
 
-`✓*` pada Trainer berarti hanya course yang ditugaskan kepadanya.  
-`✓*` pada LMS Admin untuk Pengguna berarti tidak dapat membuat atau menetapkan role Super Admin.  
-`✓*` pada Manager berarti hanya bawahan langsung berdasarkan `manager_id`.  
-`✓*` pada Sertifikat untuk Super Admin/LMS Admin berarti dapat melihat semua sertifikat; role lain hanya miliknya sendiri.
-
-## Pemetaan per role
-
-### Super Admin
-
-| Area | Status | Perilaku aktual |
-| --- | --- | --- |
-| Dashboard operasional | Sesuai | Melihat ringkasan penugasan dan operasi, sama seperti LMS Admin. |
-| Pengelolaan organisasi, pengguna, course, path, assignment, pengumuman, laporan | Sesuai | Memiliki seluruh permission melalui bypass `super-admin`. |
-| Audit activity | Sesuai | Satu-satunya role yang dapat membuka jejak audit. |
-| Progres tim | Sesuai | Dapat melihat laporan bawahan langsung bila data manager tersedia. |
-| Pembelajaran pribadi dan katalog | Sesuai | Disembunyikan agar navigasi fokus pada operasi, tetapi endpoint self-service tetap aman bila dibuka langsung dan hanya memuat data akun sendiri. |
-| Dashboard keamanan khusus | Perlu keputusan | Belum ada dashboard khusus health, queue, atau konfigurasi keamanan. Ini bukan penghalang operasi MVP; tambahkan hanya bila Super Admin perlu memantau infrastruktur dari aplikasi. |
-
-### LMS Admin
-
-| Area | Status | Perilaku aktual |
-| --- | --- | --- |
-| Operasi LMS | Sesuai | Mengelola pengguna, struktur organisasi, course, jalur belajar, penugasan, pengumuman, dan laporan. |
-| Manajemen user | Sesuai | Dapat membuat/mengubah user, tetapi tidak dapat menetapkan Super Admin. |
-| Audit activity | Terbatas dengan benar | Audit dibatasi untuk Super Admin untuk menjaga pemisahan kontrol. |
-| Progres tim | Terbatas dengan benar | Tidak memperoleh `view-team`; laporan organisasi tersedia melalui modul Laporan. |
-| Pembelajaran pribadi | Sesuai | Tidak ditampilkan untuk role operasional, tetapi endpoint self-service tetap dapat dibuka dan hanya memuat data akun sendiri. |
-
-### Trainer / Mentor
-
-| Area | Status | Perilaku aktual |
-| --- | --- | --- |
-| Course yang ditugaskan | Sesuai | Daftar course, materi, resource, thumbnail, dan assessment dibatasi oleh relasi `course_trainers`. Trainer tidak dapat mengubah trainer course. |
-| Course baru | Sesuai | Hanya LMS Admin/Super Admin (`manage-enrollments`) yang dapat membuka dan mengirim pembuatan course. Trainer mengelola course yang telah ditugaskan. |
-| Kategori course global | Sesuai | Hanya LMS Admin/Super Admin (`manage-enrollments`) yang dapat membuka, membuat, dan mengubah taxonomy kategori global. |
-| Progres course | Sesuai | Melihat status, ringkasan course, serta hasil Pre-Test/Post-Test per modul learner hanya untuk course yang ditugaskan melalui relasi `course_trainers`; tidak tersedia ekspor maupun filter divisi. |
-| Learner pribadi | Sesuai | Tetap dapat memakai Pembelajaran saya, Jalur belajar saya, katalog, progres, sertifikat, dan notifikasi. |
-| User, organisasi, penugasan, pengumuman, laporan, audit | Terbatas dengan benar | Tidak ditampilkan dan ditolak oleh otorisasi server. |
-
-### Manager Tim
-
-| Area | Status | Perilaku aktual |
-| --- | --- | --- |
-| Dashboard tim | Sesuai | Dashboard Manager menampilkan konteks bawahan langsung. |
-| Progres tim | Sesuai dengan kebijakan saat ini | Query dibatasi ke `users.manager_id = pengguna masuk`; manager tidak dapat melihat user di luar rantai pelaporannya. |
-| Learner pribadi | Sesuai | Mendapat seluruh pengalaman belajar pribadi yang sama dengan Employee. |
-| Laporan organisasi | Terbatas dengan benar | Tidak memiliki `view-reports`. |
-| Cakupan divisi / cabang | Perlu keputusan | Bila “tim yang diizinkan” berarti divisi atau cabang penuh, fitur agregasi itu belum ada. Implementasi saat ini konsisten pada definisi yang lebih aman: bawahan langsung saja. |
-
-### Employee
-
-| Area | Status | Perilaku aktual |
-| --- | --- | --- |
-| Dashboard learner | Sesuai | Menampilkan pembelajaran aktif, assessment, deadline, progres, dan course yang terkunci prerequisite. |
-| My Learning, path, katalog, detail course, lesson, assessment | Sesuai | Hanya enrollment dan materi yang memenuhi aturan pembelajaran yang dapat diakses. |
-| Assessment | Sesuai | Pre-Test/Post-Test mengikuti mandatory rule, prerequisite lesson, batas attempt, dan passing grade di server. |
-| Sertifikat, progres, notifikasi, profil | Sesuai | Data selalu milik sendiri. |
-| Administrasi, laporan, team progress, audit | Terbatas dengan benar | Tidak tersedia di sidebar dan terproteksi server-side. |
-
-### Management / Owner
-
-| Area | Status | Perilaku aktual |
-| --- | --- | --- |
-| Dashboard eksekutif | Sesuai | Melihat metrik organisasi dan ringkasan pembelajaran. |
-| Laporan | Sesuai | Melihat laporan organisasi dan dapat membuat export privat miliknya. Pencarian dan pagination dijalankan di server. |
-| Learner pribadi | Sesuai | Tetap memiliki menu pembelajaran pribadi, sertifikat, progres, dan notifikasi. |
-| Operasi LMS | Terbatas dengan benar | Tidak dapat mengubah user, course, organisasi, assignment, atau audit. |
-| Sertifikat organisasi | Terbatas dengan benar | Hanya sertifikat miliknya yang ditampilkan; bila Owner harus mengaudit sertifikat organisasi, ini perlu permission baru yang eksplisit. |
-
-## Perbaikan yang dituntaskan
-
-| Prioritas awal | Perbaikan | Hasil |
-| --- | --- | --- |
-| P1 | Trainer dapat membuat course sendiri | Ditutup. `courses.create` dan `courses.store` kini memerlukan `manage-enrollments`; CTA pembuatan juga tidak dirender untuk Trainer. |
-| P1 | Trainer dapat mengubah kategori course global | Ditutup. Seluruh endpoint kategori kini memerlukan `manage-enrollments`; tautan pengelolaan kategori disembunyikan dari Trainer. |
-
-## Batas produk yang disengaja
-
-Kebijakan yang sudah ditetapkan: Manager Tim hanya melihat bawahan langsung berdasarkan `manager_id`; Management melihat laporan agregat organisasi; dan akun yang dikelola melalui UI atau impor memiliki satu role operasional. Model data tetap mendukung multi-role untuk kompatibilitas teknis, tetapi role switcher bukan bagian dari produk.
-
-| Area | Keputusan | Alasan |
-| --- | --- | --- |
-| Dashboard infrastruktur Super Admin | Tidak tersedia pada MVP. | Health, queue, konfigurasi, dan secret dipantau melalui infrastruktur VPS, bukan aplikasi pembelajaran. |
-| Sertifikat organisasi untuk Management | Tidak tersedia. | Management menerima laporan agregat; sertifikat tetap privat sampai ada kebutuhan audit sertifikat yang eksplisit. |
-
-## Bukti pemeriksaan
-
-- Permission dan role seeded: `database/seeders/RolePermissionSeeder.php`.
-- Bypass Super Admin dan batas trainer: `app/Models/User.php`.
-- Route dan middleware: `routes/web.php`.
-- Navigasi yang benar-benar dirender per permission: `resources/js/components/AppSidebar.vue`.
-- Pemilihan dashboard per role: `app/Support/DashboardResolver.php`.
-- Proteksi course dan konten: `app/Http/Controllers/Admin/CourseController.php`, `CourseContentController.php`, dan `AssessmentController.php`.
-- Validasi regresi akses dilakukan pada 16 Oktober 2026: 33 test lulus, 264 assertion (`DashboardTest`, `TeamProgressTest`, `CourseManagementTest`, `UserManagementTest`, `ReportTest`, dan `CourseLibraryTest`).
-- Validasi perbaikan P1: 16 test lulus, 83 assertion pada `CourseManagementTest`, termasuk penolakan Trainer dan izin LMS Admin untuk kategori.
-- Kontrak akses role: 2 test lulus, 144 assertion pada `RoleAccessContractTest`. Test ini mengunci mode dashboard serta akses route kritis untuk Super Admin, LMS Admin, Trainer, Manager, Employee, dan Management.
-- Kontrak menu sidebar: 6 test frontend lulus pada `resources/js/navigation/sidebar.test.ts`. Test menjalankan sumber navigasi yang dipakai `AppSidebar` dan mengunci item yang terlihat untuk keenam role.
+- `RoleAccessContractTest` mengunci role aktif, dashboard, dan route kritis.
+- `RoleRetirementMigrationTest` mengunci pemindahan akun retired tanpa menghapus user, enrollment, atau relasi atasan.
+- `TrainerProgressTest` mengunci scope Trainer dan akses organisasi LMS Admin.
+- `sidebar.test.ts` mengunci item sidebar yang terlihat untuk keempat role.
 
 ## Batas audit
 
-Audit ini memeriksa kode dan automated test, bukan konfigurasi akun produksi atau data aktual pada VPS. Keputusan authoring Trainer dan ownership kategori telah diterapkan berdasarkan rekomendasi audit; route server, dashboard, dan menu sidebar kini memiliki regression contract. Gap tersisa merupakan keputusan kebijakan produk, bukan bypass akses yang diketahui.
+Audit ini memeriksa source code dan test otomatis. Konfigurasi role serta akun aktual di production harus diverifikasi setelah migrasi rilis dijalankan.

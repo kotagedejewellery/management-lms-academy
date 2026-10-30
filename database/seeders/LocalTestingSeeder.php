@@ -80,7 +80,7 @@ class LocalTestingSeeder extends Seeder
             ['is_active' => true],
         ));
 
-        $roles = Role::query()->whereIn('slug', ['super-admin', 'lms-admin', 'trainer', 'manager', 'employee', 'management'])->get()->keyBy('slug');
+        $roles = Role::query()->whereIn('slug', ['super-admin', 'lms-admin', 'trainer', 'employee'])->get()->keyBy('slug');
         $admin = User::query()->firstOrCreate(
             ['email' => 'admin@kgj.test'],
             ['employee_id' => 'LOCAL-ADMIN', 'name' => 'Local Super Admin', 'password' => $password, 'status' => 'active'],
@@ -96,7 +96,7 @@ class LocalTestingSeeder extends Seeder
             'employee_id' => 'KGJ-002', 'name' => 'Raka Wicaksana', 'email' => 'trainer@kgj.test', 'phone' => '081200000002',
             'division_id' => $divisions['HR']->id, 'position_id' => $positions['hr_officer']->id, 'branch_id' => $branches['KGJ-KTG']->id, 'status' => 'active',
         ], $password, $now);
-        $manager = $this->upsertUser($roles['manager'], [
+        $manager = $this->upsertUser($roles['employee'], [
             'employee_id' => 'KGJ-010', 'name' => 'Dewi Kurniasari', 'email' => 'manager@kgj.test', 'phone' => '081200000010',
             'division_id' => $divisions['SLS']->id, 'position_id' => $positions['senior_sales']->id, 'branch_id' => $branches['KGJ-MRB']->id, 'status' => 'active',
         ], $password, $now);
@@ -116,7 +116,7 @@ class LocalTestingSeeder extends Seeder
             'employee_id' => 'KGJ-104', 'name' => 'Dimas Pratama', 'email' => 'dimas@kgj.test', 'phone' => '081200000104',
             'division_id' => $divisions['OPS']->id, 'position_id' => $positions['store_leader']->id, 'branch_id' => $branches['KGJ-KTG']->id, 'status' => 'inactive',
         ], $password, $now);
-        $this->upsertUser($roles['management'], [
+        $this->upsertUser($roles['lms-admin'], [
             'employee_id' => 'KGJ-900', 'name' => 'Nadia Utami', 'email' => 'owner@kgj.test', 'phone' => '081200000900',
             'division_id' => $divisions['OPS']->id, 'position_id' => $positions['store_leader']->id, 'branch_id' => $branches['KGJ-KTG']->id, 'status' => 'active',
         ], $password, $now);

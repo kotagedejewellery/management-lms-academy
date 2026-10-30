@@ -27,7 +27,7 @@ class LocalLearningCatalogResetSeederTest extends TestCase
         $this->seed(LocalTestingSeeder::class);
 
         $preservedUser = User::factory()->create();
-        $preservedUser->roles()->attach(Role::query()->where('slug', 'manager')->valueOrFail('id'));
+        $preservedUser->roles()->attach(Role::query()->where('slug', 'employee')->valueOrFail('id'));
         $userCount = User::query()->count();
 
         $this->seed(LocalLearningCatalogResetSeeder::class);

@@ -25,7 +25,7 @@ Laravel + Inertia + Vue
 | Modul | Tanggung jawab | Batas penting |
 |---|---|---|
 | Identity & Access | Login, reset password, role, permission, policy | Semua resource check di server. |
-| Organization | User, division, position, branch, manager | Menyediakan audience dan scope reporting. |
+| Organization | User, division, position, branch, atasan organisasi | Menyediakan audience dan struktur organisasi. |
 | Learning Catalog | Course, module, lesson, resource, publication | Hanya published course dapat dipelajari. |
 | Learning Path & Enrollment | Path, course order, prerequisite, assignment | Menentukan course yang tersedia pada learner. |
 | Assessment | Pre/Post-Test, question, attempt, response, scoring, retake authorization | Attempt immutable setelah submitted; setiap retake Post-Test membutuhkan otorisasi internal yang tercatat. |
@@ -53,7 +53,7 @@ Laravel + Inertia + Vue
 ### Otorisasi retake Post-Test
 
 1. Setelah Post-Test belum memenuhi standar, Employee tidak dapat memulai attempt berikutnya sendiri.
-2. Trainer yang ditugaskan pada course, atau role internal dengan izin enrollment/laporan, membuat satu otorisasi retake untuk enrollment dan assessment tersebut.
+2. Trainer yang ditugaskan pada course, LMS Admin, atau Super Admin membuat satu otorisasi retake untuk enrollment dan assessment tersebut.
 3. Employee melihat halaman persiapan netral dan harus menekan tindakan mulai sebelum otorisasi dikonsumsi atomik serta attempt berikutnya dibuat. Otorisasi yang belum dipakai dapat dibatalkan secara soft-cancel oleh pihak berwenang dan tidak dapat melampaui attempt limit assessment.
 
 ### Pekerjaan berat

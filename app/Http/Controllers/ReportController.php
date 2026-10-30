@@ -108,6 +108,6 @@ class ReportController extends Controller
 
     private function authorizeReports(Request $request): void
     {
-        abort_unless($request->user()?->hasPermission('manage-enrollments') || $request->user()?->hasPermission('view-reports'), 403);
+        abort_unless($request->user()?->hasPermission('manage-enrollments'), 403);
     }
 }

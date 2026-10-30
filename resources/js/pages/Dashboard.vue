@@ -3,10 +3,8 @@ import { Head, Link } from '@inertiajs/vue3';
 import {
     ArrowRight,
     BookOpenCheck,
-    ChartNoAxesCombined,
     ClipboardCheck,
     ListChecks,
-    UsersRound,
 } from '@lucide/vue';
 import { computed } from 'vue';
 import EmptyState from '@/components/EmptyState.vue';
@@ -33,7 +31,7 @@ type LearningSummary = {
 };
 
 const props = defineProps<{
-    mode: 'learner' | 'trainer' | 'manager' | 'operations' | 'executive';
+    mode: 'learner' | 'trainer' | 'operations';
     title: string;
     description: string;
     stats: Stat[];
@@ -61,23 +59,11 @@ const context = computed(
                 scope: 'Data course sesuai akses Anda.',
                 icon: ClipboardCheck,
             },
-            manager: {
-                label: 'Tindak lanjut tim',
-                detail: 'Prioritaskan assignment yang melewati tenggat agar pembelajaran tim tetap berjalan.',
-                scope: 'Data untuk tim yang Anda kelola.',
-                icon: UsersRound,
-            },
             operations: {
                 label: 'Operasional pembelajaran',
                 detail: 'Pantau assignment terbaru dan lanjutkan pengelolaan program belajar karyawan.',
                 scope: 'Data operasional sesuai akses Anda.',
                 icon: ClipboardCheck,
-            },
-            executive: {
-                label: 'Gambaran organisasi',
-                detail: 'Gunakan laporan untuk meninjau capaian dan area pembelajaran yang memerlukan perhatian.',
-                scope: 'Ringkasan organisasi sesuai akses Anda.',
-                icon: ChartNoAxesCombined,
             },
         })[props.mode],
 );

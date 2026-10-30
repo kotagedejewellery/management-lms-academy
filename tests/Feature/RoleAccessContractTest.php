@@ -20,16 +20,11 @@ class RoleAccessContractTest extends TestCase
         'super-admin',
         'lms-admin',
         'trainer',
-        'manager',
         'employee',
-        'management',
     ];
 
     /** @var list<string> */
     private const LEARNER_AREA_ROLE_SLUGS = [
-        'super-admin',
-        'lms-admin',
-        'manager',
         'employee',
     ];
 
@@ -46,9 +41,7 @@ class RoleAccessContractTest extends TestCase
             'super-admin' => 'operations',
             'lms-admin' => 'operations',
             'trainer' => 'trainer',
-            'manager' => 'manager',
             'employee' => 'learner',
-            'management' => 'executive',
         ] as $roleSlug => $mode) {
             $this->actingAs($this->userForRole($roleSlug))
                 ->get(route('dashboard'))
@@ -56,16 +49,15 @@ class RoleAccessContractTest extends TestCase
                 ->assertInertia(fn (Assert $page) => $page
                     ->component('Dashboard')
                     ->where('mode', $mode)
-                    ->where('auth.isTrainer', $roleSlug === 'trainer')
-                    ->where('auth.isManagement', $roleSlug === 'management'));
+                    ->where('auth.isTrainer', $roleSlug === 'trainer'));
         }
     }
 
-    public function test_manager_role_uses_the_team_manager_label(): void
+    public function test_role_catalog_contains_only_the_four_supported_operational_roles(): void
     {
         $this->assertSame(
-            'Manager Tim',
-            Role::query()->where('slug', 'manager')->sole()->name,
+            ['employee', 'lms-admin', 'super-admin', 'trainer'],
+            Role::query()->orderBy('slug')->pluck('slug')->all(),
         );
     }
 
@@ -80,16 +72,15 @@ class RoleAccessContractTest extends TestCase
             'organization' => ['organization.index', ['type' => 'divisions'], ['super-admin', 'lms-admin']],
             'assignments' => ['enrollments.index', [], ['super-admin', 'lms-admin']],
             'announcements' => ['announcements.index', [], ['super-admin', 'lms-admin']],
-            'reports' => ['reports.index', [], ['super-admin', 'lms-admin', 'management']],
-            'trainer progress' => ['trainer-progress.index', [], ['super-admin', 'lms-admin', 'trainer', 'management']],
-            'team progress' => ['team-progress.index', [], ['super-admin', 'manager']],
+            'reports' => ['reports.index', [], ['super-admin', 'lms-admin']],
+            'trainer progress' => ['trainer-progress.index', [], ['super-admin', 'lms-admin', 'trainer']],
             'audit logs' => ['audit-logs.index', [], ['super-admin']],
             'my learning' => ['my-learning.index', [], self::LEARNER_AREA_ROLE_SLUGS],
             'my learning paths' => ['my-learning-paths.index', [], self::LEARNER_AREA_ROLE_SLUGS],
             'course library' => ['course-library.index', [], self::LEARNER_AREA_ROLE_SLUGS],
             'my progress' => ['my-progress.index', [], self::LEARNER_AREA_ROLE_SLUGS],
             'notifications' => ['notifications.index', [], self::ROLE_SLUGS],
-            'certificates' => ['certificates.index', [], self::LEARNER_AREA_ROLE_SLUGS],
+            'certificates' => ['certificates.index', [], ['super-admin', 'lms-admin', 'employee']],
         ];
 
         foreach ($modules as $module => [$route, $parameters, $allowedRoles]) {
@@ -112,7 +103,7 @@ class RoleAccessContractTest extends TestCase
         $lesson = $course->modules()->create(['title' => 'Modul 1', 'sequence' => 1])
             ->lessons()->create(['title' => 'Materi', 'type' => 'article', 'content' => 'Isi materi', 'is_required' => true, 'sequence' => 1]);
 
-        foreach (['trainer', 'management'] as $roleSlug) {
+        foreach (['trainer'] as $roleSlug) {
             $this->actingAs($this->userForRole($roleSlug))
                 ->post(route('my-learning.lessons.complete', [$course, $lesson]))
                 ->assertForbidden();

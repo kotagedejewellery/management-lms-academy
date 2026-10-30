@@ -89,16 +89,6 @@ class UserManagementTest extends TestCase
         ])->assertSessionHasErrors('position_id');
     }
 
-    public function test_manager_can_view_only_their_direct_report(): void
-    {
-        $manager = $this->userWithPermission('view-team');
-        $directReport = User::factory()->create(['manager_id' => $manager->id]);
-        $otherEmployee = User::factory()->create();
-
-        $this->assertTrue($manager->can('view', $directReport));
-        $this->assertFalse($manager->can('view', $otherEmployee));
-    }
-
     private function userWithPermission(string $permission): User
     {
         $permission = Permission::query()->create(['slug' => $permission, 'name' => $permission]);

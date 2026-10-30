@@ -52,6 +52,20 @@ Deploy selalu membangun dan membuat ulang `app` serta `web` dalam perintah yang 
 docker compose --env-file .env.production -f compose.production.yml up -d --build --force-recreate app web worker scheduler
 ```
 
+### Konsolidasi role operasional
+
+Release yang memensiunkan role `Manager Tim` dan `Management / Owner` memakai migration forward-only. Sebelum deploy, pastikan backup database terbaru tersedia dan tinjau akun terdampak: `Manager Tim` dipetakan ke `Employee / Learner`, sedangkan `Management / Owner` dipetakan ke `LMS Admin / HR` dengan hak operasional penuh.
+
+Migration membatalkan deploy tanpa mengubah data bila role pengganti `employee` atau `lms-admin` belum tersedia. Bila itu terjadi, jalankan satu kali seeder role berikut pada image release yang sudah aktif, lalu jalankan ulang migration/deploy. Seeder ini tidak boleh dimasukkan ke auto-deploy rutin.
+
+```sh
+dc=(docker compose --env-file .env.production -f compose.production.yml)
+"${dc[@]}" exec -T app php artisan db:seed --class='Database\Seeders\RolePermissionSeeder' --force
+"${dc[@]}" exec -T app php artisan migrate --force
+```
+
+Jangan gunakan `php artisan migrate:rollback` untuk migration konsolidasi role. Bila pemulihan diperlukan, gunakan backup atau migration korektif yang baru.
+
 ### Data katalog Customer Service
 
 Deploy otomatis tidak menjalankan seeder katalog agar setiap push tidak mengubah data bisnis. Untuk menyamakan katalog Customer Service production dengan katalog lokal setelah release berhasil, jalankan **satu kali secara eksplisit** di VPS:
@@ -118,7 +132,7 @@ Setelah restore, verifikasi migration, jumlah pengguna/course/enrollment, dan sa
 
 - Pantau `/up`, HTTP 5xx, log aplikasi, penggunaan database/Redis/storage, serta failed jobs dan waktu tunggu queue.
 - Alert segera bila health check gagal, failed jobs bertambah, backup gagal, atau queue tidak bergerak.
-- Untuk data dashboard yang terlambat, periksa worker dan Redis terlebih dahulu; cache dashboard manajemen aman dibangun ulang dari PostgreSQL dan dapat dihapus dengan `php artisan cache:forget dashboard:management`.
+- Untuk data dashboard yang terlambat, periksa worker dan Redis terlebih dahulu; cache dashboard operasional aman dibangun ulang dari PostgreSQL dan dapat dihapus dengan `php artisan cache:forget dashboard:operations`.
 - Jangan memasukkan token Fonnte, password impor, atau URL database ke tiket/log.
 
 ## 5. Checklist rilis

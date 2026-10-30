@@ -24,7 +24,6 @@ use App\Http\Controllers\LearningProgressController;
 use App\Http\Controllers\MyLearningPathController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\TeamProgressController;
 use App\Http\Controllers\TrainerProgressController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,14 +36,11 @@ Route::middleware(['auth', 'verified', 'active', 'audit'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
     Route::get('audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::middleware('not-learner-role')->group(function (): void {
-        Route::get('certificates', [CertificateController::class, 'index'])->name('certificates.index');
-        Route::get('certificates/{certificate}', [CertificateController::class, 'download'])->name('certificates.download');
-    });
+    Route::get('certificates', [CertificateController::class, 'index'])->name('certificates.index');
+    Route::get('certificates/{certificate}', [CertificateController::class, 'download'])->name('certificates.download');
     Route::post('notifications/{userNotification}/read', [NotificationController::class, 'read'])->name('notifications.read');
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('reports/courses', [ReportController::class, 'courses'])->name('reports.courses');
-    Route::get('team-progress', [TeamProgressController::class, 'index'])->name('team-progress.index');
     Route::get('trainer-progress', [TrainerProgressController::class, 'index'])->name('trainer-progress.index');
     Route::post('trainer-progress/{enrollment}/approve', [TrainerProgressController::class, 'approve'])->name('trainer-progress.approve');
     Route::post('reports/exports', [ReportController::class, 'export'])->name('reports.exports.store');

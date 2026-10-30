@@ -11,7 +11,7 @@ KGJ Academy adalah Learning Management System internal untuk onboarding, SOP, pr
 | Pembelajaran terarah | Employee otomatis/terarah menerima learning path sesuai divisi, jabatan, dan cabang. |
 | Evaluasi terukur | Pre-Test, materi, Post-Test, attempt, skor, dan improvement tercatat. |
 | Kelulusan konsisten | Sistem menerapkan prerequisite, passing grade, dan retake per course. |
-| Monitoring aman | Manager hanya melihat tim yang diizinkan; Admin dapat memfilter dan ekspor laporan. |
+| Monitoring aman | Trainer melihat course binaannya; Admin dapat memfilter dan ekspor laporan organisasi. |
 | Operasional mandiri | Admin dapat mengelola organisasi, konten, path, dan assignment tanpa perubahan kode. |
 
 ## 3. Pengguna dan hak akses
@@ -21,9 +21,7 @@ KGJ Academy adalah Learning Management System internal untuk onboarding, SOP, pr
 | Super Admin | Konfigurasi menyeluruh, user, materi, laporan, dan audit. |
 | LMS Admin / HR | User, struktur organisasi, course, path, enrollment, dan laporan. |
 | Trainer / Mentor | Course dan penilaian yang ditugaskan melalui area operasional; tidak mengakses alur learner. |
-| Manager Tim | Progres bawahan langsung yang menjadi kewenangannya, serta pembelajaran pribadi bila ditugaskan. |
 | Employee / Learner | Materi, Pre-Test, Post-Test, konfirmasi pengiriman, dan progres pribadi tanpa nilai atau detail evaluasi. |
-| Management / Owner | Dashboard agregat, laporan eksekutif, dan evaluasi akhir internal; tidak mengakses alur learner. |
 
 ## 4. Scope MVP
 
@@ -52,8 +50,8 @@ Admin membuat/memperbarui user
   → menyelesaikan lesson wajib
   → Post-Test
   → employee menerima konfirmasi pengiriman netral
-  → Trainer/Management menilai hasil dan, bila perlu, membuka kesempatan ulang
-  → Manager/Admin melihat laporan sesuai otorisasi
+  → Trainer/LMS Admin/Super Admin menilai hasil dan, bila perlu, membuka kesempatan ulang
+  → LMS Admin/Super Admin melihat laporan sesuai otorisasi
 ```
 
 Contoh path Customer Service: Brand Introduction → Product Knowledge → Material & Specification → Customer Consultation → Sales & Closing → CRM & Follow Up → Complaint Handling → Final Evaluation.
@@ -64,21 +62,20 @@ Contoh path Customer Service: Brand Introduction → Product Knowledge → Mater
 - Admin dapat memilih modul mana yang memiliki Pre-Test atau Post-Test; test tidak wajib dibuat untuk setiap modul.
 - Pre-Test modul yang dibuat mengunci materi modul sampai disubmit; skor rendah tetap tidak menggagalkan course.
 - Post-Test modul yang dibuat baru terbuka setelah lesson mandatory modul selesai. Setelah dikirim, modul berikutnya dapat dibuka tanpa menampilkan nilai maupun status lulus kepada Employee.
-- Setelah seluruh lesson wajib dan assessment yang digunakan dikirim, course berstatus menunggu evaluasi akhir. Trainer yang ditugaskan atau Management berwenang menyetujui kelulusan atau membuka kesempatan ulang Post-Test; sertifikat hanya diterbitkan setelah persetujuan kelulusan.
+- Setelah seluruh lesson wajib dan assessment yang digunakan dikirim, course berstatus menunggu evaluasi akhir. Trainer yang ditugaskan, LMS Admin, atau Super Admin berwenang menyetujui kelulusan atau membuka kesempatan ulang Post-Test; sertifikat hanya diterbitkan setelah persetujuan kelulusan.
 - Pre-Test selalu satu attempt dan tidak memiliki passing grade; jumlah attempt Post-Test diatur per assessment dalam rentang 1â€“3. Nilai Post-Test menjadi data evaluasi internal dan tidak otomatis mengubah status kelulusan Employee.
 - Nilai course internal menggunakan bobot sama untuk setiap modul yang memiliki Pre-Test dan Post-Test: `(nilai Pre-Test pertama + nilai terbaik Post-Test) / 2`. Nilai akhir course adalah rata-rata seluruh nilai modul tersebut dan baru final setelah semua modul evaluatif selesai; sebelum itu hanya tampil sebagai rata-rata berjalan bagi role internal.
 - Setiap attempt Post-Test setelah attempt pertama hanya dapat dibuka satu kali oleh Trainer yang ditugaskan atau role internal yang memiliki wewenang laporan/enrollment saat course berstatus menunggu evaluasi akhir. Otorisasi tidak dapat melampaui batas attempt yang dikonfigurasi.
 - Course wajib dalam learning path berjalan berurutan: course wajib sebelumnya harus selesai sebelum course wajib berikutnya dapat dibuka. Course baru ditambahkan di akhir path; Admin mengubah urutan dengan aksi Naik/Turun. Soal assessment juga ditambahkan otomatis di akhir dan dapat dipindahkan dengan aksi yang sama.
 - Simpan seluruh attempt, response, score, waktu, dan status untuk audit.
-- Employee tidak menerima skor, passing grade, status lulus/gagal, sisa kesempatan, riwayat jawaban, kunci jawaban, atau pembahasan pada Dashboard, My Learning, My Progress, maupun Learning Path. Halaman setelah submit hanya mengonfirmasi bahwa assessment telah dikirim. Trainer, LMS Admin, Super Admin, dan Management melihat hasil sesuai cakupan aksesnya; Manager Tim hanya menerima status tindak lanjut/progres tanpa nilai angka.
-- Otorisasi retake yang belum digunakan tidak memulai attempt saat halaman dibuka: Employee harus menekan tindakan mulai secara eksplisit. Trainer/Management dapat membatalkan otorisasi yang belum dipakai; pembatalan tetap tersimpan untuk audit.
+- Employee tidak menerima skor, passing grade, status lulus/gagal, sisa kesempatan, riwayat jawaban, kunci jawaban, atau pembahasan pada Dashboard, My Learning, My Progress, maupun Learning Path. Halaman setelah submit hanya mengonfirmasi bahwa assessment telah dikirim. Trainer, LMS Admin, dan Super Admin melihat hasil sesuai cakupan aksesnya.
+- Otorisasi retake yang belum digunakan tidak memulai attempt saat halaman dibuka: Employee harus menekan tindakan mulai secara eksplisit. Trainer, LMS Admin, atau Super Admin dapat membatalkan otorisasi yang belum dipakai; pembatalan tetap tersimpan untuk audit.
 - Improvement ditampilkan dalam poin: `post_test_score - pre_test_score`, bukan persen.
 - Laporan repeat Post-Test harus menyatakan kebijakan skor (pertama, terakhir, terbaik); default laporan menampilkan skor pertama dan terbaik.
 - Artikel wajib memiliki isi. Lesson PDF/video wajib memiliki satu sumber: file privat yang sesuai atau URL. Course tidak dapat diterbitkan bila ada sumber materi yang belum lengkap, assessment aktif tanpa soal, atau soal yang tidak memiliki tepat satu jawaban benar. Course editor menampilkan checklist dan tautan perbaikan untuk setiap kegagalan publikasi.
 - Modul, lesson, dan sumber materi hanya dapat diubah ketika course berstatus Draft; course harus dikembalikan ke Draft sebelum materi Published diubah.
 - Sertifikat hanya diterbitkan bila fitur diaktifkan pada course/path terkait.
 - Akun Trainer / Mentor adalah akun operasional: hanya mengakses Dashboard, Course binaan, Progres peserta, dan Notifikasi. Pengujian atau pembelajaran sebagai peserta menggunakan akun Employee terpisah.
-- Management / Owner mengakses Dashboard, Progres peserta, Laporan, dan Notifikasi untuk evaluasi internal. Management / Owner tidak mengakses alur learner, katalog, progres pribadi, atau sertifikat.
 
 ## 7. Kebutuhan fungsional per area
 
@@ -86,7 +83,7 @@ Contoh path Customer Service: Brand Introduction → Product Knowledge → Mater
 
 Login; dashboard; My Learning; Learning Path; Course Detail; lesson player video/article/PDF; resources; previous/next; resume progress; Pre-Test; Post-Test; konfirmasi pengiriman tanpa hasil evaluasi; profile; dan sertifikat course yang diaktifkan Admin.
 
-### Admin dan Manager
+### Admin
 
 Kelola user dan impor CSV/Excel; struktur organisasi; course builder; module/lesson; artikel teks; PDF privat; video MP4/WebM privat atau URL video; assessment builder; learning path; enrollment; preview/publish; announcements/notifications saat fasenya aktif; dashboard; laporan; export CSV/Excel/PDF; dan audit.
 
@@ -118,6 +115,6 @@ HTTPS, password hashing, session hardening, CSRF protection, role/policy authori
 
 ## 10. UAT dan definition of done
 
-UAT mencakup akun/role, assignment, Pre-Test, materi dan resume, prerequisite, Post-Test lulus/gagal, retake, improvement, manager scoping, reporting/export, responsive mobile, dan audit. MVP diterima setelah alur inti berjalan di staging tanpa kendala kritis.
+UAT mencakup akun/role, assignment, Pre-Test, materi dan resume, prerequisite, Post-Test lulus/gagal, retake, improvement, reporting/export, responsive mobile, dan audit. MVP diterima setelah alur inti berjalan di staging tanpa kendala kritis.
 
 Handover: requirement final, sitemap, wireframe, prototype, ERD, API/integration documentation bila diperlukan, source code, panduan Admin, laporan QA/UAT, serta deployment staging/production.

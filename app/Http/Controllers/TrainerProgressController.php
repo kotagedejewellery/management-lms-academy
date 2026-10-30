@@ -25,7 +25,7 @@ class TrainerProgressController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $hasCentralAccess = $user->hasPermission('manage-enrollments') || $user->hasPermission('view-reports');
+        $hasCentralAccess = $user->hasPermission('manage-enrollments');
         $isAssignedTrainer = $user->hasRole('trainer') && $user->hasPermission('manage-courses');
         abort_unless($hasCentralAccess || $isAssignedTrainer, 403);
 
@@ -87,7 +87,7 @@ class TrainerProgressController extends Controller
     public function approve(Request $request, Enrollment $enrollment): RedirectResponse
     {
         $user = $request->user();
-        $hasCentralAccess = $user->hasPermission('manage-enrollments') || $user->hasPermission('view-reports');
+        $hasCentralAccess = $user->hasPermission('manage-enrollments');
         $isAssignedTrainer = $user->hasRole('trainer') && $user->hasPermission('manage-courses')
             && $user->managedCourses()->whereKey($enrollment->course_id)->exists();
         abort_unless($hasCentralAccess || $isAssignedTrainer, 403);

@@ -56,8 +56,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected static function booted(): void
     {
-        static::saved(fn () => Cache::forget('dashboard:management'));
-        static::deleted(fn () => Cache::forget('dashboard:management'));
+        static::saved(fn () => Cache::forget('dashboard:operations'));
+        static::deleted(fn () => Cache::forget('dashboard:operations'));
     }
 
     /** @return BelongsTo<Division, $this> */

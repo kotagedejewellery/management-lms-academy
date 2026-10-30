@@ -2712,9 +2712,9 @@
     "semantic_hash": ""
   },
   "resources/js/pages/trainer-progress/Index.vue": {
-    "mtime": 1793237214.0555518,
-    "seen": 1793237407.9318295,
-    "ast_hash": "e02de4bf1ea237299ad1226747aaa51e",
+    "mtime": 1793237436.4581337,
+    "seen": 1793237496.3583724,
+    "ast_hash": "0401491174cf02c81eee2806dfee7a6c",
     "semantic_hash": ""
   },
   "tests/Feature/TrainerProgressTest.php": {

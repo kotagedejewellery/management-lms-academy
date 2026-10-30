@@ -25,14 +25,6 @@ class DashboardResolver
             return $this->trainer($user);
         }
 
-        if ($user->hasPermission('view-team')) {
-            return $this->manager($user);
-        }
-
-        if ($user->hasPermission('view-reports')) {
-            return $this->executive();
-        }
-
         return $this->learner($user);
     }
 
@@ -187,54 +179,9 @@ class DashboardResolver
     }
 
     /** @return array<string, mixed> */
-    private function manager(User $user): array
-    {
-        $team = $user->directReports()->where('status', 'active');
-        $teamIds = $team->select('id');
-        $hasActiveLearning = Enrollment::query()
-            ->where('user_id', $user->id)
-            ->where('status', 'active')
-            ->exists();
-        $enrollments = Enrollment::query()
-            ->whereIn('user_id', $teamIds);
-        $stats = $this->enrollmentStats($enrollments);
-        $overdue = (clone $enrollments)
-            ->where('status', 'active')
-            ->where('due_at', '<', now())
-            ->with(['user:id,name', 'course:id,code,title'])
-            ->orderByRaw('due_at is null, due_at')
-            ->limit(5)
-            ->get();
-
-        return [
-            'mode' => 'manager',
-            'title' => 'Ringkasan tim saya',
-            'description' => 'Pantau pembelajaran anggota tim yang melapor langsung kepada Anda.',
-            'stats' => [
-                ['label' => 'Anggota tim', 'value' => $team->count()],
-                ['label' => 'Assignment aktif', 'value' => $stats['active']],
-                ['label' => 'Tenggat terlewat', 'value' => $stats['overdue']],
-                ['label' => 'Course selesai', 'value' => $stats['completed']],
-            ],
-            'primary_action' => ['label' => 'Lihat progres tim', 'href' => '/team-progress'],
-            'secondary_action' => $hasActiveLearning ? ['label' => 'Pembelajaran saya', 'href' => '/my-learning'] : null,
-            'items_title' => 'Perlu perhatian',
-            'empty_title' => 'Belum ada assignment pada tim',
-            'empty_description' => 'Assignment anggota tim akan muncul di sini.',
-            'items' => $overdue->map(fn (Enrollment $enrollment) => $this->item(
-                $enrollment->id,
-                $enrollment->user->name,
-                $enrollment->course->title,
-                'Tenggat '.$enrollment->due_at->toDateString(),
-                '/team-progress',
-            ))->values()->all(),
-        ];
-    }
-
-    /** @return array<string, mixed> */
     private function operations(): array
     {
-        return Cache::remember('dashboard:management', now()->addMinutes(5), function (): array {
+        return Cache::remember('dashboard:operations', now()->addMinutes(5), function (): array {
             $recent = Enrollment::query()
                 ->with(['user:id,name', 'course:id,code,title'])
                 ->latest()
@@ -270,38 +217,6 @@ class DashboardResolver
                 ))->all(),
             ];
         });
-    }
-
-    /** @return array<string, mixed> */
-    private function executive(): array
-    {
-        $enrollments = Enrollment::query()->with(['user:id,name', 'course:id,code,title'])->latest()->limit(5)->get();
-        $pendingReview = Enrollment::query()->where('status', 'pending_review')->count();
-
-        return [
-            'mode' => 'executive',
-            'title' => 'Ringkasan pembelajaran organisasi',
-            'description' => 'Lihat capaian organisasi dan tindak lanjuti pembelajaran yang memerlukan perhatian.',
-            'stats' => [
-                ['label' => 'Karyawan aktif', 'value' => User::query()->where('status', 'active')->count()],
-                ['label' => 'Assignment aktif', 'value' => Enrollment::query()->where('status', 'active')->count()],
-                ['label' => 'Menunggu evaluasi akhir', 'value' => $pendingReview],
-                ['label' => 'Course selesai', 'value' => Enrollment::query()->where('status', 'completed')->count()],
-            ],
-            'primary_action' => $pendingReview > 0
-                ? ['label' => 'Evaluasi peserta', 'href' => '/trainer-progress?status=pending_review']
-                : ['label' => 'Buka laporan', 'href' => '/reports'],
-            'items_title' => 'Aktivitas pembelajaran terbaru',
-            'empty_title' => 'Belum ada aktivitas pembelajaran',
-            'empty_description' => 'Aktivitas assignment akan muncul setelah program pembelajaran berjalan.',
-            'items' => $enrollments->map(fn (Enrollment $enrollment) => $this->item(
-                $enrollment->id,
-                $enrollment->user->name,
-                $enrollment->course->title,
-                $this->enrollmentStatus($enrollment->status),
-                '/reports',
-            ))->all(),
-        ];
     }
 
     /**

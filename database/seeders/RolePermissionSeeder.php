@@ -16,8 +16,6 @@ class RolePermissionSeeder extends Seeder
             'manage-courses' => 'Kelola course',
             'manage-learning-paths' => 'Kelola learning path',
             'manage-enrollments' => 'Kelola assignment belajar',
-            'view-team' => 'Lihat progres tim',
-            'view-reports' => 'Lihat laporan',
         ])->mapWithKeys(fn (string $name, string $slug) => [
             $slug => Permission::query()->updateOrCreate(['slug' => $slug], ['name' => $name]),
         ]);
@@ -26,9 +24,7 @@ class RolePermissionSeeder extends Seeder
             'super-admin' => 'Super Admin',
             'lms-admin' => 'LMS Admin / HR',
             'trainer' => 'Trainer / Mentor',
-            'manager' => 'Manager Tim',
             'employee' => 'Employee / Learner',
-            'management' => 'Management / Owner',
         ])->mapWithKeys(fn (string $name, string $slug) => [
             $slug => Role::query()->updateOrCreate(['slug' => $slug], ['name' => $name]),
         ]);
@@ -36,8 +32,6 @@ class RolePermissionSeeder extends Seeder
         $roles['super-admin']->permissions()->sync($permissions->pluck('id'));
         $roles['lms-admin']->permissions()->sync($permissions->only(['manage-users', 'manage-organization', 'manage-courses', 'manage-learning-paths', 'manage-enrollments'])->pluck('id'));
         $roles['trainer']->permissions()->sync($permissions->only(['manage-courses'])->pluck('id'));
-        $roles['manager']->permissions()->sync($permissions->only(['view-team'])->pluck('id'));
-        $roles['management']->permissions()->sync($permissions->only(['view-reports'])->pluck('id'));
         $roles['employee']->permissions()->sync([]);
     }
 }

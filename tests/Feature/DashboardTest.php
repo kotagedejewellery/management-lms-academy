@@ -72,24 +72,24 @@ class DashboardTest extends TestCase
                 ->where('items.1.href', null));
     }
 
-    public function test_management_dashboard_cache_is_invalidated_when_its_source_data_changes(): void
+    public function test_operations_dashboard_cache_is_invalidated_when_its_source_data_changes(): void
     {
-        Cache::forget('dashboard:management');
-        $admin = $this->managementAdmin();
+        Cache::forget('dashboard:operations');
+        $admin = $this->lmsAdmin();
         $employee = User::factory()->create();
 
         $this->actingAs($admin)->get(route('dashboard'))->assertOk();
-        $this->assertTrue(Cache::has('dashboard:management'));
+        $this->assertTrue(Cache::has('dashboard:operations'));
 
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
         $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-001', 'title' => 'Pengenalan KGJ', 'status' => 'published']);
-        $this->assertFalse(Cache::has('dashboard:management'));
+        $this->assertFalse(Cache::has('dashboard:operations'));
 
         $this->actingAs($admin)->get(route('dashboard'))->assertOk();
-        $this->assertTrue(Cache::has('dashboard:management'));
+        $this->assertTrue(Cache::has('dashboard:operations'));
 
         Enrollment::query()->create(['user_id' => $employee->id, 'course_id' => $course->id, 'status' => 'active']);
-        $this->assertFalse(Cache::has('dashboard:management'));
+        $this->assertFalse(Cache::has('dashboard:operations'));
 
         $this->actingAs($admin)->get(route('dashboard'))
             ->assertOk()
@@ -99,10 +99,10 @@ class DashboardTest extends TestCase
                 ->where('stats.2.value', 1));
     }
 
-    public function test_management_dashboard_labels_final_review_assignments_neutrally(): void
+    public function test_operations_dashboard_labels_final_review_assignments_neutrally(): void
     {
-        Cache::forget('dashboard:management');
-        $admin = $this->managementAdmin();
+        Cache::forget('dashboard:operations');
+        $admin = $this->lmsAdmin();
         $employee = User::factory()->create();
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
         $course = Course::query()->create(['category_id' => $category->id, 'code' => 'ONB-REVIEW-001', 'title' => 'Evaluasi akhir', 'status' => 'published']);
@@ -172,38 +172,7 @@ class DashboardTest extends TestCase
                 ->where('secondary_action.href', '/courses'));
     }
 
-    public function test_manager_and_executive_receive_their_own_dashboard_contexts(): void
-    {
-        $manager = $this->userWithPermission('view-team', 'manager');
-        User::factory()->create(['manager_id' => $manager->id]);
-        $category = CourseCategory::query()->create(['name' => 'Pengembangan', 'is_active' => true]);
-        $personalCourse = Course::query()->create(['category_id' => $category->id, 'code' => 'MGR-001', 'title' => 'Pembelajaran Manager', 'status' => 'published']);
-        $manager->enrollments()->create(['course_id' => $personalCourse->id, 'status' => 'active']);
-        $executive = $this->userWithPermission('view-reports', 'management');
-        Enrollment::query()->create([
-            'user_id' => User::factory()->create()->id,
-            'course_id' => $personalCourse->id,
-            'status' => 'pending_review',
-        ]);
-
-        $this->actingAs($manager)->get(route('dashboard'))
-            ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page
-                ->where('mode', 'manager')
-                ->where('stats.0.value', 1)
-                ->where('secondary_action.label', 'Pembelajaran saya')
-                ->where('secondary_action.href', '/my-learning'));
-        $this->actingAs($executive)->get(route('dashboard'))
-            ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page
-                ->where('mode', 'executive')
-                ->where('stats.2.label', 'Menunggu evaluasi akhir')
-                ->where('stats.2.value', 1)
-                ->where('primary_action.label', 'Evaluasi peserta')
-                ->where('primary_action.href', '/trainer-progress?status=pending_review'));
-    }
-
-    private function managementAdmin(): User
+    private function lmsAdmin(): User
     {
         return $this->userWithPermission('manage-enrollments', 'lms-admin');
     }

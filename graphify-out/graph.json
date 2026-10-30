@@ -2437,7 +2437,7 @@
       "label": "CertificateController",
       "file_type": "code",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L13",
+      "source_location": "L14",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast"
@@ -2447,7 +2447,7 @@
       "label": ".index()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L15",
+      "source_location": "L16",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2456,7 +2456,7 @@
       "label": "{closure#1}()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L22",
+      "source_location": "L24",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2465,7 +2465,7 @@
       "label": "{closure#2}()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L26",
+      "source_location": "L28",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2474,7 +2474,16 @@
       "label": ".download()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L41",
+      "source_location": "L43",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "app_http_controllers_certificatecontroller_certificatecontroller_authorizecertificateaccess",
+      "label": ".authorizeCertificateAccess()",
+      "file_type": "code",
+      "source_file": "app/Http/Controllers/CertificateController.php",
+      "source_location": "L55",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3321,51 +3330,6 @@
       "file_type": "code",
       "source_file": "app/Http/Controllers/Settings/SecurityController.php",
       "source_location": "L27",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "app_http_controllers_teamprogresscontroller",
-      "label": "TeamProgressController.php",
-      "file_type": "code",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L1",
-      "_origin": "ast"
-    },
-    {
-      "id": "app_http_controllers_teamprogresscontroller_teamprogresscontroller",
-      "label": "TeamProgressController",
-      "file_type": "code",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L12",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "app_http_controllers_teamprogresscontroller_teamprogresscontroller_index",
-      "label": ".index()",
-      "file_type": "code",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L14",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "app_http_controllers_teamprogresscontroller_closure_1",
-      "label": "{closure#1}()",
-      "file_type": "code",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L20",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "app_http_controllers_teamprogresscontroller_closure_2",
-      "label": "{closure#2}()",
-      "file_type": "code",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L24",
       "_callable": true,
       "_origin": "ast"
     },
@@ -5955,7 +5919,7 @@
       "label": ".create()",
       "file_type": "code",
       "source_file": "app/Policies/UserPolicy.php",
-      "source_location": "L25",
+      "source_location": "L24",
       "_callable": true,
       "_origin": "ast"
     },
@@ -5964,7 +5928,7 @@
       "label": ".update()",
       "file_type": "code",
       "source_file": "app/Policies/UserPolicy.php",
-      "source_location": "L30",
+      "source_location": "L29",
       "_callable": true,
       "_origin": "ast"
     },
@@ -6432,7 +6396,7 @@
       "label": ".learner()",
       "file_type": "code",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L40",
+      "source_location": "L32",
       "_callable": true,
       "_origin": "ast"
     },
@@ -6441,7 +6405,7 @@
       "label": "{closure#1}()",
       "file_type": "code",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L87",
+      "source_location": "L79",
       "_callable": true,
       "_origin": "ast"
     },
@@ -6450,7 +6414,7 @@
       "label": "{closure#2}()",
       "file_type": "code",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L107",
+      "source_location": "L99",
       "_callable": true,
       "_origin": "ast"
     },
@@ -6459,7 +6423,7 @@
       "label": "{closure#3}()",
       "file_type": "code",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L108",
+      "source_location": "L100",
       "_callable": true,
       "_origin": "ast"
     },
@@ -6468,7 +6432,7 @@
       "label": "{closure#4}()",
       "file_type": "code",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L128",
+      "source_location": "L120",
       "_callable": true,
       "_origin": "ast"
     },
@@ -6477,7 +6441,7 @@
       "label": ".trainer()",
       "file_type": "code",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L147",
+      "source_location": "L139",
       "_callable": true,
       "_origin": "ast"
     },
@@ -6486,25 +6450,7 @@
       "label": "{closure#5}()",
       "file_type": "code",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L179",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "app_support_dashboardresolver_dashboardresolver_manager",
-      "label": ".manager()",
-      "file_type": "code",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L190",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "app_support_dashboardresolver_closure_6",
-      "label": "{closure#6}()",
-      "file_type": "code",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L224",
+      "source_location": "L171",
       "_callable": true,
       "_origin": "ast"
     },
@@ -6513,7 +6459,16 @@
       "label": ".operations()",
       "file_type": "code",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L235",
+      "source_location": "L182",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "app_support_dashboardresolver_closure_6",
+      "label": "{closure#6}()",
+      "file_type": "code",
+      "source_file": "app/Support/DashboardResolver.php",
+      "source_location": "L184",
       "_callable": true,
       "_origin": "ast"
     },
@@ -6522,34 +6477,7 @@
       "label": "{closure#7}()",
       "file_type": "code",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L237",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "app_support_dashboardresolver_closure_8",
-      "label": "{closure#8}()",
-      "file_type": "code",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L264",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "app_support_dashboardresolver_dashboardresolver_executive",
-      "label": ".executive()",
-      "file_type": "code",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L276",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "app_support_dashboardresolver_closure_9",
-      "label": "{closure#9}()",
-      "file_type": "code",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L297",
+      "source_location": "L211",
       "_callable": true,
       "_origin": "ast"
     },
@@ -6558,7 +6486,7 @@
       "label": ".enrollmentStats()",
       "file_type": "code",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L311",
+      "source_location": "L226",
       "_callable": true,
       "_origin": "ast"
     },
@@ -6567,7 +6495,7 @@
       "label": ".item()",
       "file_type": "code",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L323",
+      "source_location": "L238",
       "_callable": true,
       "_origin": "ast"
     },
@@ -6576,7 +6504,7 @@
       "label": ".courseStatus()",
       "file_type": "code",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L328",
+      "source_location": "L243",
       "_callable": true,
       "_origin": "ast"
     },
@@ -6585,7 +6513,7 @@
       "label": ".enrollmentStatus()",
       "file_type": "code",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L333",
+      "source_location": "L248",
       "_callable": true,
       "_origin": "ast"
     },
@@ -9401,6 +9329,50 @@
       "_origin": "ast"
     },
     {
+      "id": "database_migrations_2026_10_30_000001_retire_manager_and_management_roles",
+      "label": "2026_10_30_000001_retire_manager_and_management_roles.php",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_10_30_000001_retire_manager_and_management_roles.php",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "database_migrations_2026_10_30_000001_retire_manager_and_management_roles_up",
+      "label": "up()",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_10_30_000001_retire_manager_and_management_roles.php",
+      "source_location": "L8",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "database_migrations_2026_10_30_000001_retire_manager_and_management_roles_closure_1",
+      "label": "{closure#1}()",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_10_30_000001_retire_manager_and_management_roles.php",
+      "source_location": "L10",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "database_migrations_2026_10_30_000001_retire_manager_and_management_roles_closure_2",
+      "label": "{closure#2}()",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_10_30_000001_retire_manager_and_management_roles.php",
+      "source_location": "L36",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "database_migrations_2026_10_30_000001_retire_manager_and_management_roles_down",
+      "label": "down()",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_10_30_000001_retire_manager_and_management_roles.php",
+      "source_location": "L48",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
       "id": "database_seeders_customerservicedealmakerseeder",
       "label": "CustomerServiceDealmakerSeeder.php",
       "file_type": "code",
@@ -10062,7 +10034,7 @@
       "label": "{closure#1}()",
       "file_type": "code",
       "source_file": "database/seeders/RolePermissionSeeder.php",
-      "source_location": "L21",
+      "source_location": "L19",
       "_callable": true,
       "_origin": "ast"
     },
@@ -10071,7 +10043,7 @@
       "label": "{closure#2}()",
       "file_type": "code",
       "source_file": "database/seeders/RolePermissionSeeder.php",
-      "source_location": "L32",
+      "source_location": "L28",
       "_callable": true,
       "_origin": "ast"
     },
@@ -14955,7 +14927,7 @@
       "label": "expectedItems",
       "file_type": "code",
       "source_file": "resources/js/navigation/sidebar.test.ts",
-      "source_location": "L79",
+      "source_location": "L43",
       "_origin": "ast"
     },
     {
@@ -14981,7 +14953,7 @@
       "label": "NavigationGroup",
       "file_type": "code",
       "source_file": "resources/js/navigation/sidebar.ts",
-      "source_location": "L28",
+      "source_location": "L25",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast"
@@ -14991,7 +14963,7 @@
       "label": "buildSidebarNavigation()",
       "file_type": "code",
       "source_file": "resources/js/navigation/sidebar.ts",
-      "source_location": "L33",
+      "source_location": "L30",
       "_callable": true,
       "_origin": "ast"
     },
@@ -15008,7 +14980,7 @@
       "label": "Stat",
       "file_type": "code",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L18",
+      "source_location": "L16",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast"
@@ -15018,7 +14990,7 @@
       "label": "Action",
       "file_type": "code",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L19",
+      "source_location": "L17",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast"
@@ -15028,7 +15000,7 @@
       "label": "DashboardItem",
       "file_type": "code",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L20",
+      "source_location": "L18",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast"
@@ -15038,7 +15010,7 @@
       "label": "LearningSummary",
       "file_type": "code",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L29",
+      "source_location": "L27",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast"
@@ -15048,7 +15020,7 @@
       "label": "props",
       "file_type": "code",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L35",
+      "source_location": "L33",
       "_origin": "ast"
     },
     {
@@ -15056,7 +15028,7 @@
       "label": "context",
       "file_type": "code",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L49",
+      "source_location": "L47",
       "_origin": "ast"
     },
     {
@@ -18164,69 +18136,6 @@
       "_origin": "ast"
     },
     {
-      "id": "resources_js_pages_team_index",
-      "label": "team/Index.vue",
-      "file_type": "code",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L1",
-      "_origin": "ast"
-    },
-    {
-      "id": "resources_js_pages_team_index_enrollment",
-      "label": "Enrollment",
-      "file_type": "code",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L12",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "resources_js_pages_team_index_filters",
-      "label": "Filters",
-      "file_type": "code",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L24",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "resources_js_pages_team_index_props",
-      "label": "props",
-      "file_type": "code",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L25",
-      "_origin": "ast"
-    },
-    {
-      "id": "resources_js_pages_team_index_applyfilters",
-      "label": "applyFilters()",
-      "file_type": "code",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L38",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "resources_js_pages_team_index_resetfilters",
-      "label": "resetFilters()",
-      "file_type": "code",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L44",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "resources_js_pages_team_index_statuslabel",
-      "label": "statusLabel()",
-      "file_type": "code",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L49",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
       "id": "resources_js_pages_trainer_progress_index",
       "label": "trainer-progress/Index.vue",
       "file_type": "code",
@@ -18722,7 +18631,7 @@
       "label": "GET /()",
       "file_type": "code",
       "source_file": "routes/web.php",
-      "source_location": "L31",
+      "source_location": "L30",
       "_callable": true,
       "_origin": "ast"
     },
@@ -18731,7 +18640,7 @@
       "label": "{closure#1}()",
       "file_type": "code",
       "source_file": "routes/web.php",
-      "source_location": "L36",
+      "source_location": "L35",
       "_callable": true,
       "_origin": "ast"
     },
@@ -18740,16 +18649,7 @@
       "label": "{closure#2}()",
       "file_type": "code",
       "source_file": "routes/web.php",
-      "source_location": "L40",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "routes_web_closure_3",
-      "label": "{closure#3}()",
-      "file_type": "code",
-      "source_file": "routes/web.php",
-      "source_location": "L52",
+      "source_location": "L48",
       "_callable": true,
       "_origin": "ast"
     },
@@ -19543,20 +19443,11 @@
       "_origin": "ast"
     },
     {
-      "id": "tests_feature_admin_usermanagementtest_usermanagementtest_test_manager_can_view_only_their_direct_report",
-      "label": ".test_manager_can_view_only_their_direct_report()",
-      "file_type": "code",
-      "source_file": "tests/Feature/Admin/UserManagementTest.php",
-      "source_location": "L92",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
       "id": "tests_feature_admin_usermanagementtest_usermanagementtest_userwithpermission",
       "label": ".userWithPermission()",
       "file_type": "code",
       "source_file": "tests/Feature/Admin/UserManagementTest.php",
-      "source_location": "L102",
+      "source_location": "L92",
       "_callable": true,
       "_origin": "ast"
     },
@@ -20365,7 +20256,7 @@
       "label": "CertificateTest",
       "file_type": "code",
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L14",
+      "source_location": "L16",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast"
@@ -20375,7 +20266,7 @@
       "label": ".test_completed_certificate_course_issues_one_private_pdf()",
       "file_type": "code",
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L18",
+      "source_location": "L20",
       "_callable": true,
       "_origin": "ast"
     },
@@ -20384,7 +20275,7 @@
       "label": ".test_only_owner_or_lms_admin_can_download_a_certificate()",
       "file_type": "code",
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L43",
+      "source_location": "L45",
       "_callable": true,
       "_origin": "ast"
     },
@@ -20560,8 +20451,8 @@
       "_origin": "ast"
     },
     {
-      "id": "tests_feature_dashboardtest_dashboardtest_test_management_dashboard_cache_is_invalidated_when_its_source_data_changes",
-      "label": ".test_management_dashboard_cache_is_invalidated_when_its_source_data_changes()",
+      "id": "tests_feature_dashboardtest_dashboardtest_test_operations_dashboard_cache_is_invalidated_when_its_source_data_changes",
+      "label": ".test_operations_dashboard_cache_is_invalidated_when_its_source_data_changes()",
       "file_type": "code",
       "source_file": "tests/Feature/DashboardTest.php",
       "source_location": "L75",
@@ -20578,8 +20469,8 @@
       "_origin": "ast"
     },
     {
-      "id": "tests_feature_dashboardtest_dashboardtest_test_management_dashboard_labels_final_review_assignments_neutrally",
-      "label": ".test_management_dashboard_labels_final_review_assignments_neutrally()",
+      "id": "tests_feature_dashboardtest_dashboardtest_test_operations_dashboard_labels_final_review_assignments_neutrally",
+      "label": ".test_operations_dashboard_labels_final_review_assignments_neutrally()",
       "file_type": "code",
       "source_file": "tests/Feature/DashboardTest.php",
       "source_location": "L102",
@@ -20632,38 +20523,11 @@
       "_origin": "ast"
     },
     {
-      "id": "tests_feature_dashboardtest_dashboardtest_test_manager_and_executive_receive_their_own_dashboard_contexts",
-      "label": ".test_manager_and_executive_receive_their_own_dashboard_contexts()",
+      "id": "tests_feature_dashboardtest_dashboardtest_lmsadmin",
+      "label": ".lmsAdmin()",
       "file_type": "code",
       "source_file": "tests/Feature/DashboardTest.php",
       "source_location": "L175",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "tests_feature_dashboardtest_closure_8",
-      "label": "{closure#8}()",
-      "file_type": "code",
-      "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L191",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "tests_feature_dashboardtest_closure_9",
-      "label": "{closure#9}()",
-      "file_type": "code",
-      "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L198",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "tests_feature_dashboardtest_dashboardtest_managementadmin",
-      "label": ".managementAdmin()",
-      "file_type": "code",
-      "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L206",
       "_callable": true,
       "_origin": "ast"
     },
@@ -20672,7 +20536,7 @@
       "label": ".userWithPermission()",
       "file_type": "code",
       "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L211",
+      "source_location": "L180",
       "_callable": true,
       "_origin": "ast"
     },
@@ -21145,8 +21009,8 @@
       "_origin": "ast"
     },
     {
-      "id": "tests_feature_localtestingseedertest_localtestingseedertest_test_seeded_data_loads_the_core_admin_manager_and_learner_pages",
-      "label": ".test_seeded_data_loads_the_core_admin_manager_and_learner_pages()",
+      "id": "tests_feature_localtestingseedertest_localtestingseedertest_test_seeded_data_loads_the_core_admin_and_learner_pages",
+      "label": ".test_seeded_data_loads_the_core_admin_and_learner_pages()",
       "file_type": "code",
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
       "source_location": "L62",
@@ -21374,7 +21238,7 @@
       "label": ".setUp()",
       "file_type": "code",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L36",
+      "source_location": "L31",
       "_callable": true,
       "_origin": "ast"
     },
@@ -21383,7 +21247,7 @@
       "label": ".test_every_role_receives_its_expected_dashboard()",
       "file_type": "code",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L43",
+      "source_location": "L38",
       "_callable": true,
       "_origin": "ast"
     },
@@ -21392,16 +21256,16 @@
       "label": "{closure#1}()",
       "file_type": "code",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L56",
+      "source_location": "L49",
       "_callable": true,
       "_origin": "ast"
     },
     {
-      "id": "tests_feature_roleaccesscontracttest_roleaccesscontracttest_test_manager_role_uses_the_team_manager_label",
-      "label": ".test_manager_role_uses_the_team_manager_label()",
+      "id": "tests_feature_roleaccesscontracttest_roleaccesscontracttest_test_role_catalog_contains_only_the_four_supported_operational_roles",
+      "label": ".test_role_catalog_contains_only_the_four_supported_operational_roles()",
       "file_type": "code",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L64",
+      "source_location": "L56",
       "_callable": true,
       "_origin": "ast"
     },
@@ -21410,7 +21274,7 @@
       "label": ".test_role_has_the_expected_access_to_each_critical_module()",
       "file_type": "code",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L72",
+      "source_location": "L64",
       "_callable": true,
       "_origin": "ast"
     },
@@ -21419,7 +21283,7 @@
       "label": ".test_operational_roles_cannot_mutate_the_learner_flow()",
       "file_type": "code",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L108",
+      "source_location": "L99",
       "_callable": true,
       "_origin": "ast"
     },
@@ -21428,7 +21292,52 @@
       "label": ".userForRole()",
       "file_type": "code",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L122",
+      "source_location": "L113",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_feature_roleretirementmigrationtest",
+      "label": "RoleRetirementMigrationTest.php",
+      "file_type": "code",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest",
+      "label": "RoleRetirementMigrationTest",
+      "file_type": "code",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L14",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest_test_it_reassigns_retired_role_accounts_without_removing_users_or_learning_data",
+      "label": ".test_it_reassigns_retired_role_accounts_without_removing_users_or_learning_data()",
+      "file_type": "code",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L18",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest_test_it_does_not_remove_a_retired_role_when_its_replacement_is_missing",
+      "label": ".test_it_does_not_remove_a_retired_role_when_its_replacement_is_missing()",
+      "file_type": "code",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L45",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest_test_it_does_not_offer_a_lossy_rollback",
+      "label": ".test_it_does_not_offer_a_lossy_rollback()",
+      "file_type": "code",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L64",
       "_callable": true,
       "_origin": "ast"
     },
@@ -21640,60 +21549,6 @@
       "_origin": "ast"
     },
     {
-      "id": "tests_feature_teamprogresstest",
-      "label": "TeamProgressTest.php",
-      "file_type": "code",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L1",
-      "_origin": "ast"
-    },
-    {
-      "id": "tests_feature_teamprogresstest_teamprogresstest",
-      "label": "TeamProgressTest",
-      "file_type": "code",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L14",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "tests_feature_teamprogresstest_teamprogresstest_test_manager_can_only_see_direct_reports",
-      "label": ".test_manager_can_only_see_direct_reports()",
-      "file_type": "code",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L18",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "tests_feature_teamprogresstest_closure_1",
-      "label": "{closure#1}()",
-      "file_type": "code",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L34",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "tests_feature_teamprogresstest_teamprogresstest_test_manager_sees_a_direct_report_waiting_for_final_review_without_scores",
-      "label": ".test_manager_sees_a_direct_report_waiting_for_final_review_without_scores()",
-      "file_type": "code",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L45",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
-      "id": "tests_feature_teamprogresstest_closure_2",
-      "label": "{closure#2}()",
-      "file_type": "code",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L59",
-      "_callable": true,
-      "_origin": "ast"
-    },
-    {
       "id": "tests_feature_trainerprogresstest",
       "label": "TrainerProgressTest.php",
       "file_type": "code",
@@ -21730,8 +21585,8 @@
       "_origin": "ast"
     },
     {
-      "id": "tests_feature_trainerprogresstest_trainerprogresstest_test_management_views_organization_wide_progress_scope",
-      "label": ".test_management_views_organization_wide_progress_scope()",
+      "id": "tests_feature_trainerprogresstest_trainerprogresstest_test_lms_admin_views_organization_wide_progress_scope",
+      "label": ".test_lms_admin_views_organization_wide_progress_scope()",
       "file_type": "code",
       "source_file": "tests/Feature/TrainerProgressTest.php",
       "source_location": "L46",
@@ -21847,8 +21702,8 @@
       "_origin": "ast"
     },
     {
-      "id": "tests_feature_trainerprogresstest_trainerprogresstest_management",
-      "label": ".management()",
+      "id": "tests_feature_trainerprogresstest_trainerprogresstest_lmsadmin",
+      "label": ".lmsAdmin()",
       "file_type": "code",
       "source_file": "tests/Feature/TrainerProgressTest.php",
       "source_location": "L208",
@@ -22757,7 +22612,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/DATABASE_SYSTEM.md",
-      "source_location": "L37",
+      "source_location": "L39",
       "_origin": "ast"
     },
     {
@@ -22766,7 +22621,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/DATABASE_SYSTEM.md",
-      "source_location": "L53",
+      "source_location": "L55",
       "_origin": "ast"
     },
     {
@@ -22775,7 +22630,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/DATABASE_SYSTEM.md",
-      "source_location": "L74",
+      "source_location": "L76",
       "_origin": "ast"
     },
     {
@@ -22784,7 +22639,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/DATABASE_SYSTEM.md",
-      "source_location": "L82",
+      "source_location": "L84",
       "_origin": "ast"
     },
     {
@@ -22793,7 +22648,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/DATABASE_SYSTEM.md",
-      "source_location": "L93",
+      "source_location": "L95",
       "_origin": "ast"
     },
     {
@@ -22833,12 +22688,21 @@
       "_origin": "ast"
     },
     {
+      "id": "docs_deployment_runbook_konsolidasi_role_operasional",
+      "label": "Konsolidasi role operasional",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
+      "source_location": "L55",
+      "_origin": "ast"
+    },
+    {
       "id": "docs_deployment_runbook_data_katalog_customer_service",
       "label": "Data katalog Customer Service",
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L55",
+      "source_location": "L69",
       "_origin": "ast"
     },
     {
@@ -22847,7 +22711,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L71",
+      "source_location": "L85",
       "_origin": "ast"
     },
     {
@@ -22856,7 +22720,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L83",
+      "source_location": "L97",
       "_origin": "ast"
     },
     {
@@ -22865,7 +22729,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L98",
+      "source_location": "L112",
       "_origin": "ast"
     },
     {
@@ -22874,7 +22738,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L117",
+      "source_location": "L131",
       "_origin": "ast"
     },
     {
@@ -22883,7 +22747,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L124",
+      "source_location": "L138",
       "_origin": "ast"
     },
     {
@@ -23018,7 +22882,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/PRD.md",
-      "source_location": "L28",
+      "source_location": "L26",
       "_origin": "ast"
     },
     {
@@ -23027,7 +22891,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/PRD.md",
-      "source_location": "L40",
+      "source_location": "L38",
       "_origin": "ast"
     },
     {
@@ -23036,7 +22900,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/PRD.md",
-      "source_location": "L44",
+      "source_location": "L42",
       "_origin": "ast"
     },
     {
@@ -23045,7 +22909,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/PRD.md",
-      "source_location": "L61",
+      "source_location": "L59",
       "_origin": "ast"
     },
     {
@@ -23054,7 +22918,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/PRD.md",
-      "source_location": "L83",
+      "source_location": "L80",
       "_origin": "ast"
     },
     {
@@ -23063,16 +22927,16 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/PRD.md",
-      "source_location": "L85",
+      "source_location": "L82",
       "_origin": "ast"
     },
     {
-      "id": "docs_prd_admin_dan_manager",
-      "label": "Admin dan Manager",
+      "id": "docs_prd_admin",
+      "label": "Admin",
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/PRD.md",
-      "source_location": "L89",
+      "source_location": "L86",
       "_origin": "ast"
     },
     {
@@ -23081,7 +22945,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/PRD.md",
-      "source_location": "L93",
+      "source_location": "L90",
       "_origin": "ast"
     },
     {
@@ -23090,7 +22954,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/PRD.md",
-      "source_location": "L97",
+      "source_location": "L94",
       "_origin": "ast"
     },
     {
@@ -23099,7 +22963,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/PRD.md",
-      "source_location": "L115",
+      "source_location": "L112",
       "_origin": "ast"
     },
     {
@@ -23108,7 +22972,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/PRD.md",
-      "source_location": "L119",
+      "source_location": "L116",
       "_origin": "ast"
     },
     {
@@ -23292,6 +23156,168 @@
       "_origin": "ast"
     },
     {
+      "id": "docs_real_user_test_guide",
+      "label": "REAL_USER_TEST_GUIDE.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_panduan_uji_pengguna_kgj_academy",
+      "label": "Panduan Uji Pengguna KGJ Academy",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_1_sebelum_mulai",
+      "label": "1. Sebelum mulai",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L5",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_2_employee",
+      "label": "2. Employee",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L12",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_tujuan",
+      "label": "Tujuan",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L14",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_alur_uji",
+      "label": "Alur uji",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L18",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_hasil_yang_harus_terlihat",
+      "label": "Hasil yang harus terlihat",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L29",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_batas_akses_yang_harus_diuji",
+      "label": "Batas akses yang harus diuji",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L39",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_3_mentor_trainer",
+      "label": "3. Mentor / Trainer",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L43",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_tujuan_45",
+      "label": "Tujuan",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L45",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_alur_uji_49",
+      "label": "Alur uji",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L49",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_aturan_nilai_course",
+      "label": "Aturan nilai course",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L66",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_batas_akses_yang_harus_diuji_76",
+      "label": "Batas akses yang harus diuji",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L76",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_4_super_admin",
+      "label": "4. Super Admin",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L80",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_tujuan_82",
+      "label": "Tujuan",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L82",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_alur_uji_inti",
+      "label": "Alur uji inti",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L86",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_hasil_yang_harus_terlihat_99",
+      "label": "Hasil yang harus terlihat",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L99",
+      "_origin": "ast"
+    },
+    {
+      "id": "docs_real_user_test_guide_5_kriteria_lulus_uat",
+      "label": "5. Kriteria lulus UAT",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L109",
+      "_origin": "ast"
+    },
+    {
       "id": "docs_role_access_audit",
       "label": "ROLE_ACCESS_AUDIT.md",
       "file_type": "document",
@@ -23310,8 +23336,8 @@
       "_origin": "ast"
     },
     {
-      "id": "docs_role_access_audit_kesimpulan_singkat",
-      "label": "Kesimpulan singkat",
+      "id": "docs_role_access_audit_keputusan_akses",
+      "label": "Keputusan akses",
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/ROLE_ACCESS_AUDIT.md",
@@ -23319,111 +23345,21 @@
       "_origin": "ast"
     },
     {
-      "id": "docs_role_access_audit_fondasi_akses_yang_berlaku_untuk_semua_role",
-      "label": "Fondasi akses yang berlaku untuk semua role",
+      "id": "docs_role_access_audit_batas_akses_utama",
+      "label": "Batas akses utama",
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L17",
+      "source_location": "L19",
       "_origin": "ast"
     },
     {
-      "id": "docs_role_access_audit_matriks_menu_dan_modul",
-      "label": "Matriks menu dan modul",
+      "id": "docs_role_access_audit_bukti_regresi",
+      "label": "Bukti regresi",
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L28",
-      "_origin": "ast"
-    },
-    {
-      "id": "docs_role_access_audit_pemetaan_per_role",
-      "label": "Pemetaan per role",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L59",
-      "_origin": "ast"
-    },
-    {
-      "id": "docs_role_access_audit_super_admin",
-      "label": "Super Admin",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L61",
-      "_origin": "ast"
-    },
-    {
-      "id": "docs_role_access_audit_lms_admin",
-      "label": "LMS Admin",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L72",
-      "_origin": "ast"
-    },
-    {
-      "id": "docs_role_access_audit_trainer_mentor",
-      "label": "Trainer / Mentor",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L82",
-      "_origin": "ast"
-    },
-    {
-      "id": "docs_role_access_audit_manager_tim",
-      "label": "Manager Tim",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L93",
-      "_origin": "ast"
-    },
-    {
-      "id": "docs_role_access_audit_employee",
-      "label": "Employee",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L103",
-      "_origin": "ast"
-    },
-    {
-      "id": "docs_role_access_audit_management_owner",
-      "label": "Management / Owner",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L113",
-      "_origin": "ast"
-    },
-    {
-      "id": "docs_role_access_audit_perbaikan_yang_dituntaskan",
-      "label": "Perbaikan yang dituntaskan",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L123",
-      "_origin": "ast"
-    },
-    {
-      "id": "docs_role_access_audit_batas_produk_yang_disengaja",
-      "label": "Batas produk yang disengaja",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L130",
-      "_origin": "ast"
-    },
-    {
-      "id": "docs_role_access_audit_bukti_pemeriksaan",
-      "label": "Bukti pemeriksaan",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L139",
+      "source_location": "L30",
       "_origin": "ast"
     },
     {
@@ -23432,7 +23368,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L152",
+      "source_location": "L37",
       "_origin": "ast"
     },
     {
@@ -23765,7 +23701,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L46",
+      "source_location": "L44",
       "_origin": "ast"
     },
     {
@@ -23774,7 +23710,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L61",
+      "source_location": "L59",
       "_origin": "ast"
     },
     {
@@ -23783,7 +23719,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L70",
+      "source_location": "L68",
       "_origin": "ast"
     },
     {
@@ -23792,7 +23728,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L82",
+      "source_location": "L80",
       "_origin": "ast"
     },
     {
@@ -23801,7 +23737,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L92",
+      "source_location": "L90",
       "_origin": "ast"
     },
     {
@@ -23810,7 +23746,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L102",
+      "source_location": "L100",
       "_origin": "ast"
     },
     {
@@ -23819,25 +23755,16 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L104",
+      "source_location": "L102",
       "_origin": "ast"
     },
     {
-      "id": "docs_user_guide_4_2_manager_tim",
-      "label": "4.2 Manager Tim",
+      "id": "docs_user_guide_4_2_trainer_mentor",
+      "label": "4.2 Trainer / Mentor",
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L115",
-      "_origin": "ast"
-    },
-    {
-      "id": "docs_user_guide_4_3_trainer_mentor",
-      "label": "4.3 Trainer / Mentor",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L126",
+      "source_location": "L113",
       "_origin": "ast"
     },
     {
@@ -23846,7 +23773,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L132",
+      "source_location": "L119",
       "_origin": "ast"
     },
     {
@@ -23855,43 +23782,16 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L142",
+      "source_location": "L129",
       "_origin": "ast"
     },
     {
-      "id": "docs_user_guide_4_4_management_owner",
-      "label": "4.4 Management / Owner",
+      "id": "docs_user_guide_4_3_lms_admin_hr",
+      "label": "4.3 LMS Admin / HR",
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L153",
-      "_origin": "ast"
-    },
-    {
-      "id": "docs_user_guide_evaluasi_akhir",
-      "label": "Evaluasi akhir",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L159",
-      "_origin": "ast"
-    },
-    {
-      "id": "docs_user_guide_laporan",
-      "label": "Laporan",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L166",
-      "_origin": "ast"
-    },
-    {
-      "id": "docs_user_guide_4_5_lms_admin_hr",
-      "label": "4.5 LMS Admin / HR",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L176",
+      "source_location": "L140",
       "_origin": "ast"
     },
     {
@@ -23900,7 +23800,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L182",
+      "source_location": "L146",
       "_origin": "ast"
     },
     {
@@ -23909,7 +23809,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L190",
+      "source_location": "L154",
       "_origin": "ast"
     },
     {
@@ -23918,16 +23818,16 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L203",
+      "source_location": "L167",
       "_origin": "ast"
     },
     {
-      "id": "docs_user_guide_4_6_super_admin",
-      "label": "4.6 Super Admin",
+      "id": "docs_user_guide_4_4_super_admin",
+      "label": "4.4 Super Admin",
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L211",
+      "source_location": "L175",
       "_origin": "ast"
     },
     {
@@ -23936,7 +23836,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L221",
+      "source_location": "L184",
       "_origin": "ast"
     },
     {
@@ -37143,7 +37043,7 @@
     },
     {
       "source": "app_http_controllers_certificatecontroller",
-      "target": "illuminate_http_request",
+      "target": "app_models_user_user",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -37154,7 +37054,7 @@
     },
     {
       "source": "app_http_controllers_certificatecontroller",
-      "target": "illuminate_support_facades_storage",
+      "target": "illuminate_http_request",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -37165,7 +37065,7 @@
     },
     {
       "source": "app_http_controllers_certificatecontroller",
-      "target": "inertia_inertia",
+      "target": "illuminate_support_facades_storage",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -37176,7 +37076,7 @@
     },
     {
       "source": "app_http_controllers_certificatecontroller",
-      "target": "inertia_response",
+      "target": "inertia_inertia",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -37187,7 +37087,7 @@
     },
     {
       "source": "app_http_controllers_certificatecontroller",
-      "target": "symfony_component_httpfoundation_streamedresponse",
+      "target": "inertia_response",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -37198,11 +37098,22 @@
     },
     {
       "source": "app_http_controllers_certificatecontroller",
+      "target": "symfony_component_httpfoundation_streamedresponse",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/CertificateController.php",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "app_http_controllers_certificatecontroller",
       "target": "app_http_controllers_certificatecontroller_certificatecontroller",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -37212,7 +37123,7 @@
       "relation": "inherits",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -37222,7 +37133,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -37232,7 +37143,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -37243,7 +37154,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "context": "return_type",
       "_origin": "ast"
@@ -37254,7 +37165,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L22",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -37264,7 +37175,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L26",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -37274,7 +37185,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L26",
+      "source_location": "L28",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -37285,7 +37196,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L41",
+      "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -37295,7 +37206,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L41",
+      "source_location": "L43",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -37306,7 +37217,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L41",
+      "source_location": "L43",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -37317,9 +37228,52 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L41",
+      "source_location": "L43",
       "weight": 1.0,
       "context": "return_type",
+      "_origin": "ast"
+    },
+    {
+      "source": "app_http_controllers_certificatecontroller_certificatecontroller",
+      "target": "app_http_controllers_certificatecontroller_certificatecontroller_authorizecertificateaccess",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/CertificateController.php",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "app_http_controllers_certificatecontroller_certificatecontroller_authorizecertificateaccess",
+      "target": "app_models_user_user",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/CertificateController.php",
+      "source_location": "L55",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast"
+    },
+    {
+      "source": "app_http_controllers_certificatecontroller_certificatecontroller_index",
+      "target": "app_http_controllers_certificatecontroller_certificatecontroller_authorizecertificateaccess",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/CertificateController.php",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "app_http_controllers_certificatecontroller_certificatecontroller_download",
+      "target": "app_http_controllers_certificatecontroller_certificatecontroller_authorizecertificateaccess",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/CertificateController.php",
+      "source_location": "L46",
+      "weight": 1.0,
       "_origin": "ast"
     },
     {
@@ -37329,7 +37283,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L49",
+      "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -40042,155 +39996,6 @@
       "source_file": "app/Http/Controllers/Settings/SecurityController.php",
       "source_location": "L29",
       "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_http_controllers_teamprogresscontroller",
-      "target": "app_models_enrollment_enrollment",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_http_controllers_teamprogresscontroller",
-      "target": "app_support_reportenrollmentquery_reportenrollmentquery",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L6",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_http_controllers_teamprogresscontroller",
-      "target": "illuminate_http_request",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_http_controllers_teamprogresscontroller",
-      "target": "illuminate_validation_rule",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L8",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_http_controllers_teamprogresscontroller",
-      "target": "inertia_inertia",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_http_controllers_teamprogresscontroller",
-      "target": "inertia_response",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L10",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_http_controllers_teamprogresscontroller",
-      "target": "app_http_controllers_teamprogresscontroller_teamprogresscontroller",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L12",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_http_controllers_teamprogresscontroller_teamprogresscontroller",
-      "target": "app_http_controllers_controller_controller",
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L12",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_http_controllers_teamprogresscontroller_teamprogresscontroller",
-      "target": "app_http_controllers_teamprogresscontroller_teamprogresscontroller_index",
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L14",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_http_controllers_teamprogresscontroller_teamprogresscontroller_index",
-      "target": "illuminate_http_request",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L14",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "_origin": "ast"
-    },
-    {
-      "source": "app_http_controllers_teamprogresscontroller_teamprogresscontroller_index",
-      "target": "inertia_response",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L14",
-      "weight": 1.0,
-      "context": "return_type",
-      "_origin": "ast"
-    },
-    {
-      "source": "app_http_controllers_teamprogresscontroller",
-      "target": "app_http_controllers_teamprogresscontroller_closure_1",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L20",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_http_controllers_teamprogresscontroller",
-      "target": "app_http_controllers_teamprogresscontroller_closure_2",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L24",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_http_controllers_teamprogresscontroller_closure_2",
-      "target": "app_models_enrollment_enrollment",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L24",
-      "weight": 1.0,
-      "context": "parameter_type",
       "_origin": "ast"
     },
     {
@@ -47476,7 +47281,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Policies/UserPolicy.php",
-      "source_location": "L25",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -47486,7 +47291,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Policies/UserPolicy.php",
-      "source_location": "L25",
+      "source_location": "L24",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -47497,7 +47302,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Policies/UserPolicy.php",
-      "source_location": "L30",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -47507,7 +47312,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Policies/UserPolicy.php",
-      "source_location": "L30",
+      "source_location": "L29",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -48868,7 +48673,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L40",
+      "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -48878,7 +48683,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L40",
+      "source_location": "L32",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -48889,7 +48694,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L87",
+      "source_location": "L79",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -48899,7 +48704,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L87",
+      "source_location": "L79",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -48910,7 +48715,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L107",
+      "source_location": "L99",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -48920,7 +48725,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L107",
+      "source_location": "L99",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -48931,7 +48736,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L108",
+      "source_location": "L100",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -48941,7 +48746,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L108",
+      "source_location": "L100",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -48952,7 +48757,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L128",
+      "source_location": "L120",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -48962,7 +48767,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L128",
+      "source_location": "L120",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -48973,7 +48778,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L147",
+      "source_location": "L139",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -48983,7 +48788,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L147",
+      "source_location": "L139",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -48994,7 +48799,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L179",
+      "source_location": "L171",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -49004,49 +48809,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L179",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "_origin": "ast"
-    },
-    {
-      "source": "app_support_dashboardresolver_dashboardresolver",
-      "target": "app_support_dashboardresolver_dashboardresolver_manager",
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L190",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_support_dashboardresolver_dashboardresolver_manager",
-      "target": "app_models_user_user",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L190",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "_origin": "ast"
-    },
-    {
-      "source": "app_support_dashboardresolver",
-      "target": "app_support_dashboardresolver_closure_6",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L224",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_support_dashboardresolver_closure_6",
-      "target": "app_models_enrollment_enrollment",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L224",
+      "source_location": "L171",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -49057,7 +48820,17 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L235",
+      "source_location": "L182",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "app_support_dashboardresolver",
+      "target": "app_support_dashboardresolver_closure_6",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Support/DashboardResolver.php",
+      "source_location": "L184",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -49067,58 +48840,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L237",
+      "source_location": "L211",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
-      "source": "app_support_dashboardresolver",
-      "target": "app_support_dashboardresolver_closure_8",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L264",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_support_dashboardresolver_closure_8",
+      "source": "app_support_dashboardresolver_closure_7",
       "target": "app_models_enrollment_enrollment",
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L264",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "_origin": "ast"
-    },
-    {
-      "source": "app_support_dashboardresolver_dashboardresolver",
-      "target": "app_support_dashboardresolver_dashboardresolver_executive",
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L276",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_support_dashboardresolver",
-      "target": "app_support_dashboardresolver_closure_9",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L297",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_support_dashboardresolver_closure_9",
-      "target": "app_models_enrollment_enrollment",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L297",
+      "source_location": "L211",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -49129,7 +48861,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L311",
+      "source_location": "L226",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -49139,7 +48871,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L311",
+      "source_location": "L226",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -49150,7 +48882,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L323",
+      "source_location": "L238",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -49160,7 +48892,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L328",
+      "source_location": "L243",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -49170,7 +48902,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L333",
+      "source_location": "L248",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -49198,34 +48930,12 @@
     },
     {
       "source": "app_support_dashboardresolver_dashboardresolver_for",
-      "target": "app_support_dashboardresolver_dashboardresolver_manager",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L29",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_support_dashboardresolver_dashboardresolver_for",
-      "target": "app_support_dashboardresolver_dashboardresolver_executive",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L33",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_support_dashboardresolver_dashboardresolver_for",
       "target": "app_support_dashboardresolver_dashboardresolver_learner",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L36",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -49236,7 +48946,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L45",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -49247,7 +48957,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L53",
+      "source_location": "L45",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -49258,7 +48968,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L132",
+      "source_location": "L124",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -49269,7 +48979,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L179",
+      "source_location": "L171",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -49280,73 +48990,29 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L183",
+      "source_location": "L175",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
-      "source": "app_support_dashboardresolver_dashboardresolver_manager",
-      "target": "app_support_dashboardresolver_dashboardresolver_enrollmentstats",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L200",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_support_dashboardresolver_closure_6",
+      "source": "app_support_dashboardresolver_closure_7",
       "target": "app_support_dashboardresolver_dashboardresolver_item",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L224",
+      "source_location": "L211",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
-      "source": "app_support_dashboardresolver_closure_8",
-      "target": "app_support_dashboardresolver_dashboardresolver_item",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L264",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_support_dashboardresolver_closure_8",
+      "source": "app_support_dashboardresolver_closure_7",
       "target": "app_support_dashboardresolver_dashboardresolver_enrollmentstatus",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L268",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_support_dashboardresolver_closure_9",
-      "target": "app_support_dashboardresolver_dashboardresolver_item",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L297",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_support_dashboardresolver_closure_9",
-      "target": "app_support_dashboardresolver_dashboardresolver_enrollmentstatus",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L301",
+      "source_location": "L215",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -55154,6 +54820,68 @@
       "_origin": "ast"
     },
     {
+      "source": "database_migrations_2026_10_30_000001_retire_manager_and_management_roles",
+      "target": "illuminate_database_migrations_migration",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_10_30_000001_retire_manager_and_management_roles.php",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_migrations_2026_10_30_000001_retire_manager_and_management_roles",
+      "target": "illuminate_support_facades_db",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_10_30_000001_retire_manager_and_management_roles.php",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_migrations_2026_10_30_000001_retire_manager_and_management_roles",
+      "target": "database_migrations_2026_10_30_000001_retire_manager_and_management_roles_up",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_10_30_000001_retire_manager_and_management_roles.php",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_migrations_2026_10_30_000001_retire_manager_and_management_roles",
+      "target": "database_migrations_2026_10_30_000001_retire_manager_and_management_roles_closure_1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_10_30_000001_retire_manager_and_management_roles.php",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_migrations_2026_10_30_000001_retire_manager_and_management_roles",
+      "target": "database_migrations_2026_10_30_000001_retire_manager_and_management_roles_closure_2",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_10_30_000001_retire_manager_and_management_roles.php",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "database_migrations_2026_10_30_000001_retire_manager_and_management_roles",
+      "target": "database_migrations_2026_10_30_000001_retire_manager_and_management_roles_down",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_10_30_000001_retire_manager_and_management_roles.php",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
       "source": "database_seeders_customerservicedealmakerseeder",
       "target": "app_models_answer_answer",
       "relation": "imports",
@@ -57570,7 +57298,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "database/seeders/RolePermissionSeeder.php",
-      "source_location": "L21",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -57580,7 +57308,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "database/seeders/RolePermissionSeeder.php",
-      "source_location": "L32",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71597,7 +71325,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/navigation/sidebar.test.ts",
-      "source_location": "L79",
+      "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71673,7 +71401,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/navigation/sidebar.ts",
-      "source_location": "L28",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71683,7 +71411,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/navigation/sidebar.ts",
-      "source_location": "L33",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71716,7 +71444,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L11",
+      "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71727,7 +71455,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L12",
+      "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71738,7 +71466,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L13",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71749,7 +71477,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L14",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71760,7 +71488,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L15",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71771,7 +71499,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L15",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71782,7 +71510,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L16",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71793,7 +71521,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L16",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71803,7 +71531,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L18",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71813,7 +71541,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L19",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71823,7 +71551,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L20",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71833,7 +71561,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L29",
+      "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71843,7 +71571,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L35",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -71853,7 +71581,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/Dashboard.vue",
-      "source_location": "L49",
+      "source_location": "L47",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -80038,209 +79766,6 @@
       "_origin": "ast"
     },
     {
-      "source": "resources_js_pages_team_index",
-      "target": "ref_inertiajs_vue3",
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L2",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "ref_lucide_vue",
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_components_emptystate",
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L4",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_components_filterbar",
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_components_pagination",
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L6",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_components_pageheader",
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_components_ui_button_index",
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L8",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_components_ui_button_index_button",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L8",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_components_ui_input_index",
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_components_ui_input_index_input",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_components_ui_label_index",
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L10",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_components_ui_label_index_label",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L10",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_pages_team_index_enrollment",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L12",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_pages_team_index_filters",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L24",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_pages_team_index_props",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L25",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_pages_team_index_applyfilters",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L38",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_pages_team_index_resetfilters",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L44",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index",
-      "target": "resources_js_pages_team_index_statuslabel",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L49",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "resources_js_pages_team_index_resetfilters",
-      "target": "resources_js_pages_team_index_applyfilters",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/pages/team/Index.vue",
-      "source_location": "L47",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
       "source": "resources_js_pages_trainer_progress_index",
       "target": "ref_inertiajs_vue3",
       "relation": "imports_from",
@@ -81315,7 +80840,7 @@
     },
     {
       "source": "routes_web",
-      "target": "app_http_controllers_teamprogresscontroller_teamprogresscontroller",
+      "target": "app_http_controllers_trainerprogresscontroller_trainerprogresscontroller",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -81326,7 +80851,7 @@
     },
     {
       "source": "routes_web",
-      "target": "app_http_controllers_trainerprogresscontroller_trainerprogresscontroller",
+      "target": "illuminate_support_facades_route",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -81337,22 +80862,11 @@
     },
     {
       "source": "routes_web",
-      "target": "illuminate_support_facades_route",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "routes/web.php",
-      "source_location": "L29",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "routes_web",
       "target": "routes_web_get",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "routes/web.php",
-      "source_location": "L31",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -81362,7 +80876,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "routes/web.php",
-      "source_location": "L36",
+      "source_location": "L35",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -81372,17 +80886,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "routes/web.php",
-      "source_location": "L40",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "routes_web",
-      "target": "routes_web_closure_3",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "routes/web.php",
-      "source_location": "L52",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -83814,21 +83318,11 @@
     },
     {
       "source": "tests_feature_admin_usermanagementtest_usermanagementtest",
-      "target": "tests_feature_admin_usermanagementtest_usermanagementtest_test_manager_can_view_only_their_direct_report",
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/Admin/UserManagementTest.php",
-      "source_location": "L92",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_admin_usermanagementtest_usermanagementtest",
       "target": "tests_feature_admin_usermanagementtest_usermanagementtest_userwithpermission",
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/Admin/UserManagementTest.php",
-      "source_location": "L102",
+      "source_location": "L92",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -83838,7 +83332,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/Admin/UserManagementTest.php",
-      "source_location": "L102",
+      "source_location": "L92",
       "weight": 1.0,
       "context": "return_type",
       "_origin": "ast"
@@ -83873,17 +83367,6 @@
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/Admin/UserManagementTest.php",
       "source_location": "L74",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_admin_usermanagementtest_usermanagementtest_test_manager_can_view_only_their_direct_report",
-      "target": "tests_feature_admin_usermanagementtest_usermanagementtest_userwithpermission",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/Admin/UserManagementTest.php",
-      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -85760,7 +85243,7 @@
     },
     {
       "source": "tests_feature_certificatetest",
-      "target": "app_models_user_user",
+      "target": "app_models_permission_permission",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -85771,7 +85254,7 @@
     },
     {
       "source": "tests_feature_certificatetest",
-      "target": "illuminate_foundation_testing_refreshdatabase",
+      "target": "app_models_role_role",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -85782,7 +85265,7 @@
     },
     {
       "source": "tests_feature_certificatetest",
-      "target": "illuminate_support_facades_storage",
+      "target": "app_models_user_user",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -85793,7 +85276,7 @@
     },
     {
       "source": "tests_feature_certificatetest",
-      "target": "tests_testcase_testcase",
+      "target": "illuminate_foundation_testing_refreshdatabase",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -85804,11 +85287,33 @@
     },
     {
       "source": "tests_feature_certificatetest",
+      "target": "illuminate_support_facades_storage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/CertificateTest.php",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_certificatetest",
+      "target": "tests_testcase_testcase",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/CertificateTest.php",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_certificatetest",
       "target": "tests_feature_certificatetest_certificatetest",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L14",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -85818,7 +85323,7 @@
       "relation": "inherits",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L14",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -85828,7 +85333,7 @@
       "relation": "mixes_in",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L16",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -85838,7 +85343,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L18",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -85848,7 +85353,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L43",
+      "source_location": "L45",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -86415,7 +85920,7 @@
     },
     {
       "source": "tests_feature_dashboardtest_dashboardtest",
-      "target": "tests_feature_dashboardtest_dashboardtest_test_management_dashboard_cache_is_invalidated_when_its_source_data_changes",
+      "target": "tests_feature_dashboardtest_dashboardtest_test_operations_dashboard_cache_is_invalidated_when_its_source_data_changes",
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/DashboardTest.php",
@@ -86446,7 +85951,7 @@
     },
     {
       "source": "tests_feature_dashboardtest_dashboardtest",
-      "target": "tests_feature_dashboardtest_dashboardtest_test_management_dashboard_labels_final_review_assignments_neutrally",
+      "target": "tests_feature_dashboardtest_dashboardtest_test_operations_dashboard_labels_final_review_assignments_neutrally",
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/DashboardTest.php",
@@ -86539,7 +86044,7 @@
     },
     {
       "source": "tests_feature_dashboardtest_dashboardtest",
-      "target": "tests_feature_dashboardtest_dashboardtest_test_manager_and_executive_receive_their_own_dashboard_contexts",
+      "target": "tests_feature_dashboardtest_dashboardtest_lmsadmin",
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/DashboardTest.php",
@@ -86548,64 +86053,12 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_dashboardtest",
-      "target": "tests_feature_dashboardtest_closure_8",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L191",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_dashboardtest_closure_8",
-      "target": "inertia_testing_assertableinertia",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L191",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_dashboardtest",
-      "target": "tests_feature_dashboardtest_closure_9",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L198",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_dashboardtest_closure_9",
-      "target": "inertia_testing_assertableinertia",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L198",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_dashboardtest_dashboardtest",
-      "target": "tests_feature_dashboardtest_dashboardtest_managementadmin",
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L206",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_dashboardtest_dashboardtest_managementadmin",
+      "source": "tests_feature_dashboardtest_dashboardtest_lmsadmin",
       "target": "app_models_user_user",
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L206",
+      "source_location": "L175",
       "weight": 1.0,
       "context": "return_type",
       "_origin": "ast"
@@ -86616,7 +86069,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L211",
+      "source_location": "L180",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -86626,14 +86079,14 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L211",
+      "source_location": "L180",
       "weight": 1.0,
       "context": "return_type",
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_dashboardtest_dashboardtest_test_management_dashboard_cache_is_invalidated_when_its_source_data_changes",
-      "target": "tests_feature_dashboardtest_dashboardtest_managementadmin",
+      "source": "tests_feature_dashboardtest_dashboardtest_test_operations_dashboard_cache_is_invalidated_when_its_source_data_changes",
+      "target": "tests_feature_dashboardtest_dashboardtest_lmsadmin",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -86643,8 +86096,8 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_dashboardtest_dashboardtest_test_management_dashboard_labels_final_review_assignments_neutrally",
-      "target": "tests_feature_dashboardtest_dashboardtest_managementadmin",
+      "source": "tests_feature_dashboardtest_dashboardtest_test_operations_dashboard_labels_final_review_assignments_neutrally",
+      "target": "tests_feature_dashboardtest_dashboardtest_lmsadmin",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -86676,24 +86129,13 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_dashboardtest_dashboardtest_test_manager_and_executive_receive_their_own_dashboard_contexts",
+      "source": "tests_feature_dashboardtest_dashboardtest_lmsadmin",
       "target": "tests_feature_dashboardtest_dashboardtest_userwithpermission",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/DashboardTest.php",
       "source_location": "L177",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_dashboardtest_dashboardtest_managementadmin",
-      "target": "tests_feature_dashboardtest_dashboardtest_userwithpermission",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L208",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -88388,7 +87830,7 @@
     },
     {
       "source": "tests_feature_localtestingseedertest_localtestingseedertest",
-      "target": "tests_feature_localtestingseedertest_localtestingseedertest_test_seeded_data_loads_the_core_admin_manager_and_learner_pages",
+      "target": "tests_feature_localtestingseedertest_localtestingseedertest_test_seeded_data_loads_the_core_admin_and_learner_pages",
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
@@ -89244,7 +88686,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L36",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -89254,7 +88696,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L43",
+      "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -89264,7 +88706,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L56",
+      "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -89274,18 +88716,18 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L56",
+      "source_location": "L49",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
     },
     {
       "source": "tests_feature_roleaccesscontracttest_roleaccesscontracttest",
-      "target": "tests_feature_roleaccesscontracttest_roleaccesscontracttest_test_manager_role_uses_the_team_manager_label",
+      "target": "tests_feature_roleaccesscontracttest_roleaccesscontracttest_test_role_catalog_contains_only_the_four_supported_operational_roles",
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L64",
+      "source_location": "L56",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -89295,7 +88737,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L72",
+      "source_location": "L64",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -89305,7 +88747,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L108",
+      "source_location": "L99",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -89315,7 +88757,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L122",
+      "source_location": "L113",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -89325,7 +88767,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L122",
+      "source_location": "L113",
       "weight": 1.0,
       "context": "return_type",
       "_origin": "ast"
@@ -89337,7 +88779,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L53",
+      "source_location": "L46",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -89348,7 +88790,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L97",
+      "source_location": "L88",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -89359,7 +88801,155 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L116",
+      "source_location": "L107",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest",
+      "target": "app_models_course_course",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest",
+      "target": "app_models_coursecategory_coursecategory",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest",
+      "target": "app_models_enrollment_enrollment",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest",
+      "target": "app_models_role_role",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest",
+      "target": "app_models_user_user",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest",
+      "target": "illuminate_foundation_testing_refreshdatabase",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest",
+      "target": "runtimeexception",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest",
+      "target": "tests_testcase_testcase",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest",
+      "target": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest",
+      "target": "tests_testcase_testcase",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest",
+      "target": "illuminate_foundation_testing_refreshdatabase",
+      "relation": "mixes_in",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest",
+      "target": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest_test_it_reassigns_retired_role_accounts_without_removing_users_or_learning_data",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest",
+      "target": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest_test_it_does_not_remove_a_retired_role_when_its_replacement_is_missing",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L45",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest",
+      "target": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest_test_it_does_not_offer_a_lossy_rollback",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L64",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -89768,186 +89358,6 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_teamprogresstest",
-      "target": "app_models_course_course",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest",
-      "target": "app_models_coursecategory_coursecategory",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L6",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest",
-      "target": "app_models_permission_permission",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest",
-      "target": "app_models_role_role",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L8",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest",
-      "target": "app_models_user_user",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest",
-      "target": "illuminate_foundation_testing_refreshdatabase",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L10",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest",
-      "target": "inertia_testing_assertableinertia",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest",
-      "target": "tests_testcase_testcase",
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L12",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest",
-      "target": "tests_feature_teamprogresstest_teamprogresstest",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L14",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest_teamprogresstest",
-      "target": "tests_testcase_testcase",
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L14",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest_teamprogresstest",
-      "target": "illuminate_foundation_testing_refreshdatabase",
-      "relation": "mixes_in",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L16",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest_teamprogresstest",
-      "target": "tests_feature_teamprogresstest_teamprogresstest_test_manager_can_only_see_direct_reports",
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L18",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest",
-      "target": "tests_feature_teamprogresstest_closure_1",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L34",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest_closure_1",
-      "target": "inertia_testing_assertableinertia",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L34",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest_teamprogresstest",
-      "target": "tests_feature_teamprogresstest_teamprogresstest_test_manager_sees_a_direct_report_waiting_for_final_review_without_scores",
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L45",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest",
-      "target": "tests_feature_teamprogresstest_closure_2",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L59",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest_closure_2",
-      "target": "inertia_testing_assertableinertia",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L59",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "_origin": "ast"
-    },
-    {
       "source": "tests_feature_trainerprogresstest",
       "target": "app_models_assessment_assessment",
       "relation": "imports",
@@ -90120,7 +89530,7 @@
     },
     {
       "source": "tests_feature_trainerprogresstest_trainerprogresstest",
-      "target": "tests_feature_trainerprogresstest_trainerprogresstest_test_management_views_organization_wide_progress_scope",
+      "target": "tests_feature_trainerprogresstest_trainerprogresstest_test_lms_admin_views_organization_wide_progress_scope",
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/TrainerProgressTest.php",
@@ -90316,7 +89726,7 @@
     },
     {
       "source": "tests_feature_trainerprogresstest_trainerprogresstest",
-      "target": "tests_feature_trainerprogresstest_trainerprogresstest_management",
+      "target": "tests_feature_trainerprogresstest_trainerprogresstest_lmsadmin",
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/TrainerProgressTest.php",
@@ -90325,7 +89735,7 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_trainerprogresstest_trainerprogresstest_management",
+      "source": "tests_feature_trainerprogresstest_trainerprogresstest_lmsadmin",
       "target": "app_models_user_user",
       "relation": "references",
       "confidence": "EXTRACTED",
@@ -90347,8 +89757,8 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_trainerprogresstest_trainerprogresstest_test_management_views_organization_wide_progress_scope",
-      "target": "tests_feature_trainerprogresstest_trainerprogresstest_management",
+      "source": "tests_feature_trainerprogresstest_trainerprogresstest_test_lms_admin_views_organization_wide_progress_scope",
+      "target": "tests_feature_trainerprogresstest_trainerprogresstest_lmsadmin",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -91754,7 +91164,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/DATABASE_SYSTEM.md",
-      "source_location": "L37",
+      "source_location": "L39",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -91764,7 +91174,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/DATABASE_SYSTEM.md",
-      "source_location": "L53",
+      "source_location": "L55",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -91774,7 +91184,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/DATABASE_SYSTEM.md",
-      "source_location": "L74",
+      "source_location": "L76",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -91784,7 +91194,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/DATABASE_SYSTEM.md",
-      "source_location": "L82",
+      "source_location": "L84",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -91794,7 +91204,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/DATABASE_SYSTEM.md",
-      "source_location": "L93",
+      "source_location": "L95",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -91830,11 +91240,21 @@
     },
     {
       "source": "docs_deployment_runbook_2_konfigurasi_awal_vps",
-      "target": "docs_deployment_runbook_data_katalog_customer_service",
+      "target": "docs_deployment_runbook_konsolidasi_role_operasional",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
       "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_deployment_runbook_2_konfigurasi_awal_vps",
+      "target": "docs_deployment_runbook_data_katalog_customer_service",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
+      "source_location": "L69",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -91844,7 +91264,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L71",
+      "source_location": "L85",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -91854,7 +91274,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L83",
+      "source_location": "L97",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -91864,7 +91284,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L98",
+      "source_location": "L112",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -91874,7 +91294,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L117",
+      "source_location": "L131",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -91884,7 +91304,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/DEPLOYMENT_RUNBOOK.md",
-      "source_location": "L124",
+      "source_location": "L138",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92004,7 +91424,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/PRD.md",
-      "source_location": "L28",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92014,7 +91434,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/PRD.md",
-      "source_location": "L40",
+      "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92024,7 +91444,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/PRD.md",
-      "source_location": "L44",
+      "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92034,7 +91454,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/PRD.md",
-      "source_location": "L61",
+      "source_location": "L59",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92044,7 +91464,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/PRD.md",
-      "source_location": "L83",
+      "source_location": "L80",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92054,17 +91474,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/PRD.md",
-      "source_location": "L85",
+      "source_location": "L82",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
       "source": "docs_prd_7_kebutuhan_fungsional_per_area",
-      "target": "docs_prd_admin_dan_manager",
+      "target": "docs_prd_admin",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/PRD.md",
-      "source_location": "L89",
+      "source_location": "L86",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92074,7 +91494,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/PRD.md",
-      "source_location": "L93",
+      "source_location": "L90",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92084,7 +91504,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/PRD.md",
-      "source_location": "L97",
+      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92094,7 +91514,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/PRD.md",
-      "source_location": "L115",
+      "source_location": "L112",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92104,7 +91524,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/PRD.md",
-      "source_location": "L119",
+      "source_location": "L116",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92289,6 +91709,176 @@
       "_origin": "ast"
     },
     {
+      "source": "docs_real_user_test_guide",
+      "target": "docs_real_user_test_guide_panduan_uji_pengguna_kgj_academy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_panduan_uji_pengguna_kgj_academy",
+      "target": "docs_real_user_test_guide_1_sebelum_mulai",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_panduan_uji_pengguna_kgj_academy",
+      "target": "docs_real_user_test_guide_2_employee",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_2_employee",
+      "target": "docs_real_user_test_guide_tujuan",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_2_employee",
+      "target": "docs_real_user_test_guide_alur_uji",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_2_employee",
+      "target": "docs_real_user_test_guide_hasil_yang_harus_terlihat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_2_employee",
+      "target": "docs_real_user_test_guide_batas_akses_yang_harus_diuji",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_panduan_uji_pengguna_kgj_academy",
+      "target": "docs_real_user_test_guide_3_mentor_trainer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_3_mentor_trainer",
+      "target": "docs_real_user_test_guide_tujuan_45",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L45",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_3_mentor_trainer",
+      "target": "docs_real_user_test_guide_alur_uji_49",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L49",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_3_mentor_trainer",
+      "target": "docs_real_user_test_guide_aturan_nilai_course",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L66",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_3_mentor_trainer",
+      "target": "docs_real_user_test_guide_batas_akses_yang_harus_diuji_76",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L76",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_panduan_uji_pengguna_kgj_academy",
+      "target": "docs_real_user_test_guide_4_super_admin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L80",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_4_super_admin",
+      "target": "docs_real_user_test_guide_tujuan_82",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_4_super_admin",
+      "target": "docs_real_user_test_guide_alur_uji_inti",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L86",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_4_super_admin",
+      "target": "docs_real_user_test_guide_hasil_yang_harus_terlihat_99",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L99",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_real_user_test_guide_panduan_uji_pengguna_kgj_academy",
+      "target": "docs_real_user_test_guide_5_kriteria_lulus_uat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/REAL_USER_TEST_GUIDE.md",
+      "source_location": "L109",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
       "source": "docs_role_access_audit",
       "target": "docs_role_access_audit_audit_akses_role",
       "relation": "contains",
@@ -92300,7 +91890,7 @@
     },
     {
       "source": "docs_role_access_audit_audit_akses_role",
-      "target": "docs_role_access_audit_kesimpulan_singkat",
+      "target": "docs_role_access_audit_keputusan_akses",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/ROLE_ACCESS_AUDIT.md",
@@ -92310,121 +91900,21 @@
     },
     {
       "source": "docs_role_access_audit_audit_akses_role",
-      "target": "docs_role_access_audit_fondasi_akses_yang_berlaku_untuk_semua_role",
+      "target": "docs_role_access_audit_batas_akses_utama",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L17",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
       "source": "docs_role_access_audit_audit_akses_role",
-      "target": "docs_role_access_audit_matriks_menu_dan_modul",
+      "target": "docs_role_access_audit_bukti_regresi",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L28",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_audit_akses_role",
-      "target": "docs_role_access_audit_pemetaan_per_role",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L59",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_pemetaan_per_role",
-      "target": "docs_role_access_audit_super_admin",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L61",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_pemetaan_per_role",
-      "target": "docs_role_access_audit_lms_admin",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L72",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_pemetaan_per_role",
-      "target": "docs_role_access_audit_trainer_mentor",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L82",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_pemetaan_per_role",
-      "target": "docs_role_access_audit_manager_tim",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L93",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_pemetaan_per_role",
-      "target": "docs_role_access_audit_employee",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L103",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_pemetaan_per_role",
-      "target": "docs_role_access_audit_management_owner",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L113",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_audit_akses_role",
-      "target": "docs_role_access_audit_perbaikan_yang_dituntaskan",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L123",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_audit_akses_role",
-      "target": "docs_role_access_audit_batas_produk_yang_disengaja",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L130",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_audit_akses_role",
-      "target": "docs_role_access_audit_bukti_pemeriksaan",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L139",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92434,7 +91924,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L152",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92764,7 +92254,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L46",
+      "source_location": "L44",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92774,7 +92264,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L61",
+      "source_location": "L59",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92784,7 +92274,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L70",
+      "source_location": "L68",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92794,7 +92284,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L82",
+      "source_location": "L80",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92804,7 +92294,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L92",
+      "source_location": "L90",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92814,7 +92304,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L102",
+      "source_location": "L100",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92824,127 +92314,87 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L104",
+      "source_location": "L102",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
       "source": "docs_user_guide_4_panduan_per_role",
-      "target": "docs_user_guide_4_2_manager_tim",
+      "target": "docs_user_guide_4_2_trainer_mentor",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L115",
+      "source_location": "L113",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
-      "source": "docs_user_guide_4_panduan_per_role",
-      "target": "docs_user_guide_4_3_trainer_mentor",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L126",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_user_guide_4_3_trainer_mentor",
+      "source": "docs_user_guide_4_2_trainer_mentor",
       "target": "docs_user_guide_mengelola_materi",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L132",
+      "source_location": "L119",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
-      "source": "docs_user_guide_4_3_trainer_mentor",
+      "source": "docs_user_guide_4_2_trainer_mentor",
       "target": "docs_user_guide_meninjau_peserta",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L142",
+      "source_location": "L129",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
       "source": "docs_user_guide_4_panduan_per_role",
-      "target": "docs_user_guide_4_4_management_owner",
+      "target": "docs_user_guide_4_3_lms_admin_hr",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L153",
+      "source_location": "L140",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
-      "source": "docs_user_guide_4_4_management_owner",
-      "target": "docs_user_guide_evaluasi_akhir",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L159",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_user_guide_4_4_management_owner",
-      "target": "docs_user_guide_laporan",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L166",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_user_guide_4_panduan_per_role",
-      "target": "docs_user_guide_4_5_lms_admin_hr",
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L176",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_user_guide_4_5_lms_admin_hr",
+      "source": "docs_user_guide_4_3_lms_admin_hr",
       "target": "docs_user_guide_mengelola_organisasi_dan_user",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L182",
+      "source_location": "L146",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
-      "source": "docs_user_guide_4_5_lms_admin_hr",
+      "source": "docs_user_guide_4_3_lms_admin_hr",
       "target": "docs_user_guide_membuat_dan_menerbitkan_course",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L190",
+      "source_location": "L154",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
-      "source": "docs_user_guide_4_5_lms_admin_hr",
+      "source": "docs_user_guide_4_3_lms_admin_hr",
       "target": "docs_user_guide_penugasan_dan_pemantauan",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L203",
+      "source_location": "L167",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
       "source": "docs_user_guide_4_panduan_per_role",
-      "target": "docs_user_guide_4_6_super_admin",
+      "target": "docs_user_guide_4_4_super_admin",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L211",
+      "source_location": "L175",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -92954,7 +92404,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/USER_GUIDE.md",
-      "source_location": "L221",
+      "source_location": "L184",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -95050,7 +94500,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/CertificateController.php",
-      "source_location": "L47",
+      "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -95159,18 +94609,6 @@
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/ReportController.php",
       "source_location": "L87",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "app_http_controllers_teamprogresscontroller_teamprogresscontroller_index",
-      "target": "app_support_reportenrollmentquery_reportenrollmentquery",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "app/Http/Controllers/TeamProgressController.php",
-      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -95506,7 +94944,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L60",
+      "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -95518,7 +94956,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Support/DashboardResolver.php",
-      "source_location": "L75",
+      "source_location": "L67",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -96034,7 +95472,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/RolePermissionSeeder.php",
-      "source_location": "L22",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -96046,7 +95484,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "database/seeders/RolePermissionSeeder.php",
-      "source_location": "L33",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -96826,7 +96264,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/Admin/UserManagementTest.php",
-      "source_location": "L104",
+      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -96838,7 +96276,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/Admin/UserManagementTest.php",
-      "source_location": "L105",
+      "source_location": "L95",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -97894,7 +97332,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L21",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -97906,7 +97344,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L22",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -97918,7 +97356,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -97930,7 +97368,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L33",
+      "source_location": "L35",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -97942,7 +97380,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L36",
+      "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -97954,7 +97392,31 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L46",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_certificatetest_certificatetest_test_only_owner_or_lms_admin_can_download_a_certificate",
+      "target": "app_models_permission_permission",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/CertificateTest.php",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_certificatetest_certificatetest_test_only_owner_or_lms_admin_can_download_a_certificate",
+      "target": "app_models_role_role",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/CertificateTest.php",
+      "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -97966,7 +97428,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L48",
+      "source_location": "L55",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -97978,7 +97440,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L49",
+      "source_location": "L56",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -97990,7 +97452,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/CertificateTest.php",
-      "source_location": "L52",
+      "source_location": "L59",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -98223,7 +97685,7 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_dashboardtest_dashboardtest_test_management_dashboard_cache_is_invalidated_when_its_source_data_changes",
+      "source": "tests_feature_dashboardtest_dashboardtest_test_operations_dashboard_cache_is_invalidated_when_its_source_data_changes",
       "target": "app_models_coursecategory_coursecategory",
       "relation": "calls",
       "context": "call",
@@ -98235,7 +97697,7 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_dashboardtest_dashboardtest_test_management_dashboard_cache_is_invalidated_when_its_source_data_changes",
+      "source": "tests_feature_dashboardtest_dashboardtest_test_operations_dashboard_cache_is_invalidated_when_its_source_data_changes",
       "target": "app_models_course_course",
       "relation": "calls",
       "context": "call",
@@ -98247,7 +97709,7 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_dashboardtest_dashboardtest_test_management_dashboard_cache_is_invalidated_when_its_source_data_changes",
+      "source": "tests_feature_dashboardtest_dashboardtest_test_operations_dashboard_cache_is_invalidated_when_its_source_data_changes",
       "target": "app_models_enrollment_enrollment",
       "relation": "calls",
       "context": "call",
@@ -98259,7 +97721,7 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_dashboardtest_dashboardtest_test_management_dashboard_labels_final_review_assignments_neutrally",
+      "source": "tests_feature_dashboardtest_dashboardtest_test_operations_dashboard_labels_final_review_assignments_neutrally",
       "target": "app_models_coursecategory_coursecategory",
       "relation": "calls",
       "context": "call",
@@ -98271,7 +97733,7 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_dashboardtest_dashboardtest_test_management_dashboard_labels_final_review_assignments_neutrally",
+      "source": "tests_feature_dashboardtest_dashboardtest_test_operations_dashboard_labels_final_review_assignments_neutrally",
       "target": "app_models_course_course",
       "relation": "calls",
       "context": "call",
@@ -98283,7 +97745,7 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_dashboardtest_dashboardtest_test_management_dashboard_labels_final_review_assignments_neutrally",
+      "source": "tests_feature_dashboardtest_dashboardtest_test_operations_dashboard_labels_final_review_assignments_neutrally",
       "target": "app_models_enrollment_enrollment",
       "relation": "calls",
       "context": "call",
@@ -98355,42 +97817,6 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_dashboardtest_dashboardtest_test_manager_and_executive_receive_their_own_dashboard_contexts",
-      "target": "app_models_coursecategory_coursecategory",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L179",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_dashboardtest_dashboardtest_test_manager_and_executive_receive_their_own_dashboard_contexts",
-      "target": "app_models_course_course",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L180",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_dashboardtest_dashboardtest_test_manager_and_executive_receive_their_own_dashboard_contexts",
-      "target": "app_models_enrollment_enrollment",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L183",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
       "source": "tests_feature_dashboardtest_dashboardtest_userwithpermission",
       "target": "app_models_permission_permission",
       "relation": "calls",
@@ -98398,7 +97824,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L213",
+      "source_location": "L182",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -98410,7 +97836,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/DashboardTest.php",
-      "source_location": "L214",
+      "source_location": "L183",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -99255,7 +98681,7 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_localtestingseedertest_localtestingseedertest_test_seeded_data_loads_the_core_admin_manager_and_learner_pages",
+      "source": "tests_feature_localtestingseedertest_localtestingseedertest_test_seeded_data_loads_the_core_admin_and_learner_pages",
       "target": "app_models_user_user",
       "relation": "calls",
       "context": "call",
@@ -99267,26 +98693,26 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_localtestingseedertest_localtestingseedertest_test_seeded_data_loads_the_core_admin_manager_and_learner_pages",
+      "source": "tests_feature_localtestingseedertest_localtestingseedertest_test_seeded_data_loads_the_core_admin_and_learner_pages",
       "target": "app_models_course_course",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L71",
+      "source_location": "L70",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_localtestingseedertest_localtestingseedertest_test_seeded_data_loads_the_core_admin_manager_and_learner_pages",
+      "source": "tests_feature_localtestingseedertest_localtestingseedertest_test_seeded_data_loads_the_core_admin_and_learner_pages",
       "target": "app_models_learningpath_learningpath",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/LocalTestingSeederTest.php",
-      "source_location": "L76",
+      "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -99843,14 +99269,14 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_roleaccesscontracttest_roleaccesscontracttest_test_manager_role_uses_the_team_manager_label",
+      "source": "tests_feature_roleaccesscontracttest_roleaccesscontracttest_test_role_catalog_contains_only_the_four_supported_operational_roles",
       "target": "app_models_role_role",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L68",
+      "source_location": "L60",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -99862,7 +99288,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L110",
+      "source_location": "L101",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -99874,7 +99300,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L111",
+      "source_location": "L102",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -99886,7 +99312,91 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/RoleAccessContractTest.php",
-      "source_location": "L125",
+      "source_location": "L116",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest_test_it_reassigns_retired_role_accounts_without_removing_users_or_learning_data",
+      "target": "app_models_role_role",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest_test_it_reassigns_retired_role_accounts_without_removing_users_or_learning_data",
+      "target": "app_models_user_user",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest_test_it_reassigns_retired_role_accounts_without_removing_users_or_learning_data",
+      "target": "app_models_coursecategory_coursecategory",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest_test_it_reassigns_retired_role_accounts_without_removing_users_or_learning_data",
+      "target": "app_models_course_course",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest_test_it_reassigns_retired_role_accounts_without_removing_users_or_learning_data",
+      "target": "app_models_enrollment_enrollment",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest_test_it_does_not_remove_a_retired_role_when_its_replacement_is_missing",
+      "target": "app_models_role_role",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest_test_it_does_not_remove_a_retired_role_when_its_replacement_is_missing",
+      "target": "app_models_user_user",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/Feature/RoleRetirementMigrationTest.php",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -100059,126 +99569,6 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_teamprogresstest_teamprogresstest_test_manager_can_only_see_direct_reports",
-      "target": "app_models_permission_permission",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L20",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest_teamprogresstest_test_manager_can_only_see_direct_reports",
-      "target": "app_models_role_role",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L21",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest_teamprogresstest_test_manager_can_only_see_direct_reports",
-      "target": "app_models_user_user",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L23",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest_teamprogresstest_test_manager_can_only_see_direct_reports",
-      "target": "app_models_coursecategory_coursecategory",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L27",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest_teamprogresstest_test_manager_can_only_see_direct_reports",
-      "target": "app_models_course_course",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L28",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest_teamprogresstest_test_manager_sees_a_direct_report_waiting_for_final_review_without_scores",
-      "target": "app_models_permission_permission",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L47",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest_teamprogresstest_test_manager_sees_a_direct_report_waiting_for_final_review_without_scores",
-      "target": "app_models_role_role",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L48",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest_teamprogresstest_test_manager_sees_a_direct_report_waiting_for_final_review_without_scores",
-      "target": "app_models_user_user",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L50",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest_teamprogresstest_test_manager_sees_a_direct_report_waiting_for_final_review_without_scores",
-      "target": "app_models_coursecategory_coursecategory",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L53",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "tests_feature_teamprogresstest_teamprogresstest_test_manager_sees_a_direct_report_waiting_for_final_review_without_scores",
-      "target": "app_models_course_course",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "tests/Feature/TeamProgressTest.php",
-      "source_location": "L54",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
       "source": "tests_feature_trainerprogresstest_trainerprogresstest_test_trainer_can_only_view_progress_for_their_assigned_courses",
       "target": "app_models_coursecategory_coursecategory",
       "relation": "calls",
@@ -100215,7 +99605,7 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_trainerprogresstest_trainerprogresstest_test_management_views_organization_wide_progress_scope",
+      "source": "tests_feature_trainerprogresstest_trainerprogresstest_test_lms_admin_views_organization_wide_progress_scope",
       "target": "app_models_coursecategory_coursecategory",
       "relation": "calls",
       "context": "call",
@@ -100227,7 +99617,7 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_trainerprogresstest_trainerprogresstest_test_management_views_organization_wide_progress_scope",
+      "source": "tests_feature_trainerprogresstest_trainerprogresstest_test_lms_admin_views_organization_wide_progress_scope",
       "target": "app_models_course_course",
       "relation": "calls",
       "context": "call",
@@ -100239,7 +99629,7 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_trainerprogresstest_trainerprogresstest_test_management_views_organization_wide_progress_scope",
+      "source": "tests_feature_trainerprogresstest_trainerprogresstest_test_lms_admin_views_organization_wide_progress_scope",
       "target": "app_models_enrollment_enrollment",
       "relation": "calls",
       "context": "call",
@@ -100503,7 +99893,7 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_trainerprogresstest_trainerprogresstest_management",
+      "source": "tests_feature_trainerprogresstest_trainerprogresstest_lmsadmin",
       "target": "app_models_permission_permission",
       "relation": "calls",
       "context": "call",
@@ -100515,7 +99905,7 @@
       "_origin": "ast"
     },
     {
-      "source": "tests_feature_trainerprogresstest_trainerprogresstest_management",
+      "source": "tests_feature_trainerprogresstest_trainerprogresstest_lmsadmin",
       "target": "app_models_role_role",
       "relation": "calls",
       "context": "call",
@@ -100695,6 +100085,18 @@
       "_origin": "ast"
     },
     {
+      "source": "docs_database_system_tabel_domain_minimum",
+      "target": "app_models_user_user_manager",
+      "relation": "references",
+      "context": "manager",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/DATABASE_SYSTEM.md",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
       "source": "docs_quilgo_assessment_audit_kesimpulan",
       "target": "app_models_answer_answer",
       "relation": "references",
@@ -100731,98 +100133,38 @@
       "_origin": "ast"
     },
     {
-      "source": "docs_role_access_audit_perbaikan_yang_dituntaskan",
-      "target": "resources_js_pages_admin_courses_assessments_create",
-      "relation": "references",
-      "context": "courses.create",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L127",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_bukti_pemeriksaan",
-      "target": "tests_feature_dashboardtest_dashboardtest",
-      "relation": "references",
-      "context": "DashboardTest",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L147",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_bukti_pemeriksaan",
-      "target": "tests_feature_teamprogresstest_teamprogresstest",
-      "relation": "references",
-      "context": "TeamProgressTest",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L147",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_bukti_pemeriksaan",
-      "target": "tests_feature_admin_coursemanagementtest_coursemanagementtest",
-      "relation": "references",
-      "context": "CourseManagementTest",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L147",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_bukti_pemeriksaan",
-      "target": "tests_feature_admin_usermanagementtest_usermanagementtest",
-      "relation": "references",
-      "context": "UserManagementTest",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L147",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_bukti_pemeriksaan",
-      "target": "tests_feature_reporttest_reporttest",
-      "relation": "references",
-      "context": "ReportTest",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L147",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_bukti_pemeriksaan",
-      "target": "tests_feature_courselibrarytest_courselibrarytest",
-      "relation": "references",
-      "context": "CourseLibraryTest",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L147",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "docs_role_access_audit_bukti_pemeriksaan",
+      "source": "docs_role_access_audit_bukti_regresi",
       "target": "tests_feature_roleaccesscontracttest_roleaccesscontracttest",
       "relation": "references",
       "context": "RoleAccessContractTest",
       "confidence": "INFERRED",
       "confidence_score": 0.95,
       "source_file": "docs/ROLE_ACCESS_AUDIT.md",
-      "source_location": "L149",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_role_access_audit_bukti_regresi",
+      "target": "tests_feature_roleretirementmigrationtest_roleretirementmigrationtest",
+      "relation": "references",
+      "context": "RoleRetirementMigrationTest",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "docs_role_access_audit_bukti_regresi",
+      "target": "tests_feature_trainerprogresstest_trainerprogresstest",
+      "relation": "references",
+      "context": "TrainerProgressTest",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/ROLE_ACCESS_AUDIT.md",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast"
     }

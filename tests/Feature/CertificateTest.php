@@ -6,6 +6,8 @@ use App\Jobs\IssueCertificate;
 use App\Models\Certificate;
 use App\Models\Course;
 use App\Models\CourseCategory;
+use App\Models\Permission;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
@@ -45,6 +47,11 @@ class CertificateTest extends TestCase
         Storage::fake('local');
         $owner = User::factory()->create();
         $otherUser = User::factory()->create();
+        $lmsAdmin = User::factory()->create();
+        $permission = Permission::query()->create(['slug' => 'manage-enrollments', 'name' => 'Kelola assignment belajar']);
+        $role = Role::query()->create(['slug' => 'lms-admin', 'name' => 'LMS Admin / HR']);
+        $role->permissions()->attach($permission);
+        $lmsAdmin->roles()->attach($role);
         $category = CourseCategory::query()->create(['name' => 'Onboarding', 'is_active' => true]);
         $course = Course::query()->create(['category_id' => $category->id, 'code' => 'CERT-002', 'title' => 'Produk KGJ', 'passing_grade' => 70, 'status' => 'published']);
         $enrollment = $owner->enrollments()->create(['course_id' => $course->id, 'status' => 'completed', 'completed_at' => now()]);
@@ -53,6 +60,8 @@ class CertificateTest extends TestCase
 
         $this->actingAs($otherUser)->get(route('certificates.download', $certificate))->assertForbidden();
         $this->actingAs($owner)->get(route('certificates.download', $certificate))->assertOk();
+        $this->actingAs($lmsAdmin)->get(route('certificates.index'))->assertOk();
+        $this->actingAs($lmsAdmin)->get(route('certificates.download', $certificate))->assertOk();
         $this->assertDatabaseHas('activity_logs', ['actor_id' => $owner->id, 'event' => 'certificate.downloaded']);
     }
 }

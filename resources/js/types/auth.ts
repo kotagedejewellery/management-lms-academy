@@ -15,14 +15,11 @@ export type Auth = {
     user: User | null;
     isSuperAdmin: boolean;
     isTrainer: boolean;
-    isManagement: boolean;
     can: {
         manageUsers: boolean;
         manageOrganization: boolean;
         manageCourses: boolean;
         manageLearningPaths: boolean;
         manageEnrollments: boolean;
-        viewReports: boolean;
-        viewTeam: boolean;
     };
 };

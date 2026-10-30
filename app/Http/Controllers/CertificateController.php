@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use App\Models\Certificate;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -15,6 +16,7 @@ class CertificateController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
+        $this->authorizeCertificateAccess($user);
         $canManage = $user->hasPermission('manage-enrollments');
 
         $certificates = Certificate::query()
@@ -41,11 +43,17 @@ class CertificateController extends Controller
     public function download(Request $request, Certificate $certificate): StreamedResponse
     {
         $user = $request->user();
+        $this->authorizeCertificateAccess($user);
         abort_unless($certificate->user_id === $user->id || $user->hasPermission('manage-enrollments'), 403);
         abort_unless($certificate->path && Storage::disk()->exists($certificate->path), 404);
 
         ActivityLog::record($user, 'certificate.downloaded', $certificate, ['number' => $certificate->number]);
 
         return Storage::disk()->download($certificate->path, "sertifikat-{$certificate->number}.pdf", ['Content-Type' => 'application/pdf']);
+    }
+
+    private function authorizeCertificateAccess(User $user): void
+    {
+        abort_if($user->hasRole('trainer') && ! $user->hasPermission('manage-enrollments'), 403);
     }
 }

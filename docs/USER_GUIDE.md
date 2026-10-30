@@ -35,11 +35,9 @@ Semua pengguna dapat membuka **Notifikasi**. Jangan membagikan akun atau kata sa
 | Role | Fokus utama | Menu inti MVP |
 | --- | --- | --- |
 | Employee / Learner | Menyelesaikan pembelajaran pribadi | Dashboard, Pembelajaran saya, Jalur belajar saya, Katalog course, Progres saya, Sertifikat, Notifikasi |
-| Manager Tim | Memantau bawahan langsung serta belajar sebagai peserta | Semua menu Employee, Progres tim |
 | Trainer / Mentor | Mengelola course binaan dan evaluasi pesertanya | Dashboard, Course binaan, Progres peserta, Notifikasi |
-| Management / Owner | Meninjau hasil organisasi dan evaluasi akhir | Dashboard, Progres peserta, Laporan, Notifikasi |
 | LMS Admin / HR | Menjalankan operasi pembelajaran | Dashboard, Kelola course, Kelola jalur belajar, Sertifikat, Pengguna, Organisasi, Penugasan, Penugasan jalur, Pengumuman, Progres peserta, Laporan, Notifikasi |
-| Super Admin | Mengelola operasi penuh dan audit | Semua area LMS Admin, Progres tim, Aktivitas audit |
+| Super Admin | Mengelola operasi penuh dan audit | Semua area LMS Admin, Aktivitas audit |
 
 > Akses selalu diperiksa oleh server. Membuka URL secara langsung tidak memberi akses di luar role atau cakupan data akun Anda.
 
@@ -87,7 +85,7 @@ Hasil dikelola secara internal. Sertifikat menjadi pemberitahuan positif apabila
 | Terkunci | Ada prerequisite atau tahap wajib sebelumnya. | Selesaikan syarat yang disebutkan sistem. |
 | Menunggu evaluasi akhir | Seluruh tahap wajib telah dikirim. | Tunggu arahan pihak internal. |
 | Selesai | Course telah disetujui. | Buka Sertifikat bila tersedia. |
-| Perlu diulang | Evaluasi internal memerlukan tindak lanjut. | Ikuti arahan Trainer, Management, atau LMS Admin. |
+| Perlu diulang | Evaluasi internal memerlukan tindak lanjut. | Ikuti arahan Trainer, LMS Admin, atau Super Admin. |
 
 ### Menu pembelajaran pribadi
 
@@ -112,18 +110,7 @@ Gunakan alur pada [bagian 3](#3-alur-pembelajaran-employee) untuk menyelesaikan 
 
 Employee tidak dapat mengelola user, organisasi, materi, penugasan, laporan organisasi, maupun aktivitas audit.
 
-### 4.2 Manager Tim
-
-Manager memiliki seluruh fitur Employee untuk dirinya sendiri, serta akses ke **Progres tim**.
-
-1. Buka **Progres tim**.
-2. Gunakan pencarian atau filter status untuk menemukan assignment bawahan langsung.
-3. Pantau progres, status course, dan tenggat yang memerlukan perhatian.
-4. Berikan arahan operasional kepada anggota tim bila diperlukan.
-
-Manager hanya dapat melihat bawahan langsung yang tercatat pada struktur organisasi. Manager tidak melihat skor angka atau jawaban assessment, serta tidak dapat mengubah materi atau membuat penugasan.
-
-### 4.3 Trainer / Mentor
+### 4.2 Trainer / Mentor
 
 Trainer adalah akun operasional dan hanya dapat mengakses course yang ditugaskan sebagai **Course binaan**.
 
@@ -150,30 +137,7 @@ Struktur materi dan assessment hanya dapat diubah saat course berstatus **Draf**
 
 Trainer hanya dapat meninjau peserta pada course binaannya. Pengujian alur Employee dilakukan dengan akun Employee terpisah.
 
-### 4.4 Management / Owner
-
-Management berfokus pada evaluasi internal organisasi dan tidak memiliki alur pembelajaran pribadi.
-
-Dashboard Management menampilkan jumlah assignment yang **Menunggu evaluasi akhir** dan menaut langsung ke **Progres peserta**. Nilai detail tetap ditinjau per peserta dan per course.
-
-#### Evaluasi akhir
-
-1. Buka **Progres peserta**.
-2. Gunakan filter course atau status untuk menemukan peserta yang memerlukan evaluasi.
-3. Tinjau hasil assessment, peningkatan, dan riwayat percobaan sesuai kebutuhan evaluasi.
-4. Untuk course berstatus **Menunggu evaluasi akhir**, setujui kelulusan atau kelola kesempatan ulang Post-Test.
-
-#### Laporan
-
-1. Buka **Laporan**.
-2. Gunakan filter pencarian, status, course, dan divisi.
-3. Tinjau **Nilai akhir** atau **Rata-rata berjalan** course beserta jumlah modul evaluatif yang telah selesai. Nilai ini memakai rata-rata setara dari Pre-Test pertama dan Post-Test terbaik pada setiap modul yang memiliki keduanya.
-4. Pilih **Ekspor CSV** apabila diperlukan.
-5. Tunggu status ekspor siap, lalu unduh file dari daftar ekspor Anda.
-
-File ekspor bersifat privat dan hanya dapat diunduh oleh akun yang membuatnya. Management tidak mengelola user, organisasi, materi, penugasan, sertifikat, atau audit log.
-
-### 4.5 LMS Admin / HR
+### 4.3 LMS Admin / HR
 
 LMS Admin menjalankan operasi pembelajaran sehari-hari.
 
@@ -208,12 +172,11 @@ Setelah terbit, struktur materi dan assessment bersifat read-only. Kembalikan co
 - **Progres peserta** dan **Laporan**: memantau hasil, menyetujui evaluasi akhir, atau mengelola kesempatan ulang Post-Test.
 - **Sertifikat**: melihat dan mengunduh sertifikat yang telah diterbitkan.
 
-### 4.6 Super Admin
+### 4.4 Super Admin
 
 Super Admin memiliki semua kemampuan LMS Admin, termasuk pengelolaan role Super Admin.
 
 - Gunakan **Aktivitas audit** untuk menelusuri perubahan administratif dan aktivitas penting.
-- Gunakan **Progres tim** untuk memantau bawahan langsung apabila struktur pelaporan tersedia.
 - Gunakan hak akses penuh hanya untuk kebutuhan operasional yang sah.
 
 Audit log, ekspor, sertifikat, dan data employee adalah informasi internal. Jangan membagikannya kepada pihak yang tidak berwenang.
@@ -227,7 +190,7 @@ Audit log, ekspor, sertifikat, dan data employee adalah informasi internal. Jang
 | Course tidak terlihat | Pastikan course telah ditugaskan, diterbitkan, dan prerequisite dipenuhi. |
 | Materi atau Post-Test terkunci | Selesaikan tahap wajib sebelumnya pada modul atau course tersebut. |
 | Assessment sudah dikirim | Tunggu evaluasi internal; skor tidak ditampilkan pada akun Employee. |
-| Perlu mengulang Post-Test | Hubungi Trainer, Management, atau LMS Admin yang menangani evaluasi. |
+| Perlu mengulang Post-Test | Hubungi Trainer, LMS Admin, atau Super Admin yang menangani evaluasi. |
 | Tidak dapat mengubah materi | Pastikan Anda Trainer yang ditugaskan atau LMS Admin, dan course berstatus Draf. |
 | Ekspor belum dapat diunduh | Tunggu pemrosesan background selesai, lalu buka kembali Laporan. |
 | Menerima akses ditolak | Role atau cakupan data Anda tidak mengizinkan tindakan tersebut; hubungi LMS Admin bila akses diperlukan. |

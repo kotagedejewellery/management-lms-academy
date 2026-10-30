@@ -115,7 +115,7 @@ class AssessmentRetakeAuthorizationController extends Controller
     private function authorizeAuthorization(Request $request, Enrollment $enrollment): void
     {
         $user = $request->user();
-        $canManageAll = $user->hasPermission('manage-enrollments') || $user->hasPermission('view-reports');
+        $canManageAll = $user->hasPermission('manage-enrollments');
 
         abort_unless($canManageAll || ($user->hasRole('trainer') && $user->canManageCourse($enrollment->course)), 403);
     }

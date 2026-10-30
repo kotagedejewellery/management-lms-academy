@@ -34,8 +34,8 @@ class Enrollment extends Model
 
     protected static function booted(): void
     {
-        static::saved(fn () => Cache::forget('dashboard:management'));
-        static::deleted(fn () => Cache::forget('dashboard:management'));
+        static::saved(fn () => Cache::forget('dashboard:operations'));
+        static::deleted(fn () => Cache::forget('dashboard:operations'));
     }
 
     /** @return BelongsTo<User, $this> */
