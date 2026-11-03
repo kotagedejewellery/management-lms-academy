@@ -145,7 +145,7 @@ class LearningController extends Controller
             $lockedModulePreTest = $lockedModule?->assessments->firstWhere('type', 'pre_test');
             $message = ! $preTestCompleted
                 ? 'Selesaikan Pre-Test course sebelum membuka materi.'
-                : (!($lockedModuleState['unlocked'] ?? false)
+                : (($lockedModuleState['unlocked'] ?? false) === false
                     ? 'Selesaikan Post-Test modul sebelumnya sebelum membuka materi.'
                     : ($lockedModulePreTest
                         ? "Selesaikan Pre-Test Modul {$lockedModule->title} sebelum membuka materi."
@@ -172,6 +172,7 @@ class LearningController extends Controller
         $playbackSeconds = $selectedLesson && $lessonProgress->has($selectedLesson->id)
             ? (int) $lessonProgress->get($selectedLesson->id)->playback_seconds
             : 0;
+
         return Inertia::render('learning/Show', [
             'enrollment' => ['id' => $enrollment->id, 'course_completed' => $enrollment->status === 'completed', 'due_at' => $enrollment->due_at?->toDateString()],
             'course' => [
@@ -210,11 +211,11 @@ class LearningController extends Controller
 
                     return [
                         ...$module->only(['id', 'title', 'sequence']),
-                        'status' => $moduleCompleted ? 'completed' : (! $preTestCompleted || !($state['materials_unlocked'] ?? false) ? 'locked' : ($moduleInProgress ? 'in_progress' : 'not_started')),
-                        'locked' => ! $preTestCompleted || !($state['materials_unlocked'] ?? false),
+                        'status' => $moduleCompleted ? 'completed' : (! $preTestCompleted || ($state['materials_unlocked'] ?? false) === false ? 'locked' : ($moduleInProgress ? 'in_progress' : 'not_started')),
+                        'locked' => ! $preTestCompleted || ($state['materials_unlocked'] ?? false) === false,
                         'lock_reason' => ! $preTestCompleted
                             ? 'Selesaikan Pre-Test course terlebih dahulu.'
-                            : (!($state['unlocked'] ?? false) ? 'Selesaikan Post-Test modul sebelumnya terlebih dahulu.' : 'Selesaikan Pre-Test modul ini terlebih dahulu.'),
+                            : (($state['unlocked'] ?? false) === false ? 'Selesaikan Post-Test modul sebelumnya terlebih dahulu.' : 'Selesaikan Pre-Test modul ini terlebih dahulu.'),
                         'assessments' => $module->assessments->map(function (Assessment $assessment) use ($modulePostReady, $state, $authorizedRetakeAssessmentIds) {
                             $submittedAttempts = $assessment->attempts->whereNotNull('submitted_at');
                             $ready = $assessment->questions_count > 0 && ($assessment->type === 'pre_test' ? ($state['unlocked'] ?? false) : ($state['post_available'] ?? $modulePostReady));
@@ -229,7 +230,7 @@ class LearningController extends Controller
                         'lessons' => $module->lessons->map(fn (Lesson $lesson) => [
                             ...$lesson->only(['id', 'title', 'type', 'is_required', 'sequence']),
                             'completed' => in_array($lesson->id, $completed, true),
-                            'locked' => ! $preTestCompleted || !($state['materials_unlocked'] ?? false),
+                            'locked' => ! $preTestCompleted || ($state['materials_unlocked'] ?? false) === false,
                             'status' => in_array($lesson->id, $completed, true) ? 'completed' : ($selectedSummary?->id === $lesson->id ? 'in_progress' : 'not_started'),
                         ]),
                     ];
@@ -328,7 +329,7 @@ class LearningController extends Controller
 
         foreach ($course->modules->sortBy('sequence') as $module) {
             $state = $moduleStates->get($module->id);
-            if (!($state['unlocked'] ?? false)) {
+            if (($state['unlocked'] ?? false) === false) {
                 return $this->waitingNextStep();
             }
 
