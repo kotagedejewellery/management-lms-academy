@@ -1,14 +1,14 @@
 {
   "DESIGN.md": {
-    "mtime": 1792985817.507185,
-    "seen": 1792986028.3947017,
-    "ast_hash": "1228bb1dc97c7f9253f5b42d194e710d",
+    "mtime": 1793689386.4675014,
+    "seen": 1793689415.1998742,
+    "ast_hash": "20a9547810d9010b243062d52ecc8bea",
     "semantic_hash": ""
   },
   "PRODUCT.md": {
-    "mtime": 1793323013.8635473,
-    "seen": 1793323641.820725,
-    "ast_hash": "7b9f0d3cd499448ce04b10eeba83735c",
+    "mtime": 1793689385.7157202,
+    "seen": 1793689415.1998777,
+    "ast_hash": "b764ef69bc545a0dcf247bd74ec6733f",
     "semantic_hash": ""
   },
   "docker-compose.yml": {
@@ -18,15 +18,15 @@
     "semantic_hash": ""
   },
   "docs/DATABASE_SYSTEM.md": {
-    "mtime": 1793325361.3694108,
-    "seen": 1793325665.8068595,
-    "ast_hash": "462d968a9bc5a4e28461272dacbc259d",
+    "mtime": 1793689210.4840288,
+    "seen": 1793689345.2430549,
+    "ast_hash": "7c817adf92b4412938e3bae2852f1764",
     "semantic_hash": ""
   },
   "docs/PRD.md": {
-    "mtime": 1793323042.5876768,
-    "seen": 1793323641.8207595,
-    "ast_hash": "190c1490b922361812d18e4cb3c75574",
+    "mtime": 1793689211.0183694,
+    "seen": 1793689345.2430687,
+    "ast_hash": "4cf35b2d045eb9a967cd14b9c7d8f64d",
     "semantic_hash": ""
   },
   "docs/SYSTEM_ARCHITECTURE.md": {
@@ -1764,9 +1764,9 @@
     "semantic_hash": ""
   },
   "resources/js/pages/admin/courses/Form.vue": {
-    "mtime": 1792988434.1221213,
-    "seen": 1792988644.7373195,
-    "ast_hash": "ff952dd3ce1217a7ff791f87651d1926",
+    "mtime": 1793689234.8022532,
+    "seen": 1793689345.2424195,
+    "ast_hash": "3115801e9019270cefc7d056c5a693d2",
     "semantic_hash": ""
   },
   "resources/js/pages/admin/courses/Content.vue": {
@@ -1890,15 +1890,15 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/LearningController.php": {
-    "mtime": 1792631494.2328627,
-    "seen": 1792632142.8961735,
-    "ast_hash": "de842649d2bb82e767fa4be1deab4228",
+    "mtime": 1793689438.9808176,
+    "seen": 1793689483.7733371,
+    "ast_hash": "53099abebdb0d7f4173b984069451485",
     "semantic_hash": ""
   },
   "tests/Feature/LearningFlowTest.php": {
-    "mtime": 1792631389.7596319,
-    "seen": 1792632142.897792,
-    "ast_hash": "25111e78e394d3cc70e3dd00a9f6adbb",
+    "mtime": 1793690149.0036352,
+    "seen": 1793690293.9423168,
+    "ast_hash": "6e2b942431f59676fc858157a054cfac",
     "semantic_hash": ""
   },
   "resources/js/pages/admin/enrollments/Index.vue": {
@@ -1914,9 +1914,9 @@
     "semantic_hash": ""
   },
   "resources/js/pages/learning/Show.vue": {
-    "mtime": 1792631924.1141663,
-    "seen": 1792632142.8976164,
-    "ast_hash": "5d26bd2c2051dfafa28a3532a927ddac",
+    "mtime": 1793690148.3832586,
+    "seen": 1793690293.9421713,
+    "ast_hash": "fa1e36b022eec6103d1d5d40a5afe4cf",
     "semantic_hash": ""
   },
   "app/Models/Answer.php": {
@@ -1986,9 +1986,9 @@
     "semantic_hash": ""
   },
   "resources/js/pages/learning/AssessmentResult.vue": {
-    "mtime": 1792545888.1006932,
-    "seen": 1792547280.291646,
-    "ast_hash": "21f4ba9d8a648b6e7608303b8c379cb5",
+    "mtime": 1793688898.5262945,
+    "seen": 1793689345.2425444,
+    "ast_hash": "b096b603a956164145e15006c708bc19",
     "semantic_hash": ""
   },
   "app/Http/Controllers/DashboardController.php": {
@@ -2406,9 +2406,9 @@
     "semantic_hash": ""
   },
   "resources/js/components/LearningLessonNavigator.vue": {
-    "mtime": 1792398867.716233,
-    "seen": 1792398910.0705745,
-    "ast_hash": "2ca25828ce6af1671c2c4886e00fcf6a",
+    "mtime": 1793690318.8974297,
+    "seen": 1793690368.723986,
+    "ast_hash": "f7bb60f61932febd5d3412f0050346c6",
     "semantic_hash": ""
   },
   "app/Support/DashboardResolver.php": {

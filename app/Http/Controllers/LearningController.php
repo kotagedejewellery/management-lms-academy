@@ -113,40 +113,6 @@ class LearningController extends Controller
         $requiredPreTest = $course->assessments->first(fn ($assessment) => $assessment->type === 'pre_test' && $assessment->is_required);
         $preTestCompleted = ! $requiredPreTest || $requiredPreTest->attempts->isNotEmpty();
         $availableLessons = $lessons->filter(fn (Lesson $lesson) => $preTestCompleted && ($moduleStates->get($lesson->module_id)['materials_unlocked'] ?? false));
-        $requestedLessonId = $request->integer('lesson');
-        $selectedSummary = $requestedLessonId ? $lessons->firstWhere('id', $requestedLessonId) : null;
-        abort_if($request->has('lesson') && ! $selectedSummary, 404);
-        if ($selectedSummary && ! $availableLessons->contains('id', $selectedSummary->id)) {
-            $lockedModule = $course->modules->firstWhere('id', $selectedSummary->module_id);
-            $lockedModuleState = $lockedModule ? $moduleStates->get($lockedModule->id) : null;
-            $lockedModulePreTest = $lockedModule?->assessments->firstWhere('type', 'pre_test');
-            $message = ! $preTestCompleted
-                ? 'Selesaikan Pre-Test course sebelum membuka materi.'
-                : (! ($lockedModuleState['unlocked'] ?? false)
-                    ? 'Selesaikan Post-Test modul sebelumnya sebelum membuka materi.'
-                    : ($lockedModulePreTest
-                        ? "Selesaikan Pre-Test Modul {$lockedModule->title} sebelum membuka materi."
-                        : 'Materi ini masih terkunci. Selesaikan evaluasi yang diwajibkan terlebih dahulu.'));
-
-            return to_route('my-learning.show', $course)->withErrors(['action' => $message]);
-        }
-        $selectedSummary ??= $availableLessons->first(fn (Lesson $lesson) => ! in_array($lesson->id, $completed, true)) ?? $availableLessons->first();
-        $selectedLesson = $selectedSummary
-            ? Lesson::query()->with('resources:id,lesson_id,original_name,mime_type')->findOrFail($selectedSummary->id)
-            : null;
-        $selectedModule = $selectedLesson ? $course->modules->firstWhere('id', $selectedLesson->module_id) : null;
-        $selectedResource = $selectedLesson?->resources->first(fn ($resource) => match ($selectedLesson->type) {
-            'pdf' => $resource->mime_type === 'application/pdf',
-            'video' => in_array($resource->mime_type, ['video/mp4', 'video/webm'], true),
-            default => false,
-        });
-        $selectedResourceUrl = $selectedLesson->resource_url
-            ?? ($selectedResource && $selectedModule
-                ? route('courses.resources.preview', [$course, $selectedModule, $selectedLesson, $selectedResource])
-                : null);
-        $playbackSeconds = $selectedLesson && $lessonProgress->has($selectedLesson->id)
-            ? (int) $lessonProgress->get($selectedLesson->id)->playback_seconds
-            : 0;
         $assessmentIds = $course->assessments->pluck('id')
             ->merge($course->modules->flatMap->assessments->pluck('id'));
         $authorizedRetakeAssessmentIds = AssessmentRetakeAuthorization::query()
@@ -166,7 +132,46 @@ class LearningController extends Controller
             $postTestReady,
             $authorizedRetakeAssessmentIds,
         );
+        $continue = $request->boolean('continue');
+        $continueLessonId = $continue ? ($nextStep['lesson_id'] ?? null) : null;
+        $requestedLessonId = $request->integer('lesson');
+        $selectedSummary = $continueLessonId
+            ? $lessons->firstWhere('id', $continueLessonId)
+            : ($requestedLessonId ? $lessons->firstWhere('id', $requestedLessonId) : null);
+        abort_if($request->has('lesson') && ! $selectedSummary, 404);
+        if ($selectedSummary && ! $availableLessons->contains('id', $selectedSummary->id)) {
+            $lockedModule = $course->modules->firstWhere('id', $selectedSummary->module_id);
+            $lockedModuleState = $lockedModule ? $moduleStates->get($lockedModule->id) : null;
+            $lockedModulePreTest = $lockedModule?->assessments->firstWhere('type', 'pre_test');
+            $message = ! $preTestCompleted
+                ? 'Selesaikan Pre-Test course sebelum membuka materi.'
+                : (! ($lockedModuleState['unlocked'] ?? false)
+                    ? 'Selesaikan Post-Test modul sebelumnya sebelum membuka materi.'
+                    : ($lockedModulePreTest
+                        ? "Selesaikan Pre-Test Modul {$lockedModule->title} sebelum membuka materi."
+                        : 'Materi ini masih terkunci. Selesaikan evaluasi yang diwajibkan terlebih dahulu.'));
 
+            return to_route('my-learning.show', $course)->withErrors(['action' => $message]);
+        }
+        if (! $continue) {
+            $selectedSummary ??= $availableLessons->first(fn (Lesson $lesson) => ! in_array($lesson->id, $completed, true)) ?? $availableLessons->first();
+        }
+        $selectedLesson = $selectedSummary
+            ? Lesson::query()->with('resources:id,lesson_id,original_name,mime_type')->findOrFail($selectedSummary->id)
+            : null;
+        $selectedModule = $selectedLesson ? $course->modules->firstWhere('id', $selectedLesson->module_id) : null;
+        $selectedResource = $selectedLesson?->resources->first(fn ($resource) => match ($selectedLesson->type) {
+            'pdf' => $resource->mime_type === 'application/pdf',
+            'video' => in_array($resource->mime_type, ['video/mp4', 'video/webm'], true),
+            default => false,
+        });
+        $selectedResourceUrl = $selectedLesson->resource_url
+            ?? ($selectedResource && $selectedModule
+                ? route('courses.resources.preview', [$course, $selectedModule, $selectedLesson, $selectedResource])
+                : null);
+        $playbackSeconds = $selectedLesson && $lessonProgress->has($selectedLesson->id)
+            ? (int) $lessonProgress->get($selectedLesson->id)->playback_seconds
+            : 0;
         return Inertia::render('learning/Show', [
             'enrollment' => ['id' => $enrollment->id, 'course_completed' => $enrollment->status === 'completed', 'due_at' => $enrollment->due_at?->toDateString()],
             'course' => [
@@ -277,7 +282,7 @@ class LearningController extends Controller
             $enrollment->update(['status' => 'pending_review', 'completed_at' => null]);
         }
 
-        return to_route('my-learning.show', ['course' => $course, 'lesson' => $lesson]);
+        return to_route('my-learning.show', ['course' => $course, 'continue' => 1]);
     }
 
     /**

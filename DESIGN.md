@@ -39,7 +39,7 @@ Manager melihat subset menu/data sesuai policy, termasuk CTA pembelajaran pribad
 | Login | Panel brand/image dan form berdampingan. | Form prioritas; artwork diperkecil/tidak menghambat login. |
 | Learner dashboard | Sidebar; kartu metric; continue learning; path; deadline. | Drawer; kartu metric 2 kolom; path horizontal/stack yang mudah dipindai. |
 | Course detail | Metadata, module, CTA lanjut, tab. | Konten satu kolom; CTA tetap jelas; tab dapat scroll. |
-| Lesson player | Daftar module/lesson di samping player. | Daftar menjadi drawer/accordion; player aspect-ratio stabil. |
+| Lesson player | Satu rencana pembelajaran di samping player: seluruh modul ringkas, modul aktif terbuka, dan tahap Pre-Test → materi → Post-Test terlihat. | Rencana yang sama menjadi drawer/accordion; player aspect-ratio stabil. |
 | Pre/Post-Test | Soal, timer, progress, navigasi jelas. | Satu soal fokus; tombol previous/next/submit selalu dapat dijangkau. |
 | Konfirmasi assessment Employee | Konfirmasi pengiriman netral dan CTA kembali ke materi. Tidak menampilkan skor, status lulus/gagal, percobaan, atau kunci jawaban. | Pesan dan CTA jelas di atas; tanpa detail evaluasi. |
 | Admin dashboard/report | Filter dan data table/card/graph. | Filter drawer; metric cards; tabel bergeser menjadi card summary atau horizontal scroll terkontrol. |

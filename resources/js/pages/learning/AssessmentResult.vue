@@ -56,8 +56,8 @@ defineOptions({
 
             <div class="mt-8 flex justify-center">
                 <Button as-child>
-                    <Link :href="`/my-learning/${course.id}`"
-                        >Kembali ke materi</Link
+                    <Link :href="`/my-learning/${course.id}?continue=1`"
+                        >Lanjutkan pembelajaran</Link
                     >
                 </Button>
             </div>

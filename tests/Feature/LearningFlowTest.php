@@ -45,7 +45,7 @@ class LearningFlowTest extends TestCase
         $lesson = $course->modules->first()->lessons->first();
 
         $this->actingAs($employee)->post(route('my-learning.lessons.complete', [$course, $lesson]))
-            ->assertRedirect(route('my-learning.show', ['course' => $course, 'lesson' => $lesson]));
+            ->assertRedirect(route('my-learning.show', ['course' => $course, 'continue' => 1]));
 
         $this->assertDatabaseHas('lesson_progress', ['lesson_id' => $lesson->id, 'status' => 'completed']);
         $this->assertDatabaseHas('enrollments', ['user_id' => $employee->id, 'course_id' => $course->id]);
@@ -140,6 +140,64 @@ class LearningFlowTest extends TestCase
                 ])
                 ->missing('course.next_step.score')
                 ->missing('course.next_step.passed'));
+
+        $this->actingAs($employee)->get(route('my-learning.show', ['course' => $course, 'continue' => 1]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('selected_lesson.id', $nextModule->lessons()->sole()->id));
+    }
+
+    public function test_continuing_after_a_module_pre_test_opens_its_first_lesson(): void
+    {
+        $employee = User::factory()->create();
+        $course = $this->publishedCourseWithLesson();
+        $module = $course->modules->first();
+        $lesson = $module->lessons->first();
+        $preTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'pre_test', 'is_required' => true, 'passing_grade' => 0, 'attempt_limit' => 1]);
+        $question = $preTest->questions()->create(['prompt' => 'Siap?', 'points' => 1, 'sequence' => 1]);
+        $answer = $question->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
+        $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
+
+        $this->actingAs($employee)->post(route('my-learning.assessments.submit', [$course, $preTest]), ['answers' => [$question->id => $answer->id]])
+            ->assertRedirect(route('my-learning.assessments.receipt', [$course, $preTest]));
+
+        $this->actingAs($employee)->get(route('my-learning.show', ['course' => $course, 'continue' => 1]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('selected_lesson.id', $lesson->id));
+    }
+
+    public function test_continuing_after_a_module_post_test_stops_at_the_next_module_pre_test(): void
+    {
+        $employee = User::factory()->create();
+        $course = $this->publishedCourseWithLesson();
+        $module = $course->modules->first();
+        $lesson = $module->lessons->first();
+        $nextModule = $course->modules()->create(['title' => 'Tahap berikutnya', 'sequence' => 2]);
+        $nextModule->lessons()->create(['title' => 'Lesson berikutnya', 'type' => 'article', 'content' => 'Isi', 'is_required' => true, 'sequence' => 1]);
+
+        $preTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'pre_test', 'is_required' => true, 'passing_grade' => 0, 'attempt_limit' => 1]);
+        $preQuestion = $preTest->questions()->create(['prompt' => 'Siap?', 'points' => 1, 'sequence' => 1]);
+        $preAnswer = $preQuestion->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
+        $postTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'type' => 'post_test', 'is_required' => true, 'passing_grade' => 100, 'attempt_limit' => 3]);
+        $postQuestion = $postTest->questions()->create(['prompt' => 'Benar?', 'points' => 1, 'sequence' => 1]);
+        $postAnswer = $postQuestion->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
+        $nextPreTest = Assessment::query()->create(['course_id' => $course->id, 'module_id' => $nextModule->id, 'type' => 'pre_test', 'is_required' => true, 'passing_grade' => 0, 'attempt_limit' => 1]);
+        $nextPreTest->questions()->create(['prompt' => 'Lanjut?', 'points' => 1, 'sequence' => 1])->answers()->create(['content' => 'Ya', 'is_correct' => true, 'sequence' => 1]);
+        $employee->enrollments()->create(['course_id' => $course->id, 'status' => 'active']);
+
+        $this->actingAs($employee)->post(route('my-learning.assessments.submit', [$course, $preTest]), ['answers' => [$preQuestion->id => $preAnswer->id]]);
+        $this->actingAs($employee)->post(route('my-learning.lessons.complete', [$course, $lesson]));
+        $this->actingAs($employee)->post(route('my-learning.assessments.submit', [$course, $postTest]), ['answers' => [$postQuestion->id => $postAnswer->id]]);
+
+        $this->actingAs($employee)->get(route('my-learning.show', ['course' => $course, 'continue' => 1]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('selected_lesson', null)
+                ->where('course.next_step.assessment_id', $nextPreTest->id)
+                ->where('course.next_step.label', 'Buka Pre-Test'));
+
+        $this->assertDatabaseCount('assessment_attempts', 2);
     }
 
     public function test_employee_cannot_access_another_employees_course(): void

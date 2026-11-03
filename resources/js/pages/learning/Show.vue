@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import {
     BookOpen,
     Check,
-    CheckCircle2,
     ChevronLeft,
     ChevronRight,
     Clock3,
@@ -13,8 +12,6 @@ import {
     ListTree,
     LockKeyhole,
     Play,
-    PlayCircle,
-    Trophy,
 } from '@lucide/vue';
 import LearningLessonNavigator from '@/components/LearningLessonNavigator.vue';
 import { Button } from '@/components/ui/button';
@@ -141,12 +138,6 @@ const previousLesson = computed(() =>
         ? allLessons.value[activeLessonIndex.value - 1]
         : null,
 );
-const nextLesson = computed(() =>
-    activeLessonIndex.value >= 0 &&
-    activeLessonIndex.value < allLessons.value.length - 1
-        ? allLessons.value[activeLessonIndex.value + 1]
-        : null,
-);
 const completingLessonId = ref<number | null>(null);
 const lessonError = ref<LessonError | null>(null);
 const lessonNavigatorOpen = ref(false);
@@ -247,25 +238,6 @@ const courseAction = computed<CourseAction>(() => {
     };
 });
 
-function assessmentTitle(assessment: Assessment): string {
-    return assessment.type === 'pre_test' ? 'Pre-Test' : 'Post-Test';
-}
-function assessmentDescription(assessment: Assessment): string {
-    if (assessment.module_id !== null)
-        return assessment.type === 'pre_test'
-            ? 'Wajib diselesaikan sebelum materi modul dapat dibuka.'
-            : assessment.ready
-              ? 'Lulus Post-Test untuk membuka modul berikutnya.'
-              : 'Selesaikan lesson wajib modul untuk membuka Post-Test.';
-
-    return assessment.type === 'pre_test'
-        ? assessment.is_required
-            ? 'Tes baseline wajib sebelum materi dapat dibuka.'
-            : 'Tes baseline opsional sebelum atau saat belajar.'
-        : assessment.ready
-          ? 'Evaluasi akhir setelah materi wajib selesai.'
-          : 'Terkunci sampai materi wajib selesai.';
-}
 function lessonTypeLabel(type: Lesson['type']): string {
     return {
         article: 'Artikel',
@@ -274,9 +246,6 @@ function lessonTypeLabel(type: Lesson['type']): string {
         presentation: 'Presentasi Canva',
     }[type];
 }
-function assessmentHref(assessment: Assessment): string {
-    return `/my-learning/${props.course.id}/assessments/${assessment.id}`;
-}
 function resourceDownloadHref(resource: { id: number }): string {
     return activeLesson.value
         ? `/courses/${props.course.id}/modules/${activeLesson.value.module_id}/lessons/${activeLesson.value.id}/resources/${resource.id}`
@@ -284,27 +253,6 @@ function resourceDownloadHref(resource: { id: number }): string {
 }
 function resourcePreviewHref(resource: { id: number }): string {
     return `${resourceDownloadHref(resource)}/preview`;
-}
-function assessmentAction(
-    assessment: Assessment,
-): { href: string; label: string } | null {
-    if (!props.enrollment.course_completed && assessment.can_start)
-        return {
-            href: assessmentHref(assessment),
-            label: `Buka ${assessmentTitle(assessment)}`,
-        };
-    return null;
-}
-function assessmentStatusDescription(assessment: Assessment): string {
-    if (assessment.type === 'pre_test' && assessment.submitted) {
-        return 'Pre-Test telah dikirim. Materi modul dapat dipelajari.';
-    }
-
-    if (assessment.submitted && !assessment.can_start) {
-        return 'Post-Test telah dikirim. Management akan memberikan arahan bila diperlukan.';
-    }
-
-    return assessmentDescription(assessment);
 }
 function selectLesson(lesson: LessonEntry, scrollToPlayer = false): void {
     lessonError.value = null;
@@ -353,6 +301,15 @@ function selectLesson(lesson: LessonEntry, scrollToPlayer = false): void {
         },
     );
 }
+function scrollToNextStage(): void {
+    void nextTick(() => {
+        const target =
+            document.getElementById('lesson-player') ??
+            document.getElementById('course-next-step');
+
+        target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+}
 function selectLessonFromNavigator(
     lesson: Lesson,
     module: Pick<Module, 'id' | 'title' | 'sequence'>,
@@ -365,6 +322,16 @@ function selectLessonFromNavigator(
         module_sequence: module.sequence,
     });
 }
+function continueLearning(): void {
+    if (courseAction.value.kind === 'link') {
+        router.visit(courseAction.value.href);
+
+        return;
+    }
+
+    if (courseAction.value.kind === 'lesson')
+        selectLesson(courseAction.value.lesson, true);
+}
 function complete(lesson: SelectedLesson): void {
     if (completingLessonId.value !== null) return;
     lessonError.value = null;
@@ -374,6 +341,7 @@ function complete(lesson: SelectedLesson): void {
         {},
         {
             preserveScroll: true,
+            onSuccess: scrollToNextStage,
             onError: () => {
                 lessonError.value = {
                     message:
@@ -497,7 +465,7 @@ defineOptions({
                         {{ course.description }}
                     </p>
                 </div>
-                <div class="w-full xl:max-w-sm">
+                <div id="course-next-step" class="w-full xl:max-w-sm">
                     <Button
                         v-if="courseAction.kind === 'link'"
                         class="w-full"
@@ -607,120 +575,10 @@ defineOptions({
 
         <section class="mt-6 grid gap-6 xl:grid-cols-[18rem_minmax(0,1fr)]">
             <aside class="space-y-5 xl:sticky xl:top-6 xl:self-start">
-                <section class="rounded-xl border border-border bg-card p-4">
-                    <h2
-                        class="flex items-center gap-2 font-semibold text-foreground"
-                    >
-                        <Trophy class="size-4 text-primary" />Evaluasi course
-                    </h2>
-                    <div class="mt-3 space-y-2">
-                        <article
-                            v-for="assessment in course.assessments"
-                            :key="assessment.id"
-                            class="rounded-lg border border-border p-3"
-                        >
-                            <div class="flex items-start gap-3">
-                                <CheckCircle2
-                                    v-if="assessment.submitted"
-                                    class="mt-0.5 size-4 shrink-0 text-primary"
-                                /><LockKeyhole
-                                    v-else-if="!assessment.ready"
-                                    class="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                                /><PlayCircle
-                                    v-else
-                                    class="mt-0.5 size-4 shrink-0 text-primary"
-                                />
-                                <div>
-                                    <h3 class="font-medium text-foreground">
-                                        {{ assessmentTitle(assessment) }}
-                                    </h3>
-                                    <p
-                                        class="mt-1 text-xs leading-5 text-muted-foreground"
-                                    >
-                                        {{
-                                            assessmentStatusDescription(
-                                                assessment,
-                                            )
-                                        }}
-                                    </p>
-                                    <Link
-                                        v-if="assessmentAction(assessment)"
-                                        :href="
-                                            assessmentAction(assessment)
-                                                ?.href ?? '#'
-                                        "
-                                        class="mt-2 inline-flex text-xs font-semibold text-primary underline underline-offset-4"
-                                        >{{
-                                            assessmentAction(assessment)?.label
-                                        }}</Link
-                                    >
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-                </section>
-                <section
-                    v-if="
-                        course.modules.some(
-                            (module) => module.assessments.length,
-                        )
-                    "
-                    class="rounded-xl border border-border bg-card p-4"
-                >
-                    <h2
-                        class="flex items-center gap-2 font-semibold text-foreground"
-                    >
-                        <Trophy class="size-4 text-primary" />Evaluasi modul
-                    </h2>
-                    <div class="mt-3 space-y-3">
-                        <div
-                            v-for="module in course.modules.filter(
-                                (item) => item.assessments.length,
-                            )"
-                            :key="module.id"
-                            class="rounded-lg border border-border p-3"
-                        >
-                            <h3 class="text-sm font-medium text-foreground">
-                                Modul {{ module.sequence }} · {{ module.title }}
-                            </h3>
-                            <div class="mt-2 space-y-2">
-                                <article
-                                    v-for="assessment in module.assessments"
-                                    :key="assessment.id"
-                                    class="rounded-md bg-muted/40 p-2.5"
-                                >
-                                    <p
-                                        class="text-sm font-medium text-foreground"
-                                    >
-                                        {{ assessmentTitle(assessment) }}
-                                    </p>
-                                    <p
-                                        class="mt-1 text-xs leading-5 text-muted-foreground"
-                                    >
-                                        {{
-                                            assessmentStatusDescription(
-                                                assessment,
-                                            )
-                                        }}
-                                    </p>
-                                    <Link
-                                        v-if="assessmentAction(assessment)"
-                                        :href="
-                                            assessmentAction(assessment)
-                                                ?.href ?? '#'
-                                        "
-                                        class="mt-2 inline-flex text-xs font-semibold text-primary underline underline-offset-4"
-                                        >{{
-                                            assessmentAction(assessment)?.label
-                                        }}</Link
-                                    >
-                                </article>
-                            </div>
-                        </div>
-                    </div>
-                </section>
                 <LearningLessonNavigator
                     class="hidden xl:block"
+                    :course-id="course.id"
+                    :course-assessments="course.assessments"
                     :modules="course.modules"
                     :active-lesson-id="activeLesson?.id ?? null"
                     @select="selectLessonFromNavigator"
@@ -730,7 +588,7 @@ defineOptions({
                 <Sheet v-model:open="lessonNavigatorOpen">
                     <SheetTrigger as-child>
                         <Button variant="outline" class="w-full">
-                            <ListTree />Daftar materi
+                            <ListTree />Rencana pembelajaran
                         </Button>
                     </SheetTrigger>
                     <SheetContent
@@ -738,9 +596,11 @@ defineOptions({
                         class="w-full max-w-sm overflow-y-auto p-4"
                     >
                         <SheetHeader class="mb-4 text-left">
-                            <SheetTitle>Daftar materi</SheetTitle>
+                            <SheetTitle>Rencana pembelajaran</SheetTitle>
                         </SheetHeader>
                         <LearningLessonNavigator
+                            :course-id="course.id"
+                            :course-assessments="course.assessments"
                             :modules="course.modules"
                             :active-lesson-id="activeLesson?.id ?? null"
                             @select="selectLessonFromNavigator"
@@ -961,21 +821,15 @@ defineOptions({
                             >Course selesai</span
                         ><Button
                             variant="outline"
-                            :disabled="!nextLesson || nextLesson.locked"
-                            @click="
-                                nextLesson &&
-                                !nextLesson.locked &&
-                                selectLesson(nextLesson)
-                            "
-                            >Berikutnya<ChevronRight
+                            :disabled="courseAction.kind === 'none'"
+                            @click="continueLearning"
+                            >{{
+                                courseAction.kind === 'none'
+                                    ? 'Tahap belum tersedia'
+                                    : courseAction.label
+                            }}<ChevronRight
                         /></Button>
                     </div>
-                    <p
-                        v-if="nextLesson?.locked"
-                        class="border-t border-border px-5 py-3 text-sm leading-5 text-muted-foreground"
-                    >
-                        {{ course.next_step.description }}
-                    </p>
                     <div
                         v-if="lessonError"
                         class="flex flex-wrap items-center justify-between gap-3 border-t border-destructive/30 bg-destructive/5 px-5 py-3 text-sm text-destructive"

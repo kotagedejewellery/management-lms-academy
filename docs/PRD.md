@@ -115,6 +115,6 @@ HTTPS, password hashing, session hardening, CSRF protection, role/policy authori
 
 ## 10. UAT dan definition of done
 
-UAT mencakup akun/role, assignment, Pre-Test, materi dan resume, prerequisite, Post-Test lulus/gagal, retake, improvement, reporting/export, responsive mobile, dan audit. MVP diterima setelah alur inti berjalan di staging tanpa kendala kritis.
+UAT mencakup akun/role, assignment, Pre-Test, materi dan resume, prerequisite, pengiriman Post-Test, retake internal, evaluasi akhir, reporting/export, responsive mobile, dan audit. MVP diterima setelah alur inti berjalan di staging tanpa kendala kritis.
 
 Handover: requirement final, sitemap, wireframe, prototype, ERD, API/integration documentation bila diperlukan, source code, panduan Admin, laporan QA/UAT, serta deployment staging/production.

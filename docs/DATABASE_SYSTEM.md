@@ -50,7 +50,7 @@ Role operasional yang didukung adalah `super-admin`, `lms-admin`, `trainer`, dan
 - Rule baru disinkronkan melalui queue ke employee aktif yang telah cocok; proses ini idempoten dan tidak menimpa enrollment/progress yang ada.
 - Foreign key memakai aturan delete yang eksplisit; riwayat assessment/audit tidak cascade delete.
 - Attempt submit, score, dan transition completion dijalankan dalam transaksi; unique constraint menangani race condition retake bersamaan.
-- Course dengan Post-Test wajib selesai setelah Post-Test lulus; tanpa Post-Test course selesai ketika seluruh lesson wajib selesai. Attempt Post-Test terakhir yang gagal mengubah enrollment menjadi `not_passed`.
+- Course dengan Post-Test masuk evaluasi akhir setelah seluruh lesson wajib dan Post-Test dikirim; tanpa Post-Test, setelah seluruh lesson wajib selesai. Persetujuan internal menentukan completion dan penerbitan sertifikat.
 
 ## 4. Index awal berdasarkan access pattern
 

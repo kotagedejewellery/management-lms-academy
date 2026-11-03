@@ -401,9 +401,10 @@ function setTrainerSelection(trainerId: number, selected: boolean): void {
                             Aturan kelulusan
                         </p>
                         <p class="mt-1">
-                            Course dengan Post-Test selesai setelah lulus
-                            Post-Test. Course tanpa Post-Test selesai setelah
-                            seluruh lesson wajib.
+                            Course masuk evaluasi akhir setelah seluruh lesson
+                            wajib selesai dan Post-Test dikirim. Course tanpa
+                            Post-Test masuk evaluasi akhir setelah seluruh
+                            lesson wajib selesai.
                         </p>
                         <Link
                             v-if="course"
@@ -421,12 +422,12 @@ function setTrainerSelection(trainerId: number, selected: boolean): void {
                         />
                         <div class="grid gap-1">
                             <Label for="certificate_enabled"
-                                >Terbitkan sertifikat saat lulus</Label
+                                >Terbitkan sertifikat setelah evaluasi
+                                akhir</Label
                             >
                             <p class="text-xs leading-5 text-muted-foreground">
-                                Sertifikat PDF diterbitkan setelah seluruh
-                                lesson wajib selesai dan Post-Test lulus bila
-                                course menggunakan evaluasi.
+                                Sertifikat PDF diterbitkan setelah evaluasi
+                                akhir disetujui oleh pihak internal.
                             </p>
                             <InputError
                                 :message="form.errors.certificate_enabled"
