@@ -69,137 +69,136 @@ defineOptions({
 <template>
     <Head title="My Learning" />
     <div class="app-page">
-        <div class="max-w-6xl">
-            <PageHeader
-                title="Pembelajaran saya"
-                description="Lanjutkan course yang telah ditugaskan dan pantau progres Anda."
-            />
-            <FilterBar
-                layout="flex"
-                layout-class="max-w-2xl"
-                @change="applyFilters"
+        <PageHeader
+            title="Pembelajaran saya"
+            description="Lanjutkan course yang telah ditugaskan dan pantau progres Anda."
+        />
+        <FilterBar
+            layout="grid"
+            layout-class="grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
+            @change="applyFilters"
+        >
+            <label
+                class="grid min-w-0 gap-1 text-sm font-medium text-foreground"
             >
-                <label
-                    class="grid min-w-0 flex-1 gap-1 text-sm font-medium text-foreground"
+                Status
+                <select
+                    v-model="filters.state"
+                    class="h-10 rounded-lg border border-input bg-background px-3 text-sm"
                 >
-                    Status
-                    <select
-                        v-model="filters.state"
-                        class="h-10 rounded-lg border border-input bg-background px-3 text-sm"
-                    >
-                        <option value="">Semua status</option>
-                        <option value="not_started">Belum mulai</option>
-                        <option value="in_progress">Sedang berjalan</option>
-                        <option value="completed">Selesai</option>
-                    </select>
-                </label>
-                <label
-                    class="grid min-w-0 flex-1 gap-1 text-sm font-medium text-foreground"
-                >
-                    Jenis
-                    <select
-                        v-model="filters.mandatory"
-                        class="h-10 rounded-lg border border-input bg-background px-3 text-sm"
-                    >
-                        <option value="">Wajib dan opsional</option>
-                        <option value="mandatory">Wajib</option>
-                        <option value="optional">Opsional</option>
-                    </select>
-                </label>
-                <Button
-                    v-if="filters.state || filters.mandatory"
-                    type="button"
-                    variant="outline"
-                    @click="resetFilters"
-                >
-                    Reset
-                </Button>
-            </FilterBar>
-            <section
-                v-if="enrollments.data.length"
-                class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
+                    <option value="">Semua status</option>
+                    <option value="not_started">Belum mulai</option>
+                    <option value="in_progress">Sedang berjalan</option>
+                    <option value="completed">Selesai</option>
+                </select>
+            </label>
+            <label
+                class="grid min-w-0 gap-1 text-sm font-medium text-foreground"
             >
-                <article
-                    v-for="item in enrollments.data"
-                    :key="item.id"
-                    class="flex flex-col rounded-2xl border border-border/85 bg-card p-5 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-brand-gold/45"
+                Jenis
+                <select
+                    v-model="filters.mandatory"
+                    class="h-10 rounded-lg border border-input bg-background px-3 text-sm"
                 >
-                    <div class="flex items-start justify-between gap-3">
-                        <h2 class="font-semibold text-foreground">
-                            {{ item.course?.title }}
-                        </h2>
-                        <StatusBadge
-                            class="shrink-0"
-                            :status="
-                                item.locked
-                                    ? 'locked'
-                                    : item.status === 'active'
-                                      ? 'in_progress'
-                                      : item.status
-                            "
-                        />
-                    </div>
-                    <p class="mt-2 text-sm leading-6 text-muted-foreground">
-                        {{ item.course?.description || item.course?.code }}
-                    </p>
-                    <p class="mt-3 text-xs font-medium text-muted-foreground">
-                        {{
-                            item.course?.is_mandatory
-                                ? 'Course wajib'
-                                : 'Course opsional'
-                        }}
-                    </p>
-                    <p class="mt-5 text-sm text-muted-foreground">
-                        <span class="tabular-nums"
-                            >{{ item.completed_lessons_count }}/{{
-                                item.lessons_count
-                            }}</span
-                        >
-                        lesson selesai<span v-if="item.due_at">
-                            · Tenggat {{ item.due_at }}</span
-                        >
-                    </p>
+                    <option value="">Wajib dan opsional</option>
+                    <option value="mandatory">Wajib</option>
+                    <option value="optional">Opsional</option>
+                </select>
+            </label>
+            <Button
+                v-if="filters.state || filters.mandatory"
+                class="w-full self-end md:w-auto"
+                type="button"
+                variant="outline"
+                @click="resetFilters"
+            >
+                Reset
+            </Button>
+        </FilterBar>
+        <section
+            v-if="enrollments.data.length"
+            class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
+        >
+            <article
+                v-for="item in enrollments.data"
+                :key="item.id"
+                class="flex flex-col rounded-2xl border border-border/85 bg-card p-5 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-brand-gold/45"
+            >
+                <div class="flex items-start justify-between gap-3">
+                    <h2 class="font-semibold text-foreground">
+                        {{ item.course?.title }}
+                    </h2>
+                    <StatusBadge
+                        class="shrink-0"
+                        :status="
+                            item.locked
+                                ? 'locked'
+                                : item.status === 'active'
+                                  ? 'in_progress'
+                                  : item.status
+                        "
+                    />
+                </div>
+                <p class="mt-2 text-sm leading-6 text-muted-foreground">
+                    {{ item.course?.description || item.course?.code }}
+                </p>
+                <p class="mt-3 text-xs font-medium text-muted-foreground">
+                    {{
+                        item.course?.is_mandatory
+                            ? 'Course wajib'
+                            : 'Course opsional'
+                    }}
+                </p>
+                <p class="mt-5 text-sm text-muted-foreground">
+                    <span class="tabular-nums"
+                        >{{ item.completed_lessons_count }}/{{
+                            item.lessons_count
+                        }}</span
+                    >
+                    lesson selesai<span v-if="item.due_at">
+                        · Tenggat {{ item.due_at }}</span
+                    >
+                </p>
+                <div
+                    class="mt-3 h-2 overflow-hidden rounded-full bg-muted"
+                    role="progressbar"
+                    :aria-valuenow="progress(item)"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    :aria-label="`Progres ${item.course?.title ?? 'course'}`"
+                >
                     <div
-                        class="mt-3 h-2 overflow-hidden rounded-full bg-muted"
-                        role="progressbar"
-                        :aria-valuenow="progress(item)"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                        :aria-label="`Progres ${item.course?.title ?? 'course'}`"
-                    >
-                        <div
-                            class="h-full rounded-full bg-brand-gold transition-[width] duration-300"
-                            :style="{ width: `${progress(item)}%` }"
-                        />
-                    </div>
-                    <p
-                        v-if="item.locked"
-                        class="mt-5 text-sm font-medium text-muted-foreground"
-                    >
-                        {{ item.lock_reason }}
-                    </p>
-                    <Button v-else class="mt-5" as-child
-                        ><Link :href="`/my-learning/${item.course?.id}`">{{
-                            learningAction(item)
-                        }}</Link></Button
-                    >
-                </article>
-            </section>
-            <section v-else class="surface">
-                <EmptyState
-                    :icon="BookOpen"
-                    title="Belum ada course yang ditugaskan"
-                    description="Assignment akan muncul di sini setelah LMS Admin menetapkannya."
-                />
-            </section>
-            <Pagination
-                v-if="enrollments.data.length"
-                :from="enrollments.from"
-                :to="enrollments.to"
-                :total="enrollments.total"
-                :previous="enrollments.prev_page_url"
-                :next="enrollments.next_page_url"
+                        class="h-full rounded-full bg-brand-gold transition-[width] duration-300"
+                        :style="{ width: `${progress(item)}%` }"
+                    />
+                </div>
+                <p
+                    v-if="item.locked"
+                    class="mt-5 text-sm font-medium text-muted-foreground"
+                >
+                    {{ item.lock_reason }}
+                </p>
+                <Button v-else class="mt-5" as-child
+                    ><Link :href="`/my-learning/${item.course?.id}`">{{
+                        learningAction(item)
+                    }}</Link></Button
+                >
+            </article>
+        </section>
+        <section v-else class="surface">
+            <EmptyState
+                :icon="BookOpen"
+                title="Belum ada course yang ditugaskan"
+                description="Assignment akan muncul di sini setelah LMS Admin menetapkannya."
             />
-        </div>
+        </section>
+        <Pagination
+            v-if="enrollments.data.length"
+            :from="enrollments.from"
+            :to="enrollments.to"
+            :total="enrollments.total"
+            :previous="enrollments.prev_page_url"
+            :next="enrollments.next_page_url"
+        />
     </div>
 </template>
