@@ -140,7 +140,7 @@ function score(value: number | null): string {
 }
 
 function assessmentSummaryLabel(summary: AssessmentSummary): string {
-    return summary.is_final ? 'Nilai akhir course' : 'Rata-rata berjalan';
+    return summary.is_final ? 'Nilai akhir course' : 'Nilai sementara course';
 }
 
 function needsFinalReviewFollowUp(item: Enrollment): boolean {
@@ -305,6 +305,14 @@ defineOptions({
                             </dt>
                             <dd class="mt-1 font-semibold text-foreground">
                                 {{ score(item.assessment_summary.score) }}
+                                <span
+                                    v-if="
+                                        item.assessment_summary.score !== null
+                                    "
+                                    class="text-sm font-medium text-muted-foreground"
+                                >
+                                    / 100
+                                </span>
                             </dd>
                         </div>
                         <div>

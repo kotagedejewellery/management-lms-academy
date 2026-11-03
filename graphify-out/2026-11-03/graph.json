@@ -2843,7 +2843,7 @@
       "label": "{closure#19}()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L190",
+      "source_location": "L191",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2852,7 +2852,7 @@
       "label": "{closure#20}()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L204",
+      "source_location": "L205",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2861,7 +2861,7 @@
       "label": "{closure#21}()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L207",
+      "source_location": "L208",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2870,7 +2870,7 @@
       "label": "{closure#22}()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L209",
+      "source_location": "L210",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2879,7 +2879,7 @@
       "label": "{closure#23}()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L218",
+      "source_location": "L219",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2888,7 +2888,7 @@
       "label": "{closure#24}()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L229",
+      "source_location": "L230",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2897,7 +2897,7 @@
       "label": "{closure#25}()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L245",
+      "source_location": "L246",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2906,7 +2906,7 @@
       "label": ".savePlayback()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L250",
+      "source_location": "L251",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2915,7 +2915,7 @@
       "label": ".completeLesson()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L268",
+      "source_location": "L269",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2924,7 +2924,7 @@
       "label": ".nextStep()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L294",
+      "source_location": "L295",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2933,7 +2933,7 @@
       "label": "{closure#26}()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L351",
+      "source_location": "L352",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2942,7 +2942,7 @@
       "label": "{closure#27}()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L378",
+      "source_location": "L379",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2951,7 +2951,7 @@
       "label": ".assessmentNextStep()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L395",
+      "source_location": "L396",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2960,7 +2960,7 @@
       "label": ".canStartAssessment()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L410",
+      "source_location": "L411",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2969,7 +2969,7 @@
       "label": "{closure#28}()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L413",
+      "source_location": "L414",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2978,7 +2978,7 @@
       "label": ".waitingNextStep()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L419",
+      "source_location": "L420",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2987,7 +2987,7 @@
       "label": ".enrollment()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L428",
+      "source_location": "L429",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2996,7 +2996,7 @@
       "label": "{closure#29}()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L434",
+      "source_location": "L435",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3005,7 +3005,7 @@
       "label": ".ensureLessonAvailable()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L442",
+      "source_location": "L443",
       "_callable": true,
       "_origin": "ast"
     },
@@ -17311,7 +17311,7 @@
       "label": "Enrollment",
       "file_type": "code",
       "source_file": "resources/js/pages/learning/Index.vue",
-      "source_location": "L10",
+      "source_location": "L11",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast"
@@ -17321,7 +17321,7 @@
       "label": "props",
       "file_type": "code",
       "source_file": "resources/js/pages/learning/Index.vue",
-      "source_location": "L27",
+      "source_location": "L28",
       "_origin": "ast"
     },
     {
@@ -17329,7 +17329,7 @@
       "label": "filters",
       "file_type": "code",
       "source_file": "resources/js/pages/learning/Index.vue",
-      "source_location": "L38",
+      "source_location": "L39",
       "_origin": "ast"
     },
     {
@@ -17337,7 +17337,16 @@
       "label": "applyFilters()",
       "file_type": "code",
       "source_file": "resources/js/pages/learning/Index.vue",
-      "source_location": "L42",
+      "source_location": "L43",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "resources_js_pages_learning_index_resetfilters",
+      "label": "resetFilters()",
+      "file_type": "code",
+      "source_file": "resources/js/pages/learning/Index.vue",
+      "source_location": "L46",
       "_callable": true,
       "_origin": "ast"
     },
@@ -17346,7 +17355,16 @@
       "label": "progress()",
       "file_type": "code",
       "source_file": "resources/js/pages/learning/Index.vue",
-      "source_location": "L45",
+      "source_location": "L51",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "resources_js_pages_learning_index_learningaction",
+      "label": "learningAction()",
+      "file_type": "code",
+      "source_file": "resources/js/pages/learning/Index.vue",
+      "source_location": "L56",
       "_callable": true,
       "_origin": "ast"
     },
@@ -17363,7 +17381,7 @@
       "label": "Course",
       "file_type": "code",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L11",
+      "source_location": "L13",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast"
@@ -17373,7 +17391,7 @@
       "label": "props",
       "file_type": "code",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L23",
+      "source_location": "L25",
       "_origin": "ast"
     },
     {
@@ -17381,7 +17399,7 @@
       "label": "filters",
       "file_type": "code",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L34",
+      "source_location": "L36",
       "_origin": "ast"
     },
     {
@@ -17389,7 +17407,7 @@
       "label": "applySearch()",
       "file_type": "code",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L35",
+      "source_location": "L37",
       "_callable": true,
       "_origin": "ast"
     },
@@ -17398,7 +17416,7 @@
       "label": "clearSearch()",
       "file_type": "code",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L41",
+      "source_location": "L43",
       "_callable": true,
       "_origin": "ast"
     },
@@ -24796,6 +24814,18 @@
       "_origin": "ast"
     },
     {
+      "id": "resources_js_components_ui_separator_index_separator",
+      "label": "resources_js_components_ui_separator_index_separator",
+      "_origin": "semantic",
+      "community": 1,
+      "community_name": "vue",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_components_ui_separator_index_separator",
+      "source_file": "",
+      "type": "external"
+    },
+    {
       "id": "resources_js_components_ui_sidebar_utils_usesidebar",
       "label": "resources_js_components_ui_sidebar_utils_usesidebar",
       "_origin": "semantic",
@@ -24864,18 +24894,6 @@
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_components_ui_skeleton_index_skeleton",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "resources_js_components_ui_separator_index_separator",
-      "label": "resources_js_components_ui_separator_index_separator",
-      "_origin": "semantic",
-      "community": 119,
-      "community_name": "Separator.vue",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_components_ui_separator_index_separator",
       "source_file": "",
       "type": "external"
     },
@@ -24952,14 +24970,14 @@
       "type": "external"
     },
     {
-      "id": "resources_js_types_index_user",
-      "label": "resources_js_types_index_user",
+      "id": "resources_js_routes_profile_index_edit",
+      "label": "resources_js_routes_profile_index_edit",
       "_origin": "semantic",
       "community": 146,
       "community_name": "UserMenuContent.vue",
       "external": true,
       "file_type": "concept",
-      "norm_label": "resources_js_types_index_user",
+      "norm_label": "resources_js_routes_profile_index_edit",
       "source_file": "",
       "type": "external"
     },
@@ -25304,7 +25322,7 @@
       "label": "ref_inertiajs_core",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "ref_inertiajs_core",
@@ -25316,70 +25334,10 @@
       "label": "resources_js_actions_app_http_controllers_settings_securitycontroller",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_actions_app_http_controllers_settings_securitycontroller",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "resources_js_components_ui_card_index_card",
-      "label": "resources_js_components_ui_card_index_card",
-      "_origin": "semantic",
-      "community": 3,
-      "community_name": "@inertiajs/vue3",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_components_ui_card_index_card",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "resources_js_components_ui_card_index_cardcontent",
-      "label": "resources_js_components_ui_card_index_cardcontent",
-      "_origin": "semantic",
-      "community": 3,
-      "community_name": "@inertiajs/vue3",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_components_ui_card_index_cardcontent",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "resources_js_components_ui_card_index_carddescription",
-      "label": "resources_js_components_ui_card_index_carddescription",
-      "_origin": "semantic",
-      "community": 3,
-      "community_name": "@inertiajs/vue3",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_components_ui_card_index_carddescription",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "resources_js_components_ui_card_index_cardheader",
-      "label": "resources_js_components_ui_card_index_cardheader",
-      "_origin": "semantic",
-      "community": 3,
-      "community_name": "@inertiajs/vue3",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_components_ui_card_index_cardheader",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "resources_js_components_ui_card_index_cardtitle",
-      "label": "resources_js_components_ui_card_index_cardtitle",
-      "_origin": "semantic",
-      "community": 3,
-      "community_name": "@inertiajs/vue3",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_components_ui_card_index_cardtitle",
       "source_file": "",
       "type": "external"
     },
@@ -25388,7 +25346,7 @@
       "label": "resources_js_components_ui_checkbox_index_checkbox",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_components_ui_checkbox_index_checkbox",
@@ -25400,7 +25358,7 @@
       "label": "resources_js_components_ui_input_index_input",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_components_ui_input_index_input",
@@ -25412,7 +25370,7 @@
       "label": "resources_js_components_ui_label_index_label",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_components_ui_label_index_label",
@@ -25424,70 +25382,10 @@
       "label": "resources_js_components_ui_spinner_index_spinner",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_components_ui_spinner_index_spinner",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "resources_js_routes_index",
-      "label": "resources_js_routes_index",
-      "_origin": "semantic",
-      "community": 3,
-      "community_name": "@inertiajs/vue3",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_routes_index",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "resources_js_routes_index_dashboard",
-      "label": "resources_js_routes_index_dashboard",
-      "_origin": "semantic",
-      "community": 3,
-      "community_name": "@inertiajs/vue3",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_routes_index_dashboard",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "resources_js_routes_index_home",
-      "label": "resources_js_routes_index_home",
-      "_origin": "semantic",
-      "community": 3,
-      "community_name": "@inertiajs/vue3",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_routes_index_home",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "resources_js_routes_index_login",
-      "label": "resources_js_routes_index_login",
-      "_origin": "semantic",
-      "community": 3,
-      "community_name": "@inertiajs/vue3",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_routes_index_login",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "resources_js_routes_index_logout",
-      "label": "resources_js_routes_index_logout",
-      "_origin": "semantic",
-      "community": 3,
-      "community_name": "@inertiajs/vue3",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_routes_index_logout",
       "source_file": "",
       "type": "external"
     },
@@ -25496,7 +25394,7 @@
       "label": "resources_js_routes_login_index",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_routes_login_index",
@@ -25508,7 +25406,7 @@
       "label": "resources_js_routes_login_index_store",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_routes_login_index_store",
@@ -25520,7 +25418,7 @@
       "label": "resources_js_routes_password_confirm_index",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_routes_password_confirm_index",
@@ -25532,7 +25430,7 @@
       "label": "resources_js_routes_password_confirm_index_store",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_routes_password_confirm_index_store",
@@ -25544,7 +25442,7 @@
       "label": "resources_js_routes_password_index",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_routes_password_index",
@@ -25556,7 +25454,7 @@
       "label": "resources_js_routes_password_index_email",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_routes_password_index_email",
@@ -25568,7 +25466,7 @@
       "label": "resources_js_routes_password_index_request",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_routes_password_index_request",
@@ -25580,7 +25478,7 @@
       "label": "resources_js_routes_password_index_update",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_routes_password_index_update",
@@ -25592,7 +25490,7 @@
       "label": "resources_js_routes_security_index",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_routes_security_index",
@@ -25604,34 +25502,10 @@
       "label": "resources_js_routes_security_index_edit",
       "_origin": "semantic",
       "community": 3,
-      "community_name": "@inertiajs/vue3",
+      "community_name": "resources_js_components_ui_label_index_label",
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_routes_security_index_edit",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "resources_js_routes_verification_index",
-      "label": "resources_js_routes_verification_index",
-      "_origin": "semantic",
-      "community": 3,
-      "community_name": "@inertiajs/vue3",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_routes_verification_index",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "resources_js_routes_verification_index_send",
-      "label": "resources_js_routes_verification_index_send",
-      "_origin": "semantic",
-      "community": 3,
-      "community_name": "@inertiajs/vue3",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_routes_verification_index_send",
       "source_file": "",
       "type": "external"
     },
@@ -25668,6 +25542,42 @@
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_components_ui_button_index_button",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "resources_js_components_ui_collapsible_index_collapsible",
+      "label": "resources_js_components_ui_collapsible_index_collapsible",
+      "_origin": "semantic",
+      "community": 40,
+      "community_name": "trainer-progress/Index.vue",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_components_ui_collapsible_index_collapsible",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "resources_js_components_ui_collapsible_index_collapsiblecontent",
+      "label": "resources_js_components_ui_collapsible_index_collapsiblecontent",
+      "_origin": "semantic",
+      "community": 40,
+      "community_name": "trainer-progress/Index.vue",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_components_ui_collapsible_index_collapsiblecontent",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "resources_js_components_ui_collapsible_index_collapsibletrigger",
+      "label": "resources_js_components_ui_collapsible_index_collapsibletrigger",
+      "_origin": "semantic",
+      "community": 40,
+      "community_name": "trainer-progress/Index.vue",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_components_ui_collapsible_index_collapsibletrigger",
       "source_file": "",
       "type": "external"
     },
@@ -26008,6 +25918,114 @@
       "type": "external"
     },
     {
+      "id": "resources_js_components_ui_card_index_card",
+      "label": "resources_js_components_ui_card_index_card",
+      "_origin": "semantic",
+      "community": 61,
+      "community_name": "@inertiajs/vue3",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_components_ui_card_index_card",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "resources_js_components_ui_card_index_cardcontent",
+      "label": "resources_js_components_ui_card_index_cardcontent",
+      "_origin": "semantic",
+      "community": 61,
+      "community_name": "@inertiajs/vue3",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_components_ui_card_index_cardcontent",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "resources_js_components_ui_card_index_carddescription",
+      "label": "resources_js_components_ui_card_index_carddescription",
+      "_origin": "semantic",
+      "community": 61,
+      "community_name": "@inertiajs/vue3",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_components_ui_card_index_carddescription",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "resources_js_components_ui_card_index_cardheader",
+      "label": "resources_js_components_ui_card_index_cardheader",
+      "_origin": "semantic",
+      "community": 61,
+      "community_name": "@inertiajs/vue3",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_components_ui_card_index_cardheader",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "resources_js_components_ui_card_index_cardtitle",
+      "label": "resources_js_components_ui_card_index_cardtitle",
+      "_origin": "semantic",
+      "community": 61,
+      "community_name": "@inertiajs/vue3",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_components_ui_card_index_cardtitle",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "resources_js_routes_index",
+      "label": "resources_js_routes_index",
+      "_origin": "semantic",
+      "community": 61,
+      "community_name": "@inertiajs/vue3",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_routes_index",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "resources_js_routes_index_dashboard",
+      "label": "resources_js_routes_index_dashboard",
+      "_origin": "semantic",
+      "community": 61,
+      "community_name": "@inertiajs/vue3",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_routes_index_dashboard",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "resources_js_routes_index_home",
+      "label": "resources_js_routes_index_home",
+      "_origin": "semantic",
+      "community": 61,
+      "community_name": "@inertiajs/vue3",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_routes_index_home",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "resources_js_routes_index_login",
+      "label": "resources_js_routes_index_login",
+      "_origin": "semantic",
+      "community": 61,
+      "community_name": "@inertiajs/vue3",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_routes_index_login",
+      "source_file": "",
+      "type": "external"
+    },
+    {
       "id": "resources_js_actions_app_http_controllers_settings_profilecontroller",
       "label": "resources_js_actions_app_http_controllers_settings_profilecontroller",
       "_origin": "semantic",
@@ -26056,14 +26074,38 @@
       "type": "external"
     },
     {
-      "id": "resources_js_routes_profile_index_edit",
-      "label": "resources_js_routes_profile_index_edit",
+      "id": "resources_js_routes_index_logout",
+      "label": "resources_js_routes_index_logout",
       "_origin": "semantic",
       "community": 68,
       "community_name": "Profile.vue",
       "external": true,
       "file_type": "concept",
-      "norm_label": "resources_js_routes_profile_index_edit",
+      "norm_label": "resources_js_routes_index_logout",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "resources_js_routes_verification_index",
+      "label": "resources_js_routes_verification_index",
+      "_origin": "semantic",
+      "community": 68,
+      "community_name": "Profile.vue",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_routes_verification_index",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "resources_js_routes_verification_index_send",
+      "label": "resources_js_routes_verification_index_send",
+      "_origin": "semantic",
+      "community": 68,
+      "community_name": "Profile.vue",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_routes_verification_index_send",
       "source_file": "",
       "type": "external"
     },
@@ -26208,6 +26250,18 @@
       "external": true,
       "file_type": "concept",
       "norm_label": "resources_js_components_ui_tooltip_index_tooltipprovider",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "resources_js_types_index_user",
+      "label": "resources_js_types_index_user",
+      "_origin": "semantic",
+      "community": 74,
+      "community_name": "AppHeader.vue",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "resources_js_types_index_user",
       "source_file": "",
       "type": "external"
     },
@@ -26366,42 +26420,6 @@
       "norm_label": "argvinput",
       "source_file": "",
       "type": "external"
-    },
-    {
-      "id": "resources_js_components_ui_collapsible_index_collapsible",
-      "label": "resources_js_components_ui_collapsible_index_collapsible",
-      "community": 40,
-      "community_name": "trainer-progress/Index.vue",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_components_ui_collapsible_index_collapsible",
-      "source_file": "",
-      "type": "external",
-      "_origin": "semantic"
-    },
-    {
-      "id": "resources_js_components_ui_collapsible_index_collapsiblecontent",
-      "label": "resources_js_components_ui_collapsible_index_collapsiblecontent",
-      "community": 40,
-      "community_name": "trainer-progress/Index.vue",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_components_ui_collapsible_index_collapsiblecontent",
-      "source_file": "",
-      "type": "external",
-      "_origin": "semantic"
-    },
-    {
-      "id": "resources_js_components_ui_collapsible_index_collapsibletrigger",
-      "label": "resources_js_components_ui_collapsible_index_collapsibletrigger",
-      "community": 40,
-      "community_name": "trainer-progress/Index.vue",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "resources_js_components_ui_collapsible_index_collapsibletrigger",
-      "source_file": "",
-      "type": "external",
-      "_origin": "semantic"
     }
   ],
   "links": [
@@ -38250,7 +38268,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L190",
+      "source_location": "L191",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38260,7 +38278,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L190",
+      "source_location": "L191",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38271,7 +38289,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L204",
+      "source_location": "L205",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38281,7 +38299,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L207",
+      "source_location": "L208",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38291,7 +38309,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L207",
+      "source_location": "L208",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38302,7 +38320,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L209",
+      "source_location": "L210",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38312,7 +38330,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L209",
+      "source_location": "L210",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38323,7 +38341,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L218",
+      "source_location": "L219",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38333,7 +38351,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L218",
+      "source_location": "L219",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38344,7 +38362,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L229",
+      "source_location": "L230",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38354,7 +38372,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L229",
+      "source_location": "L230",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38365,7 +38383,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L245",
+      "source_location": "L246",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38375,7 +38393,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L250",
+      "source_location": "L251",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38385,7 +38403,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L250",
+      "source_location": "L251",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38396,7 +38414,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L250",
+      "source_location": "L251",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38407,7 +38425,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L250",
+      "source_location": "L251",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38418,7 +38436,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L250",
+      "source_location": "L251",
       "weight": 1.0,
       "context": "return_type",
       "_origin": "ast"
@@ -38429,7 +38447,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L268",
+      "source_location": "L269",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38439,7 +38457,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L268",
+      "source_location": "L269",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38450,7 +38468,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L268",
+      "source_location": "L269",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38461,7 +38479,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L268",
+      "source_location": "L269",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38472,7 +38490,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L268",
+      "source_location": "L269",
       "weight": 1.0,
       "context": "return_type",
       "_origin": "ast"
@@ -38483,7 +38501,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L294",
+      "source_location": "L295",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38493,7 +38511,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L294",
+      "source_location": "L295",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38504,7 +38522,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L294",
+      "source_location": "L295",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38515,7 +38533,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L294",
+      "source_location": "L295",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38526,7 +38544,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L294",
+      "source_location": "L295",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38537,7 +38555,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L351",
+      "source_location": "L352",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38547,7 +38565,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L351",
+      "source_location": "L352",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38558,7 +38576,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L378",
+      "source_location": "L379",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38568,7 +38586,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L395",
+      "source_location": "L396",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38578,7 +38596,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L395",
+      "source_location": "L396",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38589,7 +38607,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L395",
+      "source_location": "L396",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38600,7 +38618,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L410",
+      "source_location": "L411",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38610,7 +38628,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L410",
+      "source_location": "L411",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38621,7 +38639,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L410",
+      "source_location": "L411",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38632,7 +38650,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L413",
+      "source_location": "L414",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38642,7 +38660,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L419",
+      "source_location": "L420",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38652,7 +38670,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L428",
+      "source_location": "L429",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38662,7 +38680,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L428",
+      "source_location": "L429",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38673,7 +38691,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L428",
+      "source_location": "L429",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38684,7 +38702,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L428",
+      "source_location": "L429",
       "weight": 1.0,
       "context": "return_type",
       "_origin": "ast"
@@ -38695,7 +38713,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L434",
+      "source_location": "L435",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38705,7 +38723,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L442",
+      "source_location": "L443",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38715,7 +38733,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L442",
+      "source_location": "L443",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38726,7 +38744,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L442",
+      "source_location": "L443",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38737,7 +38755,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L442",
+      "source_location": "L443",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast"
@@ -38771,7 +38789,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L198",
+      "source_location": "L199",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38782,7 +38800,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L226",
+      "source_location": "L227",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38793,7 +38811,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L252",
+      "source_location": "L253",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38804,7 +38822,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L256",
+      "source_location": "L257",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38815,7 +38833,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L270",
+      "source_location": "L271",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38826,7 +38844,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L273",
+      "source_location": "L274",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38837,7 +38855,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L321",
+      "source_location": "L322",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38848,7 +38866,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L326",
+      "source_location": "L327",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -38859,7 +38877,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/LearningController.php",
-      "source_location": "L397",
+      "source_location": "L398",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -60155,6 +60173,17 @@
       "_origin": "ast"
     },
     {
+      "source": "resources_js_components_learninglessonnavigator_assessmentmarker",
+      "target": "resources_js_components_learninglessonnavigator_assessmentstatus",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/components/LearningLessonNavigator.vue",
+      "source_location": "L98",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
       "source": "resources_js_components_learninglessonnavigator_modulestages",
       "target": "resources_js_components_learninglessonnavigator_assessmentmarker",
       "relation": "calls",
@@ -77757,7 +77786,7 @@
     },
     {
       "source": "resources_js_pages_learning_index",
-      "target": "ref_lucide_vue",
+      "target": "ref_vue",
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -77768,7 +77797,7 @@
     },
     {
       "source": "resources_js_pages_learning_index",
-      "target": "resources_js_components_emptystate",
+      "target": "ref_lucide_vue",
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -77779,7 +77808,7 @@
     },
     {
       "source": "resources_js_pages_learning_index",
-      "target": "resources_js_components_filterbar",
+      "target": "resources_js_components_emptystate",
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -77790,7 +77819,7 @@
     },
     {
       "source": "resources_js_pages_learning_index",
-      "target": "resources_js_components_pageheader",
+      "target": "resources_js_components_filterbar",
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -77801,7 +77830,7 @@
     },
     {
       "source": "resources_js_pages_learning_index",
-      "target": "resources_js_components_pagination",
+      "target": "resources_js_components_pageheader",
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -77812,7 +77841,7 @@
     },
     {
       "source": "resources_js_pages_learning_index",
-      "target": "resources_js_components_statusbadge",
+      "target": "resources_js_components_pagination",
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -77823,7 +77852,7 @@
     },
     {
       "source": "resources_js_pages_learning_index",
-      "target": "resources_js_components_ui_button_index",
+      "target": "resources_js_components_statusbadge",
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -77834,12 +77863,23 @@
     },
     {
       "source": "resources_js_pages_learning_index",
+      "target": "resources_js_components_ui_button_index",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/pages/learning/Index.vue",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "resources_js_pages_learning_index",
       "target": "resources_js_components_ui_button_index_button",
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Index.vue",
-      "source_location": "L9",
+      "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -77849,7 +77889,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Index.vue",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -77859,7 +77899,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Index.vue",
-      "source_location": "L27",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -77869,7 +77909,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Index.vue",
-      "source_location": "L38",
+      "source_location": "L39",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -77879,7 +77919,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Index.vue",
-      "source_location": "L42",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "resources_js_pages_learning_index",
+      "target": "resources_js_pages_learning_index_resetfilters",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/pages/learning/Index.vue",
+      "source_location": "L46",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -77889,7 +77939,28 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Index.vue",
-      "source_location": "L45",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "resources_js_pages_learning_index",
+      "target": "resources_js_pages_learning_index_learningaction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/pages/learning/Index.vue",
+      "source_location": "L56",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "resources_js_pages_learning_index_resetfilters",
+      "target": "resources_js_pages_learning_index_applyfilters",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/pages/learning/Index.vue",
+      "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -77928,7 +77999,7 @@
     },
     {
       "source": "resources_js_pages_learning_library",
-      "target": "resources_js_components_pagination",
+      "target": "resources_js_components_filterbar",
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -77939,7 +78010,7 @@
     },
     {
       "source": "resources_js_pages_learning_library",
-      "target": "resources_js_components_pageheader",
+      "target": "resources_js_components_pagination",
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -77950,12 +78021,45 @@
     },
     {
       "source": "resources_js_pages_learning_library",
-      "target": "resources_js_components_ui_button_index",
+      "target": "resources_js_components_pageheader",
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Library.vue",
       "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "resources_js_pages_learning_library",
+      "target": "resources_js_components_ui_badge_index",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/pages/learning/Library.vue",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "resources_js_pages_learning_library",
+      "target": "resources_js_components_ui_badge_index_badge",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/pages/learning/Library.vue",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "resources_js_pages_learning_library",
+      "target": "resources_js_components_ui_button_index",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/pages/learning/Library.vue",
+      "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -77966,7 +78070,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L7",
+      "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -77977,7 +78081,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L8",
+      "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -77988,7 +78092,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L8",
+      "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -77999,7 +78103,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L9",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -78010,7 +78114,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L9",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -78020,7 +78124,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L11",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -78030,7 +78134,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -78040,7 +78144,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L34",
+      "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -78050,7 +78154,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L35",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -78060,7 +78164,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L41",
+      "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -78071,7 +78175,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/pages/learning/Library.vue",
-      "source_location": "L43",
+      "source_location": "L45",
       "weight": 1.0,
       "_origin": "ast"
     },

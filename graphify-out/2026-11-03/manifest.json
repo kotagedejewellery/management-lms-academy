@@ -1890,9 +1890,9 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/LearningController.php": {
-    "mtime": 1793689438.9808176,
-    "seen": 1793689483.7733371,
-    "ast_hash": "53099abebdb0d7f4173b984069451485",
+    "mtime": 1793693503.3552878,
+    "seen": 1793695224.1898162,
+    "ast_hash": "01059a8939f0e3c7067d978ed6cd8643",
     "semantic_hash": ""
   },
   "tests/Feature/LearningFlowTest.php": {
@@ -1908,9 +1908,9 @@
     "semantic_hash": ""
   },
   "resources/js/pages/learning/Index.vue": {
-    "mtime": 1793237263.1805396,
-    "seen": 1793237407.9318054,
-    "ast_hash": "88fe46eb6def7f29dccf468231d59d2f",
+    "mtime": 1793695481.843652,
+    "seen": 1793695532.34256,
+    "ast_hash": "5f5aa6c65e5266e87881f8e6f93ab1f5",
     "semantic_hash": ""
   },
   "resources/js/pages/learning/Show.vue": {
@@ -2070,9 +2070,9 @@
     "semantic_hash": ""
   },
   "resources/js/pages/learning/Library.vue": {
-    "mtime": 1792028068.9244828,
-    "seen": 1792028769.2543766,
-    "ast_hash": "0a27f16a1850591708e337e0c8a70141",
+    "mtime": 1793695481.5910897,
+    "seen": 1793695532.3425658,
+    "ast_hash": "2cef8f9a313e4e2932d82fd97005c6de",
     "semantic_hash": ""
   },
   "tests/Feature/CourseLibraryTest.php": {
@@ -2406,9 +2406,9 @@
     "semantic_hash": ""
   },
   "resources/js/components/LearningLessonNavigator.vue": {
-    "mtime": 1793690213.0775743,
-    "seen": 1793690293.9414546,
-    "ast_hash": "ac46feb5e6d319a21aa5a22e49091126",
+    "mtime": 1793690318.8974297,
+    "seen": 1793690368.723986,
+    "ast_hash": "f7bb60f61932febd5d3412f0050346c6",
     "semantic_hash": ""
   },
   "app/Support/DashboardResolver.php": {
@@ -2694,9 +2694,9 @@
     "semantic_hash": ""
   },
   "resources/js/pages/trainer-progress/Index.vue": {
-    "mtime": 1793237436.4581337,
-    "seen": 1793237496.3583724,
-    "ast_hash": "0401491174cf02c81eee2806dfee7a6c",
+    "mtime": 1793695481.6006105,
+    "seen": 1793695532.3425994,
+    "ast_hash": "3860a442adc0a49792836dc60a7de3fc",
     "semantic_hash": ""
   },
   "tests/Feature/TrainerProgressTest.php": {
