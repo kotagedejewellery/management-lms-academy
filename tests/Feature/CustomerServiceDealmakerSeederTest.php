@@ -4,11 +4,11 @@ namespace Tests\Feature;
 
 use App\Models\Assessment;
 use App\Models\Course;
-use App\Models\CourseModule;
 use App\Models\Enrollment;
 use App\Models\Lesson;
 use App\Models\User;
 use Database\Seeders\CustomerServiceDealmakerSeeder;
+use Database\Seeders\ModuleSixAssessmentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -39,17 +39,16 @@ class CustomerServiceDealmakerSeederTest extends TestCase
         $this->assertSame(10, $course->modules()->count());
     }
 
-    public function test_it_seeds_pre_and_post_tests_for_all_customer_service_modules_except_module_six(): void
+    public function test_it_seeds_pre_and_post_tests_for_all_customer_service_modules(): void
     {
         $this->seed(CustomerServiceDealmakerSeeder::class);
 
         $course = Course::query()->where('code', 'CS-DEAL-001')->sole();
         $modules = $course->modules()->orderBy('sequence')->get();
 
-        $this->assertSame(18, Assessment::query()->where('course_id', $course->id)->count());
-        $this->assertSame(0, Assessment::query()->where('module_id', $modules[5]->id)->count());
+        $this->assertSame(20, Assessment::query()->where('course_id', $course->id)->count());
 
-        foreach ($modules->reject(fn (CourseModule $module): bool => $module->sequence === 6) as $module) {
+        foreach ($modules as $module) {
             $preTest = Assessment::query()->where('module_id', $module->id)->where('type', 'pre_test')->sole();
             $postTest = Assessment::query()->where('module_id', $module->id)->where('type', 'post_test')->sole();
 
@@ -71,6 +70,29 @@ class CustomerServiceDealmakerSeederTest extends TestCase
                 $preTest->questions()->pluck('prompt')->intersect($postTest->questions()->pluck('prompt')),
             );
         }
+    }
+
+    public function test_module_six_assessment_seeder_restores_only_the_missing_module_assessments_without_duplication(): void
+    {
+        $this->seed(CustomerServiceDealmakerSeeder::class);
+
+        $course = Course::query()->where('code', 'CS-DEAL-001')->sole();
+        $module = $course->modules()->where('sequence', 6)->sole();
+        Assessment::query()->where('module_id', $module->id)->delete();
+
+        $this->assertSame(18, Assessment::query()->where('course_id', $course->id)->count());
+
+        $this->seed(ModuleSixAssessmentSeeder::class);
+        $this->seed(ModuleSixAssessmentSeeder::class);
+
+        $preTest = Assessment::query()->where('module_id', $module->id)->where('type', 'pre_test')->sole();
+        $postTest = Assessment::query()->where('module_id', $module->id)->where('type', 'post_test')->sole();
+
+        $this->assertSame(20, Assessment::query()->where('course_id', $course->id)->count());
+        $this->assertSame(10, $preTest->questions()->count());
+        $this->assertSame(10, $postTest->questions()->count());
+        $this->assertSame('Seorang santrikarya telah bekerja selama 14 bulan di PT Kotagede Jewellery dan berfokus pada pelayanan profesional mandiri serta penanganan komplain. Berada pada fase dan level apakah ia?', $postTest->questions()->orderBy('sequence')->value('prompt'));
+        $this->assertSame(1, $postTest->questions()->firstOrFail()->answers()->where('is_correct', true)->count());
     }
 
     public function test_it_does_not_change_an_assessment_with_attempt_history(): void

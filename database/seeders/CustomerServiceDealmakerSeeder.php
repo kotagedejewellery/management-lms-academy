@@ -79,6 +79,14 @@ class CustomerServiceDealmakerSeeder extends Seeder
         return $course;
     }
 
+    public function seedModuleSixAssessments(): void
+    {
+        $course = Course::query()->where('code', 'CS-DEAL-001')->firstOrFail();
+        $module = $course->modules()->where('sequence', 6)->firstOrFail();
+
+        $this->seedModuleAssessments($course, $module, 6);
+    }
+
     private function seedModuleAssessments(Course $course, CourseModule $module, int $moduleSequence): void
     {
         foreach ($this->assessmentQuestions()[$moduleSequence] ?? [] as $type => $questions) {
@@ -249,6 +257,32 @@ class CustomerServiceDealmakerSeeder extends Seeder
                     $this->q('Follow-up setelah kunjungan store tanpa closing dilakukan…', 'Materi menyarankan maksimal H+2 dengan informasi bernilai tambah.', 1, ['H+1 dengan diskon di luar kebijakan', 'Maksimal H+2 dengan informasi tambahan', 'Setelah satu minggu lalu hapus data', 'Broadcast setiap hari']),
                     $this->q('Tahap Confirm dalam A-C-A dicontohkan dengan…', 'Confirm memastikan keberatan utama customer sebelum menjawab.', 1, ['Saya paham harga penting', 'Selain harga, apakah model sudah sesuai?', 'Material ini tahan lama', 'Kompetitor memberi harga murah?']),
                     $this->q('Metrik keberhasilan dari total lead yang ditangani adalah…', 'Closing Rate mengukur persentase keberhasilan dari lead yang ditangani.', 2, ['Leads All ke Leads Serious', 'Basket Size', 'Closing Rate', 'Upselling Product Ratio']),
+                ],
+            ],
+            6 => [
+                'pre_test' => [
+                    $this->q('Jenjang karir Customer Service ditetapkan berdasarkan apa?', 'Jenjang karir didasarkan pada perkembangan posisi, kompetensi, tanggung jawab, dan kewenangan melalui evaluasi kinerja serta masa kerja.', 1, ['Target penjualan bulanan saja', 'Evaluasi kinerja dan masa kerja', 'Pilihan jabatan tanpa evaluasi', 'Lama mengikuti satu pelatihan']),
+                    $this->q('Posisi awal Customer Service Assistant berada pada fase dan masa kerja apa?', 'Customer Service Assistant merupakan posisi Magang pada Fase F1 dengan masa kerja 0 sampai 6 bulan.', 0, ['F1, 0–6 bulan', 'F1, 1–2 tahun', 'F2, 2–3 tahun', 'F3, lebih dari 5 tahun']),
+                    $this->q('Pada level Junior Customer Service, bentuk penanganan customer yang diharapkan adalah?', 'Junior Customer Service mulai menangani customer langsung dengan supervisi senior.', 2, ['Membuat kebijakan promosi perusahaan', 'Memimpin seluruh operasional tim', 'Menangani customer langsung dengan supervisi senior', 'Mengelola strategi regional']),
+                    $this->q('Kemampuan utama Customer Service Specialist adalah?', 'Customer Service Specialist memberikan pelayanan profesional dan menangani customer secara mandiri, termasuk complaint handling.', 3, ['Menyusun strategi regional', 'Menggantikan tugas HRD', 'Menetapkan kebijakan promosi', 'Menangani customer secara mandiri dan menyelesaikan keluhan']),
+                    $this->q('Customer Service Expert berada pada jenjang mana?', 'Customer Service Expert adalah Senior Lv.2 pada Fase F2 dengan masa kerja 2 sampai 3 tahun.', 1, ['Junior Lv.2 pada F1', 'Senior Lv.2 pada F2', 'Senior Lv.1 pada F3', 'Manager pada F4']),
+                    $this->q('Fokus utama Mentor Customer Service adalah?', 'Mentor resmi membina junior melalui coaching dan pengembangan kualitas pelayanan tim.', 0, ['Coaching dan pengembangan tim', 'Menjalankan seluruh administrasi HRD', 'Menghapus evaluasi kinerja', 'Menentukan promosi sendiri']),
+                    $this->q('Tanggung jawab utama Supervisor Customer Service adalah?', 'Supervisor mengawasi operasional tim, memantau performa, mengevaluasi tim, dan membuat pelaporan manajerial.', 2, ['Hanya menangani satu customer prioritas', 'Menyusun produk perhiasan', 'Mengawasi operasional, performa, evaluasi, dan pelaporan', 'Menggantikan seluruh peran mentor']),
+                    $this->q('Posisi strategis setelah lebih dari lima tahun dalam jenjang ini adalah?', 'Fase F4 menempatkan Manager Customer Service sebagai Head of Customer Service atau Regional Customer Service Manager.', 3, ['Customer Service Assistant', 'Junior Customer Service', 'Customer Service Expert', 'Manager Customer Service']),
+                    $this->q('Siapa yang melakukan evaluasi jenjang karir secara berkala?', 'Evaluasi jenjang karir dilakukan oleh HRD bersama atasan langsung.', 1, ['Customer sendiri', 'HRD dan atasan langsung', 'Mentor saja', 'Tim marketing saja']),
+                    $this->q('Promosi jabatan dapat dilakukan apabila santrikarya?', 'Promosi diberikan setelah seluruh syarat kompetensi dan evaluasi yang ditentukan perusahaan terpenuhi.', 2, ['Sudah bekerja satu bulan', 'Meminta promosi kepada rekan kerja', 'Memenuhi seluruh syarat kompetensi dan evaluasi', 'Hanya mencapai masa kerja minimum']),
+                ],
+                'post_test' => [
+                    $this->q('Seorang santrikarya telah bekerja selama 14 bulan di PT Kotagede Jewellery dan berfokus pada pelayanan profesional mandiri serta penanganan komplain. Berada pada fase dan level apakah ia?', 'Masa kerja 1 sampai 2 tahun dengan fokus pelayanan mandiri dan complaint handling adalah Fase F2, Junior Lv.1 atau Customer Service Specialist.', 1, ['Fase F1, Junior Lv.2', 'Fase F2, Junior Lv.1', 'Fase F2, Senior Lv.2', 'Fase F3, Mentor Customer Service']),
+                    $this->q('Apa perbedaan tanggung jawab Mentor Customer Service dan Supervisor Customer Service pada Fase F3?', 'Mentor membina dan mengembangkan tim; Supervisor mengawasi operasional, performa, evaluasi, dan pelaporan manajerial.', 2, ['Mentor fokus target individu, Supervisor hanya membuat laporan', 'Mentor mengawasi seluruh operasional, Supervisor hanya coaching junior', 'Mentor membina dan coaching tim, Supervisor mengawasi operasional serta pelaporan', 'Keduanya memiliki deskripsi kerja yang sama']),
+                    $this->q('Berapa kemandirian minimal dari supervisi senior yang perlu ditunjukkan Junior Customer Service?', 'Junior Customer Service perlu menunjukkan kemandirian minimal 60 persen dari supervisi.', 1, ['50%', '60%', '75%', '100%']),
+                    $this->q('Posisi manakah yang mulai wajib mengikuti training forecasting evaluasi performa tim dan manajemen konflik?', 'Kedua materi tersebut merupakan pengembangan untuk Mentor Customer Service.', 2, ['Customer Service Specialist', 'Customer Service Expert', 'Mentor Customer Service', 'Supervisor Customer Service']),
+                    $this->q('Syarat kenaikan Customer Service Specialist menuju Customer Service Expert yang tepat adalah?', 'Customer Service Specialist perlu mendapat penilaian pelayanan minimal baik selama tiga bulan berturut-turut.', 2, ['Mampu melakukan coaching resmi untuk junior', 'Mendapat feedback tim selama enam bulan', 'Penilaian pelayanan minimal baik selama tiga bulan berturut-turut', 'Menguasai forecasting dan pelaporan manajerial']),
+                    $this->q('Apa syarat kenaikan level bagi Supervisor Customer Service?', 'Supervisor perlu mencapai target pelayanan bersama tim, memimpin operasional, dan menghasilkan laporan manajerial yang akurat serta tepat waktu.', 2, ['Teruji membuat keputusan strategis dan mitigasi risiko', 'Mampu menyusun seluruh sistem pelayanan perusahaan', 'Tim mencapai target, operasional dipimpin baik, dan laporan akurat tepat waktu', 'Konsisten menjadi role model secara individu']),
+                    $this->q('Dua indikator utama penetapan jenjang karir menurut ketentuan umum adalah?', 'Definisi jenjang karir menyebut evaluasi kinerja dan masa kerja sebagai dasar perkembangan posisi.', 1, ['Kedisiplinan kerja dan budaya perusahaan', 'Evaluasi kinerja dan masa kerja', 'Target individu dan penilaian HRD', 'Lulus masa training dan probation']),
+                    $this->q('Materi manakah yang bukan training Customer Service Assistant?', 'Advanced communication skill dan analisis perilaku customer diberikan pada Customer Service Expert, bukan Customer Service Assistant.', 3, ['Product knowledge dan budaya perusahaan', 'Teknik komunikasi dan pelayanan pelanggan', 'Penggunaan sistem administrasi customer service', 'Advanced communication skill dan analisis perilaku customer']),
+                    $this->q('Siapa yang berwenang mengevaluasi jenjang karir santrikarya secara berkala?', 'Dokumen menetapkan HRD dan atasan langsung sebagai pihak yang melakukan evaluasi berkala.', 2, ['Hanya HRD', 'Head of Customer Service secara mandiri', 'HRD dan atasan langsung', 'Regional Customer Service Manager dan Mentor']),
+                    $this->q('Apa kebijakan perusahaan ketika masa kerja terpenuhi tetapi hasil evaluasi performa belum memenuhi standar?', 'Perusahaan dapat menunda promosi ketika hasil evaluasi belum memenuhi standar.', 1, ['Promosi tetap diberikan dengan pengulangan training', 'Promosi jabatan dapat ditunda', 'Santrikarya otomatis kembali ke Fase F1', 'Masa kerja dihapus dan dihitung ulang']),
                 ],
             ],
             7 => [

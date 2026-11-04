@@ -47,16 +47,16 @@ class LocalLearningCatalogResetSeederTest extends TestCase
         $this->assertSame(10, Lesson::query()->where('type', 'video')->count());
         $this->assertSame(0, Lesson::query()->where('type', 'presentation')->count());
         $this->assertDatabaseHas('lessons', ['type' => 'video', 'resource_url' => 'https://youtu.be/k1FO1xfwqHI']);
-        $this->assertSame(18, Assessment::query()->count());
-        $this->assertSame(180, Question::query()->count());
-        $this->assertSame(720, Answer::query()->count());
-        $this->assertSame(0, Assessment::query()->where('module_id', $course->modules()->where('sequence', 6)->valueOrFail('id'))->count());
+        $this->assertSame(20, Assessment::query()->count());
+        $this->assertSame(200, Question::query()->count());
+        $this->assertSame(800, Answer::query()->count());
+        $this->assertSame(2, Assessment::query()->where('module_id', $course->modules()->where('sequence', 6)->valueOrFail('id'))->count());
 
         $this->seed(LocalLearningCatalogResetSeeder::class);
 
         $this->assertSame($userCount, User::query()->count());
         $this->assertSame(1, Course::query()->count());
         $this->assertSame(10, Lesson::query()->count());
-        $this->assertSame(18, Assessment::query()->count());
+        $this->assertSame(20, Assessment::query()->count());
     }
 }

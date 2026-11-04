@@ -76,11 +76,21 @@ dc=(docker compose --env-file .env.production -f compose.production.yml)
 "${dc[@]}" exec -T app php artisan db:seed --class='Database\Seeders\ProductionCustomerServiceDealmakerRefreshSeeder' --force
 ```
 
-Perintah ini hanya mengganti materi dan assessment course `CS-DEAL-001`: 10 modul dengan satu video YouTube per modul, serta assessment native LMS pada Modul 1–5 dan 7–10. Setiap assessment memiliki lima soal Pre-Test (satu percobaan, tanpa nilai kelulusan) dan sepuluh soal Post-Test (tiga percobaan, nilai kelulusan 80). Modul 6 sengaja dilewati karena sumber soal belum tersedia.
+Perintah ini hanya mengganti materi dan assessment course `CS-DEAL-001`: 10 modul dengan satu video YouTube per modul, serta assessment native LMS pada seluruh Modul 1–10. Setiap assessment memiliki sepuluh soal Pre-Test (satu percobaan, tanpa nilai kelulusan) dan sepuluh soal Post-Test (tiga percobaan, nilai kelulusan 80).
 
 Seeder tidak membuat, menghapus, atau mengubah akun pengguna, role, organisasi, enrollment, trainer course, maupun learning path. Ia akan **membatalkan seluruh operasi** apabila course sudah memiliki progres lesson, attempt/draf/otorisasi ulang assessment, sertifikat, atau enrollment yang pernah dimulai/diselesaikan. Dalam keadaan itu, jangan memaksakan refresh; backup dan lakukan migrasi konten terencana agar riwayat learner tetap utuh.
 
 Seeder tetap dijalankan **secara eksplisit**, bukan pada setiap auto-deploy. Menjalankan perintah lebih dari sekali hanya relevan bila Anda memang ingin menyegarkan ulang katalog CS yang belum memiliki riwayat belajar peserta.
+
+#### Melengkapi assessment Modul 6 pada course yang sudah berjalan
+
+Untuk course `CS-DEAL-001` yang sudah memiliki riwayat belajar, jalankan perintah berikut **satu kali** setelah release. Seeder ini hanya membuat Pre-Test dan Post-Test Modul 6 bila assessment tersebut belum ada; ia tidak menghapus atau mengubah user, enrollment, progres lesson, attempt, maupun assessment modul lain.
+
+```sh
+cd /opt/apps/sistem-lms-academy/management-lms-academy
+dc=(docker compose --env-file .env.production -f compose.production.yml)
+"${dc[@]}" exec -T app php artisan db:seed --class='Database\Seeders\ModuleSixAssessmentSeeder' --force
+```
 
 #### Force refresh katalog CS
 

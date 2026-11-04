@@ -48,8 +48,8 @@ class ProductionCustomerServiceDealmakerRefreshSeederTest extends TestCase
         $this->assertSame(10, Lesson::query()->whereIn('module_id', $refreshedCourse->modules()->select('id'))->count());
         $this->assertSame(10, Lesson::query()->where('type', 'video')->count());
         $this->assertSame(0, Lesson::query()->where('type', 'presentation')->count());
-        $this->assertSame(18, Assessment::query()->where('course_id', $refreshedCourse->id)->count());
-        $this->assertSame(180, Question::query()->count());
+        $this->assertSame(20, Assessment::query()->where('course_id', $refreshedCourse->id)->count());
+        $this->assertSame(200, Question::query()->count());
     }
 
     public function test_it_refuses_to_replace_content_when_a_learner_has_assessment_history(): void
@@ -113,8 +113,8 @@ class ProductionCustomerServiceDealmakerRefreshSeederTest extends TestCase
         $this->assertDatabaseCount('lesson_progress', 0);
         $this->assertDatabaseCount('assessment_attempts', 0);
         $this->assertSame(10, Lesson::query()->whereIn('module_id', $course->modules()->select('id'))->count());
-        $this->assertSame(18, Assessment::query()->where('course_id', $course->id)->count());
-        $this->assertSame(180, Question::query()->count());
+        $this->assertSame(20, Assessment::query()->where('course_id', $course->id)->count());
+        $this->assertSame(200, Question::query()->count());
     }
 
     public function test_it_resets_operational_data_without_deleting_users_or_their_roles(): void
@@ -133,6 +133,6 @@ class ProductionCustomerServiceDealmakerRefreshSeederTest extends TestCase
         $this->assertDatabaseHas('user_roles', ['user_id' => $user->id, 'role_id' => $role->id]);
         $this->assertDatabaseCount('enrollments', 0);
         $this->assertSame(1, Course::query()->count());
-        $this->assertSame(180, Question::query()->count());
+        $this->assertSame(200, Question::query()->count());
     }
 }
