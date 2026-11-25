@@ -124,6 +124,31 @@ class UserImportTest extends TestCase
         $this->assertSame('Manager harus aktif dan berada pada divisi yang sama.', $import->fresh()->errors[1]['message']);
     }
 
+    public function test_import_skips_an_employee_when_their_manager_is_not_designated(): void
+    {
+        config()->set('imports.initial_password', 'InitialPass123!');
+        Storage::fake('s3');
+        config(['filesystems.default' => 's3']);
+        Queue::fake();
+        $admin = $this->userWithPermission('manage-users');
+        Role::query()->create(['slug' => 'employee', 'name' => 'Employee']);
+        $sales = Division::query()->create(['code' => 'SLS', 'name' => 'Sales']);
+        User::factory()->create([
+            'employee_id' => 'KGJ-STAFF',
+            'division_id' => $sales->id,
+            'status' => 'active',
+        ]);
+        $file = UploadedFile::fake()->createWithContent('employees.csv', "employee_id,name,email,division_code,manager_employee_id\nKGJ-002,Employee Two,two@example.test,{$sales->code},KGJ-STAFF\n");
+
+        $this->actingAs($admin)->post(route('user-imports.store'), ['file' => $file])->assertRedirect(route('user-imports.index'));
+        $import = UserImport::query()->sole();
+        (new ProcessUserImport($import->id))->handle();
+
+        $this->assertDatabaseMissing('users', ['employee_id' => 'KGJ-002']);
+        $this->assertSame(1, $import->fresh()->skipped_rows);
+        $this->assertSame('Akun yang dipilih belum ditetapkan sebagai Atasan.', $import->fresh()->errors[0]['message']);
+    }
+
     public function test_xlsx_import_processes_rows_across_the_chunk_boundary(): void
     {
         config()->set('imports.initial_password', 'InitialPass123!');

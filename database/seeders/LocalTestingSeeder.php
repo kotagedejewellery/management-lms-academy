@@ -98,7 +98,7 @@ class LocalTestingSeeder extends Seeder
         ], $password, $now);
         $manager = $this->upsertUser($roles['employee'], [
             'employee_id' => 'KGJ-010', 'name' => 'Dewi Kurniasari', 'email' => 'manager@kgj.test', 'phone' => '081200000010',
-            'division_id' => $divisions['SLS']->id, 'position_id' => $positions['senior_sales']->id, 'branch_id' => $branches['KGJ-MRB']->id, 'status' => 'active',
+            'division_id' => $divisions['SLS']->id, 'position_id' => $positions['senior_sales']->id, 'branch_id' => $branches['KGJ-MRB']->id, 'is_organization_manager' => true, 'status' => 'active',
         ], $password, $now);
         $anisa = $this->upsertUser($roles['employee'], [
             'employee_id' => 'KGJ-101', 'name' => 'Anisa Putri', 'email' => 'anisa@kgj.test', 'phone' => '081200000101',

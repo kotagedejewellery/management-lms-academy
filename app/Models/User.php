@@ -31,9 +31,10 @@ use Illuminate\Support\Facades\Cache;
  * @property int|null $position_id
  * @property int|null $branch_id
  * @property int|null $manager_id
+ * @property bool $is_organization_manager
  * @property string $status
  */
-#[Fillable(['employee_id', 'hired_at', 'name', 'email', 'phone', 'password', 'division_id', 'position_id', 'branch_id', 'manager_id', 'status'])]
+#[Fillable(['employee_id', 'hired_at', 'name', 'email', 'phone', 'password', 'division_id', 'position_id', 'branch_id', 'manager_id', 'is_organization_manager', 'status'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -50,6 +51,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'hired_at' => 'date',
+            'is_organization_manager' => 'boolean',
             'password' => 'hashed',
         ];
     }

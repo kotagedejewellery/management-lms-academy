@@ -1,7 +1,7 @@
 # Graph Report - KGJ-lms-academy  (2026-11-25)
 
 ## Corpus Check
-- 462 files · ~124,071 words
+- 462 files · ~124,097 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 28 file(s) not represented in the graph (top: (none) 18, .example 3, .conf 1)
 
@@ -739,11 +739,11 @@ Nodes (4): vue-sonner, markingId, Notification, props
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `User` connect `User` to `DashboardResolver.php`, `Course`, `Lesson`, `Division`, `Chisel`, `PasswordValidationRules`, `Inertia\Testing\AssertableInertia`, `LearningController.php`, `CourseController.php`, `Role`, `web.php`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `GenerateReportExport.php`, `Enrollment`, `Illuminate\Database\Eloquent\Relations\HasMany`, `CourseManagementTest`, `CourseModule`, `LocalTestingSeeder.php`, `UserNotification`, `UserImport`, `ReportController.php`, `Inertia\Inertia`, `UserController.php`, `ProcessUserImport.php`, `Illuminate\Database\Eloquent\Model`, `RoleAccessContractTest`, `Illuminate\Http\Request`, `LessonResourceTest`, `.seed`, `LearningPathAssignment`, `Position`, `Assessment`, `LearningPath`, `.handle`, `User.php`?**
-  _High betweenness centrality (0.068) - this node is a cross-community bridge._
+  _High betweenness centrality (0.067) - this node is a cross-community bridge._
 - **Why does `Course` connect `Course` to `User`, `DashboardResolver.php`, `Lesson`, `Inertia\Testing\AssertableInertia`, `LearningController.php`, `CourseController.php`, `Role`, `web.php`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `Enrollment`, `Illuminate\Http\RedirectResponse`, `Illuminate\Database\Eloquent\Relations\HasMany`, `CourseManagementTest`, `CourseModule`, `LocalTestingSeeder.php`, `ReportController.php`, `Inertia\Response`, `Inertia\Inertia`, `Illuminate\Database\Eloquent\Model`, `RoleAccessContractTest`, `Illuminate\Http\Request`, `LessonResourceTest`, `.seed`, `LearningFlowTest`, `CourseLibraryController.php`, `Assessment`, `LearningPath`, `TrainerProgressController.php`?**
-  _High betweenness centrality (0.044) - this node is a cross-community bridge._
+  _High betweenness centrality (0.043) - this node is a cross-community bridge._
 - **Why does `vue` connect `vue` to `Checkbox.vue`, `Profile.vue`, `@lucide/vue`, `Separator.vue`, `SelectContent.vue`, `reka-ui`, `learning-path-assignments/Index.vue`, `Layout.vue`, `@vueuse/core`, `learning-paths/Content.vue`, `Show.vue`, `dialog/index.ts`, `Assessment.vue`, `reports/Index.vue`, `Assessments.vue`, `trainer-progress/Index.vue`, `useAppearance.ts`, `sidebar/index.ts`, `courses/Content.vue`, `package.json`, `courses/Form.vue`, `sheet/index.ts`, `AppSidebar.vue`, `types/index.ts`, `notifications/Index.vue`, `@inertiajs/vue3`, `AssigneePicker.vue`, `LearningLessonNavigator.vue`, `AppHeader.vue`, `TooltipContent.vue`, `useCurrentUrl.ts`, `NavUser.vue`, `global.d.ts`, `users/Form.vue`, `SheetContent.vue`, `AvatarFallback.vue`, `SidebarMenuSkeleton.vue`, `announcements/Index.vue`, `Badge.vue`, `Import.vue`?**
-  _High betweenness centrality (0.038) - this node is a cross-community bridge._
+  _High betweenness centrality (0.037) - this node is a cross-community bridge._
 - **What connects `$schema`, `style`, `config` to the rest of the system?**
   _791 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `User` be split into smaller, more focused modules?**

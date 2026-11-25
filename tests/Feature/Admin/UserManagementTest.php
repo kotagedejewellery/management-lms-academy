@@ -90,7 +90,7 @@ class UserManagementTest extends TestCase
         ])->assertSessionHasErrors('position_id');
     }
 
-    public function test_manager_options_only_include_active_users_from_the_selected_organization(): void
+    public function test_manager_options_only_include_active_designated_managers_from_the_selected_division(): void
     {
         $admin = $this->userWithPermission('manage-users');
         $sales = Division::query()->create(['code' => 'SLS', 'name' => 'Sales']);
@@ -103,6 +103,12 @@ class UserManagementTest extends TestCase
             'employee_id' => 'KGJ-010',
             'division_id' => $sales->id,
             'branch_id' => $central->id,
+            'is_organization_manager' => true,
+            'status' => 'active',
+        ]);
+        User::factory()->create([
+            'name' => 'Sales Staff',
+            'division_id' => $sales->id,
             'status' => 'active',
         ]);
         User::factory()->create([
@@ -173,6 +179,7 @@ class UserManagementTest extends TestCase
         $manager = User::factory()->create([
             'division_id' => $sales->id,
             'branch_id' => $central->id,
+            'is_organization_manager' => true,
             'status' => 'active',
         ]);
 
@@ -194,15 +201,35 @@ class UserManagementTest extends TestCase
         ]);
     }
 
+    public function test_user_cannot_be_assigned_an_active_colleague_who_is_not_designated_as_a_manager(): void
+    {
+        $admin = $this->userWithPermission('manage-users');
+        $employeeRole = Role::query()->create(['slug' => 'employee', 'name' => 'Employee / Learner']);
+        $sales = Division::query()->create(['code' => 'SLS', 'name' => 'Sales']);
+        $staff = User::factory()->create(['division_id' => $sales->id, 'status' => 'active']);
+
+        $this->actingAs($admin)->post(route('users.store'), [
+            'name' => 'Sales Employee',
+            'email' => 'sales.employee@example.test',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'role_id' => $employeeRole->id,
+            'division_id' => $sales->id,
+            'manager_id' => $staff->id,
+            'status' => 'active',
+        ])->assertSessionHasErrors('manager_id');
+    }
+
     public function test_user_cannot_be_assigned_a_direct_report_as_manager(): void
     {
         $admin = $this->userWithPermission('manage-users');
         $employeeRole = Role::query()->create(['slug' => 'employee', 'name' => 'Employee / Learner']);
         $sales = Division::query()->create(['code' => 'SLS', 'name' => 'Sales']);
-        $manager = User::factory()->create(['division_id' => $sales->id, 'status' => 'active']);
+        $manager = User::factory()->create(['division_id' => $sales->id, 'is_organization_manager' => true, 'status' => 'active']);
         $directReport = User::factory()->create([
             'division_id' => $sales->id,
             'manager_id' => $manager->id,
+            'is_organization_manager' => true,
             'status' => 'active',
         ]);
 
@@ -224,7 +251,7 @@ class UserManagementTest extends TestCase
         $employeeRole = Role::query()->create(['slug' => 'employee', 'name' => 'Employee / Learner']);
         $sales = Division::query()->create(['code' => 'SLS', 'name' => 'Sales']);
         $operations = Division::query()->create(['code' => 'OPS', 'name' => 'Operations']);
-        $manager = User::factory()->create(['division_id' => $sales->id, 'status' => 'active']);
+        $manager = User::factory()->create(['division_id' => $sales->id, 'is_organization_manager' => true, 'status' => 'active']);
         User::factory()->create(['division_id' => $sales->id, 'manager_id' => $manager->id, 'status' => 'active']);
 
         $payload = [
@@ -245,6 +272,12 @@ class UserManagementTest extends TestCase
 
         $this->actingAs($admin)->put(route('users.update', $manager), $payload)
             ->assertSessionHasErrors('division_id');
+
+        $payload['division_id'] = $sales->id;
+        $payload['is_organization_manager'] = false;
+
+        $this->actingAs($admin)->put(route('users.update', $manager), $payload)
+            ->assertSessionHasErrors('is_organization_manager');
     }
 
     private function userWithPermission(string $permission): User

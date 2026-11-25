@@ -7,6 +7,7 @@ import InputError from '@/components/InputError.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import { useUnsavedChangesGuard } from '@/composables/useUnsavedChangesGuard';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -24,6 +25,7 @@ type ManagedUser = {
     name: string;
     email: string;
     phone: string | null;
+    is_organization_manager: boolean;
     status: 'active' | 'inactive';
     role: Option | null;
     division: Option | null;
@@ -54,6 +56,7 @@ const form = useForm({
     position_id: props.user?.position?.id?.toString() ?? '',
     branch_id: props.user?.branch?.id?.toString() ?? '',
     manager_id: props.user?.manager?.id?.toString() ?? '',
+    is_organization_manager: props.user?.is_organization_manager ?? false,
     status: props.user?.status ?? 'active',
 });
 const managers = ref<Option[]>([]);
@@ -412,6 +415,32 @@ function submit(): void {
                             </button>
                         </p>
                         <InputError :message="form.errors.manager_id" />
+                    </div>
+                    <div class="grid gap-2 sm:col-span-2">
+                        <Label for="is_organization_manager"
+                            >Dapat dipilih sebagai Atasan</Label
+                        >
+                        <label
+                            class="flex min-h-9 w-fit cursor-pointer items-center gap-3 rounded-md px-1 text-sm text-foreground"
+                            for="is_organization_manager"
+                        >
+                            <Checkbox
+                                id="is_organization_manager"
+                                :model-value="form.is_organization_manager"
+                                @update:model-value="
+                                    form.is_organization_manager =
+                                        $event === true
+                                "
+                            />
+                            Izinkan akun ini dipilih sebagai atasan langsung.
+                        </label>
+                        <p class="text-xs text-muted-foreground">
+                            Hanya akun aktif pada divisi yang sama dan ditandai
+                            sebagai Atasan yang muncul pada pilihan atasan.
+                        </p>
+                        <InputError
+                            :message="form.errors.is_organization_manager"
+                        />
                     </div>
                 </div>
             </section>

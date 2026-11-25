@@ -13,6 +13,7 @@ class ManagerRelationshipService
         return User::query()
             ->where('status', 'active')
             ->where('division_id', $divisionId)
+            ->where('is_organization_manager', true)
             ->when($exclude, fn ($query) => $query->whereNotIn('id', $this->exclusionIds($exclude)))
             ->orderBy('name')
             ->get(['id', 'employee_id', 'name']);
@@ -32,6 +33,10 @@ class ManagerRelationshipService
 
         if (! $manager || $manager->status !== 'active' || $manager->division_id !== $divisionId) {
             return 'Manager harus aktif dan berada pada divisi yang sama.';
+        }
+
+        if (! $manager->is_organization_manager) {
+            return 'Akun yang dipilih belum ditetapkan sebagai Atasan.';
         }
 
         if (! $user) {

@@ -32,7 +32,7 @@ class UserController extends Controller
         ]);
 
         $users = User::query()
-            ->select(['id', 'employee_id', 'hired_at', 'name', 'email', 'phone', 'division_id', 'position_id', 'branch_id', 'manager_id', 'status'])
+            ->select(['id', 'employee_id', 'hired_at', 'name', 'email', 'phone', 'division_id', 'position_id', 'branch_id', 'manager_id', 'is_organization_manager', 'status'])
             ->with([
                 'roles:id,slug,name',
                 'division:id,name',
@@ -167,8 +167,11 @@ class UserController extends Controller
             'position_id' => ['nullable', 'integer', Rule::exists('positions', 'id')],
             'branch_id' => ['nullable', 'integer', Rule::exists('branches', 'id')],
             'manager_id' => ['nullable', 'integer', Rule::exists('users', 'id')->where('status', 'active')],
+            'is_organization_manager' => ['nullable', 'boolean'],
             'status' => ['required', Rule::in(['active', 'inactive'])],
         ]);
+
+        $data['is_organization_manager'] = $request->boolean('is_organization_manager');
 
         if ($data['position_id'] ?? null) {
             $positionMatchesDivision = ($data['division_id'] ?? null)
@@ -232,6 +235,10 @@ class UserController extends Controller
         if ($user->division_id !== $data['division_id']) {
             throw ValidationException::withMessages(['division_id' => 'Pindahkan bawahan ke manager lain sebelum mengubah divisi akun ini.']);
         }
+
+        if (! $data['is_organization_manager']) {
+            throw ValidationException::withMessages(['is_organization_manager' => 'Pindahkan bawahan ke manager lain sebelum mencabut status Atasan.']);
+        }
     }
 
     /** @return array<string, mixed> */
@@ -244,6 +251,7 @@ class UserController extends Controller
             'name' => $user->name,
             'email' => $user->email,
             'phone' => $user->phone,
+            'is_organization_manager' => $user->is_organization_manager,
             'status' => $user->status,
             'role' => $user->roles->first()?->only(['id', 'slug', 'name']),
             'division' => $user->division?->only(['id', 'name']),

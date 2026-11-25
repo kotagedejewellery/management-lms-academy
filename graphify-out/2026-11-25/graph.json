@@ -13280,7 +13280,7 @@
       "file_type": "code",
       "norm_label": ".test_xlsx_import_processes_rows_across_the_chunk_boundary()",
       "source_file": "tests/Feature/UserImportTest.php",
-      "source_location": "L120"
+      "source_location": "L127"
     },
     {
       "id": "tests_feature_userimporttest_userimporttest_test_xlsx_import_rejects_a_workbook_with_more_than_five_thousand_data_rows",
@@ -13292,7 +13292,7 @@
       "file_type": "code",
       "norm_label": ".test_xlsx_import_rejects_a_workbook_with_more_than_five_thousand_data_rows()",
       "source_file": "tests/Feature/UserImportTest.php",
-      "source_location": "L147"
+      "source_location": "L154"
     },
     {
       "id": "tests_feature_userimporttest_userimporttest_userwithpermission",
@@ -13304,7 +13304,7 @@
       "file_type": "code",
       "norm_label": ".userwithpermission()",
       "source_file": "tests/Feature/UserImportTest.php",
-      "source_location": "L182"
+      "source_location": "L189"
     },
     {
       "id": "resources_js_composables_useappearance_getstoredappearance",
@@ -46857,7 +46857,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/Feature/UserImportTest.php",
-      "source_location": "L112",
+      "source_location": "L117",
       "weight": 1.0
     },
     {
@@ -46869,7 +46869,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/Feature/UserImportTest.php",
-      "source_location": "L126",
+      "source_location": "L133",
       "weight": 1.0
     },
     {
@@ -46881,7 +46881,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/Feature/UserImportTest.php",
-      "source_location": "L127",
+      "source_location": "L134",
       "weight": 1.0
     },
     {
@@ -46893,7 +46893,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/Feature/UserImportTest.php",
-      "source_location": "L141",
+      "source_location": "L148",
       "weight": 1.0
     },
     {
@@ -46905,7 +46905,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/Feature/UserImportTest.php",
-      "source_location": "L152",
+      "source_location": "L159",
       "weight": 1.0
     },
     {
@@ -46917,7 +46917,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/Feature/UserImportTest.php",
-      "source_location": "L153",
+      "source_location": "L160",
       "weight": 1.0
     },
     {
@@ -46929,7 +46929,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/Feature/UserImportTest.php",
-      "source_location": "L184",
+      "source_location": "L191",
       "weight": 1.0
     },
     {
@@ -46941,7 +46941,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/Feature/UserImportTest.php",
-      "source_location": "L185",
+      "source_location": "L192",
       "weight": 1.0
     },
     {
@@ -87256,7 +87256,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "tests/Feature/UserImportTest.php",
-      "source_location": "L182",
+      "source_location": "L189",
       "weight": 1.0
     },
     {
@@ -113381,7 +113381,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/UserImportTest.php",
-      "source_location": "L120",
+      "source_location": "L127",
       "weight": 1.0
     },
     {
@@ -113392,7 +113392,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/UserImportTest.php",
-      "source_location": "L147",
+      "source_location": "L154",
       "weight": 1.0
     },
     {
@@ -113403,7 +113403,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/Feature/UserImportTest.php",
-      "source_location": "L182",
+      "source_location": "L189",
       "weight": 1.0
     },
     {

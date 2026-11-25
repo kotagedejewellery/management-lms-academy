@@ -39,6 +39,7 @@ Role operasional yang didukung adalah `super-admin`, `lms-admin`, `trainer`, dan
 ## 3. Constraint penting
 
 - `users.employee_id` dan `users.email` unique sesuai kebijakan akun.
+- `users.is_organization_manager` menentukan kelayakan akun aktif pada divisi yang sama untuk dipilih sebagai `manager_id`; migrasi mengaktifkan flag ini untuk seluruh atasan yang telah memiliki bawahan agar relasi yang ada tetap utuh.
 - `enrollments`: unique `(user_id, course_id)`; jangan mengizinkan enrollment course ganda.
 - `lesson_progress`: unique `(enrollment_id, lesson_id)`.
 - Progress course tidak memiliki tabel terpisah: agregasi `lesson_progress` menunjukkan penyelesaian lesson, sedangkan `enrollments.status` dan `enrollments.completed_at` mencatat penyelesaian course.

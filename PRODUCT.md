@@ -12,7 +12,7 @@ Delegated and accepted: Laravel 13 with PHP 8.4+, Inertia.js 3, Vue 3 with TypeS
 
 ## Users
 
-Employees learn assigned material and complete Pre-Test and Post-Test. LMS Admin/HR manages people, content, paths, assignments, reports, and final internal evaluation. Trainers manage assigned courses, assessments, and read-only learner progress for those courses. Super Admin has all LMS Admin capabilities plus audit access. Each account has one operational role in supported administration flows; Trainer accounts use the operational area and do not access learner flows. A user's organizational manager remains profile data, not an application role: it must be an active account in the same division; cross-branch reporting is allowed. Self-references and reporting cycles are not allowed.
+Employees learn assigned material and complete Pre-Test and Post-Test. LMS Admin/HR manages people, content, paths, assignments, reports, and final internal evaluation. Trainers manage assigned courses, assessments, and read-only learner progress for those courses. Super Admin has all LMS Admin capabilities plus audit access. Each account has one operational role in supported administration flows; Trainer accounts use the operational area and do not access learner flows. A user's organizational manager remains profile data, not an application role: it must be an active account in the same division that an administrator has explicitly marked as eligible to become an Atasan; cross-branch reporting is allowed. Self-references and reporting cycles are not allowed.
 
 ## Product Purpose
 
