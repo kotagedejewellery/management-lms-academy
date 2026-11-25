@@ -11,7 +11,6 @@ const props = defineProps<{
     divisions: Option[];
     positions: Option[];
     branches: Option[];
-    managers: Option[];
 }>();
 
 defineOptions({

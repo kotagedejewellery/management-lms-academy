@@ -13,6 +13,7 @@ type ManagedUser = {
     name: string;
     email: string;
     phone: string | null;
+    is_organization_manager: boolean;
     status: 'active' | 'inactive';
     role: Option | null;
     division: Option | null;
@@ -26,7 +27,6 @@ const props = defineProps<{
     divisions: Option[];
     positions: Option[];
     branches: Option[];
-    managers: Option[];
 }>();
 
 defineOptions({
