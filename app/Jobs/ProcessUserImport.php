@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\UserImport;
 use App\Services\LearningPathAssignmentService;
+use App\Services\ManagerRelationshipService;
 use App\Support\SpreadsheetChunkReadFilter;
 use Carbon\Carbon;
 use Generator;
@@ -154,6 +155,7 @@ class ProcessUserImport implements ShouldQueue
             $message ??= blank($positionName) || $position ? null : 'Jabatan tidak ditemukan pada divisi yang dipilih.';
             $managerId = blank($data['manager_employee_id'] ?? '') ? null : ($managerIds[$data['manager_employee_id']] ?? null);
             $message ??= blank($data['manager_employee_id'] ?? '') || $managerId ? null : 'Manager harus sudah terdaftar sebelum impor.';
+            $message ??= app(ManagerRelationshipService::class)->validationMessage($managerId, $division?->id);
 
             if ($message) {
                 $skipped++;

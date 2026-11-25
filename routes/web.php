@@ -103,6 +103,7 @@ Route::middleware(['auth', 'verified', 'active', 'audit'])->group(function () {
     Route::get('organization/{type}', [OrganizationController::class, 'index'])->name('organization.index');
     Route::post('organization/{type}', [OrganizationController::class, 'store'])->name('organization.store');
     Route::put('organization/{type}/{record}', [OrganizationController::class, 'update'])->name('organization.update');
+    Route::get('users/manager-options', [UserController::class, 'managerOptions'])->name('users.manager-options');
     Route::resource('users', UserController::class)->except('show', 'destroy');
     Route::get('user-imports/template', [UserImportController::class, 'template'])->name('user-imports.template');
     Route::get('user-imports', [UserImportController::class, 'index'])->name('user-imports.index');

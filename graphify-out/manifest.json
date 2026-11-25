@@ -1,14 +1,14 @@
 {
   "DESIGN.md": {
-    "mtime": 1793689386.4675014,
-    "seen": 1793689415.1998742,
-    "ast_hash": "20a9547810d9010b243062d52ecc8bea",
+    "mtime": 1795592272.3739667,
+    "seen": 1795592597.5420203,
+    "ast_hash": "587bfff9e8c0804dec85bc4691f35581",
     "semantic_hash": ""
   },
   "PRODUCT.md": {
-    "mtime": 1793689385.7157202,
-    "seen": 1793689415.1998777,
-    "ast_hash": "b764ef69bc545a0dcf247bd74ec6733f",
+    "mtime": 1795592270.4755363,
+    "seen": 1795592597.5420268,
+    "ast_hash": "ae3d050d0f39ca39e7ea5e0bdd015885",
     "semantic_hash": ""
   },
   "docker-compose.yml": {
@@ -24,9 +24,9 @@
     "semantic_hash": ""
   },
   "docs/PRD.md": {
-    "mtime": 1793689211.0183694,
-    "seen": 1793689345.2430687,
-    "ast_hash": "4cf35b2d045eb9a967cd14b9c7d8f64d",
+    "mtime": 1795592271.2506118,
+    "seen": 1795592597.5420556,
+    "ast_hash": "91634c4c93b5a416f20df6355db7c812",
     "semantic_hash": ""
   },
   "docs/SYSTEM_ARCHITECTURE.md": {
@@ -1422,9 +1422,9 @@
     "semantic_hash": ""
   },
   "routes/web.php": {
-    "mtime": 1793325229.2438731,
-    "seen": 1793325665.806724,
-    "ast_hash": "6c4348df93c99874d2d271c328fc5ff5",
+    "mtime": 1795590215.864577,
+    "seen": 1795590751.7106395,
+    "ast_hash": "a5b161485f1febd0625686a9b6fb1e86",
     "semantic_hash": ""
   },
   "tests/Feature/Auth/AuthenticationTest.php": {
@@ -1554,9 +1554,9 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/UserController.php": {
-    "mtime": 1792390674.547621,
-    "seen": 1792391191.8803217,
-    "ast_hash": "741bc87b3eeada282e0a739203bc10f6",
+    "mtime": 1795592502.1964045,
+    "seen": 1795592597.5398293,
+    "ast_hash": "378d8739d6c40cd43f197d917ef3a7b1",
     "semantic_hash": ""
   },
   "app/Http/Middleware/EnsureActiveAccount.php": {
@@ -1626,9 +1626,9 @@
     "semantic_hash": ""
   },
   "tests/Feature/Admin/UserManagementTest.php": {
-    "mtime": 1793322848.7065108,
-    "seen": 1793323641.8205612,
-    "ast_hash": "776b32f8081b0a060731f043a2c5ef7f",
+    "mtime": 1795592503.0770397,
+    "seen": 1795592597.541879,
+    "ast_hash": "9e22ee9cd82d910ea39833542f687829",
     "semantic_hash": ""
   },
   "resources/js/pages/admin/users/Create.vue": {
@@ -1644,9 +1644,9 @@
     "semantic_hash": ""
   },
   "resources/js/pages/admin/users/Form.vue": {
-    "mtime": 1792143154.750528,
-    "seen": 1792143687.5882034,
-    "ast_hash": "b66b6dd53d6e7305d9ec6e78b9584038",
+    "mtime": 1795592282.1374161,
+    "seen": 1795592597.5417318,
+    "ast_hash": "f7cc773e231bc38d09b678210f97836e",
     "semantic_hash": ""
   },
   "resources/js/pages/admin/users/Index.vue": {
@@ -2232,9 +2232,9 @@
     "semantic_hash": ""
   },
   "app/Jobs/ProcessUserImport.php": {
-    "mtime": 1792390675.7918122,
-    "seen": 1792391191.880434,
-    "ast_hash": "0f7d7946056372af2a8a806ae9957ddf",
+    "mtime": 1795592199.1562793,
+    "seen": 1795592597.5399356,
+    "ast_hash": "f483783b75f1a1f31c2a0fe9f84367ff",
     "semantic_hash": ""
   },
   "app/Models/UserImport.php": {
@@ -2262,9 +2262,9 @@
     "semantic_hash": ""
   },
   "tests/Feature/UserImportTest.php": {
-    "mtime": 1792466488.5958898,
-    "seen": 1792466744.3858864,
-    "ast_hash": "9b0f2ff862679ae885a1408cd204008d",
+    "mtime": 1795592640.581455,
+    "seen": 1795592679.967804,
+    "ast_hash": "ec77673313c7c16161ce042a913250a3",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_12_000016_add_timing_to_assessments.php": {
@@ -2706,9 +2706,9 @@
     "semantic_hash": ""
   },
   "docs/ASSESSMENT_SEEDER_SOURCE_AUDIT.md": {
-    "mtime": 1793765197.755175,
-    "seen": 1793765325.8582442,
-    "ast_hash": "e7d5277c08a16801d33fa5b150b968ed",
+    "mtime": 1793765446.3161137,
+    "seen": 1795160052.6277108,
+    "ast_hash": "1777c42ad5dd6edb71dc0e29d5a05e2a",
     "semantic_hash": ""
   },
   "app/Http/Controllers/AssessmentRetakeAuthorizationController.php": {
@@ -2829,6 +2829,12 @@
     "mtime": 1793764828.381302,
     "seen": 1793765325.857561,
     "ast_hash": "4fe54aa120082fcd0d524db3f72d2d11",
+    "semantic_hash": ""
+  },
+  "app/Services/ManagerRelationshipService.php": {
+    "mtime": 1795592196.0948272,
+    "seen": 1795592597.5403266,
+    "ast_hash": "5d2673a90d20de785295934459f030c3",
     "semantic_hash": ""
   }
 }

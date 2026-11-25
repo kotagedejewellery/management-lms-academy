@@ -2,7 +2,7 @@
 
 ## 1. Arah yang mengikat
 
-Mode produk adalah **Operate**: employee menyelesaikan pembelajaran, sedangkan Admin/Manager mengelola dan memantau. Rujukan visual yang disetujui adalah visual board dalam brief KGJ Academy, bukan template dashboard generik.
+Mode produk adalah **Operate**: Employee menyelesaikan pembelajaran, sedangkan Super Admin dan LMS Admin mengelola serta memantau. Rujukan visual yang disetujui adalah visual board dalam brief KGJ Academy, bukan template dashboard generik.
 
 - Identitas: hitam, putih/off-white, gold sebagai aksen terukur; tidak memakai gold sebagai warna teks kecil berkontras rendah.
 - Karakter: modern, tenang, presisi, card bersih, negative space cukup, citra jewellery hanya sebagai konten/hero yang bermakna.
@@ -22,15 +22,11 @@ Dashboard; My Learning; Learning Paths; Course Library; Pre-Test & Post-Test; My
 
 Dashboard; Course binaan; Progres peserta; Notifikasi. Trainer menggunakan akun operasional terpisah dari akun Employee/Learner.
 
-### Management / Owner
-
-Dashboard; Progres peserta; Laporan; Notifikasi. Management menggunakan area evaluasi internal dan tidak melihat navigasi learner.
-
-### Admin/Manager
+### Super Admin / LMS Admin
 
 Dashboard; Users; Divisions; Positions; Branches; Courses; Modules & Lessons; Learning Path Builder; Pre-Test Builder; Post-Test Builder; Enrollment; Reports; Notifications; Settings.
 
-Manager melihat subset menu/data sesuai policy, termasuk CTA pembelajaran pribadi pada Dashboard bila memiliki assignment aktif. Navigation tidak menggantikan authorization server-side.
+Relasi atasan organisasi tidak memberi akses aplikasi. Navigation tidak menggantikan authorization server-side.
 
 ## 3. Layar minimum dan responsif
 
@@ -50,7 +46,7 @@ Target desain diuji pada lebar 390px, 768px, 1024px, dan 1440px. Layout bersifat
 
 `AppShell`, `Sidebar`, `MobileNav`, `Topbar`, `PageHeader`, `MetricCard`, `ProgressBar`, `StatusBadge`, `CourseCard`, `LearningPathStep`, `LessonList`, `AssessmentQuestion`, `TestProgress`, `ResultSummary`, `FilterBar`, `DataTable`, `Pagination`, `EmptyState`, `ErrorState`, `ConfirmDialog`, dan `Toast`.
 
-Pada course builder, formulir lesson membedakan sumber `Unggah file` dan `Gunakan URL`; label wajib menyatakan tipe serta batas file. Modul, lesson, dan soal assessment baru ditempatkan otomatis di akhir daftar; ubah posisinya melalui aksi Naik/Turun yang berlabel dan nonaktif di batas daftar, bukan dengan input nomor manual. Presentasi Canva memakai tautan view-only atau embed dan menjelaskan bahwa tautan editor tidak dapat digunakan; learner mendapat preview serta tautan buka di Canva sebagai fallback. Thumbnail course dapat diganti atau dihapus sebelum disimpan; pesan validasinya menjelaskan tindakan pemulihan, bukan nama rule teknis. Pesan error form terhubung ke kontrol yang bermasalah, diumumkan kepada pembaca layar, dan memfokuskan error pertama. Pemilihan Trainer / Mentor menampilkan akun aktif ber-role tersebut sebagai control pilihan yang jelas; jika kosong, arahkan Admin ke pengelolaan pengguna. Lesson yang ada dapat diubah atau mengganti file dari aksi yang dapat diakses keyboard. Saat course bukan Draft, tampilkan status read-only beserta arahan untuk kembali ke Draft, bukan formulir yang tampak dapat disimpan.
+Pada course builder, formulir lesson membedakan sumber `Unggah file` dan `Gunakan URL`; label wajib menyatakan tipe serta batas file. Modul, lesson, dan soal assessment baru ditempatkan otomatis di akhir daftar; ubah posisinya melalui aksi Naik/Turun yang berlabel dan nonaktif di batas daftar, bukan dengan input nomor manual. Presentasi Canva memakai tautan view-only atau embed dan menjelaskan bahwa tautan editor tidak dapat digunakan; learner mendapat preview serta tautan buka di Canva sebagai fallback. Thumbnail course dapat diganti atau dihapus sebelum disimpan; pesan validasinya menjelaskan tindakan pemulihan, bukan nama rule teknis. Pesan error form terhubung ke kontrol yang bermasalah, diumumkan kepada pembaca layar, dan memfokuskan error pertama. Pemilihan Trainer / Mentor menampilkan akun aktif ber-role tersebut sebagai control pilihan yang jelas; jika kosong, arahkan Admin ke pengelolaan pengguna. Pada form user, Atasan langsung hanya aktif setelah divisi dipilih dan hanya menawarkan akun aktif pada divisi yang sama; pelaporan lintas cabang tetap valid. Password dan konfirmasinya memiliki control tampil/sembunyikan yang berlabel. Lesson yang ada dapat diubah atau mengganti file dari aksi yang dapat diakses keyboard. Saat course bukan Draft, tampilkan status read-only beserta arahan untuk kembali ke Draft, bukan formulir yang tampak dapat disimpan.
 
 Setiap status internal memiliki teks dan icon/shape pendamping: Completed, In Progress, Not Started, Passed, Not Passed, Overdue, Locked. Warna saja tidak cukup. Hasil assessment Employee selalu berupa konfirmasi netral; outcome evaluasi, nilai, percobaan, dan kunci jawaban tidak dirender atau dikirim ke browser Employee. Assessment builder menyatakan bahwa Pre-Test adalah baseline satu percobaan, sedangkan nilai kelulusan dan percobaan ulang hanya berlaku untuk Post-Test. Employee dapat mengikuti attempt Post-Test pertama; Trainer atau role internal berwenang hanya dapat membuka setiap kesempatan ulang berikutnya saat course berada dalam evaluasi akhir. Setiap soal menampilkan status kunci jawaban, dapat diperluas untuk detail, dan dapat diubah hanya selama assessment masih aman diedit. Form course menampilkan checklist kesiapan publikasi yang menaut langsung ke materi atau soal yang belum siap. Setiap form panjang menampilkan ringkasan error yang dapat ditindaklanjuti, error inline yang terhubung ke field, lalu memusatkan viewport dan fokus keyboard ke error pertama. Tombol submit mengunci double-submit dan menyatakan objek yang sedang diproses; upload menampilkan nama file serta progres. Pesan aturan bisnis tampil sebagai penjelasan tindakan yang bisa dilakukan Admin, bukan error HTTP atau key validasi teknis.
 

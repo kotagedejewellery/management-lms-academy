@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Models\Branch;
 use App\Models\Division;
 use App\Models\Permission;
 use App\Models\Position;
@@ -87,6 +88,163 @@ class UserManagementTest extends TestCase
             'position_id' => $operationsPosition->id,
             'status' => 'active',
         ])->assertSessionHasErrors('position_id');
+    }
+
+    public function test_manager_options_only_include_active_users_from_the_selected_organization(): void
+    {
+        $admin = $this->userWithPermission('manage-users');
+        $sales = Division::query()->create(['code' => 'SLS', 'name' => 'Sales']);
+        $operations = Division::query()->create(['code' => 'OPS', 'name' => 'Operations']);
+        $central = Branch::query()->create(['code' => 'CTR', 'name' => 'Central', 'is_active' => true]);
+        $store = Branch::query()->create(['code' => 'STR', 'name' => 'Store', 'is_active' => true]);
+
+        $eligibleManager = User::factory()->create([
+            'name' => 'Eligible Manager',
+            'employee_id' => 'KGJ-010',
+            'division_id' => $sales->id,
+            'branch_id' => $central->id,
+            'status' => 'active',
+        ]);
+        User::factory()->create([
+            'name' => 'Inactive Manager',
+            'division_id' => $sales->id,
+            'status' => 'inactive',
+        ]);
+        User::factory()->create([
+            'name' => 'Operations Manager',
+            'division_id' => $operations->id,
+            'status' => 'active',
+        ]);
+        $editedUser = User::factory()->create([
+            'name' => 'Edited User',
+            'division_id' => $sales->id,
+            'branch_id' => $store->id,
+            'status' => 'active',
+        ]);
+        User::factory()->create([
+            'name' => 'Direct Report',
+            'division_id' => $sales->id,
+            'manager_id' => $editedUser->id,
+            'status' => 'active',
+        ]);
+
+        $this->actingAs($admin)
+            ->getJson(route('users.manager-options', [
+                'division_id' => $sales->id,
+                'branch_id' => $store->id,
+                'exclude_user_id' => $editedUser->id,
+            ]))
+            ->assertOk()
+            ->assertJsonCount(1)
+            ->assertJsonPath('0.id', $eligibleManager->id)
+            ->assertJsonPath('0.employee_id', 'KGJ-010');
+    }
+
+    public function test_user_cannot_be_assigned_a_manager_from_another_division(): void
+    {
+        $admin = $this->userWithPermission('manage-users');
+        $employeeRole = Role::query()->create(['slug' => 'employee', 'name' => 'Employee / Learner']);
+        $sales = Division::query()->create(['code' => 'SLS', 'name' => 'Sales']);
+        $operations = Division::query()->create(['code' => 'OPS', 'name' => 'Operations']);
+        $operationsManager = User::factory()->create([
+            'division_id' => $operations->id,
+            'status' => 'active',
+        ]);
+
+        $this->actingAs($admin)->post(route('users.store'), [
+            'name' => 'Sales Employee',
+            'email' => 'sales.employee@example.test',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'role_id' => $employeeRole->id,
+            'division_id' => $sales->id,
+            'manager_id' => $operationsManager->id,
+            'status' => 'active',
+        ])->assertSessionHasErrors('manager_id');
+    }
+
+    public function test_user_can_be_assigned_a_manager_from_another_branch_in_the_same_division(): void
+    {
+        $admin = $this->userWithPermission('manage-users');
+        $employeeRole = Role::query()->create(['slug' => 'employee', 'name' => 'Employee / Learner']);
+        $sales = Division::query()->create(['code' => 'SLS', 'name' => 'Sales']);
+        $central = Branch::query()->create(['code' => 'CTR', 'name' => 'Central', 'is_active' => true]);
+        $store = Branch::query()->create(['code' => 'STR', 'name' => 'Store', 'is_active' => true]);
+        $manager = User::factory()->create([
+            'division_id' => $sales->id,
+            'branch_id' => $central->id,
+            'status' => 'active',
+        ]);
+
+        $this->actingAs($admin)->post(route('users.store'), [
+            'name' => 'Sales Employee',
+            'email' => 'sales.employee@example.test',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'role_id' => $employeeRole->id,
+            'division_id' => $sales->id,
+            'branch_id' => $store->id,
+            'manager_id' => $manager->id,
+            'status' => 'active',
+        ])->assertRedirect(route('users.index'));
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'sales.employee@example.test',
+            'manager_id' => $manager->id,
+        ]);
+    }
+
+    public function test_user_cannot_be_assigned_a_direct_report_as_manager(): void
+    {
+        $admin = $this->userWithPermission('manage-users');
+        $employeeRole = Role::query()->create(['slug' => 'employee', 'name' => 'Employee / Learner']);
+        $sales = Division::query()->create(['code' => 'SLS', 'name' => 'Sales']);
+        $manager = User::factory()->create(['division_id' => $sales->id, 'status' => 'active']);
+        $directReport = User::factory()->create([
+            'division_id' => $sales->id,
+            'manager_id' => $manager->id,
+            'status' => 'active',
+        ]);
+
+        $this->actingAs($admin)->put(route('users.update', $manager), [
+            'name' => $manager->name,
+            'email' => $manager->email,
+            'password' => '',
+            'password_confirmation' => '',
+            'role_id' => $employeeRole->id,
+            'division_id' => $sales->id,
+            'manager_id' => $directReport->id,
+            'status' => 'active',
+        ])->assertSessionHasErrors('manager_id');
+    }
+
+    public function test_manager_with_direct_reports_cannot_be_deactivated_or_moved_to_another_division(): void
+    {
+        $admin = $this->userWithPermission('manage-users');
+        $employeeRole = Role::query()->create(['slug' => 'employee', 'name' => 'Employee / Learner']);
+        $sales = Division::query()->create(['code' => 'SLS', 'name' => 'Sales']);
+        $operations = Division::query()->create(['code' => 'OPS', 'name' => 'Operations']);
+        $manager = User::factory()->create(['division_id' => $sales->id, 'status' => 'active']);
+        User::factory()->create(['division_id' => $sales->id, 'manager_id' => $manager->id, 'status' => 'active']);
+
+        $payload = [
+            'name' => $manager->name,
+            'email' => $manager->email,
+            'password' => '',
+            'password_confirmation' => '',
+            'role_id' => $employeeRole->id,
+            'division_id' => $sales->id,
+            'status' => 'inactive',
+        ];
+
+        $this->actingAs($admin)->put(route('users.update', $manager), $payload)
+            ->assertSessionHasErrors('status');
+
+        $payload['status'] = 'active';
+        $payload['division_id'] = $operations->id;
+
+        $this->actingAs($admin)->put(route('users.update', $manager), $payload)
+            ->assertSessionHasErrors('division_id');
     }
 
     private function userWithPermission(string $permission): User

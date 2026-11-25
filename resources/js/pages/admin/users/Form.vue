@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { ref, watch } from 'vue';
 import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
 import FormErrorSummary from '@/components/FormErrorSummary.vue';
 import InputError from '@/components/InputError.vue';
+import PasswordInput from '@/components/PasswordInput.vue';
 import { useUnsavedChangesGuard } from '@/composables/useUnsavedChangesGuard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,7 +39,6 @@ const props = defineProps<{
     divisions: Option[];
     positions: Option[];
     branches: Option[];
-    managers: Option[];
 }>();
 
 const form = useForm({
@@ -55,7 +56,74 @@ const form = useForm({
     manager_id: props.user?.manager?.id?.toString() ?? '',
     status: props.user?.status ?? 'active',
 });
+const managers = ref<Option[]>([]);
+const managersLoading = ref(false);
+const managersError = ref(false);
+let managerRequestId = 0;
 const leaveGuard = useUnsavedChangesGuard(() => form.isDirty);
+
+async function loadManagers(): Promise<void> {
+    const requestId = ++managerRequestId;
+
+    if (!form.division_id) {
+        managers.value = [];
+        form.manager_id = '';
+        managersError.value = false;
+
+        return;
+    }
+
+    const params = new URLSearchParams({ division_id: form.division_id });
+
+    if (props.user) {
+        params.set('exclude_user_id', props.user.id.toString());
+    }
+
+    managersLoading.value = true;
+    managersError.value = false;
+
+    try {
+        const response = await fetch(`/users/manager-options?${params}`, {
+            headers: { Accept: 'application/json' },
+        });
+
+        if (!response.ok) {
+            throw new Error('Manager options request failed.');
+        }
+
+        const options = (await response.json()) as Option[];
+        if (requestId !== managerRequestId) {
+            return;
+        }
+
+        managers.value = options;
+        if (
+            !managers.value.some(({ id }) => id.toString() === form.manager_id)
+        ) {
+            form.manager_id = '';
+        }
+    } catch {
+        if (requestId === managerRequestId) {
+            managersError.value = true;
+        }
+    } finally {
+        if (requestId === managerRequestId) {
+            managersLoading.value = false;
+        }
+    }
+}
+
+watch(
+    () => form.division_id,
+    (_, previous) => {
+        if (previous !== undefined) {
+            form.manager_id = '';
+        }
+
+        void loadManagers();
+    },
+    { immediate: true },
+);
 
 function submit(): void {
     if (props.user) {
@@ -176,10 +244,9 @@ function submit(): void {
                         <Label for="password">{{
                             user ? 'Password baru' : 'Password'
                         }}</Label>
-                        <Input
+                        <PasswordInput
                             id="password"
                             v-model="form.password"
-                            type="password"
                             :required="!user"
                             autocomplete="new-password"
                             :aria-invalid="Boolean(form.errors.password)"
@@ -193,12 +260,17 @@ function submit(): void {
                         <Label for="password_confirmation"
                             >Konfirmasi password</Label
                         >
-                        <Input
+                        <PasswordInput
                             id="password_confirmation"
                             v-model="form.password_confirmation"
-                            type="password"
                             :required="!user && Boolean(form.password)"
                             autocomplete="new-password"
+                            :aria-invalid="
+                                Boolean(form.errors.password_confirmation)
+                            "
+                        />
+                        <InputError
+                            :message="form.errors.password_confirmation"
                         />
                     </div>
                     <div class="grid gap-2 sm:col-span-2">
@@ -285,13 +357,25 @@ function submit(): void {
                         <InputError :message="form.errors.branch_id" />
                     </div>
                     <div class="grid gap-2">
-                        <Label for="manager_id">Manager</Label>
+                        <Label for="manager_id"
+                            >Atasan langsung (Manager)</Label
+                        >
                         <select
                             id="manager_id"
                             v-model="form.manager_id"
-                            class="h-9 rounded-md border border-input bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
+                            :disabled="!form.division_id || managersLoading"
+                            aria-describedby="manager-help"
+                            class="h-9 rounded-md border border-input bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-60"
                         >
-                            <option value="">Belum ditetapkan</option>
+                            <option value="">
+                                {{
+                                    !form.division_id
+                                        ? 'Pilih divisi terlebih dahulu'
+                                        : managersLoading
+                                          ? 'Memuat pilihan...'
+                                          : 'Belum ditetapkan'
+                                }}
+                            </option>
                             <option
                                 v-for="manager in managers"
                                 :key="manager.id"
@@ -305,6 +389,28 @@ function submit(): void {
                                 }}
                             </option>
                         </select>
+                        <p
+                            id="manager-help"
+                            class="text-xs text-muted-foreground"
+                        >
+                            Menentukan struktur pelaporan, bukan akses aplikasi.
+                            Hanya akun aktif pada divisi yang sama yang dapat
+                            dipilih.
+                        </p>
+                        <p
+                            v-if="managersError"
+                            class="text-xs text-destructive"
+                            role="alert"
+                        >
+                            Pilihan Manager tidak dapat dimuat.
+                            <button
+                                type="button"
+                                class="underline underline-offset-2"
+                                @click="loadManagers"
+                            >
+                                Coba lagi
+                            </button>
+                        </p>
                         <InputError :message="form.errors.manager_id" />
                     </div>
                 </div>

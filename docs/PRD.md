@@ -26,7 +26,7 @@ KGJ Academy adalah Learning Management System internal untuk onboarding, SOP, pr
 ## 4. Scope MVP
 
 1. Login dengan password, verifikasi email kerja, reset password melalui email, session authentication, dan RBAC. Akun yang dibuat Admin maupun impor harus memverifikasi email kerja sebelum memasuki area terverifikasi. Autentikasi dua faktor serta passkey tidak termasuk scope internal saat ini.
-2. User, divisi, jabatan, cabang, manager, dan status akun.
+2. User, divisi, jabatan, cabang, manager, dan status akun. Manager adalah atasan organisasi, bukan role aplikasi; pilihannya hanya akun aktif pada divisi yang sama, termasuk lintas cabang. Sistem menolak relasi diri sendiri maupun siklus atasan-bawahan, serta mencegah Manager dinonaktifkan atau dipindahkan divisi sebelum bawahannya dipindahkan.
 3. Course, module, lesson, resource, thumbnail, dan status Draft/Published/Archived.
 4. Learning path, prerequisite, enrollment, dan assignment dasar.
 5. Pre-Test baseline satu percobaan dan Post-Test dengan question, answer, timer opsional, 1â€“3 attempt, hasil, serta passing grade.

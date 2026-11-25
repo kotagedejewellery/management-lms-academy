@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Jobs\ProcessUserImport;
+use App\Models\Division;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
@@ -88,6 +89,39 @@ class UserImportTest extends TestCase
 
         $this->assertDatabaseHas('users', ['employee_id' => 'KGJ-003', 'hired_at' => '2026-01-15 00:00:00']);
         @unlink($path);
+    }
+
+    public function test_import_skips_an_employee_when_their_manager_is_inactive_or_from_another_division(): void
+    {
+        config()->set('imports.initial_password', 'InitialPass123!');
+        Storage::fake('s3');
+        config(['filesystems.default' => 's3']);
+        Queue::fake();
+        $admin = $this->userWithPermission('manage-users');
+        Role::query()->create(['slug' => 'employee', 'name' => 'Employee']);
+        $sales = Division::query()->create(['code' => 'SLS', 'name' => 'Sales']);
+        $operations = Division::query()->create(['code' => 'OPS', 'name' => 'Operations']);
+        User::factory()->create([
+            'employee_id' => 'KGJ-INACTIVE',
+            'division_id' => $sales->id,
+            'status' => 'inactive',
+        ]);
+        User::factory()->create([
+            'employee_id' => 'KGJ-OPERATIONS',
+            'division_id' => $operations->id,
+            'status' => 'active',
+        ]);
+        $file = UploadedFile::fake()->createWithContent('employees.csv', "employee_id,name,email,division_code,manager_employee_id\nKGJ-002,Employee Two,two@example.test,{$sales->code},KGJ-INACTIVE\nKGJ-003,Employee Three,three@example.test,{$sales->code},KGJ-OPERATIONS\n");
+
+        $this->actingAs($admin)->post(route('user-imports.store'), ['file' => $file])->assertRedirect(route('user-imports.index'));
+        $import = UserImport::query()->sole();
+        (new ProcessUserImport($import->id))->handle();
+
+        $this->assertDatabaseMissing('users', ['employee_id' => 'KGJ-002']);
+        $this->assertDatabaseMissing('users', ['employee_id' => 'KGJ-003']);
+        $this->assertSame(2, $import->fresh()->skipped_rows);
+        $this->assertSame('Manager harus aktif dan berada pada divisi yang sama.', $import->fresh()->errors[0]['message']);
+        $this->assertSame('Manager harus aktif dan berada pada divisi yang sama.', $import->fresh()->errors[1]['message']);
     }
 
     public function test_xlsx_import_processes_rows_across_the_chunk_boundary(): void

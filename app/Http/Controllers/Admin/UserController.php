@@ -9,6 +9,8 @@ use App\Models\Position;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\LearningPathAssignmentService;
+use App\Services\ManagerRelationshipService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -64,6 +66,31 @@ class UserController extends Controller
         return Inertia::render('admin/users/Create', $this->formOptions($request->user()));
     }
 
+    public function managerOptions(Request $request): JsonResponse
+    {
+        $this->authorize('viewAny', User::class);
+
+        $filters = $request->validate([
+            'division_id' => ['required', 'integer', Rule::exists('divisions', 'id')->where('is_active', true)],
+            'exclude_user_id' => ['nullable', 'integer', Rule::exists('users', 'id')],
+        ]);
+
+        $excludedUser = isset($filters['exclude_user_id'])
+            ? User::query()->whereKey((int) $filters['exclude_user_id'])->firstOrFail()
+            : null;
+
+        if ($excludedUser) {
+            $this->authorize('update', $excludedUser);
+        }
+
+        return response()->json(
+            app(ManagerRelationshipService::class)->options(
+                (int) $filters['division_id'],
+                $excludedUser,
+            ),
+        );
+    }
+
     public function store(Request $request, LearningPathAssignmentService $assignments): RedirectResponse
     {
         $this->authorize('create', User::class);
@@ -92,7 +119,7 @@ class UserController extends Controller
         $this->authorize('update', $user);
 
         return Inertia::render('admin/users/Edit', [
-            ...$this->formOptions($request->user(), $user),
+            ...$this->formOptions($request->user()),
             'user' => $this->userData($user->load(['roles:id,slug,name', 'division:id,name', 'position:id,name', 'branch:id,name', 'manager:id,name'])),
         ]);
     }
@@ -103,9 +130,7 @@ class UserController extends Controller
 
         $data = $this->validatedData($request, $user);
 
-        if ((int) ($data['manager_id'] ?? 0) === $user->id) {
-            throw ValidationException::withMessages(['manager_id' => 'Manager tidak boleh merujuk ke akun yang sama.']);
-        }
+        $this->validateDirectReports($data, $user);
 
         if ($user->is($request->user()) && $data['status'] === 'inactive') {
             throw ValidationException::withMessages(['status' => 'Anda tidak dapat menonaktifkan akun sendiri.']);
@@ -157,6 +182,16 @@ class UserController extends Controller
             }
         }
 
+        $message = app(ManagerRelationshipService::class)->validationMessage(
+            $data['manager_id'] ?? null,
+            $data['division_id'] ?? null,
+            $user,
+        );
+
+        if ($message) {
+            throw ValidationException::withMessages(['manager_id' => $message]);
+        }
+
         return $data;
     }
 
@@ -170,7 +205,7 @@ class UserController extends Controller
     }
 
     /** @return array<string, mixed> */
-    private function formOptions(User $actor, ?User $exclude = null): array
+    private function formOptions(User $actor): array
     {
         return [
             'roles' => Role::query()
@@ -180,12 +215,23 @@ class UserController extends Controller
             'divisions' => Division::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']),
             'positions' => Position::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']),
             'branches' => Branch::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']),
-            'managers' => User::query()
-                ->where('status', 'active')
-                ->when($exclude, fn ($query) => $query->whereKeyNot($exclude->id))
-                ->orderBy('name')
-                ->get(['id', 'employee_id', 'name']),
         ];
+    }
+
+    /** @param array<string, mixed> $data */
+    private function validateDirectReports(array $data, User $user): void
+    {
+        if (! $user->directReports()->exists()) {
+            return;
+        }
+
+        if ($data['status'] !== 'active') {
+            throw ValidationException::withMessages(['status' => 'Pindahkan bawahan ke manager lain sebelum menonaktifkan akun ini.']);
+        }
+
+        if ($user->division_id !== $data['division_id']) {
+            throw ValidationException::withMessages(['division_id' => 'Pindahkan bawahan ke manager lain sebelum mengubah divisi akun ini.']);
+        }
     }
 
     /** @return array<string, mixed> */
