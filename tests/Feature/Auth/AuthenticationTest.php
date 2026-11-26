@@ -59,9 +59,24 @@ class AuthenticationTest extends TestCase
         $this->post(route('login.store'), [
             'identifier' => $user->email,
             'password' => 'wrong-password',
+        ])->assertSessionHasErrors([
+            'identifier' => 'Email kerja/Employee ID atau kata sandi tidak sesuai. Periksa kembali atau gunakan “Lupa kata sandi?”.',
         ]);
 
         $this->assertGuest();
+    }
+
+    public function test_users_can_authenticate_with_surrounding_identifier_whitespace(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post(route('login.store'), [
+            'identifier' => "  {$user->email}  ",
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticatedAs($user);
+        $response->assertRedirect(route('dashboard', absolute: false));
     }
 
     public function test_users_can_logout()

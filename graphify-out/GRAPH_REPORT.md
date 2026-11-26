@@ -1,17 +1,17 @@
-# Graph Report - KGJ-lms-academy  (2026-11-25)
+# Graph Report - KGJ-lms-academy  (2026-11-26)
 
 ## Corpus Check
-- 463 files · ~124,512 words
+- 464 files · ~124,589 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 28 file(s) not represented in the graph (top: (none) 18, .example 3, .conf 1)
 
 ## Summary
-- 3019 nodes · 6849 edges · 186 communities (124 shown, 62 thin omitted)
+- 3021 nodes · 6851 edges · 185 communities (124 shown, 61 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 35 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `51a62dd2`
+- Built from commit: `e7fce2a8`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -19,27 +19,27 @@
 - User
 - vue
 - DashboardResolver.php
-- users/Form.vue
+- input/index.ts
 - @lucide/vue
 - Course
 - SelectContent.vue
-- Illuminate\Support\Facades\DB
+- Lesson
 - reka-ui
-- Role
+- Division
 - resources_js_components_ui_input_otp_index_inputotp
 - Chisel
-- FortifyServiceProvider.php
+- PasswordValidationRules
 - Inertia\Testing\AssertableInertia
 - LearningController.php
-- CourseController
-- TestCase
+- CourseController.php
+- Role
 - learning-path-assignments/Index.vue
 - ActivityLog
 - @vueuse/core
 - learning-paths/Content.vue
-- Illuminate\Database\Eloquent\Relations\BelongsTo
+- Illuminate\Database\Eloquent\Model
 - Show.vue
-- SendWhatsappNotification
+- GenerateReportExport.php
 - bootstrap/app.php
 - Enrollment
 - dialog/index.ts
@@ -54,37 +54,37 @@
 - resources_js_routes_two_factor_index
 - Assessments.vue
 - CourseModule
-- Illuminate\Database\Eloquent\Model
+- Controller
 - UserNotification
 - trainer-progress/Index.vue
 - UserImport
 - useAppearance.ts
 - Panduan Pengguna KGJ Academy
-- SidebarProvider.vue
+- sidebar/index.ts
 - courses/Content.vue
 - Illuminate\Http\Request
-- ProcessUserImport
+- NavUser.vue
 - Illuminate\Support\Facades\Schema
 - Inertia\Response
 - compilerOptions
 - package.json
 - UserMenuContent.vue
-- Position
+- UserController.php
 - courses/Form.vue
-- Sidebar.vue
+- sheet/index.ts
 - AppSidebar.vue
 - ProcessUserImport.php
 - types/index.ts
 - Panduan Uji Pengguna KGJ Academy
 - Illuminate\Database\Migrations\Migration
 - @inertiajs/vue3
-- Throwable
+- UserImportController.php
 - User.php
 - aliases
-- RoleAccessContractTest.php
+- RoleAccessContractTest
 - PRD — KGJ Academy LMS
 - AssigneePicker.vue
-- CourseController.php
+- Position
 - LearningLessonNavigator.vue
 - ref_routes_register
 - resources_js_routes_index_register
@@ -95,7 +95,7 @@
 - dependencies
 - Product
 - Answer
-- SidebarMenuButton.vue
+- TooltipContent.vue
 - LearningFlowTest
 - scripts
 - CourseLibraryController.php
@@ -103,24 +103,24 @@
 - composer.json
 - Profile.vue
 - System Architecture
-- LearningController
+- persistPlayback
 - global.d.ts
-- OrganizationController
+- OrganizationController.php
 - require
 - Production Deployment Runbook
 - artisan
 - Kebutuhan Integrasi Quilgo untuk KGJ LMS Academy
 - Tech Stack dan Pedoman Optimasi
 - LearningPathAssignment
-- Illuminate\Support\Collection
+- courses/Edit.vue
 - devDependencies
-- AssessmentAttemptController
+- Assessment
 - require-dev
 - settings.php
-- users/Edit.vue
+- users/Form.vue
 - Database System
 - LearningPath
-- audit-logs/Index.vue
+- resourcePreviewHref
 - .handle
 - LearningPathAssignmentService
 - 2026_10_13_000019_add_completion_rules_to_courses_and_assessments.php
@@ -135,8 +135,7 @@
 - 2026_10_09_000002_create_access_control_tables.php
 - 2026_10_09_000004_create_learning_catalog_tables.php
 - UX Feedback & Interaction Audit
-- Badge.vue
-- Import.vue
+- embeddedVideoUrl
 - UserFactory.php
 - scripts
 - 0001_01_01_000000_create_users_table.php
@@ -147,7 +146,6 @@
 - Audit Sumber Seeder Pre-Test dan Post-Test CS
 - Checklist UAT Browser
 - Checkbox.vue
-- LearningPathController
 - psr-4
 - laravel
 - logging.php
@@ -193,7 +191,7 @@
 - resources_js_types_index_twofactorconfigcontent
 
 ## God Nodes (most connected - your core abstractions)
-1. `User` - 222 edges
+1. `User` - 223 edges
 2. `Course` - 209 edges
 3. `vue` - 137 edges
 4. `Assessment` - 119 edges
@@ -207,115 +205,119 @@
 ## Surprising Connections (you probably didn't know these)
 - `Kesimpulan` --references--> `AssessmentAttempt`  [INFERRED]
   docs/QUILGO_ASSESSMENT_AUDIT.md → app/Models/AssessmentAttempt.php
-- `Bukti regresi` --references--> `TrainerProgressTest`  [INFERRED]
-  docs/ROLE_ACCESS_AUDIT.md → tests/Feature/TrainerProgressTest.php
-- `Kesimpulan` --references--> `Answer`  [INFERRED]
-  docs/QUILGO_ASSESSMENT_AUDIT.md → app/Models/Answer.php
 - `Kesimpulan` --references--> `AssessmentResponse`  [INFERRED]
   docs/QUILGO_ASSESSMENT_AUDIT.md → app/Models/AssessmentResponse.php
 - `Bukti regresi` --references--> `RoleAccessContractTest`  [INFERRED]
   docs/ROLE_ACCESS_AUDIT.md → tests/Feature/RoleAccessContractTest.php
+- `Bukti regresi` --references--> `TrainerProgressTest`  [INFERRED]
+  docs/ROLE_ACCESS_AUDIT.md → tests/Feature/TrainerProgressTest.php
+- `Kesimpulan` --references--> `Answer`  [INFERRED]
+  docs/QUILGO_ASSESSMENT_AUDIT.md → app/Models/Answer.php
 
 ## Import Cycles
 - None detected.
 
-## Communities (186 total, 62 thin omitted)
+## Communities (185 total, 61 thin omitted)
 
 ### Community 0 - "User"
 Cohesion: 0.05
-Nodes (10): User, UserPolicy, AuditLogTest, AuthenticationTest, EmailVerificationTest, PasswordConfirmationTest, PasswordResetTest, LocalTestingSeederTest (+2 more)
+Nodes (9): User, UserPolicy, AuthenticationTest, EmailVerificationTest, PasswordConfirmationTest, PasswordResetTest, LocalTestingSeederTest, ProfileUpdateTest (+1 more)
 
 ### Community 1 - "vue"
 Cohesion: 0.05
-Nodes (46): vue, props, props, props, props, props, props, props (+38 more)
+Nodes (42): vue, props, props, props, AlertVariants, props, props, props (+34 more)
 
 ### Community 2 - "DashboardResolver.php"
 Cohesion: 0.13
 Nodes (16): {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#5}(), {closure#7}(), DashboardResolver, {closure#1}() (+8 more)
 
-### Community 3 - "users/Form.vue"
-Cohesion: 0.06
-Nodes (34): ref_inertiajs_core, resources_js_actions_app_http_controllers_settings_securitycontroller, errorElement, props, inputRef, props, showPassword, Props (+26 more)
+### Community 3 - "input/index.ts"
+Cohesion: 0.07
+Nodes (25): ref_inertiajs_core, errorElement, props, inputRef, props, showPassword, Props, resources_js_components_ui_checkbox_index_checkbox (+17 more)
 
 ### Community 4 - "@lucide/vue"
 Cohesion: 0.05
-Nodes (42): @lucide/vue, vue-sonner, props, presentation, props, Status, resources_js_components_ui_badge_index_badge, resources_js_components_ui_button_index_button (+34 more)
+Nodes (49): class-variance-authority, @lucide/vue, props, presentation, props, Status, resources_js_components_ui_badge_index_badge, BadgeVariants (+41 more)
 
 ### Community 5 - "Course"
 Cohesion: 0.07
-Nodes (11): Assessment, Course, CourseCategory, {closure#1}(), AssessmentManagementTest, LearningPathManagementTest, AssessmentAttemptTest, CertificateTest (+3 more)
+Nodes (8): Course, CourseCategory, {closure#1}(), AssessmentManagementTest, LearningPathManagementTest, AssessmentAttemptTest, DashboardTest, ReportTest
 
 ### Community 6 - "SelectContent.vue"
 Cohesion: 0.05
 Nodes (27): resources_js_components_ui_select_index_selectscrolldownbutton, resources_js_components_ui_select_index_selectscrollupbutton, emits, forwarded, props, delegatedProps, emits, forwarded (+19 more)
 
-### Community 7 - "Illuminate\Support\Facades\DB"
-Cohesion: 0.07
-Nodes (17): Question, CustomerServiceDealmakerSeeder, DatabaseSeeder, LocalLearningCatalogResetSeeder, {closure#7}(), ModuleSixAssessmentSeeder, {closure#1}(), ProductionCustomerServiceDealmakerForceRefreshSeeder (+9 more)
+### Community 7 - "Lesson"
+Cohesion: 0.06
+Nodes (22): Lesson, Question, {closure#1}(), CustomerServiceDealmakerSeeder, DatabaseSeeder, {closure#1}(), LocalCustomerServiceDealmakerSeeder, LocalLearningCatalogResetSeeder (+14 more)
 
 ### Community 8 - "reka-ui"
 Cohesion: 0.04
 Nodes (45): reka-ui, emits, forwarded, props, props, props, emits, forwarded (+37 more)
 
-### Community 9 - "Role"
-Cohesion: 0.09
-Nodes (17): {closure#11}(), Branch, Division, Permission, Role, {closure#2}(), {closure#3}(), {closure#1}() (+9 more)
+### Community 9 - "Division"
+Cohesion: 0.14
+Nodes (8): {closure#11}(), Branch, Division, {closure#2}(), {closure#3}(), {closure#1}(), {closure#2}(), UserManagementTest
 
 ### Community 11 - "Chisel"
 Cohesion: 0.08
 Nodes (24): {closure#1}(), InstallFeaturesCommand, MakeSuperAdmin, SendDeadlineReminders, Chisel, chiselRun(), chiselSkipsNode(), {closure#1}() (+16 more)
 
-### Community 12 - "FortifyServiceProvider.php"
-Cohesion: 0.05
-Nodes (28): CreateNewUser, ResetUserPassword, PasswordValidationRules, ProfileValidationRules, PasswordUpdateRequest, ProfileUpdateRequest, AppServiceProvider, {closure#1}() (+20 more)
+### Community 12 - "PasswordValidationRules"
+Cohesion: 0.07
+Nodes (18): CreateNewUser, ResetUserPassword, PasswordValidationRules, ProfileValidationRules, PasswordUpdateRequest, ProfileUpdateRequest, AppServiceProvider, {closure#1}() (+10 more)
 
 ### Community 13 - "Inertia\Testing\AssertableInertia"
 Cohesion: 0.06
-Nodes (43): Illuminate\Http\UploadedFile, Illuminate\Support\Facades\Hash, Illuminate\Support\Facades\Storage, Inertia\Testing\AssertableInertia, {closure#3}(), {closure#1}(), {closure#1}(), {closure#2}() (+35 more)
+Nodes (45): Inertia\Testing\AssertableInertia, {closure#1}(), {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#5}(), {closure#1}() (+37 more)
 
 ### Community 14 - "LearningController.php"
-Cohesion: 0.07
-Nodes (9): {closure#14}(), {closure#16}(), {closure#17}(), {closure#21}(), {closure#22}(), {closure#24}(), {closure#26}(), {closure#7}() (+1 more)
+Cohesion: 0.06
+Nodes (19): {closure#6}(), {closure#14}(), {closure#16}(), {closure#17}(), {closure#19}(), {closure#21}(), {closure#22}(), {closure#23}() (+11 more)
 
-### Community 16 - "TestCase"
-Cohesion: 0.05
-Nodes (29): Illuminate\Auth\Events\Verified, Illuminate\Auth\Notifications\ResetPassword, Illuminate\Auth\Notifications\VerifyEmail, Illuminate\Foundation\Http\Middleware\PreventRequestForgery, Illuminate\Foundation\Testing\RefreshDatabase, Illuminate\Foundation\Testing\TestCase, Illuminate\Support\Facades\Event, Illuminate\Support\Facades\Notification (+21 more)
+### Community 15 - "CourseController.php"
+Cohesion: 0.09
+Nodes (4): {closure#11}(), {closure#6}(), CourseController, Illuminate\Http\UploadedFile
+
+### Community 16 - "Role"
+Cohesion: 0.04
+Nodes (36): Permission, Role, {closure#1}(), {closure#2}(), Bukti regresi, Illuminate\Auth\Events\Verified, Illuminate\Auth\Notifications\ResetPassword, Illuminate\Auth\Notifications\VerifyEmail (+28 more)
 
 ### Community 17 - "learning-path-assignments/Index.vue"
 Cohesion: 0.06
 Nodes (37): emit, resources_js_components_ui_dialog_index_dialog, resources_js_components_ui_dialog_index_dialogclose, resources_js_components_ui_dialog_index_dialogcontent, resources_js_components_ui_dialog_index_dialogdescription, resources_js_components_ui_dialog_index_dialogfooter, resources_js_components_ui_dialog_index_dialogheader, resources_js_components_ui_dialog_index_dialogtitle (+29 more)
 
 ### Community 18 - "ActivityLog"
-Cohesion: 0.14
-Nodes (5): AssessmentRetakeAuthorizationController, {closure#2}(), CertificateController, ActivityLog, Illuminate\Validation\ValidationException
+Cohesion: 0.16
+Nodes (5): AssessmentRetakeAuthorizationController, {closure#2}(), ActivityLog, Illuminate\Validation\ValidationException, AuditLogTest
 
 ### Community 19 - "@vueuse/core"
-Cohesion: 0.05
-Nodes (33): @vueuse/core, emits, modelValue, props, delegatedProps, props, navigationMenuTriggerStyle, delegatedProps (+25 more)
+Cohesion: 0.06
+Nodes (30): @vueuse/core, delegatedProps, props, navigationMenuTriggerStyle, delegatedProps, emits, forwarded, props (+22 more)
 
 ### Community 20 - "learning-paths/Content.vue"
 Cohesion: 0.08
 Nodes (17): messages, props, useUnsavedChangesGuard(), leaveWithoutSaving(), reset(), Course, deletingPathCourse, form (+9 more)
 
-### Community 21 - "Illuminate\Database\Eloquent\Relations\BelongsTo"
-Cohesion: 0.07
-Nodes (8): {closure#2}(), {closure#1}(), AssessmentDraft, LearningPathCourse, LearningPathRule, LessonProgress, {closure#6}(), Illuminate\Database\Eloquent\Relations\BelongsTo
+### Community 21 - "Illuminate\Database\Eloquent\Model"
+Cohesion: 0.05
+Nodes (15): {closure#3}(), {closure#2}(), {closure#1}(), {closure#2}(), AssessmentDraft, AssessmentResponse, Certificate, LearningPathCourse (+7 more)
 
 ### Community 22 - "Show.vue"
-Cohesion: 0.07
-Nodes (35): activeLesson, activeLessonIndex, allLessons, Assessment, complete(), completingLessonId, continueLearning(), CourseAction (+27 more)
+Cohesion: 0.08
+Nodes (24): activeLesson, activeLessonIndex, allLessons, Assessment, complete(), completingLessonId, CourseAction, estimatedDuration (+16 more)
 
-### Community 23 - "SendWhatsappNotification"
-Cohesion: 0.14
-Nodes (19): {closure#2}(), {closure#3}(), GenerateReportExport, IssueCertificate, SendWhatsappNotification, {closure#2}(), SyncLearningPath, {closure#2}() (+11 more)
+### Community 23 - "GenerateReportExport.php"
+Cohesion: 0.12
+Nodes (18): {closure#2}(), {closure#3}(), GenerateReportExport, IssueCertificate, {closure#2}(), SyncLearningPath, {closure#2}(), SyncLearningPathRule (+10 more)
 
 ### Community 24 - "bootstrap/app.php"
-Cohesion: 0.08
-Nodes (20): EnsureActiveAccount, EnsureOperationalRoleDoesNotAccessLearnerArea, HandleAppearance, HandleInertiaRequests, RecordAuditActivity, {closure#1}(), {closure#2}(), {closure#3}() (+12 more)
+Cohesion: 0.10
+Nodes (18): EnsureActiveAccount, EnsureOperationalRoleDoesNotAccessLearnerArea, HandleAppearance, RecordAuditActivity, {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}() (+10 more)
 
 ### Community 25 - "Enrollment"
-Cohesion: 0.10
-Nodes (7): Enrollment, {closure#1}(), ModuleLearningProgression, {closure#1}(), LocalCustomerServiceDealmakerSeeder, LocalCustomerServiceDealmakerSeederTest, TrainerProgressTest
+Cohesion: 0.15
+Nodes (3): Enrollment, ModuleLearningProgression, TrainerProgressTest
 
 ### Community 26 - "dialog/index.ts"
 Cohesion: 0.06
@@ -345,33 +347,33 @@ Nodes (16): Assessment, cancelEditingQuestion(), createForm, deletingQuestion, e
 Cohesion: 0.13
 Nodes (9): {closure#1}(), {closure#12}(), {closure#2}(), {closure#4}(), {closure#5}(), {closure#9}(), CourseContentController, CourseModule (+1 more)
 
-### Community 38 - "Illuminate\Database\Eloquent\Model"
-Cohesion: 0.11
-Nodes (5): {closure#2}(), Certificate, Illuminate\Database\Eloquent\Model, Illuminate\Support\Carbon, self
+### Community 38 - "Controller"
+Cohesion: 0.10
+Nodes (11): AnnouncementController, {closure#1}(), {closure#1}(), Controller, {closure#1}(), ProfileController, SecurityController, ReportEnrollmentQuery (+3 more)
 
 ### Community 39 - "UserNotification"
 Cohesion: 0.12
-Nodes (8): {closure#1}(), {closure#1}(), {closure#2}(), PublishAnnouncement, Announcement, UserNotification, AnnouncementTest, {closure#1}()
+Nodes (9): {closure#1}(), {closure#1}(), {closure#2}(), PublishAnnouncement, SendWhatsappNotification, Announcement, UserNotification, AnnouncementTest (+1 more)
 
 ### Community 40 - "trainer-progress/Index.vue"
 Cohesion: 0.08
 Nodes (16): resources_js_components_ui_collapsible_index_collapsible, resources_js_components_ui_collapsible_index_collapsiblecontent, resources_js_components_ui_collapsible_index_collapsibletrigger, applyFilters(), approvingEnrollment, AssessmentSummary, authorizingRetake, cancellingRetake (+8 more)
 
 ### Community 41 - "UserImport"
-Cohesion: 0.26
-Nodes (3): {closure#1}(), UserImport, UserImportTest
+Cohesion: 0.14
+Nodes (8): {closure#1}(), ProcessUserImport, UserImport, PhpOffice\PhpSpreadsheet\Spreadsheet, PhpOffice\PhpSpreadsheet\Writer\Xlsx, PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses, {closure#1}(), UserImportTest
 
 ### Community 42 - "useAppearance.ts"
-Cohesion: 0.13
-Nodes (20): { appearance, updateAppearance }, tabs, appearance, getStoredAppearance(), handleSystemThemeChange(), initializeTheme(), mediaQuery(), prefersDark() (+12 more)
+Cohesion: 0.11
+Nodes (22): vue-sonner, { appearance, updateAppearance }, tabs, props, appearance, getStoredAppearance(), handleSystemThemeChange(), initializeTheme() (+14 more)
 
 ### Community 43 - "Panduan Pengguna KGJ Academy"
 Cohesion: 0.09
 Nodes (22): 1. Memulai, 2. Matriks akses role, 3. Alur pembelajaran Employee, 4.1 Employee / Learner, 4.2 Trainer / Mentor, 4.3 LMS Admin / HR, 4.4 Super Admin, 4. Panduan per role (+14 more)
 
-### Community 44 - "SidebarProvider.vue"
-Cohesion: 0.16
-Nodes (16): emits, isMobile, open, openMobile, props, setOpen(), setOpenMobile(), state (+8 more)
+### Community 44 - "sidebar/index.ts"
+Cohesion: 0.05
+Nodes (39): SidebarMenuButtonVariants, SidebarProps, { isMobile, state, openMobile, setOpenMobile }, props, props, props, props, props (+31 more)
 
 ### Community 45 - "courses/Content.vue"
 Cohesion: 0.09
@@ -379,15 +381,19 @@ Nodes (15): addLesson(), deleting, deletion, editingLesson, leaveGuard, Lesson, 
 
 ### Community 46 - "Illuminate\Http\Request"
 Cohesion: 0.11
-Nodes (10): AssigneeSearchController, CourseCategoryController, UserImportController, {closure#1}(), ReportController, TrainerProgressController, ReportEnrollmentQuery, Illuminate\Http\JsonResponse (+2 more)
+Nodes (15): CourseCategoryController, ReportController, HandleInertiaRequests, {closure#1}(), {closure#10}(), {closure#2}(), {closure#4}(), {closure#5}() (+7 more)
+
+### Community 47 - "NavUser.vue"
+Cohesion: 0.11
+Nodes (19): Props, { isCurrentOrParentUrl }, NavGroup, { isMobile, state }, loggingOut, logoutDialogOpen, page, user (+11 more)
 
 ### Community 48 - "Illuminate\Support\Facades\Schema"
 Cohesion: 0.09
 Nodes (7): {closure#1}(), {closure#1}(), {closure#2}(), {closure#1}(), {closure#1}(), {closure#1}(), Illuminate\Support\Facades\Schema
 
 ### Community 49 - "Inertia\Response"
-Cohesion: 0.06
-Nodes (18): AnnouncementController, {closure#1}(), {closure#1}(), EnrollmentController, {closure#2}(), AuditLogController, Controller, DashboardController (+10 more)
+Cohesion: 0.07
+Nodes (10): EnrollmentController, LearningPathController, AuditLogController, DashboardController, {closure#3}(), LearningProgressController, MyLearningPathController, NotificationController (+2 more)
 
 ### Community 50 - "compilerOptions"
 Cohesion: 0.10
@@ -399,31 +405,31 @@ Nodes (19): private, $schema, type, clsx, concurrently, @laravel/multiplex, ligh
 
 ### Community 52 - "UserMenuContent.vue"
 Cohesion: 0.11
-Nodes (20): resources_js_components_ui_avatar_index_avatar, resources_js_components_ui_avatar_index_avatarfallback, resources_js_components_ui_avatar_index_avatarimage, resources_js_components_ui_dropdown_menu_index_dropdownmenugroup, resources_js_components_ui_dropdown_menu_index_dropdownmenuitem, resources_js_components_ui_dropdown_menu_index_dropdownmenulabel, resources_js_components_ui_dropdown_menu_index_dropdownmenuseparator, { getInitials } (+12 more)
+Nodes (19): resources_js_components_ui_avatar_index_avatar, resources_js_components_ui_avatar_index_avatarfallback, resources_js_components_ui_avatar_index_avatarimage, resources_js_components_ui_dropdown_menu_index_dropdownmenugroup, resources_js_components_ui_dropdown_menu_index_dropdownmenuitem, resources_js_components_ui_dropdown_menu_index_dropdownmenulabel, resources_js_components_ui_dropdown_menu_index_dropdownmenuseparator, { getInitials } (+11 more)
 
-### Community 53 - "Position"
-Cohesion: 0.12
-Nodes (7): {closure#4}(), {closure#5}(), {closure#6}(), UserController, {closure#12}(), Position, {closure#4}()
+### Community 53 - "UserController.php"
+Cohesion: 0.10
+Nodes (8): AssigneeSearchController, {closure#4}(), {closure#5}(), {closure#6}(), UserController, Illuminate\Http\JsonResponse, Illuminate\Support\Str, Pdo\Mysql
 
 ### Community 54 - "courses/Form.vue"
-Cohesion: 0.09
-Nodes (16): Option, props, Course, Option, props, PublicationReadiness, Course, displayedThumbnail (+8 more)
+Cohesion: 0.12
+Nodes (12): Option, props, Course, displayedThumbnail, form, leaveGuard, Option, props (+4 more)
 
-### Community 55 - "Sidebar.vue"
-Cohesion: 0.09
-Nodes (15): emits, forwarded, props, props, delegatedProps, props, props, props (+7 more)
+### Community 55 - "sheet/index.ts"
+Cohesion: 0.11
+Nodes (11): emits, forwarded, props, props, delegatedProps, props, props, props (+3 more)
 
 ### Community 56 - "AppSidebar.vue"
-Cohesion: 0.09
-Nodes (24): ref_vitest, Props, mainNavGroups, page, Props, { isCurrentOrParentUrl }, NavGroup, resources_js_components_ui_sidebar_index_sidebar (+16 more)
+Cohesion: 0.12
+Nodes (15): ref_vitest, Props, mainNavGroups, page, resources_js_components_ui_sidebar_index_sidebar, resources_js_components_ui_sidebar_index_sidebarcontent, resources_js_components_ui_sidebar_index_sidebarfooter, resources_js_components_ui_sidebar_index_sidebarheader (+7 more)
 
 ### Community 57 - "ProcessUserImport.php"
-Cohesion: 0.11
-Nodes (7): {closure#10}(), {closure#8}(), SpreadsheetChunkReadFilter, Carbon\Carbon, Generator, PhpOffice\PhpSpreadsheet\IOFactory, PhpOffice\PhpSpreadsheet\Reader\IReadFilter
+Cohesion: 0.09
+Nodes (8): {closure#10}(), {closure#8}(), SpreadsheetChunkReadFilter, Carbon\Carbon, Generator, PhpOffice\PhpSpreadsheet\IOFactory, PhpOffice\PhpSpreadsheet\Reader\IReadFilter, Throwable
 
 ### Community 58 - "types/index.ts"
-Cohesion: 0.11
-Nodes (21): className, Props, Props, Props, resources_js_components_ui_breadcrumb_index_breadcrumb, resources_js_components_ui_breadcrumb_index_breadcrumbitem, resources_js_components_ui_breadcrumb_index_breadcrumblink, resources_js_components_ui_breadcrumb_index_breadcrumblist (+13 more)
+Cohesion: 0.10
+Nodes (22): className, Props, Props, Props, resources_js_components_ui_breadcrumb_index_breadcrumb, resources_js_components_ui_breadcrumb_index_breadcrumbitem, resources_js_components_ui_breadcrumb_index_breadcrumblink, resources_js_components_ui_breadcrumb_index_breadcrumblist (+14 more)
 
 ### Community 59 - "Panduan Uji Pengguna KGJ Academy"
 Cohesion: 0.11
@@ -434,8 +440,12 @@ Cohesion: 0.09
 Nodes (5): {closure#1}(), {closure#1}(), {closure#1}(), {closure#2}(), Illuminate\Database\Migrations\Migration
 
 ### Community 61 - "@inertiajs/vue3"
-Cohesion: 0.11
-Nodes (17): @inertiajs/vue3, resources_js_components_ui_card_index_card, resources_js_components_ui_card_index_cardcontent, resources_js_components_ui_card_index_carddescription, resources_js_components_ui_card_index_cardheader, resources_js_components_ui_card_index_cardtitle, { title = '', description = '' }, Action (+9 more)
+Cohesion: 0.07
+Nodes (23): @inertiajs/vue3, resources_js_components_ui_card_index_card, resources_js_components_ui_card_index_cardcontent, resources_js_components_ui_card_index_carddescription, resources_js_components_ui_card_index_cardheader, resources_js_components_ui_card_index_cardtitle, Activity, fieldLabels (+15 more)
+
+### Community 62 - "UserImportController.php"
+Cohesion: 0.20
+Nodes (3): UserImportController, CertificateController, Symfony\Component\HttpFoundation\StreamedResponse
 
 ### Community 63 - "User.php"
 Cohesion: 0.08
@@ -445,10 +455,6 @@ Nodes (9): Illuminate\Contracts\Auth\MustVerifyEmail, Illuminate\Database\Eloque
 Cohesion: 0.12
 Nodes (15): aliases, components, composables, lib, ui, utils, iconLibrary, $schema (+7 more)
 
-### Community 65 - "RoleAccessContractTest.php"
-Cohesion: 0.15
-Nodes (5): RolePermissionSeeder, Bukti regresi, {closure#1}(), RoleAccessContractTest, RoleRetirementMigrationTest
-
 ### Community 66 - "PRD — KGJ Academy LMS"
 Cohesion: 0.12
 Nodes (15): 10. UAT dan definition of done, 1. Ringkasan, 2. Tujuan dan ukuran keberhasilan, 3. Pengguna dan hak akses, 4. Scope MVP, 5. Alur inti, 6. Aturan bisnis yang tidak boleh berubah tanpa persetujuan pemilik proses, 7. Kebutuhan fungsional per area (+7 more)
@@ -457,9 +463,9 @@ Nodes (15): 10. UAT dan definition of done, 1. Ringkasan, 2. Tujuan dan ukuran k
 Cohesion: 0.14
 Nodes (12): activeIndex, Assignee, error, handleEnter(), listboxId, loading, props, query (+4 more)
 
-### Community 68 - "CourseController.php"
-Cohesion: 0.09
-Nodes (4): {closure#11}(), {closure#6}(), Illuminate\Support\Str, Pdo\Mysql
+### Community 68 - "Position"
+Cohesion: 0.22
+Nodes (4): {closure#12}(), Position, {closure#4}(), LocalUserRoleSeeder
 
 ### Community 69 - "LearningLessonNavigator.vue"
 Cohesion: 0.15
@@ -470,8 +476,8 @@ Cohesion: 0.26
 Nodes (3): Carbon\CarbonInterface, {closure#1}(), LocalTestingSeeder
 
 ### Community 74 - "AppHeader.vue"
-Cohesion: 0.08
-Nodes (25): auth, { isCurrentUrl, whenCurrentUrl }, mainNavItems, page, Props, rightNavItems, { isMobile, state }, loggingOut (+17 more)
+Cohesion: 0.10
+Nodes (23): auth, { isCurrentUrl, whenCurrentUrl }, mainNavItems, page, Props, rightNavItems, resources_js_components_ui_navigation_menu_index_navigationmenu, resources_js_components_ui_navigation_menu_index_navigationmenuitem (+15 more)
 
 ### Community 75 - "Design UI/UX — KGJ Academy"
 Cohesion: 0.15
@@ -486,20 +492,20 @@ Cohesion: 0.14
 Nodes (13): Accessibility & Inclusion, Assessment Result Privacy, Brand Commitments, Capabilities and Constraints, Evidence on Hand, Operating Context, Platform, Positioning (+5 more)
 
 ### Community 78 - "Answer"
-Cohesion: 0.11
-Nodes (10): Answer, AssessmentResponse, Audit tautan Quilgo untuk evaluasi Customer Service, Checklist yang harus dikonfirmasi pemilik Quilgo, Dampak produk dan keamanan, Kesimpulan, Opsi integrasi (fase terpisah), Opsi yang direkomendasikan: assessment native sebagai sumber kebenaran (+2 more)
+Cohesion: 0.15
+Nodes (9): Answer, Audit tautan Quilgo untuk evaluasi Customer Service, Checklist yang harus dikonfirmasi pemilik Quilgo, Dampak produk dan keamanan, Kesimpulan, Opsi integrasi (fase terpisah), Opsi yang direkomendasikan: assessment native sebagai sumber kebenaran, Pemetaan materi dan tautan (+1 more)
 
-### Community 79 - "SidebarMenuButton.vue"
-Cohesion: 0.09
-Nodes (18): SidebarMenuButtonVariants, delegatedProps, { isMobile, state }, props, props, SidebarMenuButtonProps, resources_js_components_ui_tooltip_index_tooltip, resources_js_components_ui_tooltip_index_tooltipcontent (+10 more)
+### Community 79 - "TooltipContent.vue"
+Cohesion: 0.14
+Nodes (9): emits, forwarded, props, delegatedProps, emits, forwarded, props, props (+1 more)
 
 ### Community 81 - "scripts"
 Cohesion: 0.15
 Nodes (13): scripts, ci:check, dev, lint, lint:check, post-autoload-dump, post-create-project-cmd, post-root-package-install (+5 more)
 
 ### Community 83 - "ReportExport"
-Cohesion: 0.14
-Nodes (8): {closure#3}(), {closure#2}(), LessonResource, ReportExport, {closure#1}(), {closure#2}(), {closure#3}(), ResetsOperationalData
+Cohesion: 0.20
+Nodes (6): {closure#2}(), ReportExport, {closure#1}(), {closure#2}(), {closure#3}(), ResetsOperationalData
 
 ### Community 84 - "composer.json"
 Cohesion: 0.17
@@ -513,13 +519,13 @@ Nodes (12): resources_js_actions_app_http_controllers_settings_profilecontroller
 Cohesion: 0.17
 Nodes (11): 1. Prinsip arsitektur, 2. Modul aplikasi, 3. Jalur request, 4. Topologi Docker lokal, 5. Keamanan dan ketahanan, 6. Scale path, Learner, Otorisasi retake Post-Test (+3 more)
 
-### Community 87 - "LearningController"
-Cohesion: 0.27
-Nodes (4): {closure#19}(), {closure#23}(), LearningController, Illuminate\Http\Response
+### Community 87 - "persistPlayback"
+Cohesion: 0.33
+Nodes (6): continueLearning(), persistPlayback(), queuePlayback(), savePlaybackWhenPageIsHidden(), selectLesson(), selectLessonFromNavigator()
 
 ### Community 88 - "global.d.ts"
-Cohesion: 0.22
-Nodes (9): Auth, ComponentCustomProperties, GlobalDirectives, ImportMeta, ImportMetaEnv, InertiaConfig, @inertiajs/core, vite/client (+1 more)
+Cohesion: 0.20
+Nodes (10): Auth, User, ComponentCustomProperties, GlobalDirectives, ImportMeta, ImportMetaEnv, InertiaConfig, @inertiajs/core (+2 more)
 
 ### Community 90 - "require"
 Cohesion: 0.18
@@ -541,17 +547,17 @@ Nodes (10): Background processing, Batas keamanan, Cache dan deduplikasi, Databa
 Cohesion: 0.22
 Nodes (4): {closure#1}(), LearningPathAssignment, {closure#1}(), {closure#3}()
 
-### Community 96 - "Illuminate\Support\Collection"
-Cohesion: 0.27
-Nodes (7): {closure#6}(), {closure#2}(), {closure#3}(), {closure#4}(), CourseAssessmentProgress, LearningAvailability, Illuminate\Support\Collection
+### Community 96 - "courses/Edit.vue"
+Cohesion: 0.40
+Nodes (4): Course, Option, props, PublicationReadiness
 
 ### Community 97 - "devDependencies"
 Cohesion: 0.20
 Nodes (10): devDependencies, concurrently, @laravel/vite-plugin-wayfinder, @tailwindcss/vite, @types/node, typescript, vite, vite-plus (+2 more)
 
-### Community 98 - "AssessmentAttemptController"
-Cohesion: 0.27
-Nodes (3): AssessmentAttemptController, {closure#2}(), {closure#4}()
+### Community 98 - "Assessment"
+Cohesion: 0.17
+Nodes (6): AssessmentAttemptController, {closure#2}(), {closure#4}(), Assessment, Illuminate\Http\Response, CustomerServiceDealmakerSeederTest
 
 ### Community 99 - "require-dev"
 Cohesion: 0.20
@@ -561,9 +567,9 @@ Nodes (10): require-dev, fakerphp/faker, larastan/larastan, laravel/pail, larave
 Cohesion: 0.20
 Nodes (3): Illuminate\Auth\Middleware\RequirePassword, Illuminate\Support\Facades\Route, ActionableHttpErrorTest
 
-### Community 101 - "users/Edit.vue"
-Cohesion: 0.50
-Nodes (3): ManagedUser, Option, props
+### Community 101 - "users/Form.vue"
+Cohesion: 0.11
+Nodes (13): Option, props, ManagedUser, Option, props, form, leaveGuard, ManagedUser (+5 more)
 
 ### Community 102 - "Database System"
 Cohesion: 0.22
@@ -573,9 +579,9 @@ Nodes (8): 1. Prinsip data, 2. Entitas dan relasi utama, 3. Constraint penting, 
 Cohesion: 0.16
 Nodes (5): LearningPathAssignmentController, {closure#2}(), LearningPathContentController, LearningPath, {closure#5}()
 
-### Community 104 - "audit-logs/Index.vue"
-Cohesion: 0.22
-Nodes (4): Activity, fieldLabels, labels, props
+### Community 104 - "resourcePreviewHref"
+Cohesion: 0.67
+Nodes (3): pdfPreviewUrl, resourceDownloadHref(), resourcePreviewHref()
 
 ### Community 105 - ".handle"
 Cohesion: 0.31
@@ -602,12 +608,12 @@ Cohesion: 0.25
 Nodes (5): props, width, resources_js_components_ui_skeleton_index_skeleton, props, SkeletonProps
 
 ### Community 112 - "resources_js_components_ui_label_index_label"
-Cohesion: 0.13
-Nodes (11): resources_js_components_ui_label_index_label, Announcement, form, sendDialogOpen, applyFilters(), PaginatedUsers, Person, props (+3 more)
+Cohesion: 0.25
+Nodes (4): resources_js_components_ui_label_index_label, Announcement, form, sendDialogOpen
 
 ### Community 113 - "TrainerProgressController.php"
 Cohesion: 0.12
-Nodes (11): {closure#1}(), {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#5}(), {closure#6}(), {closure#7}() (+3 more)
+Nodes (10): {closure#1}(), {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#5}(), {closure#6}(), {closure#7}() (+2 more)
 
 ### Community 114 - "vite.config.ts"
 Cohesion: 0.25
@@ -629,17 +635,9 @@ Nodes (4): {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}()
 Cohesion: 0.29
 Nodes (6): Design Health, Persona risks, Priority findings, Run notes, Strengths, UX Feedback & Interaction Audit
 
-### Community 119 - "Badge.vue"
-Cohesion: 0.16
-Nodes (8): class-variance-authority, props, props, props, AlertVariants, delegatedProps, props, BadgeVariants
-
-### Community 120 - "Import.vue"
-Cohesion: 0.25
-Nodes (3): form, Import, importDialogOpen
-
 ### Community 121 - "UserFactory.php"
-Cohesion: 0.38
-Nodes (3): UserFactory, Illuminate\Database\Eloquent\Factories\Factory, static
+Cohesion: 0.32
+Nodes (4): UserFactory, Illuminate\Database\Eloquent\Factories\Factory, Illuminate\Support\Facades\Hash, static
 
 ### Community 122 - "scripts"
 Cohesion: 0.29
@@ -674,7 +672,7 @@ Cohesion: 0.33
 Nodes (5): Checklist UAT Browser, Informasi sesi, Integrasi dan gangguan jaringan, Keputusan rilis, Matriks perangkat
 
 ### Community 130 - "Checkbox.vue"
-Cohesion: 0.40
+Cohesion: 0.33
 Nodes (4): delegatedProps, emits, forwarded, props
 
 ### Community 132 - "psr-4"
@@ -694,8 +692,8 @@ Cohesion: 0.40
 Nodes (4): Database, Frontend, Performance Baseline, Queue dan cache
 
 ### Community 146 - "Layout.vue"
-Cohesion: 0.11
-Nodes (19): Props, resources_js_components_ui_separator_index_separator, currentUrlReactive, page, useCurrentUrl(), isCurrentOrParentUrl(), isCurrentUrl(), whenCurrentUrl() (+11 more)
+Cohesion: 0.13
+Nodes (13): resources_js_actions_app_http_controllers_settings_securitycontroller, Props, resources_js_components_ui_separator_index_separator, { isCurrentOrParentUrl }, isEmailVerified, page, SettingsNavItem, sidebarNavItems (+5 more)
 
 ### Community 147 - "Audit akses role"
 Cohesion: 0.40
@@ -719,23 +717,23 @@ Nodes (3): Data Uji Lokal, Environment lokal yang perlu diisi, Materi Customer S
 
 ## Knowledge Gaps
 - **791 isolated node(s):** `$schema`, `style`, `config`, `css`, `baseColor` (+786 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1324 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **62 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1325 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **61 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `User` connect `User` to `DashboardResolver.php`, `Course`, `Illuminate\Support\Facades\DB`, `Role`, `Chisel`, `FortifyServiceProvider.php`, `Inertia\Testing\AssertableInertia`, `CourseController`, `TestCase`, `ActivityLog`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `SendWhatsappNotification`, `Enrollment`, `Illuminate\Database\Eloquent\Relations\HasMany`, `CourseManagementTest`, `CourseModule`, `Illuminate\Database\Eloquent\Model`, `UserNotification`, `UserImport`, `Illuminate\Http\Request`, `Inertia\Response`, `Position`, `ProcessUserImport.php`, `User.php`, `RoleAccessContractTest.php`, `CourseController.php`, `LessonResourceTest`, `.seed`, `LearningPathAssignment`, `Illuminate\Support\Collection`, `LearningPath`, `.handle`, `LearningPathAssignmentService`, `UserFactory.php`?**
-  _High betweenness centrality (0.065) - this node is a cross-community bridge._
-- **Why does `Course` connect `Course` to `User`, `DashboardResolver.php`, `Illuminate\Support\Facades\DB`, `Role`, `Inertia\Testing\AssertableInertia`, `LearningController.php`, `CourseController`, `TestCase`, `ActivityLog`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `Enrollment`, `Illuminate\Http\RedirectResponse`, `Illuminate\Database\Eloquent\Relations\HasMany`, `CourseManagementTest`, `CourseModule`, `Illuminate\Database\Eloquent\Model`, `Illuminate\Http\Request`, `Inertia\Response`, `User.php`, `RoleAccessContractTest.php`, `CourseController.php`, `LessonResourceTest`, `.seed`, `LearningFlowTest`, `CourseLibraryController.php`, `LearningController`, `AssessmentAttemptController`, `LearningPath`, `TrainerProgressController.php`?**
+- **Why does `User` connect `User` to `DashboardResolver.php`, `Course`, `Lesson`, `Division`, `Chisel`, `PasswordValidationRules`, `Inertia\Testing\AssertableInertia`, `LearningController.php`, `CourseController.php`, `Role`, `ActivityLog`, `Illuminate\Database\Eloquent\Model`, `GenerateReportExport.php`, `Enrollment`, `Illuminate\Database\Eloquent\Relations\HasMany`, `CourseManagementTest`, `CourseModule`, `Controller`, `UserNotification`, `UserImport`, `Illuminate\Http\Request`, `Inertia\Response`, `UserController.php`, `ProcessUserImport.php`, `UserImportController.php`, `User.php`, `RoleAccessContractTest`, `Position`, `LessonResourceTest`, `.seed`, `LearningPathAssignment`, `Assessment`, `LearningPath`, `.handle`, `LearningPathAssignmentService`, `UserFactory.php`?**
+  _High betweenness centrality (0.068) - this node is a cross-community bridge._
+- **Why does `Course` connect `Course` to `User`, `DashboardResolver.php`, `Lesson`, `Inertia\Testing\AssertableInertia`, `LearningController.php`, `CourseController.php`, `Role`, `Illuminate\Database\Eloquent\Model`, `Enrollment`, `Illuminate\Http\RedirectResponse`, `Illuminate\Database\Eloquent\Relations\HasMany`, `CourseManagementTest`, `CourseModule`, `Controller`, `Illuminate\Http\Request`, `Inertia\Response`, `UserImportController.php`, `User.php`, `RoleAccessContractTest`, `LessonResourceTest`, `.seed`, `LearningFlowTest`, `CourseLibraryController.php`, `Assessment`, `LearningPath`, `TrainerProgressController.php`?**
   _High betweenness centrality (0.042) - this node is a cross-community bridge._
-- **Why does `vue` connect `vue` to `Checkbox.vue`, `users/Form.vue`, `@lucide/vue`, `SelectContent.vue`, `reka-ui`, `learning-path-assignments/Index.vue`, `Layout.vue`, `@vueuse/core`, `learning-paths/Content.vue`, `Show.vue`, `dialog/index.ts`, `Assessment.vue`, `reports/Index.vue`, `Assessments.vue`, `trainer-progress/Index.vue`, `useAppearance.ts`, `SidebarProvider.vue`, `courses/Content.vue`, `package.json`, `UserMenuContent.vue`, `courses/Form.vue`, `Sidebar.vue`, `AppSidebar.vue`, `types/index.ts`, `@inertiajs/vue3`, `AssigneePicker.vue`, `LearningLessonNavigator.vue`, `AppHeader.vue`, `SidebarMenuButton.vue`, `Profile.vue`, `global.d.ts`, `SheetContent.vue`, `AvatarFallback.vue`, `SidebarMenuSkeleton.vue`, `resources_js_components_ui_label_index_label`, `Badge.vue`, `Import.vue`?**
-  _High betweenness centrality (0.038) - this node is a cross-community bridge._
+- **Why does `vue` connect `vue` to `Checkbox.vue`, `input/index.ts`, `@lucide/vue`, `SelectContent.vue`, `reka-ui`, `learning-path-assignments/Index.vue`, `Layout.vue`, `@vueuse/core`, `learning-paths/Content.vue`, `Show.vue`, `dialog/index.ts`, `Assessment.vue`, `reports/Index.vue`, `Assessments.vue`, `trainer-progress/Index.vue`, `useAppearance.ts`, `sidebar/index.ts`, `courses/Content.vue`, `NavUser.vue`, `package.json`, `UserMenuContent.vue`, `courses/Form.vue`, `sheet/index.ts`, `AppSidebar.vue`, `types/index.ts`, `@inertiajs/vue3`, `AssigneePicker.vue`, `LearningLessonNavigator.vue`, `AppHeader.vue`, `TooltipContent.vue`, `Profile.vue`, `global.d.ts`, `users/Form.vue`, `SheetContent.vue`, `AvatarFallback.vue`, `SidebarMenuSkeleton.vue`, `resources_js_components_ui_label_index_label`?**
+  _High betweenness centrality (0.039) - this node is a cross-community bridge._
 - **What connects `$schema`, `style`, `config` to the rest of the system?**
   _791 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `User` be split into smaller, more focused modules?**
-  _Cohesion score 0.045548654244306416 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.046532045654082525 - nodes in this community are weakly interconnected._
 - **Should `vue` be split into smaller, more focused modules?**
-  _Cohesion score 0.04810744810744811 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.04847937368262571 - nodes in this community are weakly interconnected._
 - **Should `DashboardResolver.php` be split into smaller, more focused modules?**
   _Cohesion score 0.12535612535612536 - nodes in this community are weakly interconnected._
